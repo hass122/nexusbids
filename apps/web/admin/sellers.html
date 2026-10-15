@@ -1,0 +1,768 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Management â€” NexusBids Admin</title>
+  <meta name="description"
+    content="Supervise verified marketplace sellers, sales volume, rating performance and store status.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </noscript>
+  <link id="gf-preload" rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    /* ============================================================
+       NexusBids Admin â€” Seller Directory
+       Hand-tuned tokens for clean light & dark rendering
+       ============================================================ */
+    :root {
+      /* Surfaces */
+      --a-bg: #f5f6fa;
+      --a-surface: #ffffff;
+      --a-surface-2: #fafbfd;
+      --a-surface-3: #f0f2f7;
+      --a-surface-inset: #f7f8fc;
+      --a-row-hover: #fafbfd;
+
+      /* Borders */
+      --a-border: #e6e8ef;
+      --a-border-strong: #d3d7e0;
+      --a-divider: #eef0f5;
+
+      /* Text */
+      --a-text: #131826;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68;
+
+      /* Elevation */
+      --a-shadow-sm: 0 1px 2px rgba(19, 24, 38, .04), 0 2px 6px -1px rgba(19, 24, 38, .05);
+      --a-shadow-md: 0 4px 12px -2px rgba(19, 24, 38, .08), 0 2px 4px -1px rgba(19, 24, 38, .04);
+      --a-shadow-lg: 0 20px 40px -20px rgba(19, 24, 38, .22), 0 6px 16px -8px rgba(19, 24, 38, .10);
+
+      /* Semantic â€” light */
+      --c-emerald: #047857;
+      --c-emerald-soft: #ecfdf5;
+      --c-emerald-border: #a7f3d0;
+      --c-amber: #b45309;
+      --c-amber-soft: #fffbeb;
+      --c-amber-border: #fde68a;
+      --c-rose: #be123c;
+      --c-rose-soft: #fff1f2;
+      --c-rose-border: #fecdd3;
+      --c-brand: #4338ca;
+      --c-brand-soft: #eef0fe;
+      --c-brand-border: #c7d2fe;
+      --c-violet: #6d28d9;
+
+      --a-skeleton: linear-gradient(90deg, #eef1f7 20%, #e3e7f0 45%, #eef1f7 70%);
+    }
+
+    html.dark {
+      --a-bg: #070911;
+      --a-surface: #0e1422;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #172033;
+      --a-surface-inset: #0b1120;
+      --a-row-hover: #121a2b;
+
+      --a-border: #1c2740;
+      --a-border-strong: #2a3854;
+      --a-divider: #172033;
+
+      --a-text: #e9eef8;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88;
+
+      --a-shadow-sm: 0 1px 2px rgba(0, 0, 0, .4), 0 2px 6px -1px rgba(0, 0, 0, .35);
+      --a-shadow-md: 0 4px 14px -2px rgba(0, 0, 0, .5), 0 2px 4px -1px rgba(0, 0, 0, .3);
+      --a-shadow-lg: 0 22px 44px -22px rgba(0, 0, 0, .85), 0 8px 18px -10px rgba(0, 0, 0, .55);
+
+      --c-emerald: #6ee7b7;
+      --c-emerald-soft: rgba(16, 185, 129, .14);
+      --c-emerald-border: rgba(16, 185, 129, .26);
+      --c-amber: #fcd34d;
+      --c-amber-soft: rgba(245, 158, 11, .14);
+      --c-amber-border: rgba(245, 158, 11, .26);
+      --c-rose: #fda4af;
+      --c-rose-soft: rgba(244, 63, 94, .14);
+      --c-rose-border: rgba(244, 63, 94, .26);
+      --c-brand: #a5b4fc;
+      --c-brand-soft: rgba(99, 102, 241, .14);
+      --c-brand-border: rgba(99, 102, 241, .26);
+      --c-violet: #c4b5fd;
+
+      --a-skeleton: linear-gradient(90deg, #121a2b 20%, #1b2539 45%, #121a2b 70%);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      transition: background-color .25s ease, color .25s ease;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+
+    /* ---------- Panels ---------- */
+    .panel {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 18px;
+      box-shadow: var(--a-shadow-sm);
+      transition: border-color .25s ease, box-shadow .25s ease;
+    }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 15px;
+      border-radius: 11px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s ease;
+      text-decoration: none;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--c-brand);
+      outline-offset: 2px;
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 1px 2px rgba(79, 70, 229, .25);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-ghost {
+      background: var(--a-surface-2);
+      border-color: var(--a-border);
+      color: var(--a-text);
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      border-color: var(--a-border-strong);
+      background: var(--a-surface-3);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: var(--c-rose-soft);
+      border-color: var(--c-rose-border);
+      color: var(--c-rose);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--c-rose) 15%, var(--c-rose-soft));
+      transform: translateY(-1px);
+    }
+
+    .btn-success {
+      background: var(--c-emerald-soft);
+      border-color: var(--c-emerald-border);
+      color: var(--c-emerald);
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--c-emerald) 15%, var(--c-emerald-soft));
+      transform: translateY(-1px);
+    }
+
+    .btn-icon {
+      padding: 7px 9px;
+      border-radius: 9px;
+    }
+
+    /* ---------- Badges ---------- */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+
+    .badge i {
+      font-size: .58rem;
+    }
+
+    .badge-verified {
+      background: var(--c-emerald-soft);
+      color: var(--c-emerald);
+      border-color: var(--c-emerald-border);
+    }
+
+    .badge-pending {
+      background: var(--c-amber-soft);
+      color: var(--c-amber);
+      border-color: var(--c-amber-border);
+    }
+
+    .badge-blocked {
+      background: var(--c-rose-soft);
+      color: var(--c-rose);
+      border-color: var(--c-rose-border);
+    }
+
+    .badge-muted {
+      background: var(--a-surface-3);
+      color: var(--a-text-light);
+      border-color: var(--a-border);
+    }
+
+    /* ---------- Search input ---------- */
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap .icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .72rem;
+      color: var(--a-text-light);
+      pointer-events: none;
+      transition: color .2s ease;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding: 10px 14px 10px 36px;
+      border-radius: 11px;
+      background: var(--a-surface-inset);
+      border: 1px solid var(--a-border);
+      color: var(--a-text);
+      font-size: .8rem;
+      font-family: inherit;
+      transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease;
+    }
+
+    .search-wrap input::placeholder {
+      color: var(--a-text-light);
+    }
+
+    .search-wrap input:focus {
+      outline: none;
+      border-color: #6366f1;
+      background: var(--a-surface);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .14);
+    }
+
+    .search-wrap input:focus+.icon,
+    .search-wrap:focus-within .icon {
+      color: #6366f1;
+    }
+
+    /* ---------- Table ---------- */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .84rem;
+    }
+
+    .data-table thead th {
+      padding: 13px 18px;
+      text-align: left;
+      font-size: .67rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--a-text-light);
+      background: var(--a-surface-2);
+      border-bottom: 1px solid var(--a-border);
+      white-space: nowrap;
+    }
+
+    .data-table tbody td {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--a-divider);
+      color: var(--a-text);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      transition: background-color .15s ease;
+      position: relative;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--a-row-hover);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    /* subtle left accent on hover */
+    .data-table tbody tr td:first-child {
+      position: relative;
+    }
+
+    .data-table tbody tr td:first-child::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #6366f1;
+      opacity: 0;
+      transition: opacity .18s ease;
+    }
+
+    .data-table tbody tr:hover td:first-child::before {
+      opacity: 1;
+    }
+
+    /* ---------- Avatar ---------- */
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: .85rem;
+      color: #fff;
+      flex-shrink: 0;
+      letter-spacing: -.02em;
+      box-shadow: 0 2px 6px -2px rgba(19, 24, 38, .2);
+    }
+
+    /* ---------- Skeleton ---------- */
+    .skeleton {
+      background: var(--a-skeleton);
+      background-size: 200% 100%;
+      border-radius: 6px;
+      animation: shimmer 1.3s ease-in-out infinite;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: -100% 50%;
+      }
+    }
+
+    /* ---------- Empty state ---------- */
+    .empty-state {
+      padding: 60px 24px;
+      text-align: center;
+    }
+
+    .empty-state .icon-wrap {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: var(--a-surface-3);
+      color: var(--a-text-light);
+      display: inline-grid;
+      place-items: center;
+      font-size: 1.4rem;
+      margin-bottom: 16px;
+    }
+
+    /* ---------- Scroll container ---------- */
+    .table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-scroll::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .table-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb {
+      background: var(--a-border-strong);
+      border-radius: 4px;
+    }
+
+    .table-scroll::-webkit-scrollbar-thumb:hover {
+      background: var(--a-text-light);
+    }
+
+    /* ---------- Page header chip ---------- */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      background: var(--c-brand-soft);
+      border: 1px solid var(--c-brand-border);
+      color: var(--c-brand);
+    }
+
+    .page-title {
+      font-size: clamp(1.4rem, 3.6vw, 1.85rem);
+      font-weight: 800;
+      letter-spacing: -.026em;
+      line-height: 1.15;
+      color: var(--a-text);
+    }
+
+    /* ---------- Rating ---------- */
+    .rating {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .78rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .rating .star {
+      font-size: .68rem;
+    }
+
+    .rating-good {
+      color: #d97706;
+    }
+
+    html.dark .rating-good {
+      color: #fbbf24;
+    }
+
+    .rating-new {
+      color: var(--a-text-light);
+      font-weight: 700;
+    }
+
+    /* ---------- Meta helpers ---------- */
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    .text-muted {
+      color: var(--a-text-muted);
+    }
+
+    .text-light {
+      color: var(--a-text-light);
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 640px) {
+      .panel {
+        border-radius: 16px;
+      }
+
+      .data-table thead th {
+        padding: 11px 14px;
+      }
+
+      .data-table tbody td {
+        padding: 13px 14px;
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        font-size: .78rem;
+        border-radius: 10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <!-- Shared Global Navbar -->
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <!-- Subnavigation -->
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <!-- ================= Page Header ================= -->
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
+      <div>
+        <span class="chip"><i class="fa-solid fa-store"></i> Seller Directory</span>
+        <h1 class="page-title mt-3">Seller Administration</h1>
+        <p class="text-xs sm:text-sm text-muted mt-1.5 max-w-lg leading-relaxed">
+          Monitor store metrics, sales revenue, ratings and verification badges across the marketplace.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="/admin/kyc.html" class="btn btn-ghost text-xs">
+          <i class="fa-solid fa-id-card-clip" style="color:var(--c-amber)"></i>
+          <span>KYC Queue</span>
+        </a>
+        <button id="refresh-btn" type="button" class="btn btn-primary text-xs">
+          <i class="fa-solid fa-rotate-right" id="refresh-icon"></i>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= Toolbar ================= -->
+    <div class="panel p-3.5 sm:p-4 mb-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+      <div class="search-wrap w-full sm:w-80">
+        <i class="fa-solid fa-magnifying-glass icon"></i>
+        <input type="text" id="search-input" placeholder="Search name, email or storeâ€¦" autocomplete="off">
+      </div>
+      <div class="text-xs text-muted sm:text-right px-1">
+        Showing <strong id="visible-count" style="color:var(--a-text)">0</strong> sellers
+      </div>
+    </div>
+
+    <!-- ================= Table ================= -->
+    <div class="panel overflow-hidden">
+      <div class="table-scroll">
+        <table class="data-table" style="min-width:960px">
+          <thead>
+            <tr>
+              <th>Seller / Store</th>
+              <th>Contact</th>
+              <th>KYC</th>
+              <th>Inventory</th>
+              <th>Gross Sales</th>
+              <th>Rating</th>
+              <th style="text-align:right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="sellers-table-body">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script>
+    (function () {
+      'use strict';
+      const $ = (id) => document.getElementById(id);
+      const esc = (v) => (window.UI && UI.escapeHtml) ? UI.escapeHtml(v == null ? '' : String(v)) : String(v == null ? '' : v);
+
+      const GRADIENTS = [
+        'linear-gradient(135deg,#6366f1,#8b5cf6)',
+        'linear-gradient(135deg,#0ea5e9,#6366f1)',
+        'linear-gradient(135deg,#10b981,#059669)',
+        'linear-gradient(135deg,#f59e0b,#d97706)',
+        'linear-gradient(135deg,#ec4899,#8b5cf6)',
+        'linear-gradient(135deg,#14b8a6,#0d9488)'
+      ];
+      function gradientFor(seed) {
+        var n = 0, s = String(seed || 'x');
+        for (var i = 0; i < s.length; i++) n = (n * 31 + s.charCodeAt(i)) >>> 0;
+        return GRADIENTS[n % GRADIENTS.length];
+      }
+
+      function skeletonRows(count) {
+        return `<tr><td><div class="flex items-center gap-3"><span class="skeleton" style="width:40px;height:40px;border-radius:12px"></span><div><span class="skeleton" style="width:120px;height:12px;display:block"></span><span class="skeleton" style="width:80px;height:10px;display:block;margin-top:6px"></span></div></div></td><td><span class="skeleton" style="width:140px;height:12px;display:block"></span><span class="skeleton" style="width:90px;height:10px;display:block;margin-top:6px"></span></td><td><span class="skeleton" style="width:70px;height:20px;border-radius:999px"></span></td><td><span class="skeleton" style="width:60px;height:12px;display:block"></span><span class="skeleton" style="width:50px;height:10px;display:block;margin-top:6px"></span></td><td><span class="skeleton" style="width:80px;height:12px"></span></td><td><span class="skeleton" style="width:52px;height:12px"></span></td><td style="text-align:right"><span class="skeleton" style="width:100px;height:28px;border-radius:9px;margin-left:auto;display:block"></span></td></tr>`.repeat(count);
+      }
+
+      function showSkeleton() {
+        $('sellers-table-body').innerHTML = skeletonRows(6);
+        $('visible-count').textContent = '…';
+      }
+
+      function showEmpty(isSearch) {
+        $('sellers-table-body').innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon-wrap"><i class="fa-solid ${isSearch ? 'fa-magnifying-glass' : 'fa-store-slash'}"></i></div><p class="text-sm font-bold" style="color:var(--a-text)">${isSearch ? 'No matching sellers' : 'No sellers yet'}</p><p class="text-xs text-muted mt-1.5 max-w-xs mx-auto">${isSearch ? 'Try a different keyword.' : 'Sellers will appear here once registered.'}</p></div></td></tr>`;
+        $('visible-count').textContent = '0';
+      }
+
+      function renderSeller(s) {
+        var isVerified = s.seller_kyc_status === 'approved';
+        var status = (s.status || 'active').toLowerCase();
+        var isBlocked = status === 'blocked' || status === 'suspended';
+        var rawRating = parseFloat(s.average_rating || 0);
+        var hasRating = rawRating > 0;
+        var ratingText = hasRating ? rawRating.toFixed(1) : 'New';
+        var kycStatus = s.seller_kyc_status || 'unverified';
+
+        var badgeClass = isVerified ? 'badge-verified' : (isBlocked ? 'badge-blocked' : 'badge-pending');
+        var badgeIcon = isVerified ? 'fa-circle-check' : (isBlocked ? 'fa-ban' : 'fa-clock');
+
+        var initial = ((s.store_name || s.full_name || 'S').trim().charAt(0) || 'S').toUpperCase();
+        var grad = gradientFor(s.user_id || s.email || initial);
+        var salesFmt = (window.UI && UI.formatPKR) ? UI.formatPKR(parseFloat(s.total_sales_pkr || 0)) : 'Rs ' + Number(s.total_sales_pkr || 0).toLocaleString();
+
+        // ✅ FIXED: quoted user_id (string-safe)
+        var uid = String(s.user_id);
+
+        return `<tr>
+        <td><div class="flex items-center gap-3">
+          <div class="avatar" style="background:${grad}">${esc(initial)}</div>
+          <div class="min-w-0">
+            <div class="text-xs font-extrabold truncate" style="color:var(--a-text);max-width:200px">${esc(s.store_name || s.full_name || 'Store')}</div>
+            <div class="text-[11px] text-light truncate" style="max-width:200px">${esc(s.full_name || '')}${s.user_id ? '<span class="mono"> · #' + esc(s.user_id) + '</span>' : ''}</div>
+          </div>
+        </div></td>
+        <td><div class="text-xs"><div class="truncate" style="color:var(--a-text);max-width:200px">${esc(s.email || '—')}</div><div class="text-[11px] text-light mono">${esc(s.phone || 'No phone')}</div></div></td>
+        <td><span class="badge ${badgeClass}"><i class="fa-solid ${badgeIcon}"></i> ${esc(kycStatus)}</span></td>
+        <td><div class="text-xs"><div style="color:var(--c-emerald);font-weight:800">${Number(s.active_auctions || 0)} <span class="text-light font-medium">active</span></div><div class="text-[11px] text-light">${Number(s.total_auctions || 0)} total</div></div></td>
+        <td><span class="text-xs font-extrabold" style="color:var(--c-emerald)">${salesFmt}</span></td>
+        <td><span class="rating ${hasRating ? 'rating-good' : 'rating-new'}">${hasRating ? '<i class="fa-solid fa-star star"></i>' : ''}${ratingText}</span></td>
+        <td style="text-align:right"><div class="inline-flex items-center gap-1.5">
+          <a href="/admin/auctions.html?seller_id=${encodeURIComponent(s.user_id)}" class="btn btn-ghost btn-icon" title="View listings"><i class="fa-solid fa-gavel text-xs"></i></a>
+          ${isBlocked
+            ? `<button type="button" onclick="toggleSellerBan('${esc(uid)}', false)" class="btn btn-success text-[11px] px-2.5 py-1.5"><i class="fa-solid fa-unlock text-[10px]"></i> Unblock</button>`
+            : `<button type="button" onclick="toggleSellerBan('${esc(uid)}', true)" class="btn btn-danger text-[11px] px-2.5 py-1.5"><i class="fa-solid fa-ban text-[10px]"></i> Block</button>`}
+        </div></td>
+      </tr>`;
+      }
+
+      // ✅ FIXED: no broken AbortController (ApiClient doesn't accept signal in signature — keep it simple)
+      let loading = false;
+      async function loadSellers() {
+        if (loading) return;
+        loading = true;
+        var tbody = $('sellers-table-body');
+        var search = ($('search-input').value || '').trim();
+        if (!tbody.querySelector('tr')) showSkeleton();
+
+        try {
+          var res = await ApiClient.get('/admin/sellers', search ? { search } : {});
+          var sellers = (res && res.data) || (Array.isArray(res) ? res : []);
+          $('visible-count').textContent = sellers.length;
+          if (!sellers.length) { showEmpty(!!search); return; }
+          tbody.innerHTML = sellers.map(renderSeller).join('');
+        } catch (err) {
+          console.error('[admin/sellers]', err);
+          $('visible-count').textContent = '0';
+          tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon-wrap" style="background:var(--c-rose-soft);color:var(--c-rose)"><i class="fa-solid fa-triangle-exclamation"></i></div><p class="text-sm font-bold" style="color:var(--a-text)">Couldn't load sellers</p><p class="text-xs text-muted mt-1.5 max-w-xs mx-auto">${esc(err && err.message ? err.message : 'Please try again.')}</p><button type="button" onclick="loadSellers()" class="btn btn-ghost text-xs mt-4"><i class="fa-solid fa-rotate-right"></i> Retry</button></div></td></tr>`;
+        } finally { loading = false; }
+      }
+
+      // ✅ FIXED: /users/:id/status with { status } — matches backend, works for ban AND unban
+      window.toggleSellerBan = async function (userId, isBan) {
+        if (!confirm(`Are you sure you want to ${isBan ? 'block' : 'unblock'} this seller?`)) return;
+        try {
+          await ApiClient.patch('/admin/users/' + encodeURIComponent(userId) + '/status', {
+            status: isBan ? 'blocked' : 'active'
+          });
+          if (window.UI && UI.showToast) UI.showToast(`Seller ${isBan ? 'blocked' : 'unblocked'}`, 'success');
+          loadSellers();
+        } catch (err) {
+          console.error('[admin/sellers] toggle ban:', err);
+          if (window.UI && UI.showToast) UI.showToast((err && err.message) || 'Action failed.', 'error');
+          else alert((err && err.message) || 'Action failed.');
+        }
+      };
+
+      function initRefresh() {
+        var btn = $('refresh-btn'), icon = $('refresh-icon');
+        if (!btn) return;
+        btn.addEventListener('click', async function () {
+          if (btn.disabled) return;
+          btn.disabled = true;
+          if (icon) icon.classList.add('fa-spin');
+          try { await loadSellers(); }
+          finally { if (icon) icon.classList.remove('fa-spin'); btn.disabled = false; }
+        });
+      }
+
+      function initSearch() {
+        var input = $('search-input'); if (!input) return;
+        var t = null;
+        input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(loadSellers, 380); });
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') { clearTimeout(t); loadSellers(); }
+          if (e.key === 'Escape') { input.value = ''; loadSellers(); }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        const role = ApiClient.getUserRole && ApiClient.getUserRole();
+        if (!ApiClient.isAuthenticated() || role !== 'admin') {
+          window.location.href = '/login.html?redirect=/admin/sellers.html';
+          return;
+        }
+        initRefresh();
+        initSearch();
+        loadSellers();
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

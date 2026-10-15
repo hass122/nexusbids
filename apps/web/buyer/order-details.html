@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Details — NexusBids Pakistan</title>
+  <meta name="description" content="View order details, payment status, shipping tracking and invoice on NexusBids.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --s: #fff;
+      --s2: #f7f9fc;
+      --s3: #eceff6;
+      --bd: #e3e8f0;
+      --tx: #0f172a;
+      --txm: #58627a;
+      --txl: #8d97ab;
+      --sh: 0 1px 3px rgba(15, 23, 42, .06);
+      --shm: 0 6px 16px -6px rgba(15, 23, 42, .1);
+      --sk: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%)
+    }
+
+    html.dark {
+      --s: #0d1220;
+      --s2: #121a2b;
+      --s3: #1a2336;
+      --bd: #1e2a40;
+      --tx: #eef2f9;
+      --txm: #9aa6bd;
+      --txl: #66738d;
+      --sh: 0 1px 3px rgba(0, 0, 0, .4);
+      --shm: 0 8px 22px -8px rgba(0, 0, 0, .6);
+      --sk: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      background: #f4f6fb;
+      color: var(--tx);
+      -webkit-font-smoothing: antialiased;
+      transition: background .3s, color .3s;
+      overflow-x: hidden
+    }
+
+    html.dark body {
+      background: #05070f
+    }
+
+    .card {
+      background: var(--s);
+      border: 1px solid var(--bd);
+      border-radius: 20px;
+      box-shadow: var(--sh)
+    }
+
+    .card-head {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--bd);
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .card-title {
+      font-size: .9rem;
+      font-weight: 800;
+      color: var(--tx)
+    }
+
+    .card-body {
+      padding: 18px 20px
+    }
+
+    .label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--txl);
+      margin-bottom: 4px
+    }
+
+    .val {
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--tx)
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+      white-space: nowrap;
+      text-transform: uppercase
+    }
+
+    .badge-paid {
+      background: rgba(16, 185, 129, .1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, .25)
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, .1);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, .25)
+    }
+
+    .badge-disputed {
+      background: rgba(239, 68, 68, .1);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, .25)
+    }
+
+    .badge-shipped {
+      background: rgba(59, 130, 246, .1);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, .25)
+    }
+
+    .badge-delivered {
+      background: rgba(16, 185, 129, .1);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, .25)
+    }
+
+    .badge-info {
+      background: rgba(99, 102, 241, .1);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, .25)
+    }
+
+    .timeline {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+      padding-left: 28px
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--bd)
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 18px;
+      animation: fadeUp .4s both
+    }
+
+    .tl-item:last-child {
+      margin-bottom: 0
+    }
+
+    .tl-dot {
+      position: absolute;
+      left: -23px;
+      top: 2px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--bd);
+      border: 2px solid var(--s);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .45rem
+    }
+
+    .tl-dot.done {
+      background: #10b981;
+      border-color: #10b981;
+      color: #fff
+    }
+
+    .tl-dot.active {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: #fff;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, .2)
+    }
+
+    .tl-label {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--tx)
+    }
+
+    .tl-sub {
+      font-size: .72rem;
+      color: var(--txm);
+      margin-top: 2px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .22s;
+      white-space: nowrap
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 8px 20px -8px rgba(79, 70, 229, .75)
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px -8px rgba(79, 70, 229, .9)
+    }
+
+    .btn-ghost {
+      background: var(--s);
+      border-color: var(--bd);
+      color: var(--txm);
+      box-shadow: var(--sh)
+    }
+
+    .btn-ghost:hover {
+      color: var(--tx);
+      border-color: #2c3a56;
+      transform: translateY(-1px)
+    }
+
+    .btn-danger {
+      background: #be123c;
+      color: #fff
+    }
+
+    .btn-danger:hover {
+      background: #9f1239;
+      transform: translateY(-1px)
+    }
+
+    .skeleton {
+      background: var(--sk);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+      border-radius: 8px
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0 50%
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .14);
+      border-color: rgba(99, 102, 241, .25)
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+  <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="mb-6">
+      <ol
+        style="display:flex;align-items:center;gap:6px;list-style:none;padding:0;margin:0;font-size:.78rem;color:var(--txm)">
+        <li><a href="/buyer/dashboard.html" style="color:var(--txm);text-decoration:none"
+            class="hover:underline">Dashboard</a></li>
+        <li><i class="fa-solid fa-chevron-right" style="font-size:.55rem"></i></li>
+        <li><a href="/buyer/orders.html" style="color:var(--txm);text-decoration:none"
+            class="hover:underline">Orders</a></li>
+        <li><i class="fa-solid fa-chevron-right" style="font-size:.55rem"></i></li>
+        <li style="color:var(--tx);font-weight:600" id="bc-order-id">Order Details</li>
+      </ol>
+    </nav>
+
+    <div id="page-loading" style="display:flex;flex-direction:column;gap:16px">
+      <div class="skeleton" style="height:60px;border-radius:16px"></div>
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:16px">
+          <div class="skeleton" style="height:160px;border-radius:20px"></div>
+          <div class="skeleton" style="height:200px;border-radius:20px"></div>
+          <div class="skeleton" style="height:220px;border-radius:20px"></div>
+        </div>
+        <div class="skeleton" style="height:400px;border-radius:20px"></div>
+      </div>
+    </div>
+
+    <div id="order-content" style="display:none">
+      <!-- Header -->
+      <div
+        style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+        <div>
+          <span class="eyebrow"><i class="fa-solid fa-box"></i> Order</span>
+          <h1
+            style="font-size:clamp(1.3rem,3.5vw,1.8rem);font-weight:800;letter-spacing:-.025em;color:var(--tx);margin:8px 0 4px"
+            id="order-title">Order #—</h1>
+          <p style="font-size:.82rem;color:var(--txm)" id="order-date">—</p>
+        </div>
+        <div id="order-status-badges" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr;gap:16px" id="order-layout">
+
+        <!-- Left column -->
+        <div style="display:flex;flex-direction:column;gap:16px" id="order-left">
+
+          <!-- Product Card -->
+          <div class="card">
+            <div class="card-head">
+              <i class="fa-solid fa-gavel" style="color:#6366f1;font-size:.85rem"></i>
+              <span class="card-title">Auction Item</span>
+            </div>
+            <div class="card-body" id="product-area"></div>
+          </div>
+
+          <!-- Payment Card -->
+          <div class="card">
+            <div class="card-head">
+              <i class="fa-solid fa-credit-card" style="color:#10b981;font-size:.85rem"></i>
+              <span class="card-title">Payment</span>
+            </div>
+            <div class="card-body" id="payment-area"></div>
+          </div>
+
+          <!-- Shipping / Tracking Card -->
+          <div class="card" id="shipping-card">
+            <div class="card-head">
+              <i class="fa-solid fa-truck-fast" style="color:#3b82f6;font-size:.85rem"></i>
+              <span class="card-title">Shipping & Tracking</span>
+            </div>
+            <div class="card-body" id="shipping-area"></div>
+          </div>
+
+          <!-- Dispute -->
+          <div class="card" id="dispute-card" style="display:none">
+            <div class="card-head">
+              <i class="fa-solid fa-flag" style="color:#ef4444;font-size:.85rem"></i>
+              <span class="card-title">Raise a Dispute</span>
+            </div>
+            <div class="card-body">
+              <p style="font-size:.82rem;color:var(--txm);margin:0 0 14px">If you have a problem with this order, you
+                can raise a dispute and our team will investigate.</p>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div>
+                  <label class="label" for="dispute-reason">Reason</label>
+                  <select id="dispute-reason" class="nb-select" style="width:100%">
+                    <option value="item_not_received">Item Not Received</option>
+                    <option value="item_not_as_described">Item Not As Described</option>
+                    <option value="payment_issue">Payment Issue</option>
+                    <option value="seller_unresponsive">Seller Unresponsive</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="label" for="dispute-desc">Description</label>
+                  <textarea id="dispute-desc" class="nb-input" rows="3" placeholder="Describe the issue in detail…"
+                    style="resize:vertical;min-height:80px"></textarea>
+                </div>
+                <button id="dispute-btn" class="btn btn-danger" style="align-self:flex-start">
+                  <i class="fa-solid fa-flag"></i> Submit Dispute
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column — Timeline -->
+        <div class="card" id="order-right" style="height:fit-content">
+          <div class="card-head">
+            <i class="fa-solid fa-timeline" style="color:#a855f7;font-size:.85rem"></i>
+            <span class="card-title">Order Timeline</span>
+          </div>
+          <div class="card-body">
+            <ul class="timeline" id="timeline-list"></ul>
+          </div>
+          <div style="padding:16px;border-top:1px solid var(--bd);display:flex;flex-direction:column;gap:8px"
+            id="order-actions"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="order-error" style="display:none;text-align:center;padding:60px 20px">
+      <i class="fa-solid fa-triangle-exclamation" style="font-size:2.5rem;color:#ef4444;margin-bottom:16px"></i>
+      <h3 style="font-size:1rem;font-weight:800;color:var(--tx)">Order not found</h3>
+      <p style="font-size:.82rem;color:var(--txm);margin:8px 0 20px">This order may not exist or you don't have access
+        to it.</p>
+      <a href="/buyer/orders.html" class="btn btn-ghost"><i class="fa-solid fa-arrow-left"></i> Back to Orders</a>
+    </div>
+
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const FB = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300';
+      const params = new URLSearchParams(window.location.search);
+      const orderId = params.get('id');
+
+      function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+      function fmt(v) { return UI?.formatPKR ? UI.formatPKR(v) : 'Rs. ' + (Number(v) || 0).toLocaleString('en-PK'); }
+      function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleString('en-PK', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+
+      function badgeHtml(status, type) {
+        const classes = {
+          paid: 'badge-paid', pending: 'badge-pending', initiated: 'badge-pending',
+          receipt_uploaded: 'badge-info', disputed: 'badge-disputed',
+          shipped: 'badge-shipped', delivered: 'badge-delivered',
+          processing: 'badge-pending', cancelled: 'badge-disputed'
+        };
+        const cls = classes[status] || 'badge-info';
+        return `<span class="badge ${cls}">${esc(status?.replace(/_/g, ' '))}</span>`;
+      }
+
+      function timelineStep(label, sub, state = 'pending') {
+        const dotCls = state === 'done' ? 'done' : state === 'active' ? 'active' : '';
+        const icon = state === 'done' ? 'fa-check' : state === 'active' ? 'fa-circle-dot' : '';
+        return `<li class="tl-item">
+        <div class="tl-dot ${dotCls}">${icon ? `<i class="fa-solid ${icon}" style="font-size:.55rem"></i>` : ''}</div>
+        <div class="tl-label" style="${state === 'active' ? 'color:#6366f1' : state === 'done' ? '' : 'color:var(--txl)'}">${esc(label)}</div>
+        ${sub ? `<div class="tl-sub">${esc(sub)}</div>` : ''}
+      </li>`;
+      }
+
+      function buildTimeline(o) {
+        const steps = [];
+        // ✅ FIX: Use admin_review_status for payment truth
+        const admin = String(o.admin_review_status || '').toLowerCase();
+        const proofUploaded = !!(o.buyer_proof_uploaded_at);
+        let ps;
+        if (admin === 'rejected') {
+          ps = 'payment_rejected';
+        } else if (admin === 'approved' || o.payment_status === 'paid') {
+          ps = 'paid';
+        } else if (proofUploaded) {
+          ps = 'verifying_payment';
+        } else {
+          ps = o.payment_status;
+        }
+        const ds = o.delivery_status;
+
+        steps.push(timelineStep('Order Created', fmtDate(o.created_at), 'done'));
+
+        if (ps === 'paid') {
+          steps.push(timelineStep('Payment Verified & In Escrow', fmtDate(o.payment_uploaded_at || o.updated_at), 'done'));
+        } else if (ps === 'verifying_payment') {
+          steps.push(timelineStep('Verifying Payment Proof', 'Under admin review', 'active'));
+          steps.push(timelineStep('Shipping Preparation', ''));
+          steps.push(timelineStep('Shipped', ''));
+          steps.push(timelineStep('Delivered', ''));
+        } else if (ps === 'payment_rejected') {
+          steps.push(timelineStep('Payment Proof Rejected', 'Please re-upload a clear screenshot', 'active'));
+          steps.push(timelineStep('Verifying Payment Proof', ''));
+          steps.push(timelineStep('Shipping Preparation', ''));
+          steps.push(timelineStep('Shipped', ''));
+          steps.push(timelineStep('Delivered', ''));
+        } else if (ps === 'pending' || ps === 'initiated' || ps === 'unpaid' || ps === 'failed') {
+          steps.push(timelineStep('Awaiting Payment', 'Complete payment to proceed', 'active'));
+          steps.push(timelineStep('Shipping Preparation', ''));
+          steps.push(timelineStep('Shipped', ''));
+          steps.push(timelineStep('Delivered', ''));
+        }
+
+        if (ps === 'paid') {
+          if (ds === 'shipped' || ds === 'delivered') {
+            steps.push(timelineStep('Shipped', fmtDate(o.shipped_at), 'done'));
+          } else {
+            steps.push(timelineStep('Processing by Seller', 'Seller is preparing your order', 'active'));
+            steps.push(timelineStep('Shipped', ''));
+            steps.push(timelineStep('Delivered', ''));
+          }
+          if (ds === 'delivered') {
+            steps.push(timelineStep('Delivered', fmtDate(o.delivered_at), 'done'));
+            steps.push(timelineStep('Completed', '', 'done'));
+          }
+        }
+
+        return steps.join('');
+      }
+
+      function renderProduct(o) {
+        const img = o.image || FB;
+        return `<div style="display:flex;gap:14px;align-items:center">
+        <div style="width:72px;height:72px;border-radius:12px;overflow:hidden;border:1px solid var(--bd);flex-shrink:0">
+          <img src="${esc(img)}" style="width:100%;height:100%;object-fit:cover" loading="lazy" onerror="this.onerror=null;this.src='${FB}'">
+        </div>
+        <div style="flex:1;min-width:0">
+          <a href="/auction-details.html?id=${encodeURIComponent(o.auction_id)}" style="font-size:.9rem;font-weight:700;color:var(--tx);text-decoration:none;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(o.auction_title || o.title || 'Auction Item')}</a>
+          <div style="margin-top:6px;font-size:.8rem;color:var(--txm)">Seller: <span style="color:var(--tx);font-weight:600">${esc(o.seller_name || '—')}</span></div>
+          <div style="margin-top:4px;font-size:.8rem;color:var(--txm)">Category: <span style="color:var(--tx)">${esc(o.category || '—')}</span></div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;color:var(--txl);font-weight:700">Winning Bid</div>
+          <div style="font-size:1.15rem;font-weight:800;color:var(--tx);margin-top:2px">${esc(fmt(o.total_amount))}</div>
+        </div>
+      </div>`;
+      }
+
+      function renderPayment(o) {
+        const admin = String(o.admin_review_status || '').toLowerCase();
+        const ps = admin === 'rejected' ? 'payment_rejected' : o.payment_status;
+        const isPaid = ps === 'paid' || admin === 'approved';
+        const needsPay = ps === 'pending' || ps === 'initiated' || ps === 'failed';
+        const needsReupload = ps === 'payment_rejected';
+        return `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin-bottom:14px">
+          <div><div class="label">Status</div><div class="val">${badgeHtml(ps)}</div></div>
+          <div><div class="label">Amount</div><div class="val" style="font-size:1rem;font-weight:800">${esc(fmt(o.total_amount))}</div></div>
+          ${o.payment_transaction_id ? `<div><div class="label">Txn ID</div><div class="val">${esc(o.payment_transaction_id)}</div></div>` : ''}
+          ${o.payment_uploaded_at ? `<div><div class="label">Paid At</div><div class="val">${esc(fmtDate(o.payment_uploaded_at))}</div></div>` : ''}
+        </div>
+               ${needsPay ? `<a href="/checkout.html?order=${encodeURIComponent(o.order_id)}" class="btn btn-primary" style="font-size:.8rem"><i class="fa-solid fa-credit-card"></i> Complete Payment</a>` : ''}
+        ${needsReupload ? `<a href="/checkout.html?order=${encodeURIComponent(o.order_id)}" class="btn btn-primary" style="font-size:.8rem"><i class="fa-solid fa-cloud-arrow-up"></i> Re-upload Proof</a>` : ''}
+        ${ps === 'paid' ? `<a href="/invoice.html?order=${encodeURIComponent(o.order_id)}" class="btn btn-ghost" style="font-size:.8rem"><i class="fa-solid fa-file-invoice"></i> View Invoice</a>` : ''}
+      `;
+      }
+
+      function renderShipping(o, tracking) {
+        if (!o.shipment_id && !tracking?.shipment) {
+          return `<p style="font-size:.82rem;color:var(--txm);margin:0">Shipping information will appear here once the seller dispatches your order.</p>`;
+        }
+        const s = tracking?.shipment || o;
+        let html = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;margin-bottom:16px">
+        <div><div class="label">Courier</div><div class="val">${esc(s.courier || '—')}</div></div>
+        <div><div class="label">Tracking No.</div><div class="val">${esc(s.tracking_number || '—')}</div></div>
+        ${s.estimated_delivery ? `<div><div class="label">Est. Delivery</div><div class="val">${esc(fmtDate(s.estimated_delivery))}</div></div>` : ''}
+        <div><div class="label">Status</div><div class="val">${badgeHtml(o.delivery_status || 'processing')}</div></div>
+      </div>`;
+        if (tracking?.events?.length) {
+          html += `<div style="margin-top:4px"><div class="label" style="margin-bottom:10px">Tracking History</div>`;
+          tracking.events.forEach(ev => {
+            html += `<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;padding:8px 10px;background:var(--s2);border-radius:10px;border:1px solid var(--bd)">
+            <i class="fa-solid fa-circle-dot" style="color:#6366f1;margin-top:2px;font-size:.75rem;flex-shrink:0"></i>
+            <div>
+              <div style="font-size:.8rem;font-weight:700;color:var(--tx)">${esc(ev.status)}</div>
+              ${ev.location ? `<div style="font-size:.72rem;color:var(--txm)">${esc(ev.location)}</div>` : ''}
+              <div style="font-size:.68rem;color:var(--txl);margin-top:2px">${esc(fmtDate(ev.event_time || ev.created_at))}</div>
+            </div>
+          </div>`;
+          });
+          html += `</div>`;
+        }
+        if (o.delivery_status === 'shipped' && o.payment_status === 'paid') {
+          html += `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button id="confirm-delivery-btn" class="btn btn-primary" style="font-size:.8rem"><i class="fa-solid fa-circle-check"></i> Confirm Receipt</button>
+            <a href="/buyer/protection.html" class="btn btn-ghost" style="font-size:.8rem;color:#f59e0b"><i class="fa-solid fa-triangle-exclamation"></i> Report Delivery Problem</a>
+          </div>`;
+        } else if ((o.delivery_status === 'delivered' || o.order_status === 'completed') && o.payment_status === 'paid') {
+          html += `<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <a href="/buyer/reviews.html?order=${encodeURIComponent(o.order_id)}" class="btn btn-primary" style="font-size:.8rem"><i class="fa-solid fa-star text-amber-400"></i> Rate &amp; Review Seller</a>
+            <a href="/seller-profile.html?id=${encodeURIComponent(o.seller_id)}" class="btn btn-ghost" style="font-size:.8rem"><i class="fa-solid fa-store"></i> View Seller Profile</a>
+          </div>`;
+        }
+        return html;
+      }
+
+      async function load() {
+        if (!orderId) { showError(); return; }
+        try {
+          const orderRes = await ApiClient.get(`/orders/${orderId}`);
+          const o = orderRes?.data;
+          if (!o) { showError(); return; }
+
+          let tracking = null;
+          try {
+            const trackingRes = await ApiClient.get(`/shipping/orders/${orderId}/tracking`);
+            tracking = trackingRes?.data || null;
+          } catch { }
+
+          document.getElementById('page-loading').style.display = 'none';
+          document.getElementById('order-content').style.display = 'block';
+
+          // Update breadcrumb
+          const bc = document.getElementById('bc-order-id');
+          if (bc) bc.textContent = `#${o.order_id}`;
+          document.title = `Order #${o.order_id} — NexusBids`;
+
+          const titleEl = document.getElementById('order-title');
+          if (titleEl) titleEl.textContent = `Order #${o.order_id}`;
+          const dateEl = document.getElementById('order-date');
+          if (dateEl) dateEl.textContent = `Placed on ${fmtDate(o.created_at)}`;
+
+          const badgesEl = document.getElementById('order-status-badges');
+          if (badgesEl) badgesEl.innerHTML = badgeHtml(o.payment_status) + ' ' + badgeHtml(o.delivery_status || o.status);
+
+          document.getElementById('product-area').innerHTML = renderProduct(o);
+          document.getElementById('payment-area').innerHTML = renderPayment(o);
+          document.getElementById('shipping-area').innerHTML = renderShipping(o, tracking);
+          document.getElementById('timeline-list').innerHTML = buildTimeline(o);
+
+          // Responsive layout — hide dispute card if already disputed/completed
+          const orderStatus = String(o.order_status || '').toLowerCase();
+          const canDispute =
+            o.payment_status === 'paid' &&
+            orderStatus !== 'disputed' &&
+            orderStatus !== 'completed' &&
+            orderStatus !== 'cancelled' &&
+            orderStatus !== 'refunded';
+
+          const dc = document.getElementById('dispute-card');
+          if (dc) {
+            dc.style.display = canDispute ? 'block' : 'none';
+          }
+
+          // Responsive two-col on wide
+          const layout = document.getElementById('order-layout');
+          if (window.innerWidth >= 768 && layout) {
+            layout.style.gridTemplateColumns = '1fr 340px';
+          }
+
+          // Actions
+          const actEl = document.getElementById('order-actions');
+          if (actEl) {
+            let btns = '';
+            if (o.payment_status === 'paid') btns += `<a href="/invoice.html?order=${encodeURIComponent(o.order_id)}" class="btn btn-ghost" style="font-size:.78rem"><i class="fa-solid fa-file-invoice"></i> Download Invoice</a>`;
+            btns += `<a href="/buyer/protection.html" class="btn btn-ghost" style="font-size:.78rem"><i class="fa-solid fa-shield-halved"></i> Protection Center</a>`;
+            btns += `<a href="/buyer/orders.html" class="btn btn-ghost" style="font-size:.78rem"><i class="fa-solid fa-arrow-left"></i> Back to Orders</a>`;
+            actEl.innerHTML = btns;
+          }
+
+          // Confirm delivery
+          setTimeout(() => {
+            const cBtn = document.getElementById('confirm-delivery-btn');
+            if (cBtn) {
+              cBtn.addEventListener('click', async () => {
+                const ok = await UI.confirm({ title: 'Confirm Receipt', message: 'Have you received your order in good condition?', confirmText: 'Yes, Received', type: 'success' });
+                if (!ok) return;
+                cBtn.disabled = true; cBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Confirming…';
+                try {
+                  await ApiClient.post(`/shipping/orders/${orderId}/confirm-delivery`);
+                  UI.showToast('Receipt confirmed! Thank you.', 'success');
+                  setTimeout(() => load(), 1000);
+                } catch (e) {
+                  UI.showToast(e.message || 'Failed to confirm receipt', 'error');
+                  cBtn.disabled = false; cBtn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Confirm Receipt';
+                }
+              });
+            }
+
+            const dBtn = document.getElementById('dispute-btn');
+            if (dBtn) {
+              dBtn.addEventListener('click', async () => {
+                const reason = document.getElementById('dispute-reason')?.value;
+                const desc = document.getElementById('dispute-desc')?.value?.trim();
+
+                if (!desc) {
+                  UI.showToast('Please describe the issue', 'warning');
+                  return;
+                }
+
+                const originalHtml = '<i class="fa-solid fa-flag"></i> Submit Dispute';
+                dBtn.disabled = true;
+                dBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Submitting…';
+
+                try {
+                  await ApiClient.post('/payments/dispute', {
+                    order_id: parseInt(orderId),
+                    reason,
+                    description: desc
+                  });
+
+                  UI.showToast('Dispute submitted. Our team will review it shortly.', 'success');
+
+                  // Hide the whole dispute card immediately — no more form
+                  const dc = document.getElementById('dispute-card');
+                  if (dc) dc.style.display = 'none';
+
+                  // Reset button state (in case the card is shown again later)
+                  dBtn.disabled = false;
+                  dBtn.innerHTML = originalHtml;
+
+                  // Reload fresh order data (order_status ab 'disputed' aayega)
+                  setTimeout(() => load(), 1500);
+
+                } catch (e) {
+                  UI.showToast(e.message || 'Failed to submit dispute', 'error');
+                  dBtn.disabled = false;
+                  dBtn.innerHTML = originalHtml;
+                }
+              });
+            }
+          }, 100);
+
+        } catch (e) { showError(); }
+      }
+
+      function showError() {
+        document.getElementById('page-loading').style.display = 'none';
+        document.getElementById('order-error').style.display = 'block';
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!ApiClient.getAccessToken()) { window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.href); return; }
+        load();
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

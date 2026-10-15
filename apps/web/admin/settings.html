@@ -1,0 +1,684 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings — NexusBids Admin</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="../assets/css/design-system.css">
+  <style>
+    :root {
+      --a-bg: #f6f6f4;
+      --a-surface: #fff;
+      --a-surface-2: #fbfbf9;
+      --a-surface-3: #f1f1ee;
+      --a-border: #e8e8e3;
+      --a-border-strong: #d6d6cf;
+      --a-text: #1a1a1a;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68;
+      --a-shadow: 0 1px 2px rgba(26, 26, 26, .04);
+      --a-accent: #4f46e5;
+      --a-accent-hover: #4338ca
+    }
+
+    html.dark {
+      --a-bg: #111110;
+      --a-surface: #191917;
+      --a-surface-2: #1f1f1d;
+      --a-surface-3: #262623;
+      --a-border: #2a2a27;
+      --a-border-strong: #3a3a35;
+      --a-text: #f2f2ef;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88;
+      --a-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+      --a-accent: #6366f1;
+      --a-accent-hover: #818cf8
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .page-head {
+      margin-bottom: 24px
+    }
+
+    .page-head h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.15
+    }
+
+    .page-head .sub {
+      font-size: .82rem;
+      color: var(--a-text-muted);
+      margin-top: 6px
+    }
+
+    .page-head .meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: .72rem;
+      color: var(--a-text-light);
+      flex-wrap: wrap
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: .76rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .15s;
+      text-decoration: none;
+      font-family: inherit
+    }
+
+    .btn-solid {
+      background: var(--a-accent);
+      color: #fff;
+      box-shadow: 0 1px 2px rgba(79, 70, 229, .3)
+    }
+
+    .btn-solid:hover:not(:disabled) {
+      background: var(--a-accent-hover);
+      transform: translateY(-1px)
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--a-border);
+      color: var(--a-text-muted)
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      color: var(--a-text);
+      border-color: var(--a-border-strong);
+      background: var(--a-surface-2)
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed
+    }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 32px;
+      align-items: start
+    }
+
+    @media (max-width:900px) {
+      .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 20px
+      }
+    }
+
+    .section {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 14px;
+      box-shadow: var(--a-shadow);
+      overflow: hidden;
+      margin-bottom: 16px
+    }
+
+    .section-head {
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid var(--a-border);
+      background: var(--a-surface-2)
+    }
+
+    .section-head .title {
+      font-size: .88rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      letter-spacing: -.01em
+    }
+
+    .section-head .title i {
+      font-size: .78rem;
+      color: var(--a-text-light)
+    }
+
+    .section-head .note {
+      font-size: .72rem;
+      color: var(--a-text-muted);
+      margin-top: 4px;
+      line-height: 1.5
+    }
+
+    .section-body {
+      padding: 4px 20px
+    }
+
+    .setting {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--a-border);
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 24px;
+      align-items: start
+    }
+
+    .setting:last-child {
+      border-bottom: none
+    }
+
+    @media (max-width:700px) {
+      .setting {
+        grid-template-columns: 1fr;
+        gap: 10px
+      }
+    }
+
+    .setting-label {
+      font-size: .84rem;
+      font-weight: 700;
+      letter-spacing: -.005em
+    }
+
+    .setting-desc {
+      font-size: .74rem;
+      color: var(--a-text-muted);
+      margin-top: 4px;
+      line-height: 1.55
+    }
+
+    .setting-desc code {
+      font-family: ui-monospace, Menlo, monospace;
+      font-size: .72rem;
+      background: var(--a-surface-3);
+      padding: 1px 5px;
+      border-radius: 4px
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--a-border);
+      border-radius: 9px;
+      background: var(--a-surface-2);
+      overflow: hidden;
+      transition: border-color .15s, background-color .15s
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--a-accent);
+      background: var(--a-surface)
+    }
+
+    .input-wrap input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--a-text);
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 600;
+      padding: 9px 12px;
+      width: 100%;
+      font-variant-numeric: tabular-nums
+    }
+
+    .input-wrap .unit {
+      display: flex;
+      align-items: center;
+      padding: 0 11px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--a-text-light);
+      background: var(--a-surface-3);
+      border-left: 1px solid var(--a-border)
+    }
+
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+      cursor: pointer;
+      display: inline-block;
+      vertical-align: middle
+    }
+
+    .toggle input {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      cursor: pointer
+    }
+
+    .toggle-track {
+      position: absolute;
+      inset: 0;
+      background: var(--a-surface-3);
+      border: 1px solid var(--a-border);
+      border-radius: 999px;
+      transition: all .2s;
+      pointer-events: none
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--a-text-light);
+      transition: all .2s;
+      pointer-events: none
+    }
+
+    .toggle input:checked~.toggle-track {
+      background: var(--a-accent);
+      border-color: var(--a-accent)
+    }
+
+    .toggle input:checked~.toggle-knob {
+      left: 21px;
+      background: #fff
+    }
+
+    .toggle-hint {
+      font-size: .68rem;
+      color: var(--a-text-light);
+      margin-top: 4px
+    }
+
+    .preview {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-size: .68rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      margin-top: 6px;
+      border: 1px solid;
+      color: var(--a-text-muted);
+      background: var(--a-surface-3);
+      border-color: var(--a-border)
+    }
+
+    .preview.good {
+      color: #047857;
+      background: #ecfdf5;
+      border-color: #a7f3d0
+    }
+
+    html.dark .preview.good {
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, .12);
+      border-color: rgba(16, 185, 129, .25)
+    }
+
+    .save-bar {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translate(-50%, 140%);
+      padding: 10px 10px 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: var(--a-text);
+      color: var(--a-bg);
+      border-radius: 12px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .25);
+      z-index: 40;
+      transition: transform .28s;
+      max-width: calc(100vw - 32px)
+    }
+
+    html.dark .save-bar {
+      background: #f2f2ef;
+      color: #111110
+    }
+
+    .save-bar.show {
+      transform: translate(-50%, 0)
+    }
+
+    .save-bar .msg {
+      font-size: .78rem;
+      font-weight: 600;
+      white-space: nowrap
+    }
+
+    .save-bar .actions {
+      display: flex;
+      gap: 6px
+    }
+
+    .save-bar .btn-cancel {
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: .74rem;
+      font-weight: 700;
+      background: transparent;
+      color: inherit;
+      border: 1px solid rgba(255, 255, 255, .2);
+      cursor: pointer;
+      font-family: inherit;
+      opacity: .85
+    }
+
+    .save-bar .btn-cancel:hover {
+      opacity: 1
+    }
+
+    html.dark .save-bar .btn-cancel {
+      border-color: rgba(0, 0, 0, .2)
+    }
+
+    .save-bar .btn-save {
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: .74rem;
+      font-weight: 700;
+      background: var(--a-accent);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .save-bar .btn-save:hover {
+      background: var(--a-accent-hover)
+    }
+
+    .save-bar .btn-save:disabled {
+      opacity: .6;
+      cursor: not-allowed
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+  <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full pb-32">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="page-head">
+      <h1>Settings</h1>
+      <p class="sub">Commission, auction rules, and compliance — managed here.</p>
+      <div class="meta"><i class="fa-solid fa-clock-rotate-left" style="font-size:.65rem"></i><span
+          id="saved-at">Loading…</span><span>·</span><span>Changes recorded in <strong
+            style="color:var(--a-text-muted)">audit log</strong></span></div>
+    </div>
+
+    <div class="settings-grid">
+      <div>
+        <section class="section" id="sec-money">
+          <div class="section-head">
+            <div class="title"><i class="fa-solid fa-coins"></i><span>Monetization</span></div>
+            <div class="note">Commission affects all seller payouts.</div>
+          </div>
+          <div class="section-body">
+            <div class="setting">
+              <div>
+                <div class="setting-label">Marketplace commission</div>
+                <div class="setting-desc">Percentage deducted from each seller payout.</div>
+                <div class="preview" id="feePreview">— seller gets Rs 9,500 on Rs 10,000 bid</div>
+              </div>
+              <div>
+                <div class="input-wrap"><input type="number" step="0.1" min="0" max="50" id="platformFeePercent"
+                    value="5.0" inputmode="decimal">
+                  <div class="unit">%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="sec-auction">
+          <div class="section-head">
+            <div class="title"><i class="fa-solid fa-gavel"></i><span>Auction rules</span></div>
+            <div class="note">Sniping, increment, and timing.</div>
+          </div>
+          <div class="section-body">
+            <div class="setting">
+              <div>
+                <div class="setting-label">Anti-sniping window</div>
+                <div class="setting-desc">Auctions extend if bid arrives within <code>N</code> seconds. <code>0</code>
+                  disables.</div>
+              </div>
+              <div>
+                <div class="input-wrap"><input type="number" min="0" max="900" id="antiSnipingSec" value="120"
+                    inputmode="numeric">
+                  <div class="unit">sec</div>
+                </div>
+              </div>
+            </div>
+            <div class="setting">
+              <div>
+                <div class="setting-label">Minimum bid increment</div>
+                <div class="setting-desc">Minimum PKR a new bid must exceed the current bid.</div>
+              </div>
+              <div>
+                <div class="input-wrap"><input type="number" min="10" step="10" id="minBidIncrement" value="100"
+                    inputmode="numeric">
+                  <div class="unit">PKR</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="sec-trust">
+          <div class="section-head">
+            <div class="title"><i class="fa-solid fa-shield-halved"></i><span>Trust &amp; safety</span></div>
+            <div class="note">Compliance gating for listings.</div>
+          </div>
+          <div class="section-body">
+            <div class="setting">
+              <div>
+                <div class="setting-label">KYC verification mandatory for sellers</div>
+                <div class="setting-desc">When on, only CNIC-verified sellers can publish listings. This affects
+                  <strong>live sellers</strong>.</div>
+              </div>
+              <div>
+                <label class="toggle"><input type="checkbox" id="kycMandatory"><span class="toggle-track"></span><span
+                    class="toggle-knob"></span></label>
+                <div class="toggle-hint" id="kycState">disabled</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <div class="save-bar" id="saveBar" role="dialog" aria-live="polite">
+    <div class="msg">Unsaved changes <span id="changeCount"
+        style="display:inline-block;margin-left:6px;padding:2px 8px;border-radius:6px;background:rgba(255,255,255,.15);font-size:.68rem;font-weight:700">0</span>
+    </div>
+    <div class="actions">
+      <button class="btn-cancel" onclick="discardChanges()">Discard</button>
+      <button class="btn-save" id="saveBtn" onclick="saveSettings()"><i class="fa-solid fa-check"
+          style="font-size:.7rem"></i><span>Save</span></button>
+    </div>
+  </div>
+
+  <script src="../assets/js/api-client.js"></script>
+  <script src="../assets/js/ui.js"></script>
+  <script src="../assets/js/admin-nav.js" defer></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    let savedState = {}, formState = {};
+
+    function validate(form) {
+      const errors = [];
+      if (isNaN(form.platform_fee_percent) || form.platform_fee_percent < 0 || form.platform_fee_percent > 50) errors.push('Commission must be between 0 and 50%.');
+      if (isNaN(form.anti_sniping_window_sec) || form.anti_sniping_window_sec < 0 || form.anti_sniping_window_sec > 900) errors.push('Anti-sniping window must be 0-900 seconds.');
+      if (isNaN(form.min_bid_increment) || form.min_bid_increment < 10) errors.push('Minimum bid increment must be at least 10 PKR.');
+      return errors;
+    }
+
+    async function loadSettings() {
+      try {
+        const res = await ApiClient.get('/admin/settings');
+        const s = (res && res.data) || {};
+        savedState = {
+          platform_fee_percent: Number(s.platform_fee_percent ?? 5.0),
+          anti_sniping_window_sec: Number(s.anti_sniping_window_sec ?? 120),
+          min_bid_increment: Number(s.min_bid_increment ?? 100),
+          kyc_mandatory_for_selling: !!s.kyc_mandatory_for_selling
+        };
+        $('platformFeePercent').value = savedState.platform_fee_percent;
+        $('antiSnipingSec').value = savedState.anti_sniping_window_sec;
+        $('minBidIncrement').value = savedState.min_bid_increment;
+        $('kycMandatory').checked = savedState.kyc_mandatory_for_selling;
+        formState = { ...savedState };
+        updateKycHint(); updateFeePreview(); updateSavedAt(); updateDirtyState();
+      } catch (err) {
+        console.error('[settings] load:', err);
+        $('saved-at').textContent = 'Could not load';
+        if (window.UI && UI.showToast) UI.showToast('Settings load nahi hui.', 'error');
+      }
+    }
+
+    function updateSavedAt() {
+      $('saved-at').textContent = 'Last saved: ' + new Date().toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function readForm() {
+      return {
+        platform_fee_percent: parseFloat($('platformFeePercent').value) || 0,
+        anti_sniping_window_sec: parseInt($('antiSnipingSec').value, 10) || 0,
+        min_bid_increment: parseInt($('minBidIncrement').value, 10) || 0,
+        kyc_mandatory_for_selling: $('kycMandatory').checked
+      };
+    }
+
+    function getChangedKeys() {
+      const cur = readForm();
+      const changed = [];
+      for (const k of Object.keys(cur)) if (cur[k] !== savedState[k]) changed.push(k);
+      return changed;
+    }
+
+    function updateDirtyState() {
+      const changed = getChangedKeys();
+      $('changeCount').textContent = changed.length;
+      $('saveBar').classList.toggle('show', changed.length > 0);
+    }
+
+    function updateFeePreview() {
+      const fee = parseFloat($('platformFeePercent').value) || 0;
+      const sellerGets = Math.round(10000 * (1 - fee / 100));
+      const el = $('feePreview');
+      el.textContent = '— seller gets Rs ' + sellerGets.toLocaleString('en-PK') + ' on Rs 10,000 bid';
+      el.className = 'preview ' + (fee > 0 && fee <= 20 ? 'good' : '');
+    }
+
+    function updateKycHint() {
+      const on = $('kycMandatory').checked;
+      const el = $('kycState');
+      el.textContent = on ? 'enabled — KYC required for listings' : 'disabled';
+      el.style.color = on ? '#059669' : '';
+    }
+
+    ['platformFeePercent', 'antiSnipingSec', 'minBidIncrement'].forEach(id => {
+      $(id).addEventListener('input', () => { if (id === 'platformFeePercent') updateFeePreview(); updateDirtyState(); });
+    });
+    $('kycMandatory').addEventListener('change', () => { updateKycHint(); updateDirtyState(); });
+
+    function discardChanges() {
+      $('platformFeePercent').value = savedState.platform_fee_percent;
+      $('antiSnipingSec').value = savedState.anti_sniping_window_sec;
+      $('minBidIncrement').value = savedState.min_bid_increment;
+      $('kycMandatory').checked = savedState.kyc_mandatory_for_selling;
+      updateFeePreview(); updateKycHint(); updateDirtyState();
+      if (window.UI && UI.showToast) UI.showToast('Changes discarded.', 'info', 2000);
+    }
+
+    async function saveSettings() {
+      const btn = $('saveBtn');
+      const payload = readForm();
+      // ✅ FIXED: validation before save
+      const errors = validate(payload);
+      if (errors.length) {
+        if (window.UI && UI.showToast) UI.showToast(errors[0], 'error');
+        else alert(errors[0]);
+        return;
+      }
+      if (!getChangedKeys().length) return;
+      btn.disabled = true;
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="font-size:.7rem"></i><span>Saving…</span>';
+      try {
+        await ApiClient.post('/admin/settings', payload);
+        savedState = { ...payload };
+        updateSavedAt();
+        updateDirtyState();
+        if (window.UI && UI.showToast) UI.showToast('Settings saved — recorded in audit log.', 'success');
+      } catch (err) {
+        console.error('[settings] save:', err);
+        if (window.UI && UI.showToast) UI.showToast(err.message || 'Save failed.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = ApiClient.getUserRole && ApiClient.getUserRole();
+      if (!ApiClient.isAuthenticated() || role !== 'admin') {
+        window.location.href = '/login.html?redirect=/admin/settings.html';
+        return;
+      }
+      loadSettings();
+    });
+  </script>
+  <script src="../assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,643 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>All Categories — NexusBids Pakistan</title>
+  <meta name="description"
+    content="Browse auctions by category on NexusBids Pakistan. Verified vehicles, electronics, jewelry, real estate, collectibles, and industrial machinery.">
+
+  <!-- FOUC Prevention -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('nexusbids_theme') || 'system';
+      var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+      document.documentElement.classList.toggle('dark', d);
+      document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+    })();
+  </script>
+
+  <!-- Forms plugin removed -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc',
+              400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca',
+              800: '#3730a3', 900: '#312e81',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --ring: 99, 102, 241;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ============ Light-mode (fixed: distinct levels, no white-on-white) ============ */
+    html:not(.dark) body {
+      background: #f7f8fc !important;
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .bg-slate-950 {
+      background: #f7f8fc !important;
+    }
+
+    html:not(.dark) .bg-slate-900,
+    html:not(.dark) .bg-slate-900\/60,
+    html:not(.dark) .bg-slate-900\/70,
+    html:not(.dark) .bg-slate-900\/50 {
+      background: #ffffff !important;
+    }
+
+    html:not(.dark) .bg-slate-800,
+    html:not(.dark) .bg-slate-800\/70 {
+      background: #f1f5f9 !important;
+    }
+
+    html:not(.dark) .text-slate-100,
+    html:not(.dark) .text-slate-200,
+    html:not(.dark) .text-white {
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .text-slate-300,
+    html:not(.dark) .text-slate-400 {
+      color: #475569 !important;
+    }
+
+    html:not(.dark) .text-slate-500 {
+      color: #64748b !important;
+    }
+
+    html:not(.dark) .border-slate-800,
+    html:not(.dark) .border-slate-800\/80,
+    html:not(.dark) .border-slate-800\/60,
+    html:not(.dark) .border-slate-700 {
+      border-color: #e5e9f0 !important;
+    }
+
+    /* Card bg in light */
+    html:not(.dark) .nb-cat-card {
+      background: #ffffff !important;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 4px 12px -6px rgba(15, 23, 42, .08);
+    }
+
+    /* Live badge in light */
+    html:not(.dark) .nb-live-badge {
+      background: #f1f5f9 !important;
+      color: #334155 !important;
+      border-color: #e5e9f0 !important;
+    }
+
+    /* ============ Search input (bulletproof) ============ */
+    input.nb-input {
+      display: block;
+      width: 100%;
+      background-color: #fff;
+      border: 1px solid #d8dbe3;
+      color: #0f172a;
+      border-radius: .875rem;
+      padding: .7rem 2.5rem .7rem 2.5rem;
+      font-size: .875rem;
+      font-weight: 500;
+      font-family: inherit;
+      line-height: 1.4;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    input.nb-input::placeholder {
+      color: #9aa0ae;
+    }
+
+    input.nb-input:hover {
+      border-color: #b7bcc9;
+    }
+
+    input.nb-input:focus {
+      border-color: rgb(var(--ring));
+      box-shadow: 0 0 0 3px rgba(var(--ring), .15);
+    }
+
+    html.dark input.nb-input {
+      background-color: #0f172a;
+      border-color: #1e293b;
+      color: #e2e8f0;
+    }
+
+    html.dark input.nb-input:hover {
+      border-color: #334155;
+    }
+
+    /* Clear button inside search */
+    .nb-search-clear {
+      position: absolute;
+      right: .625rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1.75rem;
+      height: 1.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 0;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: color .18s ease, background-color .18s ease;
+    }
+
+    .nb-search-clear:hover {
+      color: #475569;
+      background: #f1f5f9;
+    }
+
+    html.dark .nb-search-clear:hover {
+      color: #e2e8f0;
+      background: #1e293b;
+    }
+
+    .nb-search-clear i {
+      font-size: .7rem;
+    }
+
+    /* ============ Category card ============ */
+    .nb-cat-card {
+      position: relative;
+      overflow: hidden;
+      transition:
+        transform .3s cubic-bezier(.16, 1, .3, 1),
+        box-shadow .3s cubic-bezier(.16, 1, .3, 1),
+        border-color .3s ease;
+    }
+
+    .nb-cat-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgba(99, 102, 241, .12), transparent 55%);
+      opacity: 0;
+      transition: opacity .35s ease;
+      pointer-events: none;
+    }
+
+    .nb-cat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -12px rgba(99, 102, 241, .25);
+      border-color: rgba(99, 102, 241, .55) !important;
+    }
+
+    .nb-cat-card:hover::before {
+      opacity: 1;
+    }
+
+    .nb-cat-icon {
+      transition: transform .3s cubic-bezier(.16, 1, .3, 1), background-color .3s ease, color .3s ease;
+    }
+
+    .nb-cat-card:hover .nb-cat-icon {
+      transform: scale(1.1) rotate(-4deg);
+      background: #6366f1 !important;
+      color: #fff !important;
+    }
+
+    .nb-cat-arrow {
+      transition: transform .3s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    .nb-cat-card:hover .nb-cat-arrow {
+      transform: translateX(4px);
+    }
+
+    /* ============ Skeleton ============ */
+    .nb-skel {
+      background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+      background-size: 200% 100%;
+      animation: nbSkel 1.8s infinite;
+      border-radius: 1.25rem;
+    }
+
+    html.dark .nb-skel {
+      background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+      background-size: 200% 100%;
+    }
+
+    @keyframes nbSkel {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    /* ============ Focus ============ */
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid rgb(var(--ring));
+      outline-offset: 2px;
+      border-radius: .5rem;
+    }
+
+    /* ============ Reduced motion ============ */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+
+      .nb-cat-card:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <header id="nb-header"></header>
+
+  <main class="flex-1 w-full">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section
+      class="border-b border-slate-200 dark:border-slate-800/80 bg-gradient-to-b from-indigo-50/60 dark:from-indigo-950/30 to-transparent">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-9">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-slate-500 mb-4 font-medium">
+          <a href="/" class="hover:text-indigo-500 transition-colors">Home</a>
+          <i class="fa-solid fa-chevron-right text-[9px] opacity-50" aria-hidden="true"></i>
+          <span class="text-slate-700 dark:text-slate-300">Categories</span>
+        </nav>
+
+        <div class="max-w-3xl">
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-600 dark:text-indigo-400 text-[11px] font-bold uppercase tracking-wider mb-4">
+            <i class="fa-solid fa-layer-group" aria-hidden="true"></i>
+            <span>Curated Marketplace Sectors</span>
+          </div>
+
+          <h1
+            class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-[1.05]">
+            Auction Categories
+          </h1>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-3 leading-relaxed max-w-2xl">
+            Discover verified listings across Pakistani industries. Every category is backed by
+            <strong class="text-slate-800 dark:text-slate-200 font-semibold">NADRA CNIC verification</strong> and
+            <strong class="text-slate-800 dark:text-slate-200 font-semibold">escrow buyer security</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ SEARCH + COUNT BAR ═══════════ -->
+    <section
+      class="border-b border-slate-200 dark:border-slate-800/80 bg-white/60 dark:bg-slate-900/40 backdrop-blur-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+          <div class="relative flex-1 max-w-md">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"
+              aria-hidden="true"></i>
+            <input type="search" id="category-search" placeholder="Search categories…" class="nb-input"
+              autocomplete="off" aria-label="Search categories">
+            <button type="button" id="clear-search" class="nb-search-clear" hidden aria-label="Clear search">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div id="results-count" class="text-xs text-slate-500 dark:text-slate-400 font-medium sm:ml-auto"
+            aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ CATEGORIES GRID ═══════════ -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div id="categories-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </section>
+
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/ai-chat.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* ============================================================
+       * Utilities
+       * ============================================================ */
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function debounce(fn, ms) {
+        let t;
+        return function (...args) {
+          clearTimeout(t);
+          t = setTimeout(() => fn.apply(this, args), ms);
+        };
+      }
+
+      /* ============================================================
+       * Icon + color mapping
+       * Keys are lowercase, matched by substring so "Vehicles & Automobiles"
+       * hits "vehicles", "Fashion & Apparel" hits "fashion", etc.
+       * ============================================================ */
+      const CATEGORY_STYLES = [
+        { match: ['vehicle', 'car', 'automobile'], icon: 'fa-car', bg: 'bg-blue-500/10', color: 'text-blue-500 dark:text-blue-400' },
+        { match: ['motorcycle', 'bike'], icon: 'fa-motorcycle', bg: 'bg-orange-500/10', color: 'text-orange-500 dark:text-orange-400' },
+        { match: ['mobile', 'phone', 'smartphone'], icon: 'fa-mobile-screen', bg: 'bg-emerald-500/10', color: 'text-emerald-500 dark:text-emerald-400' },
+        { match: ['electronic', 'gadget'], icon: 'fa-laptop-code', bg: 'bg-indigo-500/10', color: 'text-indigo-500 dark:text-indigo-400' },
+        { match: ['computer', 'laptop'], icon: 'fa-laptop', bg: 'bg-cyan-500/10', color: 'text-cyan-500 dark:text-cyan-400' },
+        { match: ['jewel', 'watch'], icon: 'fa-gem', bg: 'bg-amber-500/10', color: 'text-amber-500 dark:text-amber-400' },
+        { match: ['real estate', 'property', 'home & liv'], icon: 'fa-building', bg: 'bg-teal-500/10', color: 'text-teal-500 dark:text-teal-400' },
+        { match: ['art', 'collectible', 'antique'], icon: 'fa-palette', bg: 'bg-purple-500/10', color: 'text-purple-500 dark:text-purple-400' },
+        { match: ['machinery', 'industrial', 'heavy'], icon: 'fa-tractor', bg: 'bg-yellow-500/10', color: 'text-yellow-500 dark:text-yellow-400' },
+        { match: ['fashion', 'apparel', 'clothing'], icon: 'fa-shirt', bg: 'bg-pink-500/10', color: 'text-pink-500 dark:text-pink-400' },
+        { match: ['home', 'living', 'furniture'], icon: 'fa-couch', bg: 'bg-rose-500/10', color: 'text-rose-500 dark:text-rose-400' },
+        { match: ['sport', 'outdoor', 'fitness'], icon: 'fa-volleyball', bg: 'bg-lime-500/10', color: 'text-lime-500 dark:text-lime-400' },
+        { match: ['tool', 'equipment'], icon: 'fa-screwdriver-wrench', bg: 'bg-slate-500/10', color: 'text-slate-500 dark:text-slate-400' },
+        { match: ['food', 'grocery'], icon: 'fa-utensils', bg: 'bg-red-500/10', color: 'text-red-500 dark:text-red-400' },
+        { match: ['book', 'media', 'music'], icon: 'fa-book', bg: 'bg-violet-500/10', color: 'text-violet-500 dark:text-violet-400' },
+      ];
+      const FALLBACK_STYLE = { icon: 'fa-tag', bg: 'bg-indigo-500/10', color: 'text-indigo-500 dark:text-indigo-400' };
+
+      function styleFor(name) {
+        const k = String(name || '').toLowerCase();
+        for (const s of CATEGORY_STYLES) {
+          if (s.match.some(m => k.includes(m))) return s;
+        }
+        return FALLBACK_STYLE;
+      }
+
+      /* ============================================================
+       * State
+       * ============================================================ */
+      const state = {
+        all: [],
+        query: '',
+      };
+
+      const els = {};
+
+      /* ============================================================
+       * Skeleton + Empty + Error
+       * ============================================================ */
+      function renderSkeletons(n = 6) {
+        els.grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5';
+        els.grid.innerHTML = Array.from({ length: n }, () => `<div class="nb-skel h-52"></div>`).join('');
+      }
+
+      function renderEmpty(title, desc, cta) {
+        els.grid.className = 'grid grid-cols-1';
+        els.grid.innerHTML = `
+          <div class="text-center py-16 px-6 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700/80 bg-white/50 dark:bg-slate-900/30">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-magnifying-glass text-2xl text-slate-400 dark:text-slate-500" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mb-1.5">${escapeHtml(title)}</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">${escapeHtml(desc)}</p>
+            ${cta ? `
+              <button type="button" id="empty-cta" class="inline-flex items-center gap-2 mt-5 px-4 h-10 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors">
+                <i class="fa-solid fa-rotate-left text-[10px]" aria-hidden="true"></i>
+                <span>${escapeHtml(cta)}</span>
+              </button>` : ''}
+          </div>
+        `;
+        if (cta) {
+          const b = document.getElementById('empty-cta');
+          if (b) b.addEventListener('click', () => {
+            state.query = '';
+            if (els.search) els.search.value = '';
+            if (els.clearBtn) els.clearBtn.hidden = true;
+            renderList();
+          });
+        }
+      }
+
+      function renderError(msg) {
+        els.grid.className = 'grid grid-cols-1';
+        els.grid.innerHTML = `
+          <div class="text-center py-16 px-6 rounded-2xl border border-dashed border-rose-300 dark:border-rose-800/60 bg-rose-50/50 dark:bg-rose-950/20">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-triangle-exclamation text-2xl text-rose-500" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mb-1.5">Unable to load categories</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">${escapeHtml(msg)}</p>
+            <button type="button" id="retry-cta" class="inline-flex items-center gap-2 mt-5 px-4 h-10 rounded-xl text-xs font-bold text-white bg-rose-600 hover:bg-rose-500 transition-colors">
+              <i class="fa-solid fa-rotate-right text-[10px]" aria-hidden="true"></i>
+              <span>Retry</span>
+            </button>
+          </div>
+        `;
+        const b = document.getElementById('retry-cta');
+        if (b) b.addEventListener('click', () => loadCategories());
+      }
+
+      /* ============================================================
+       * Card
+       * ============================================================ */
+      function renderCard(cat) {
+        const name = cat.category_name || cat.name || 'Untitled Category';
+        const style = styleFor(name);
+        const count = Number(cat.active_auction_count ?? cat.auction_count ?? 0);
+        const desc = cat.description || 'Explore active bids and exclusive verified listings in this category.';
+        const href = `/auctions.html?category=${encodeURIComponent(cat.category_id ?? '')}`;
+
+        return `
+          <a href="${href}"
+             class="nb-cat-card group rounded-2xl p-6 flex flex-col justify-between bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800/90 shadow-sm"
+             data-name="${escapeHtml(name.toLowerCase())}">
+            <div>
+              <div class="flex items-start justify-between gap-3 mb-5">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl nb-cat-icon ${style.bg} ${style.color}">
+                  <i class="fa-solid ${style.icon}" aria-hidden="true"></i>
+                </div>
+
+                ${count > 0 ? `
+                  <span class="nb-live-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-800">
+                    <span class="relative flex w-1.5 h-1.5">
+                      <span class="absolute inline-flex w-full h-full rounded-full bg-emerald-500 opacity-75 animate-ping"></span>
+                      <span class="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    </span>
+                    <span class="tabular-nums">${escapeHtml(count)} live</span>
+                  </span>` : `
+                  <span class="nb-live-badge inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 dark:bg-slate-950 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800">
+                    <span class="tabular-nums">0 live</span>
+                  </span>`}
+              </div>
+
+              <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors leading-snug mb-1.5">
+                ${escapeHtml(name)}
+              </h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                ${escapeHtml(desc)}
+              </p>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800/70 flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <span>Explore auctions</span>
+              <i class="fa-solid fa-arrow-right nb-cat-arrow text-[11px]" aria-hidden="true"></i>
+            </div>
+          </a>
+        `;
+      }
+
+      /* ============================================================
+       * Filter + render
+       * ============================================================ */
+      function filtered() {
+        const q = state.query.trim().toLowerCase();
+        if (!q) return state.all;
+        return state.all.filter(c => {
+          const name = String(c.category_name || c.name || '').toLowerCase();
+          const desc = String(c.description || '').toLowerCase();
+          return name.includes(q) || desc.includes(q);
+        });
+      }
+
+      function updateCount(shown, total) {
+        if (!els.count) return;
+        if (total === 0) { els.count.textContent = ''; return; }
+        if (shown === total) {
+          els.count.innerHTML = `<span class="tabular-nums font-semibold text-slate-700 dark:text-slate-300">${total}</span> ${total === 1 ? 'category' : 'categories'}`;
+        } else {
+          els.count.innerHTML = `<span class="tabular-nums font-semibold text-slate-700 dark:text-slate-300">${shown}</span> of <span class="tabular-nums font-semibold text-slate-700 dark:text-slate-300">${total}</span> categories`;
+        }
+      }
+
+      function renderList() {
+        const list = filtered();
+        updateCount(list.length, state.all.length);
+
+        if (!list.length) {
+          renderEmpty(
+            state.query ? 'No matching categories' : 'No categories yet',
+            state.query
+              ? 'Try a different keyword or browse all categories.'
+              : 'Categories will appear here once the marketplace is populated.',
+            state.query ? 'Clear search' : null
+          );
+          return;
+        }
+
+        els.grid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5';
+        els.grid.innerHTML = list.map(renderCard).join('');
+      }
+
+      /* ============================================================
+       * Load
+       * ============================================================ */
+      async function loadCategories() {
+        renderSkeletons(6);
+        if (els.count) els.count.textContent = '';
+
+        try {
+          const res = await ApiClient.get('/categories');
+          const raw = (res && res.data) ? res.data : [];
+
+          // Dedupe by name (fixes duplicate "Fashion" issue)
+          const seen = new Set();
+          state.all = raw.filter(c => {
+            const name = String(c && (c.category_name || c.name) || '').toLowerCase().trim();
+            if (!name || seen.has(name)) return false;
+            seen.add(name);
+            return true;
+          });
+
+          // Sort: live-heavy first, then alphabetical
+          state.all.sort((a, b) => {
+            const ac = Number(a.active_auction_count ?? a.auction_count ?? 0);
+            const bc = Number(b.active_auction_count ?? b.auction_count ?? 0);
+            if (bc !== ac) return bc - ac;
+            const an = String(a.category_name || a.name || '').toLowerCase();
+            const bn = String(b.category_name || b.name || '').toLowerCase();
+            return an.localeCompare(bn);
+          });
+
+          renderList();
+        } catch (err) {
+          console.error('[categories] Load failed:', err);
+          renderError('Please check your connection and try again.');
+        }
+      }
+
+      /* ============================================================
+       * Init
+       * ============================================================ */
+      document.addEventListener('DOMContentLoaded', () => {
+        els.grid = document.getElementById('categories-list');
+        els.search = document.getElementById('category-search');
+        els.clearBtn = document.getElementById('clear-search');
+        els.count = document.getElementById('results-count');
+
+        if (els.search) {
+          els.search.addEventListener('input', debounce(() => {
+            state.query = els.search.value;
+            if (els.clearBtn) els.clearBtn.hidden = !state.query;
+            renderList();
+          }, 180));
+        }
+
+        if (els.clearBtn) {
+          els.clearBtn.addEventListener('click', () => {
+            state.query = '';
+            if (els.search) els.search.value = '';
+            els.clearBtn.hidden = true;
+            if (els.search) els.search.focus();
+            renderList();
+          });
+        }
+
+        loadCategories();
+      });
+    })();
+  </script>
+</body>
+
+</html>

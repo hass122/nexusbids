@@ -1,0 +1,1303 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Profile — NexusBids</title>
+  <meta name="description" content="Update your name, phone, and account details on NexusBids.">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('nexusbids_theme') || 'system';
+        var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        document.documentElement.classList.toggle('dark', d);
+        document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+      } catch (e) { document.documentElement.classList.add('dark'); }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+
+  <style>
+    /* ============================================================
+       Tokens
+       ============================================================ */
+    :root {
+      --p-bg: #f4f6fb;
+      --p-surface: #ffffff;
+      --p-surface-2: #f7f9fc;
+      --p-surface-3: #eceff6;
+      --p-border: #e3e8f0;
+      --p-border-strong: #cfd7e5;
+      --p-text: #0f172a;
+      --p-text-muted: #58627a;
+      --p-text-faint: #8d97ab;
+      --p-brand: #6366f1;
+      --p-brand-soft: rgba(99, 102, 241, .10);
+      --p-brand-ring: rgba(99, 102, 241, .22);
+      --p-ok: #059669;
+      --p-ok-soft: rgba(16, 185, 129, .10);
+      --p-warn: #b45309;
+      --p-warn-soft: rgba(245, 158, 11, .12);
+      --p-danger: #e11d48;
+      --p-danger-soft: rgba(244, 63, 94, .10);
+      --p-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .04);
+      --p-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .10), 0 2px 6px -2px rgba(15, 23, 42, .05);
+      --p-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .28);
+      --p-skel: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --p-t: .22s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html.dark {
+      --p-bg: #05070f;
+      --p-surface: #0d1220;
+      --p-surface-2: #121a2b;
+      --p-surface-3: #1a2336;
+      --p-border: #1e2a40;
+      --p-border-strong: #2c3a56;
+      --p-text: #eef2f9;
+      --p-text-muted: #9aa6bd;
+      --p-text-faint: #66738d;
+      --p-brand-soft: rgba(99, 102, 241, .14);
+      --p-brand-ring: rgba(99, 102, 241, .30);
+      --p-ok: #34d399;
+      --p-ok-soft: rgba(16, 185, 129, .14);
+      --p-warn: #fbbf24;
+      --p-warn-soft: rgba(245, 158, 11, .14);
+      --p-danger: #fb7185;
+      --p-danger-soft: rgba(244, 63, 94, .14);
+      --p-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --p-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --p-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .8);
+      --p-skel: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background: var(--p-bg);
+      color: var(--p-text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background var(--p-t), color var(--p-t);
+    }
+
+    /* ============================================================
+       Page wrapper
+       ============================================================ */
+    .page-main {
+      flex: 1;
+      width: 100%;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+
+    @media (min-width: 640px) {
+      .page-main {
+        padding: 28px 24px 48px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .page-main {
+        padding: 32px 32px 56px;
+      }
+    }
+
+    /* ============================================================
+       Header
+       ============================================================ */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--p-brand);
+      background: var(--p-brand-soft);
+      border: 1px solid var(--p-brand-ring);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .page-title {
+      font-size: clamp(1.4rem, 3.8vw, 1.9rem);
+      font-weight: 800;
+      letter-spacing: -.024em;
+      line-height: 1.15;
+      color: var(--p-text);
+      margin: 12px 0 6px;
+    }
+
+    .page-sub {
+      font-size: .85rem;
+      color: var(--p-text-muted);
+      line-height: 1.55;
+      max-width: 52ch;
+    }
+
+    /* ============================================================
+       Layout
+       ============================================================ */
+    .account-grid {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 767px) {
+      .account-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ============================================================
+       Sidebar
+       ============================================================ */
+    .sidebar-nav {
+      background: var(--p-surface);
+      border: 1px solid var(--p-border);
+      border-radius: 18px;
+      overflow: hidden;
+      position: sticky;
+      top: 84px;
+      box-shadow: var(--p-shadow-sm);
+    }
+
+    @media (max-width: 767px) {
+      .sidebar-nav {
+        display: none;
+      }
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--p-text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--p-border);
+      transition: all var(--p-t);
+      position: relative;
+    }
+
+    .sidebar-link:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-link:hover {
+      background: var(--p-surface-2);
+      color: var(--p-text);
+    }
+
+    .sidebar-link.active {
+      background: var(--p-brand-soft);
+      color: var(--p-brand);
+      font-weight: 700;
+    }
+
+    .sidebar-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--p-brand);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .sidebar-link i {
+      width: 16px;
+      text-align: center;
+      font-size: .82rem;
+    }
+
+    /* ============================================================
+       Cards
+       ============================================================ */
+    .card {
+      background: var(--p-surface);
+      border: 1px solid var(--p-border);
+      border-radius: 18px;
+      box-shadow: var(--p-shadow-sm);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .card-head {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--p-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-head-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: .92rem;
+      font-weight: 800;
+      color: var(--p-text);
+      letter-spacing: -.005em;
+    }
+
+    .card-hint {
+      font-size: .72rem;
+      color: var(--p-text-faint);
+      font-weight: 500;
+      margin-top: 1px;
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+    /* ============================================================
+       Profile hero
+       ============================================================ */
+    .profile-hero {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--p-border);
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 480px) {
+      .profile-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+      }
+    }
+
+    .avatar {
+      width: 84px;
+      height: 84px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.03em;
+      flex-shrink: 0;
+      position: relative;
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 55%, #818cf8 100%);
+      box-shadow: 0 12px 28px -12px rgba(79, 70, 229, .55),
+        inset 0 1px 0 rgba(255, 255, 255, .18);
+    }
+
+    .avatar::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 22px;
+      background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .22), transparent 55%);
+      pointer-events: none;
+    }
+
+    .profile-meta {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--p-text);
+      letter-spacing: -.015em;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
+    .profile-email {
+      font-size: .82rem;
+      color: var(--p-text-muted);
+      margin-top: 3px;
+      word-break: break-all;
+    }
+
+    .profile-tags {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* KYC pill */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .pill i {
+      font-size: .55rem;
+    }
+
+    .pill.pill-approved {
+      background: var(--p-ok-soft);
+      color: var(--p-ok);
+      border-color: rgba(16, 185, 129, .25);
+    }
+
+    .pill.pill-pending {
+      background: var(--p-warn-soft);
+      color: var(--p-warn);
+      border-color: rgba(245, 158, 11, .25);
+    }
+
+    .pill.pill-unverified {
+      background: var(--p-danger-soft);
+      color: var(--p-danger);
+      border-color: rgba(244, 63, 94, .22);
+    }
+
+    .member-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--p-text-faint);
+    }
+
+    .member-tag i {
+      font-size: .62rem;
+    }
+
+    /* ============================================================
+       Form
+       ============================================================ */
+    .field-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .field-group .full {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 560px) {
+      .field-group {
+        grid-template-columns: 1fr;
+      }
+
+      .field-group .full {
+        grid-column: auto;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--p-text);
+      letter-spacing: -.005em;
+    }
+
+    .field-label .req {
+      color: var(--p-danger);
+      font-size: .85rem;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .field-label .opt {
+      font-size: .72rem;
+      color: var(--p-text-faint);
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    .field-hint {
+      font-size: .68rem;
+      color: var(--p-text-faint);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      line-height: 1.4;
+    }
+
+    /* ============================================================
+       Inputs — FIXED for Tailwind Forms plugin override
+       ============================================================ */
+    .nb-input,
+    input.nb-input,
+    select.nb-input,
+    textarea.nb-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 13px;
+      border-radius: 10px;
+      background: var(--p-surface-2) !important;
+      border: 1px solid var(--p-border) !important;
+      color: var(--p-text) !important;
+      font-family: inherit;
+      font-size: .875rem;
+      font-weight: 500;
+      outline: none;
+      line-height: 1.4;
+      transition: border-color var(--p-t), box-shadow var(--p-t), background var(--p-t);
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-text-fill-color: var(--p-text);
+      caret-color: var(--p-brand);
+      box-shadow: none;
+    }
+
+    .nb-input::placeholder {
+      color: var(--p-text-faint) !important;
+      font-weight: 400;
+      opacity: 1;
+      -webkit-text-fill-color: var(--p-text-faint);
+    }
+
+    .nb-input:hover:not(:disabled):not([readonly]) {
+      border-color: var(--p-border-strong) !important;
+    }
+
+    .nb-input:focus,
+    .nb-input:focus-visible {
+      background: var(--p-surface) !important;
+      border-color: var(--p-brand) !important;
+      box-shadow: 0 0 0 3px var(--p-brand-ring) !important;
+      outline: none !important;
+    }
+
+    /* Disabled / readonly — email field */
+    .nb-input:disabled,
+    .nb-input[readonly],
+    .nb-input:disabled:hover,
+    .nb-input[readonly]:hover {
+      background: var(--p-surface-3) !important;
+      color: var(--p-text-muted) !important;
+      -webkit-text-fill-color: var(--p-text-muted);
+      cursor: not-allowed;
+      opacity: 1;
+      border-color: var(--p-border) !important;
+      box-shadow: none !important;
+    }
+
+    /* Kill Tailwind Forms' focus ring on disabled */
+    .nb-input:disabled:focus {
+      box-shadow: none !important;
+      border-color: var(--p-border) !important;
+    }
+
+    /* Autofill (Chrome) — kills white/yellow flash */
+    .nb-input:-webkit-autofill,
+    .nb-input:-webkit-autofill:hover,
+    .nb-input:-webkit-autofill:focus,
+    .nb-input:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--p-text) !important;
+      -webkit-box-shadow: 0 0 0 1000px var(--p-surface-2) inset !important;
+      box-shadow: 0 0 0 1000px var(--p-surface-2) inset !important;
+      border-color: var(--p-border) !important;
+      transition: background-color 9999s ease-in-out 0s;
+      caret-color: var(--p-brand);
+    }
+
+    /* Inline "verified" badge on email */
+    .field-with-badge {
+      position: relative;
+    }
+
+    .field-with-badge .field-badge {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      pointer-events: none;
+    }
+
+    .field-with-badge .field-badge.ok {
+      color: var(--p-ok);
+    }
+
+    .field-with-badge .field-badge.warn {
+      color: var(--p-warn);
+    }
+
+    .field-with-badge .nb-input {
+      padding-right: 96px;
+    }
+
+    /* ============================================================
+       Buttons
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 16px;
+      border-radius: 11px;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--p-t);
+      min-height: 42px;
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--p-brand);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 8px 20px -10px rgba(79, 70, 229, .7);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px -10px rgba(79, 70, 229, .85);
+    }
+
+    .btn-ghost {
+      background: var(--p-surface);
+      border-color: var(--p-border);
+      color: var(--p-text-muted);
+      box-shadow: var(--p-shadow-sm);
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      color: var(--p-text);
+      border-color: var(--p-border-strong);
+      transform: translateY(-1px);
+    }
+
+    /* ============================================================
+       Status grid
+       ============================================================ */
+    .status-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    .status-tile {
+      background: var(--p-surface-2);
+      border: 1px solid var(--p-border);
+      border-radius: 14px;
+      padding: 14px 15px;
+      transition: all var(--p-t);
+    }
+
+    .status-tile:hover {
+      border-color: var(--p-border-strong);
+      background: var(--p-surface);
+    }
+
+    .status-tile-label {
+      font-size: .64rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--p-text-faint);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status-tile-label i {
+      font-size: .6rem;
+    }
+
+    .status-tile-value {
+      font-size: .9rem;
+      font-weight: 800;
+      color: var(--p-text);
+      margin-top: 6px;
+      text-transform: capitalize;
+      letter-spacing: -.005em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-tile-value.is-ok {
+      color: var(--p-ok);
+    }
+
+    .status-tile-value.is-warn {
+      color: var(--p-warn);
+    }
+
+    .status-tile-value.is-danger {
+      color: var(--p-danger);
+    }
+
+    /* ============================================================
+       Inline alert
+       ============================================================ */
+    .alert-error {
+      display: none;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px 13px;
+      border-radius: 11px;
+      font-size: .8rem;
+      color: var(--p-danger);
+      background: var(--p-danger-soft);
+      border: 1px solid rgba(244, 63, 94, .22);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .alert-error.is-visible {
+      display: flex;
+    }
+
+    .alert-error i {
+      margin-top: 2px;
+      flex-shrink: 0;
+      font-size: .85rem;
+    }
+
+    /* ============================================================
+       Skeleton
+       ============================================================ */
+    .skeleton {
+      background: var(--p-skel);
+      background-size: 400% 100%;
+      border-radius: 10px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .spin {
+      animation: spin .9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="nb-header"></header>
+
+  <main class="page-main">
+
+    <!-- ── Header ── -->
+    <div style="margin-bottom:24px">
+      <span class="eyebrow"><i class="fa-solid fa-user" aria-hidden="true"></i> Account</span>
+      <h1 class="page-title">Your profile</h1>
+      <p class="page-sub">
+        Keep your name, phone, and location up to date — sellers use this to reach you if an order needs attention.
+      </p>
+    </div>
+
+    <div class="account-grid">
+
+      <!-- ── Sidebar ── -->
+      <nav class="sidebar-nav" aria-label="Account navigation">
+        <a href="/buyer/profile.html" class="sidebar-link active"><i class="fa-solid fa-user" aria-hidden="true"></i>
+          Profile</a>
+        <a href="/buyer/security.html" class="sidebar-link"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          Security</a>
+        <a href="/buyer/addresses.html" class="sidebar-link"><i class="fa-solid fa-map-location-dot"
+            aria-hidden="true"></i> Addresses</a>
+        <a href="/buyer/payments.html" class="sidebar-link"><i class="fa-solid fa-wallet" aria-hidden="true"></i>
+          Payments</a>
+        <a href="/buyer/kyc.html" class="sidebar-link"><i class="fa-solid fa-id-card" aria-hidden="true"></i>
+          Verification</a>
+        <a href="/buyer/notifications.html" class="sidebar-link"><i class="fa-solid fa-bell" aria-hidden="true"></i>
+          Notifications</a>
+      </nav>
+
+      <div>
+
+        <!-- ── Skeleton ── -->
+        <div id="loading-state" class="card" style="padding:18px">
+          <div
+            style="display:flex;align-items:center;gap:18px;padding-bottom:20px;border-bottom:1px solid var(--p-border);margin-bottom:20px">
+            <div class="skeleton" style="width:84px;height:84px;border-radius:22px;flex-shrink:0"></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:9px">
+              <div class="skeleton" style="height:16px;width:45%"></div>
+              <div class="skeleton" style="height:12px;width:60%"></div>
+              <div class="skeleton" style="height:20px;width:35%;border-radius:999px"></div>
+            </div>
+          </div>
+          <div class="field-group">
+            <div class="skeleton" style="height:60px;border-radius:11px"></div>
+            <div class="skeleton" style="height:60px;border-radius:11px"></div>
+            <div class="skeleton" style="height:60px;border-radius:11px"></div>
+            <div class="skeleton" style="height:60px;border-radius:11px"></div>
+          </div>
+        </div>
+
+        <!-- ── Content ── -->
+        <div id="profile-content" style="display:none">
+
+          <!-- Personal information -->
+          <section class="card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon" style="background:var(--p-brand-soft);color:var(--p-brand)">
+                  <i class="fa-solid fa-user" aria-hidden="true"></i>
+                </div>
+                <div style="min-width:0">
+                  <div class="card-title">Personal details</div>
+                  <div class="card-hint">Visible to sellers when you win an auction</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+
+              <!-- Hero -->
+              <div class="profile-hero">
+                <div class="avatar" id="profile-avatar" aria-hidden="true">U</div>
+                <div class="profile-meta">
+                  <div class="profile-name" id="profile-name-display">—</div>
+                  <div class="profile-email" id="profile-email-display">—</div>
+                  <div class="profile-tags">
+                    <span class="pill pill-unverified" id="kyc-badge">
+                      <i class="fa-solid fa-circle-dot" aria-hidden="true"></i>
+                      <span>KYC pending</span>
+                    </span>
+                    <span class="member-tag" id="member-since">
+                      <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                      <span>—</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Form -->
+              <form id="profile-form" novalidate autocomplete="on">
+
+                <div class="alert-error" id="form-error" role="alert">
+                  <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+                  <span id="form-error-text"></span>
+                </div>
+
+                <div class="field-group">
+
+                  <div class="field full">
+                    <label class="field-label" for="full-name">
+                      Full name <span class="req">*</span>
+                    </label>
+                    <input id="full-name" name="full_name" type="text" required autocomplete="name" maxlength="80"
+                      class="nb-input" placeholder="e.g. Muhammad Ali">
+                  </div>
+
+                  <div class="field">
+                    <label class="field-label" for="email">
+                      Email address
+                    </label>
+                    <div class="field-with-badge">
+                      <input id="email" name="email" type="email" disabled class="nb-input" readonly>
+                      <span class="field-badge ok" id="email-badge"></span>
+                    </div>
+                    <span class="field-hint">
+                      <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                      Email can't be changed. Contact support if needed.
+                    </span>
+                  </div>
+
+                  <div class="field">
+                    <label class="field-label" for="phone">
+                      Phone number <span class="opt">(optional)</span>
+                    </label>
+                    <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" maxlength="20"
+                      class="nb-input" placeholder="03001234567">
+                    <span class="field-hint">
+                      <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+                      Used for delivery coordination only.
+                    </span>
+                  </div>
+
+                  <div class="field full">
+                    <label class="field-label" for="city">
+                      City <span class="opt">(optional)</span>
+                    </label>
+                    <input id="city" name="city" type="text" autocomplete="address-level2" maxlength="60"
+                      class="nb-input" placeholder="e.g. Karachi">
+                  </div>
+
+                </div>
+
+                <div style="display:flex;gap:10px;flex-wrap:wrap">
+                  <button type="submit" class="btn btn-primary" id="save-btn">
+                    <i class="fa-solid fa-check" aria-hidden="true"></i> Save changes
+                  </button>
+                  <button type="button" class="btn btn-ghost" id="cancel-btn">Reset</button>
+                </div>
+
+              </form>
+            </div>
+          </section>
+
+          <!-- Account status -->
+          <section class="card">
+            <div class="card-head">
+              <div class="card-head-left">
+                <div class="card-icon" style="background:var(--p-ok-soft);color:var(--p-ok)">
+                  <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                </div>
+                <div style="min-width:0">
+                  <div class="card-title">Account status</div>
+                  <div class="card-hint">Where your account stands right now</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="status-grid">
+
+                <div class="status-tile">
+                  <div class="status-tile-label">
+                    <i class="fa-solid fa-user-tag" aria-hidden="true"></i> Role
+                  </div>
+                  <div class="status-tile-value" id="acct-role">—</div>
+                </div>
+
+                <div class="status-tile">
+                  <div class="status-tile-label">
+                    <i class="fa-solid fa-id-card" aria-hidden="true"></i> Verification
+                  </div>
+                  <div class="status-tile-value" id="acct-kyc">—</div>
+                </div>
+
+                <div class="status-tile">
+                  <div class="status-tile-label">
+                    <i class="fa-solid fa-envelope-circle-check" aria-hidden="true"></i> Email
+                  </div>
+                  <div class="status-tile-value" id="acct-email-verified">—</div>
+                </div>
+
+                <div class="status-tile">
+                  <div class="status-tile-label">
+                    <i class="fa-regular fa-calendar" aria-hidden="true"></i> Member since
+                  </div>
+                  <div class="status-tile-value" id="acct-since">—</div>
+                </div>
+
+              </div>
+
+              <div style="margin-top:16px">
+                <a href="/buyer/kyc.html" class="btn btn-ghost" id="kyc-cta">
+                  <i class="fa-solid fa-id-card" style="color:var(--p-brand)" aria-hidden="true"></i>
+                  <span id="kyc-cta-text">Verify your identity</span>
+                </a>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var $ = function (id) { return document.getElementById(id); };
+      var originalData = { full_name: '', phone: '', city: '' };
+
+      function escapeHtml(s) {
+        if (s == null) return '';
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function fmtDate(d) {
+        if (!d) return '—';
+        var dt = new Date(d);
+        if (isNaN(dt.getTime())) return '—';
+        return dt.toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+
+      function initialsOf(name) {
+        if (!name) return 'U';
+        var parts = String(name).trim().split(/\s+/).filter(Boolean);
+        if (!parts.length) return 'U';
+        return parts.slice(0, 2).map(function (p) { return p[0]; }).join('').toUpperCase();
+      }
+
+      /* ------------------------------------------------------------
+         KYC badge
+         ------------------------------------------------------------ */
+      function setKycBadge(status) {
+        var el = $('kyc-badge');
+        if (!el) return;
+
+        var map = {
+          approved: { cls: 'pill-approved', icon: 'fa-circle-check', text: 'KYC verified' },
+          pending: { cls: 'pill-pending', icon: 'fa-clock-rotate-left', text: 'KYC in review' },
+          reviewing: { cls: 'pill-pending', icon: 'fa-clock-rotate-left', text: 'KYC in review' },
+          rejected: { cls: 'pill-unverified', icon: 'fa-circle-xmark', text: 'KYC rejected' },
+          unverified: { cls: 'pill-unverified', icon: 'fa-circle-dot', text: 'KYC not started' }
+        };
+        var s = map[String(status || 'unverified').toLowerCase()] || map.unverified;
+
+        el.className = 'pill ' + s.cls;
+        el.innerHTML = '<i class="fa-solid ' + s.icon + '" aria-hidden="true"></i><span>' + s.text + '</span>';
+      }
+
+      /* ------------------------------------------------------------
+         Account status tiles
+         ------------------------------------------------------------ */
+      function setKycTile(status) {
+        var el = $('acct-kyc');
+        if (!el) return;
+        var s = String(status || 'unverified').toLowerCase();
+
+        var labels = {
+          approved: 'Verified',
+          pending: 'In review',
+          reviewing: 'In review',
+          rejected: 'Rejected',
+          unverified: 'Not started'
+        };
+        var classes = {
+          approved: 'is-ok',
+          pending: 'is-warn',
+          reviewing: 'is-warn',
+          rejected: 'is-danger',
+          unverified: 'is-danger'
+        };
+        el.textContent = labels[s] || 'Not started';
+        el.className = 'status-tile-value ' + (classes[s] || '');
+      }
+
+      /* ------------------------------------------------------------
+         Populate
+         ------------------------------------------------------------ */
+      function populate(user) {
+        var name = user.full_name || '';
+        var email = user.email || '';
+        var phone = user.phone || '';
+        var city = user.city || '';
+
+        // Hero
+        var av = $('profile-avatar');
+        if (av) av.textContent = initialsOf(name);
+
+        $('profile-name-display').textContent = name || '—';
+        $('profile-email-display').textContent = email || '—';
+
+        var sinceEl = $('member-since');
+        if (sinceEl) {
+          sinceEl.innerHTML =
+            '<i class="fa-regular fa-calendar" aria-hidden="true"></i>' +
+            '<span>Member since ' + escapeHtml(fmtDate(user.created_at)) + '</span>';
+        }
+
+        setKycBadge(user.kyc_status);
+
+        // Form values
+        $('full-name').value = name;
+        $('email').value = email;
+        $('phone').value = phone;
+        $('city').value = city;
+
+        // Email badge
+        var emailBadge = $('email-badge');
+        if (emailBadge) {
+          if (user.is_email_verified) {
+            emailBadge.className = 'field-badge ok';
+            emailBadge.innerHTML = '<i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified';
+          } else {
+            emailBadge.className = 'field-badge warn';
+            emailBadge.innerHTML = '<i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> Unverified';
+          }
+        }
+
+        // Status tiles
+        $('acct-role').textContent = (user.role || 'buyer');
+        setKycTile(user.kyc_status);
+
+        var emailTile = $('acct-email-verified');
+        if (emailTile) {
+          if (user.is_email_verified) {
+            emailTile.className = 'status-tile-value is-ok';
+            emailTile.textContent = 'Verified';
+          } else {
+            emailTile.className = 'status-tile-value is-warn';
+            emailTile.textContent = 'Not verified';
+          }
+        }
+
+        $('acct-since').textContent = fmtDate(user.created_at);
+
+        // KYC CTA text
+        var ctaText = $('kyc-cta-text');
+        if (ctaText) {
+          var s = String(user.kyc_status || '').toLowerCase();
+          if (s === 'approved') ctaText.textContent = 'View verification';
+          else if (s === 'pending' || s === 'reviewing') ctaText.textContent = 'Check verification status';
+          else if (s === 'rejected') ctaText.textContent = 'Fix verification';
+          else ctaText.textContent = 'Verify your identity';
+        }
+
+        // Cache original values for Reset
+        originalData = { full_name: name, phone: phone, city: city };
+      }
+
+      /* ------------------------------------------------------------
+         Load
+         ------------------------------------------------------------ */
+      async function load() {
+        try {
+          var res = await ApiClient.get('/auth/me');
+          var user = res && res.data;
+          if (!user) throw new Error('No user data');
+
+          $('loading-state').style.display = 'none';
+          $('profile-content').style.display = 'block';
+          populate(user);
+
+        } catch (e) {
+          console.error('[Profile] load failed:', e);
+          $('loading-state').innerHTML =
+            '<div style="text-align:center;padding:44px 20px">' +
+            '<div style="width:60px;height:60px;margin:0 auto 16px;border-radius:18px;background:var(--p-danger-soft);display:grid;place-items:center">' +
+            '<i class="fa-solid fa-triangle-exclamation" style="color:var(--p-danger);font-size:1.4rem" aria-hidden="true"></i>' +
+            '</div>' +
+            '<p style="font-size:.95rem;font-weight:800;color:var(--p-text);margin:0 0 6px">Couldn\'t load your profile</p>' +
+            '<p style="font-size:.82rem;color:var(--p-text-muted);margin:0 0 18px">Check your connection and try again.</p>' +
+            '<button type="button" class="btn btn-ghost" onclick="location.reload()">' +
+            '<i class="fa-solid fa-rotate-right" aria-hidden="true"></i> Retry' +
+            '</button>' +
+            '</div>';
+        }
+      }
+
+      /* ------------------------------------------------------------
+         Form helpers
+         ------------------------------------------------------------ */
+      function showFormError(msg) {
+        var wrap = $('form-error');
+        var text = $('form-error-text');
+        if (!wrap || !text) return;
+        text.textContent = msg;
+        wrap.classList.add('is-visible');
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function clearFormError() {
+        var wrap = $('form-error');
+        if (wrap) wrap.classList.remove('is-visible');
+      }
+
+      /* ------------------------------------------------------------
+         Boot
+         ------------------------------------------------------------ */
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof ApiClient === 'undefined' || !ApiClient.getAccessToken || !ApiClient.getAccessToken()) {
+          window.location.href = '/login.html?redirect=' + encodeURIComponent('/buyer/profile.html');
+          return;
+        }
+
+        load();
+
+        /* -- Live-clear error as user types -- */
+        ['full-name', 'phone', 'city'].forEach(function (id) {
+          var el = $(id);
+          if (el) el.addEventListener('input', clearFormError);
+        });
+
+        /* -- Reset -- */
+        $('cancel-btn') && $('cancel-btn').addEventListener('click', function () {
+          $('full-name').value = originalData.full_name || '';
+          $('phone').value = originalData.phone || '';
+          $('city').value = originalData.city || '';
+          clearFormError();
+        });
+
+        /* -- Submit -- */
+        $('profile-form') && $('profile-form').addEventListener('submit', async function (e) {
+          e.preventDefault();
+          clearFormError();
+
+          var name = $('full-name').value.trim();
+          var phone = $('phone').value.trim();
+          var city = $('city').value.trim();
+
+          // Friendly validation
+          if (name.length < 3) {
+            $('full-name').focus();
+            showFormError('Enter your full name — at least 3 characters.');
+            return;
+          }
+          if (phone && !/^[0-9+\-()\s]{7,}$/.test(phone)) {
+            $('phone').focus();
+            showFormError('That phone number doesn\'t look right. Try 03001234567.');
+            return;
+          }
+
+          var btn = $('save-btn');
+          var original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner spin" aria-hidden="true"></i> Saving…';
+
+          try {
+            await ApiClient.patch('/auth/profile', {
+              full_name: name,
+              phone: phone,
+              city: city
+            });
+
+            if (window.UI && UI.showToast) {
+              UI.showToast('Profile updated.', 'success', 2400);
+            }
+
+            // Live-update hero
+            $('profile-name-display').textContent = name || '—';
+            $('profile-avatar').textContent = initialsOf(name);
+
+            originalData = { full_name: name, phone: phone, city: city };
+
+          } catch (err) {
+            showFormError((err && err.message) || 'Something went wrong on our end. Please try again.');
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = original;
+          }
+        });
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+  <script>
+    (function () {
+      try {
+        if (!window.ApiClient || !ApiClient.getAccessToken || !ApiClient.getAccessToken()) return;
+        ApiClient.get('/auth/me').then(function (res) {
+          var u = (res && res.data) || {};
+          var role = String(u.role || u.user_type || '').toLowerCase();
+          if (role === 'seller' || role === 'admin') {
+            window.location.replace('/seller/profile.html');
+          }
+        }).catch(function () { /* silent */ });
+      } catch (e) { /* silent */ }
+    })();
+  </script>
+</body>
+
+</html>

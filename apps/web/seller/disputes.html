@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Disputes — Seller Studio | NexusBids Pakistan</title>
+  <meta name="description" content="Manage and respond to buyer disputes for your NexusBids auctions.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --d-bg: #f4f6fb;
+      --d-surface: #ffffff;
+      --d-surface-2: #f7f9fc;
+      --d-surface-3: #eceff6;
+      --d-border: #e3e8f0;
+      --d-text: #0f172a;
+      --d-text-muted: #58627a;
+      --d-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12);
+      --d-row-hover: #f4f7fd;
+    }
+
+    html.dark {
+      --d-bg: #05070f;
+      --d-surface: #0d1220;
+      --d-surface-2: #121a2b;
+      --d-surface-3: #1a2336;
+      --d-border: #1e2a40;
+      --d-text: #eef2f9;
+      --d-text-muted: #9aa6bd;
+      --d-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --d-row-hover: #141d31;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--d-bg);
+      color: var(--d-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--d-surface);
+      border: 1px solid var(--d-border);
+      border-radius: 16px;
+      box-shadow: var(--d-shadow-md);
+    }
+
+    .dispute-card {
+      background: var(--d-surface);
+      border: 1px solid var(--d-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--d-shadow-md);
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .dispute-card:hover {
+      border-color: rgba(99, 102, 241, .4);
+      box-shadow: 0 12px 28px -8px rgba(99, 102, 241, .15);
+    }
+
+    .dispute-card.urgent {
+      border-color: rgba(239, 68, 68, .4);
+      box-shadow: 0 0 0 1px rgba(239, 68, 68, .15);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 11px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    .badge-open {
+      background: rgba(239, 68, 68, .12);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, .3);
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, .12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, .3);
+    }
+
+    .badge-reviewing {
+      background: rgba(99, 102, 241, .12);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, .3);
+    }
+
+    .badge-resolved {
+      background: rgba(16, 185, 129, .12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .3);
+    }
+
+    .badge-closed {
+      background: var(--d-surface-3);
+      color: var(--d-text-muted);
+      border: 1px solid var(--d-border);
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ✅ FIXED: Dark Mode Inputs Override */
+    input.search-input,
+    select.filter-select,
+    textarea.form-control,
+    input.form-control {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--d-surface-2) !important;
+      border: 1px solid var(--d-border) !important;
+      color: var(--d-text) !important;
+      font-family: inherit !important;
+      outline: none !important;
+      box-shadow: none !important;
+      color-scheme: dark;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    html:not(.dark) input.search-input,
+    html:not(.dark) select.filter-select,
+    html:not(.dark) textarea.form-control,
+    html:not(.dark) input.form-control {
+      color-scheme: light;
+    }
+
+    input.search-input:focus,
+    select.filter-select:focus,
+    textarea.form-control:focus,
+    input.form-control:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16) !important;
+    }
+
+    input.search-input::placeholder,
+    textarea.form-control::placeholder {
+      color: var(--d-text-muted) !important;
+    }
+
+    select.filter-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 14px !important;
+      padding: 8px 36px 8px 14px !important;
+      border-radius: 10px !important;
+      font-size: .82rem !important;
+      cursor: pointer !important;
+    }
+
+    select.filter-select option {
+      background-color: var(--d-surface-2);
+      color: var(--d-text);
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+      max-width: 300px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--d-text-muted);
+      font-size: .8rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 14px 8px 38px !important;
+      border-radius: 10px !important;
+      font-size: .82rem !important;
+    }
+
+    .btn-respond {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-weight: 700;
+      font-size: .8rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+    }
+
+    .btn-respond:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 18px;
+      background: var(--d-surface-2);
+      color: var(--d-text-muted);
+      font-weight: 700;
+      font-size: .8rem;
+      border: 1px solid var(--d-border);
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: #6366f1;
+      color: #818cf8;
+    }
+
+    /* ✅ FIXED: Modal Overlay Animation */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .modal-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--d-surface);
+      border: 1px solid var(--d-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 560px;
+      padding: 32px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .8);
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(18px) scale(.97);
+      transition: transform .25s ease;
+    }
+
+    .modal-overlay.is-open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .form-label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--d-text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .form-control {
+      width: 100%;
+      border-radius: 10px;
+      padding: 11px 14px !important;
+      font-size: .88rem !important;
+      resize: vertical;
+    }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(110%);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, .9);
+      color: #fff;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, .9);
+      color: #fff;
+    }
+
+    .description-box {
+      background: var(--d-surface-2);
+      border: 1px solid var(--d-border);
+      border-radius: 10px;
+      padding: 14px;
+      font-size: .82rem;
+      color: var(--d-text-muted);
+      white-space: pre-wrap;
+      max-height: 150px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--d-text-muted);
+    }
+
+    .stat-pill {
+      background: var(--d-surface);
+      border: 1px solid var(--d-border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--d-surface);border-color:var(--d-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <a href="/index.html" class="text-sm font-semibold" style="color:var(--d-text-muted);"><i
+          class="fa-solid fa-store mr-1"></i>View Store</a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="seller-subnav"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl font-extrabold mb-1">Disputes</h1>
+        <p style="color:var(--d-text-muted);font-size:.85rem;">Manage buyer disputes and submit your responses</p>
+      </div>
+      <!-- ✅ FIXED: Hidden class removed, using inline style to avoid Tailwind conflicts -->
+      <div id="urgent-banner" style="display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);"
+        class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm">
+        <i class="fa-solid fa-triangle-exclamation" style="color:#f87171;"></i>
+        <span id="urgent-count" style="color:#f87171;">0</span>
+        <span style="color:#f87171;">dispute(s) require your response</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+      <div class="stat-pill">
+        <div
+          style="width:36px;height:36px;border-radius:9px;background:rgba(239,68,68,.15);color:#f87171;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <div>
+          <div class="text-xs font-semibold" style="color:var(--d-text-muted);">Open</div>
+          <div class="font-black" id="cnt-open">—</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div
+          style="width:36px;height:36px;border-radius:9px;background:rgba(245,158,11,.15);color:#fbbf24;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+        <div>
+          <div class="text-xs font-semibold" style="color:var(--d-text-muted);">Pending</div>
+          <div class="font-black" id="cnt-pending">—</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div
+          style="width:36px;height:36px;border-radius:9px;background:rgba(16,185,129,.15);color:#34d399;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-check-circle"></i>
+        </div>
+        <div>
+          <div class="text-xs font-semibold" style="color:var(--d-text-muted);">Resolved</div>
+          <div class="font-black" id="cnt-resolved">—</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div
+          style="width:36px;height:36px;border-radius:9px;background:rgba(99,102,241,.15);color:#818cf8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-list"></i>
+        </div>
+        <div>
+          <div class="text-xs font-semibold" style="color:var(--d-text-muted);">Total</div>
+          <div class="font-black" id="cnt-total">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-4 mb-6">
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-input" class="search-input" placeholder="Search buyer or order…">
+        </div>
+        <select id="filter-status" class="filter-select">
+          <option value="">All Statuses</option>
+          <option value="open">Open</option>
+          <option value="pending_seller_response">Pending My Response</option>
+          <option value="reviewing">Under Review</option>
+          <option value="resolved">Resolved</option>
+          <option value="closed">Closed</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="disputes-list">
+      <div class="text-center py-16" style="color:var(--d-text-muted);"><i
+          class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i>
+        <p class="mt-2">Loading disputes…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Respond Modal (Fixed Structure) -->
+  <div id="respond-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-extrabold" style="color:var(--d-text);">Respond to Dispute</h2>
+        <button id="btn-close-modal"
+          style="background:var(--d-surface-3);border:none;border-radius:9px;width:32px;height:32px;cursor:pointer;color:var(--d-text-muted);display:flex;align-items:center;justify-content:center;"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div id="modal-dispute-info" class="mb-4 p-4"
+        style="background:var(--d-surface-2);border:1px solid var(--d-border);border-radius:12px;"></div>
+
+      <div class="mb-4">
+        <label class="form-label">Buyer's Complaint</label>
+        <div class="description-box" id="modal-complaint">—</div>
+      </div>
+
+      <form id="respond-form">
+        <div class="mb-4">
+          <label class="form-label">Your Response</label>
+          <textarea id="resp-text" class="form-control" rows="5"
+            placeholder="Explain your side of the situation clearly and professionally. Provide any relevant order, shipment, or communication details…"
+            required></textarea>
+          <div class="text-xs mt-1" style="color:var(--d-text-muted);">Minimum 50 characters. Be professional and
+            factual.</div>
+        </div>
+        <div class="mb-5">
+          <label class="form-label">Evidence URL (optional)</label>
+          <input type="text" id="resp-evidence" class="form-control"
+            placeholder="https://…  (tracking link, screenshot URL, etc.)">
+        </div>
+        <div id="resp-error" class="text-sm mb-3" style="display:none;color:#f87171;"></div>
+        <div class="flex gap-3">
+          <button type="button" id="btn-cancel-modal" class="btn-secondary flex-1">Cancel</button>
+          <button type="submit" id="btn-submit-resp" class="btn-respond flex-1">
+            <i class="fa-solid fa-paper-plane"></i> Submit Response
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/seller-nav.js"></script>
+  <script src="/assets/js/api-client.js"></script>
+  <script>
+    const API = window.ApiClient || {
+      get: (u) => fetch('/api' + u, { credentials: 'include' }).then(r => r.json()),
+      post: (u, d) => fetch('/api' + u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }).then(r => r.json())
+    };
+    const fmtPKR = v => 'PKR ' + Number(v || 0).toLocaleString('en-PK', { minimumFractionDigits: 0 });
+    const fmtDate = ts => ts ? new Date(ts).toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    let allDisputes = [];
+    let activeDisputeId = null;
+
+    function showToast(msg, type = 'success') {
+      const t = document.createElement('div');
+      t.className = `toast toast-${type}`;
+      t.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'triangle-exclamation'}"></i>${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 4500);
+    }
+
+    function statusBadge(s) {
+      const map = {
+        open: ['badge-open', 'fa-fire', 'Open'],
+        pending_seller_response: ['badge-open', 'fa-reply', 'Needs Response'],
+        reviewing: ['badge-reviewing', 'fa-magnifying-glass', 'Under Review'],
+        resolved: ['badge-resolved', 'fa-check-circle', 'Resolved'],
+        closed: ['badge-closed', 'fa-xmark', 'Closed']
+      };
+      const [cls, ic, lbl] = map[s] || ['badge-pending', 'fa-clock', s || 'Unknown'];
+      return `<span class="badge ${cls}"><i class="fa-solid ${ic}"></i>${lbl}</span>`;
+    }
+
+    async function loadDisputes() {
+      try {
+        const r = await API.get('/seller/disputes');
+        allDisputes = Array.isArray(r.data) ? r.data : (Array.isArray(r) ? r : []);
+        renderSummary();
+        renderList();
+      } catch (e) {
+        document.getElementById('disputes-list').innerHTML = `<div class="text-center py-12" style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i><p class="mt-2">Failed to load disputes</p></div>`;
+      }
+    }
+
+    function renderSummary() {
+      const open = allDisputes.filter(d => d.status === 'open' || d.status === 'pending_seller_response').length;
+      const pending = allDisputes.filter(d => d.status === 'reviewing').length;
+      const resolved = allDisputes.filter(d => d.status === 'resolved' || d.status === 'closed').length;
+      const urgent = allDisputes.filter(d => d.status === 'pending_seller_response').length;
+
+      document.getElementById('cnt-open').textContent = open;
+      document.getElementById('cnt-pending').textContent = pending;
+      document.getElementById('cnt-resolved').textContent = resolved;
+      document.getElementById('cnt-total').textContent = allDisputes.length;
+
+      const banner = document.getElementById('urgent-banner');
+      if (urgent > 0) {
+        banner.style.display = 'flex';
+        document.getElementById('urgent-count').textContent = urgent;
+      } else {
+        banner.style.display = 'none';
+      }
+    }
+
+    function filteredDisputes() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase();
+      const status = document.getElementById('filter-status').value;
+      return allDisputes.filter(d => {
+        const match = !q || (d.buyer_name || '').toLowerCase().includes(q) || (d.order_number || '').toLowerCase().includes(q) || (d.auction_title || '').toLowerCase().includes(q);
+        const statusMatch = !status || d.status === status;
+        return match && statusMatch;
+      });
+    }
+
+    function renderList() {
+      const disputes = filteredDisputes();
+      const container = document.getElementById('disputes-list');
+      if (!disputes.length) {
+        container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-shield-check text-4xl mb-4 opacity-25"></i><p class="text-lg font-bold mb-2">No disputes found</p><p class="text-sm">All your transactions are in good standing!</p></div>`;
+        return;
+      }
+      container.innerHTML = disputes.map(d => {
+        const urgent = d.status === 'pending_seller_response';
+        return `
+          <div class="dispute-card mb-4 ${urgent ? 'urgent' : ''}">
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-4">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  ${statusBadge(d.status)}
+                  ${urgent ? '<span class="badge" style="background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3);"><i class="fa-solid fa-exclamation"></i>Action Required</span>' : ''}
+                </div>
+                               <h3 class="font-bold text-sm mb-1" style="color:var(--d-text);">${esc(d.auction_title || 'Auction')}</h3>
+                <div class="flex flex-wrap gap-x-4 gap-y-1 text-xs" style="color:var(--d-text-muted);">
+                  <span><i class="fa-solid fa-box mr-1"></i>Order <strong style="color:var(--d-text);">${esc(d.order_number || ('#' + d.order_id))}</strong></span>
+                  <span><i class="fa-solid fa-user mr-1"></i>Buyer: <strong style="color:var(--d-text);">${esc(d.buyer_name || 'Unknown')}</strong></span>
+                  <span><i class="fa-solid fa-coins mr-1"></i>${fmtPKR(d.total_amount)}</span>
+                  <span><i class="fa-regular fa-calendar mr-1"></i>${fmtDate(d.created_at)}</span>
+                </div>
+              </div>
+              <div class="flex gap-2 flex-shrink-0">
+                <button class="btn-secondary text-xs" onclick="viewDispute(${d.dispute_id})">
+                  <i class="fa-solid fa-eye"></i> View
+                </button>
+                ${!['resolved', 'closed'].includes(d.status) ? `<button class="btn-respond text-xs" onclick="openRespond(${d.dispute_id})"><i class="fa-solid fa-reply"></i> Respond</button>` : ''}
+              </div>
+            </div>
+            ${d.reason ? `<div class="text-xs font-semibold mb-1" style="color:var(--d-text-muted);text-transform:uppercase;letter-spacing:.05em;">Reason</div><div class="text-sm mb-2" style="color:var(--d-text);">${esc(d.reason || '—')}</div>` : ''}
+            ${d.description ? `<div class="description-box text-xs">${esc((d.description || '').substring(0, 200))}${(d.description || '').length > 200 ? '…' : ''}</div>` : ''}
+          </div>`;
+      }).join('');
+    }
+
+    function openRespond(id) {
+      const dispute = allDisputes.find(d => d.dispute_id === id);
+      if (!dispute) return;
+      activeDisputeId = id;
+
+      document.getElementById('modal-dispute-info').innerHTML = `
+        <div class="text-sm font-semibold mb-1" style="color:var(--d-text);">${esc(dispute.auction_title || 'Auction')}</div>
+        <div class="text-xs" style="color:var(--d-text-muted);">Order ${esc(dispute.order_number || ('#' + dispute.order_id))} · Buyer: ${esc(dispute.buyer_name || 'Unknown')}</div>`;
+
+      document.getElementById('modal-complaint').textContent = dispute.description || dispute.reason || 'No complaint text provided.';
+      document.getElementById('resp-text').value = '';
+      document.getElementById('resp-evidence').value = '';
+      document.getElementById('resp-error').style.display = 'none';
+
+      const modal = document.getElementById('respond-modal');
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => modal.classList.add('is-open'));
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('respond-modal');
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      setTimeout(() => { modal.style.display = 'none'; }, 250);
+    }
+
+    function viewDispute(id) {
+      // For now, just open the respond modal to see details
+      openRespond(id);
+    }
+
+    document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+    document.getElementById('btn-cancel-modal').addEventListener('click', closeModal);
+    document.getElementById('respond-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+    document.getElementById('respond-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('resp-error');
+      errEl.style.display = 'none';
+      const responseText = document.getElementById('resp-text').value.trim();
+
+      if (responseText.length < 50) {
+        errEl.textContent = 'Response must be at least 50 characters.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-resp');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting…';
+
+      try {
+        const r = await API.post(`/seller/disputes/${activeDisputeId}/respond`, {
+          response: responseText,
+          evidence_path: document.getElementById('resp-evidence').value.trim() || undefined
+        });
+
+        if (r.success || r.data) {
+          closeModal();
+          showToast('Response submitted. Admin will review within 24 hours.', 'success');
+          await loadDisputes();
+        } else {
+          errEl.textContent = r.message || r.error || 'Failed to submit response.';
+          errEl.style.display = 'block';
+        }
+      } catch (err) {
+        errEl.textContent = 'Network error. Please try again.';
+        errEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Response';
+      }
+    });
+
+    document.getElementById('search-input').addEventListener('input', renderList);
+    document.getElementById('filter-status').addEventListener('change', renderList);
+
+    const token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+    const user = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
+    if (!token || !['seller', 'admin'].includes(user.role)) {
+      window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/disputes.html'));
+    } else {
+      loadDisputes();
+    }
+  </script>
+</body>
+
+</html>

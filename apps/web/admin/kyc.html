@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="Review and approve KYC identity verification requests from NexusBids sellers using NADRA CNIC data.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KYC Review Queue — Admin Panel</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } }
+        }
+      }
+    };
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </noscript>
+  <link id="gf-preload" rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --q-bg: #f4f6fb;
+      --q-surface: #ffffff;
+      --q-surface-2: #f7f9fc;
+      --q-surface-3: #eceff6;
+      --q-border: #e3e8f0;
+      --q-border-strong: #cfd7e5;
+      --q-text: #0f172a;
+      --q-text-muted: #565650;
+      --q-text-light: #6e6e68;
+      --q-field-bg: #ffffff;
+      --q-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --q-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --q-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .30);
+      --q-glow: rgba(99, 102, 241, .13);
+      --q-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --q-modal-bg: rgba(15, 23, 42, .44);
+    }
+
+    html.dark {
+      --q-bg: #05070f;
+      --q-surface: #0d1220;
+      --q-surface-2: #121a2b;
+      --q-surface-3: #1a2336;
+      --q-border: #1e2a40;
+      --q-border-strong: #2c3a56;
+      --q-text: #eef2f9;
+      --q-text-muted: #b8b8b0;
+      --q-text-light: #8f8f88;
+      --q-field-bg: #0a0f1c;
+      --q-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --q-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --q-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .85);
+      --q-glow: rgba(99, 102, 241, .20);
+      --q-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+      --q-modal-bg: rgba(0, 0, 0, .68);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body.page {
+      background: var(--q-bg);
+      color: var(--q-text);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+      overflow-x: hidden
+    }
+
+    .page-shell {
+      position: relative
+    }
+
+    .page-shell::before {
+      content: "";
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1100px, 100vw);
+      height: 460px;
+      background: radial-gradient(closest-side, var(--q-glow), transparent 78%);
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .page-shell>* {
+      position: relative;
+      z-index: 1
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .28)
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.4vw, 2.1rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.13;
+      color: var(--q-text)
+    }
+
+    .page-sub {
+      font-size: .84rem;
+      color: var(--q-text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 640px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 16px;
+      border-radius: 11px;
+      font-size: .76rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform .2s, box-shadow .2s, border-color .2s, background-color .2s, color .2s
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(.975)
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px
+    }
+
+    .btn-ghost {
+      background: var(--q-surface);
+      border-color: var(--q-border);
+      color: var(--q-text-muted);
+      box-shadow: var(--q-shadow-sm)
+    }
+
+    .btn-ghost:hover {
+      color: var(--q-text);
+      border-color: var(--q-border-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--q-shadow-md)
+    }
+
+    .btn-approve {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(16, 185, 129, .85)
+    }
+
+    .btn-approve:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(16, 185, 129, .95)
+    }
+
+    .btn-reject {
+      background: var(--q-surface-2);
+      border-color: rgba(244, 63, 94, .28);
+      color: #e11d48
+    }
+
+    .btn-reject:hover {
+      background: rgba(244, 63, 94, .10);
+      border-color: rgba(244, 63, 94, .42);
+      transform: translateY(-1px)
+    }
+
+    html.dark .btn-reject {
+      color: #fb7185
+    }
+
+    html.dark .btn-reject:hover {
+      background: rgba(244, 63, 94, .16)
+    }
+
+    .kyc-card {
+      position: relative;
+      background: var(--q-surface);
+      border: 1px solid var(--q-border);
+      border-radius: 22px;
+      box-shadow: var(--q-shadow-sm);
+      overflow: hidden;
+      transition: border-color .3s, box-shadow .3s, transform .3s cubic-bezier(.2, .8, .2, 1);
+      animation: cardIn .4s cubic-bezier(.2, .8, .2, 1) both
+    }
+
+    .kyc-card:hover {
+      border-color: var(--q-border-strong);
+      box-shadow: var(--q-shadow-lg);
+      transform: translateY(-2px)
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .kyc-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--scope-accent, #6366f1);
+      opacity: .9
+    }
+
+    .kyc-card.scope-buyer {
+      --scope-accent: #06b6d4
+    }
+
+    .kyc-card.scope-seller {
+      --scope-accent: #8b5cf6
+    }
+
+    .kyc-body {
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px
+    }
+
+    @media (min-width:960px) {
+      .kyc-body {
+        grid-template-columns: minmax(0, 1fr) 360px;
+        padding: 22px 24px;
+        gap: 24px
+      }
+    }
+
+    .kyc-info {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 0
+    }
+
+    .kyc-meta-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .scope-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border: 1px solid transparent
+    }
+
+    .scope-pill i {
+      font-size: .6rem
+    }
+
+    .scope-pill.buyer {
+      background: rgba(6, 182, 212, .12);
+      color: #0891b2;
+      border-color: rgba(6, 182, 212, .28)
+    }
+
+    .scope-pill.seller {
+      background: rgba(139, 92, 246, .12);
+      color: #7c3aed;
+      border-color: rgba(139, 92, 246, .28)
+    }
+
+    html.dark .scope-pill.buyer {
+      background: rgba(6, 182, 212, .18);
+      color: #67e8f9
+    }
+
+    html.dark .scope-pill.seller {
+      background: rgba(139, 92, 246, .18);
+      color: #c4b5fd
+    }
+
+    .submitted-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      color: var(--q-text-light);
+      font-weight: 500
+    }
+
+    .applicant-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--q-text);
+      letter-spacing: -.015em;
+      line-height: 1.2;
+      word-break: break-word
+    }
+
+    .applicant-line {
+      font-size: .78rem;
+      color: var(--q-text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 14px;
+      line-height: 1.5;
+      margin-top: 6px
+    }
+
+    .applicant-line strong {
+      color: var(--q-text);
+      font-weight: 700
+    }
+
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 14px;
+      background: var(--q-surface-2);
+      border: 1px solid var(--q-border)
+    }
+
+    @media (min-width:520px) {
+      .data-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .data-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0
+    }
+
+    .data-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--q-text-light)
+    }
+
+    .data-value {
+      font-size: .84rem;
+      font-weight: 700;
+      color: var(--q-text);
+      word-break: break-word
+    }
+
+    .data-value.mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #6366f1;
+      letter-spacing: .02em
+    }
+
+    html.dark .data-value.mono {
+      color: #a5b4fc
+    }
+
+    .bank-block {
+      padding: 14px;
+      border-radius: 14px;
+      background: rgba(16, 185, 129, .06);
+      border: 1px solid rgba(16, 185, 129, .22)
+    }
+
+    html.dark .bank-block {
+      background: rgba(16, 185, 129, .09);
+      border-color: rgba(16, 185, 129, .28)
+    }
+
+    .bank-block-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #059669;
+      margin-bottom: 10px
+    }
+
+    html.dark .bank-block-title {
+      color: #34d399
+    }
+
+    .bank-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px
+    }
+
+    @media (min-width:520px) {
+      .bank-grid {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    .bank-item-label {
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--q-text-light)
+    }
+
+    .bank-item-value {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--q-text);
+      margin-top: 2px;
+      word-break: break-word
+    }
+
+    .bank-item-value.mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #059669
+    }
+
+    html.dark .bank-item-value.mono {
+      color: #34d399
+    }
+
+    .kyc-side {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 0
+    }
+
+    .docs-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--q-text-light);
+      margin-bottom: 10px
+    }
+
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px
+    }
+
+    .doc {
+      position: relative;
+      display: block;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--q-surface-2);
+      border: 1px solid var(--q-border);
+      aspect-ratio: 1/1;
+      text-decoration: none;
+      transition: border-color .25s, transform .25s, box-shadow .25s;
+      cursor: pointer
+    }
+
+    .doc:hover {
+      border-color: #6366f1;
+      transform: translateY(-2px);
+      box-shadow: var(--q-shadow-md)
+    }
+
+    .doc:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px
+    }
+
+    .doc img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .5s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .doc:hover img {
+      transform: scale(1.08)
+    }
+
+    .doc-empty {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--q-text-light);
+      font-size: .64rem;
+      font-weight: 600;
+      padding: 8px;
+      text-align: center
+    }
+
+    .doc-empty i {
+      font-size: 1.3rem;
+      opacity: .7
+    }
+
+    .doc-label {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, .72);
+      color: #fff;
+      font-size: .6rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      text-align: center;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px
+    }
+
+    .doc-label i {
+      font-size: .55rem
+    }
+
+    .doc-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      font-size: .6rem;
+      background: rgba(255, 255, 255, .92);
+      color: #0f172a;
+      box-shadow: 0 4px 10px -4px rgba(0, 0, 0, .4)
+    }
+
+    html.dark .doc-badge {
+      background: rgba(15, 23, 42, .9);
+      color: #eef2f9
+    }
+
+    .kyc-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 10px;
+      padding-top: 4px;
+      margin-top: auto
+    }
+
+    .skeleton {
+      background: var(--q-skeleton);
+      background-size: 400% 100%;
+      border-radius: 8px;
+      animation: shimmer 1.4s ease-in-out infinite
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0 50%
+      }
+    }
+
+    .state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      border-radius: 22px;
+      background: var(--q-surface);
+      border: 1px solid var(--q-border);
+      box-shadow: var(--q-shadow-sm);
+      animation: cardIn .4s ease both
+    }
+
+    .state-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      font-size: 1.7rem;
+      margin-bottom: 18px;
+      background: var(--q-surface-2);
+      border: 1px solid var(--q-border);
+      color: var(--q-text-light);
+      transition: transform .4s cubic-bezier(.2, .8, .2, 1)
+    }
+
+    .state:hover .state-icon {
+      transform: scale(1.06) rotate(-4deg)
+    }
+
+    .state-icon.ok {
+      background: rgba(16, 185, 129, .12);
+      border-color: rgba(16, 185, 129, .30);
+      color: #059669
+    }
+
+    .state-icon.err {
+      background: rgba(244, 63, 94, .12);
+      border-color: rgba(244, 63, 94, .26);
+      color: #e11d48
+    }
+
+    html.dark .state-icon.ok {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399
+    }
+
+    html.dark .state-icon.err {
+      background: rgba(244, 63, 94, .16);
+      color: #fb7185
+    }
+
+    .state-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--q-text)
+    }
+
+    .state-text {
+      font-size: .82rem;
+      color: var(--q-text-muted);
+      margin-top: 8px;
+      max-width: 420px;
+      line-height: 1.6
+    }
+
+    .state .btn {
+      margin-top: 20px
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: var(--q-modal-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease
+    }
+
+    .modal-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto
+    }
+
+    .modal-backdrop.hidden {
+      display: none
+    }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 520px;
+      background: var(--q-surface);
+      border: 1px solid var(--q-border);
+      border-radius: 22px;
+      box-shadow: var(--q-shadow-lg);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      transform: translateY(18px) scale(.97);
+      opacity: 0;
+      transition: transform .32s cubic-bezier(.2, .8, .2, 1), opacity .32s ease
+    }
+
+    .modal-backdrop.is-open .modal-panel {
+      transform: translateY(0) scale(1);
+      opacity: 1
+    }
+
+    .modal-head {
+      position: sticky;
+      top: 0;
+      background: var(--q-surface);
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--q-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 2
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--q-text);
+      letter-spacing: -.01em
+    }
+
+    .modal-title-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: rgba(244, 63, 94, .12);
+      color: #e11d48;
+      font-size: .88rem
+    }
+
+    html.dark .modal-title-icon {
+      background: rgba(244, 63, 94, .18);
+      color: #fb7185
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--q-border);
+      background: var(--q-surface-2);
+      color: var(--q-text-muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: .85rem;
+      transition: color .2s, border-color .2s, transform .2s
+    }
+
+    .modal-close:hover {
+      color: var(--q-text);
+      border-color: var(--q-border-strong);
+      transform: rotate(90deg)
+    }
+
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px
+    }
+
+    .modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px
+    }
+
+    .modal-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      color: var(--q-text-muted)
+    }
+
+    .modal-input,
+    .modal-select,
+    .modal-textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: var(--q-field-bg);
+      border: 1px solid var(--q-border);
+      color: var(--q-text);
+      font-size: .84rem;
+      font-family: inherit;
+      font-weight: 500;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      -webkit-appearance: none;
+      appearance: none
+    }
+
+    .modal-textarea {
+      resize: vertical;
+      min-height: 88px;
+      line-height: 1.5
+    }
+
+    .modal-input::placeholder,
+    .modal-textarea::placeholder {
+      color: var(--q-text-light);
+      font-weight: 400
+    }
+
+    .modal-input:focus,
+    .modal-select:focus,
+    .modal-textarea:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16)
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding-top: 4px
+    }
+
+    .btn-modal-cancel {
+      background: var(--q-surface-2);
+      border-color: var(--q-border);
+      color: var(--q-text-muted)
+    }
+
+    .btn-modal-danger {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(225, 29, 72, .85)
+    }
+
+    @media (max-width:520px) {
+      .kyc-body {
+        padding: 16px;
+        gap: 16px
+      }
+
+      .doc-label {
+        font-size: .55rem;
+        padding: 3px 6px
+      }
+
+      .modal-panel {
+        border-radius: 18px
+      }
+    }
+
+    /* ✅ NEW: Document image preview modal */
+    .doc-preview-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(0, 0, 0, .88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px
+    }
+
+    .doc-preview-backdrop.hidden {
+      display: none
+    }
+
+    .doc-preview-backdrop img {
+      max-width: 92vw;
+      max-height: 88vh;
+      border-radius: 12px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .6);
+      object-fit: contain
+    }
+
+    .doc-preview-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, .15);
+      border: 1px solid rgba(255, 255, 255, .3);
+      color: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: background .2s
+    }
+
+    .doc-preview-close:hover {
+      background: rgba(255, 255, 255, .25)
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+
+  <main class="page-shell flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7">
+      <div>
+        <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i> Admin · Compliance</span>
+        <h1 class="page-title mt-3">KYC Compliance Review Queue</h1>
+        <p class="page-sub">Verify submitted Pakistani CNIC documents and authorize bidding &amp; selling privileges.
+        </p>
+      </div>
+      <a href="/admin/dashboard.html" class="btn btn-ghost self-start"><i class="fa-solid fa-arrow-left"></i>
+        Dashboard</a>
+    </div>
+
+    <div id="kyc-queue-container" class="space-y-5" aria-live="polite"></div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <div id="reject-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true"
+    aria-labelledby="reject-modal-title">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h2 id="reject-modal-title" class="modal-title">
+          <span class="modal-title-icon"><i class="fa-solid fa-triangle-exclamation"></i></span>
+          Reject KYC Verification
+        </h2>
+        <button type="button" class="modal-close" onclick="closeRejectModal()" aria-label="Close"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-field">
+          <label class="modal-label" for="reject-reason-preset">Standard Reason</label>
+          <select id="reject-reason-preset" class="modal-select">
+            <option value="CNIC image is blurry or unreadable. Please re-upload clear photos.">Blurry or unreadable CNIC
+              image</option>
+            <option value="CNIC card has expired. Please provide a valid NADRA document.">Expired CNIC</option>
+            <option value="Selfie does not match CNIC card photo.">Selfie does not match photo</option>
+            <option value="Bank account title does not match full name on CNIC.">Bank title mismatch</option>
+            <option value="">Other / Custom reason below</option>
+          </select>
+        </div>
+
+        <div class="modal-field">
+          <label class="modal-label" for="reject-custom-reason">Custom Notes to Applicant</label>
+          <textarea id="reject-custom-reason" rows="3" class="modal-textarea"
+            placeholder="Optional additional guidance for re-submission..."></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-modal-cancel" onclick="closeRejectModal()">Cancel</button>
+          <button type="button" class="btn btn-approve" style="background:linear-gradient(135deg,#f43f5e,#e11d48)"
+            onclick="confirmReject()"><i class="fa-solid fa-ban"></i> Confirm Rejection</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ✅ NEW: Document preview modal -->
+  <div id="doc-preview-modal" class="doc-preview-backdrop hidden" role="dialog" aria-modal="true"
+    aria-label="Document preview">
+    <button type="button" class="doc-preview-close" onclick="closeDocPreview()" aria-label="Close preview">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+    <img id="doc-preview-img" src="" alt="Document preview" onclick="event.stopPropagation()">
+  </div>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      /* ✅ NEW: Base64 doc preview store — keeps giant strings out of inline attrs */
+      var _base64Store = Object.create(null);
+      var _base64Counter = 0;
+
+      function $(id) { return document.getElementById(id); }
+
+      function esc(str) {
+        return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function showToast(msg, type) {
+        try {
+          if (window.UI && UI.showToast) UI.showToast(msg, type);
+          else console.log('[' + type + ']', msg);
+        } catch (e) { console.error(e); }
+      }
+
+      function formatImageUrl(url) {
+        if (!url) return '';
+        var s = String(url).trim();
+        if (!s) return '';
+        if (s.startsWith('data:image')) return s.replace(/\s/g, '');
+        if (s.startsWith('http://') || s.startsWith('https://')) return s;
+        if (s.startsWith('//')) return 'https:' + s;
+        if (s.startsWith('/')) return s;
+        return '/' + s;
+      }
+
+      function formatDob(dobStr) {
+        if (!dobStr) return '—';
+        var d = new Date(dobStr);
+        if (isNaN(d.getTime())) return dobStr;
+        return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+
+      function renderSkeletons(n) {
+        var out = '';
+        for (var i = 0; i < n; i++) {
+          out +=
+            '<div class="kyc-card" style="--scope-accent:transparent;pointer-events:none">' +
+            '<div class="kyc-body"><div class="kyc-info">' +
+            '<div class="skeleton" style="height:24px;width:110px;border-radius:999px"></div>' +
+            '<div class="skeleton" style="height:22px;width:60%;margin-top:4px"></div>' +
+            '<div class="skeleton" style="height:11px;width:70%;margin-top:4px"></div>' +
+            '<div class="skeleton" style="height:70px;width:100%;margin-top:6px;border-radius:14px"></div>' +
+            '</div><div class="kyc-side">' +
+            '<div class="skeleton" style="height:11px;width:90px"></div>' +
+            '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">' +
+            '<div class="skeleton" style="aspect-ratio:1/1;border-radius:12px"></div>' +
+            '<div class="skeleton" style="aspect-ratio:1/1;border-radius:12px"></div>' +
+            '<div class="skeleton" style="aspect-ratio:1/1;border-radius:12px"></div>' +
+            '<div class="skeleton" style="aspect-ratio:1/1;border-radius:12px"></div>' +
+            '</div>' +
+            '<div style="display:grid;grid-template-columns:1fr 1.2fr;gap:10px;margin-top:auto">' +
+            '<div class="skeleton" style="height:38px;border-radius:11px"></div>' +
+            '<div class="skeleton" style="height:38px;border-radius:11px"></div>' +
+            '</div></div></div></div>';
+        }
+        return out;
+      }
+
+      /* ✅ FIXED: Base64 stored in memory, only tiny key in inline onclick */
+      function docTile(src, label, icon) {
+        var validSrc = formatImageUrl(src);
+        var hasSrc = !!validSrc;
+        var isBase64 = hasSrc && validSrc.startsWith('data:image');
+
+        var body = hasSrc
+          ? '<img src="' + esc(validSrc) + '" alt="' + esc(label) + '" loading="lazy" width="120" height="120" ' +
+          'onerror="this.style.display=\'none\';var e=this.parentNode.querySelector(\'.doc-empty\');if(e)e.style.display=\'flex\';">' +
+          '<div class="doc-empty" style="display:none"><i class="fa-solid fa-image-slash"></i>Image failed to render</div>'
+          : '<div class="doc-empty"><i class="fa-solid fa-image"></i>Not provided</div>';
+
+        var href = 'javascript:void(0)';
+        var target = '';
+        var onClick = '';
+
+        if (hasSrc && !isBase64) {
+          href = esc(validSrc);
+          target = ' target="_blank" rel="noopener"';
+        } else if (isBase64) {
+          _base64Counter++;
+          var key = 'doc_' + _base64Counter;
+          _base64Store[key] = validSrc;
+          onClick = ' onclick="openDocPreview(\'' + key + '\', event)" ';
+        }
+
+        return (
+          '<a class="doc" href="' + href + '"' + target + onClick + ' aria-label="View ' + esc(label) + '">' +
+          body +
+          '<span class="doc-label"><i class="fa-solid ' + icon + '"></i>' + esc(label) + '</span>' +
+          (hasSrc ? '<span class="doc-badge"><i class="fa-solid fa-up-right-from-square"></i></span>' : '') +
+          '</a>'
+        );
+      }
+
+      function openDocPreview(key, ev) {
+        if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+        var src = _base64Store[key];
+        if (!src) return;
+        document.getElementById('doc-preview-img').src = src;
+        document.getElementById('doc-preview-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeDocPreview() {
+        document.getElementById('doc-preview-modal').classList.add('hidden');
+        document.getElementById('doc-preview-img').src = '';
+        document.body.style.overflow = '';
+      }
+      window.openDocPreview = openDocPreview;
+      window.closeDocPreview = closeDocPreview;
+
+      function renderKycCard(k) {
+        var scope = (k.kyc_scope || 'buyer').toLowerCase();
+        var scopeClass = scope === 'seller' ? 'scope-seller' : 'scope-buyer';
+        var scopeIcon = scope === 'seller' ? 'fa-store' : 'fa-user';
+
+        var submitted = '—';
+        if (k.created_at) {
+          var d = new Date(k.created_at);
+          if (!isNaN(d.getTime())) {
+            submitted = d.toLocaleString('en-GB', {
+              day: '2-digit', month: 'short', year: 'numeric',
+              hour: '2-digit', minute: '2-digit'
+            });
+          }
+        }
+
+        var dob = formatDob(k.date_of_birth);
+
+        var bankBlock = '';
+        if (scope === 'seller') {
+          bankBlock =
+            '<div class="bank-block">' +
+            '<p class="bank-block-title"><i class="fa-solid fa-building-columns"></i> Bank Settlement Details</p>' +
+            '<div class="bank-grid">' +
+            '<div><p class="bank-item-label">Bank Name</p><p class="bank-item-value">' + esc(k.bank_name || 'Not provided') + '</p></div>' +
+            '<div><p class="bank-item-label">Account Number</p><p class="bank-item-value mono">' + esc(k.bank_account_number || 'N/A') + '</p></div>' +
+            '<div><p class="bank-item-label">Account Title</p><p class="bank-item-value">' + esc(k.bank_account_holder || 'N/A') + '</p></div>' +
+            '<div><p class="bank-item-label">Seller Type</p><p class="bank-item-value" style="text-transform:capitalize">' + esc(k.seller_type || 'individual') + '</p></div>' +
+            '</div></div>';
+        }
+
+        return (
+          '<article class="kyc-card ' + scopeClass + '">' +
+          '<div class="kyc-body">' +
+          '<div class="kyc-info">' +
+          '<div class="kyc-meta-top">' +
+          '<span class="scope-pill ' + scope + '"><i class="fa-solid ' + scopeIcon + '"></i> ' + esc(scope) + ' KYC</span>' +
+          '<span class="submitted-time"><i class="fa-regular fa-clock"></i> Submitted ' + esc(submitted) + '</span>' +
+          '</div>' +
+          '<div>' +
+          '<h2 class="applicant-name">' + esc(k.full_name_on_cnic || 'Unnamed applicant') + '</h2>' +
+          '<div class="applicant-line">' +
+          '<span><i class="fa-solid fa-user" style="font-size:.6rem;opacity:.7;margin-right:5px"></i>Account: <strong>' + esc(k.full_name || 'User') + '</strong></span>' +
+          '<span><i class="fa-regular fa-envelope" style="font-size:.6rem;opacity:.7;margin-right:5px"></i>' + esc(k.email || '—') + '</span>' +
+          '</div></div>' +
+          '<div class="data-grid">' +
+          '<div class="data-item"><span class="data-label">Masked CNIC</span><span class="data-value mono">' + esc(k.cnic_number_masked || '—') + '</span></div>' +
+          '<div class="data-item"><span class="data-label">Date of Birth</span><span class="data-value">' + esc(dob) + '</span></div>' +
+          '</div>' +
+          bankBlock +
+          '</div>' +
+          '<div class="kyc-side">' +
+          '<div><p class="docs-label"><i class="fa-solid fa-paperclip"></i> Submitted Documents</p>' +
+          '<div class="docs-grid">' +
+          docTile(k.cnic_front_path, 'Front', 'fa-id-card') +
+          docTile(k.cnic_back_path, 'Back', 'fa-id-card') +
+          docTile(k.selfie_path, 'Selfie', 'fa-user-check') +
+          docTile(k.selfie_with_cnic_path, 'With CNIC', 'fa-address-card') +
+          '</div></div>' +
+          '<div class="kyc-actions">' +
+          '<button type="button" class="btn btn-reject" onclick="openRejectModal(\'' + esc(k.kyc_id) + '\')"><i class="fa-solid fa-xmark"></i> Reject</button>' +
+          '<button type="button" class="btn btn-approve" onclick="approveKyc(\'' + esc(k.kyc_id) + '\')"><i class="fa-solid fa-check"></i> Approve</button>' +
+          '</div>' +
+          '</div>' +
+          '</div>' +
+          '</article>'
+        );
+      }
+
+      function renderEmpty() {
+        var container = $('kyc-queue-container');
+        container.innerHTML =
+          '<div class="state">' +
+          '<div class="state-icon ok"><i class="fa-solid fa-circle-check"></i></div>' +
+          '<p class="state-title">Queue is Clear</p>' +
+          '<p class="state-text">All submitted buyer and seller KYC documents have been reviewed. New applications will appear here.</p>' +
+          '</div>';
+      }
+
+      function renderError(msg) {
+        var container = $('kyc-queue-container');
+        container.innerHTML =
+          '<div class="state">' +
+          '<div class="state-icon err"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
+          '<p class="state-title">Failed to load queue</p>' +
+          '<p class="state-text">' + esc(msg || 'Something went wrong. Please try again.') + '</p>' +
+          '<button type="button" class="btn btn-ghost" onclick="loadKycQueue()"><i class="fa-solid fa-rotate-right"></i> Retry</button>' +
+          '</div>';
+      }
+
+      async function loadKycQueue() {
+        var container = $('kyc-queue-container');
+        if (!container) return;
+        /* ✅ FIXED: clear memory store to free old blobs */
+        _base64Store = Object.create(null);
+        _base64Counter = 0;
+
+        container.innerHTML = renderSkeletons(2);
+        try {
+          var res = await ApiClient.get('/admin/kyc', { status: 'pending' });
+          var items = (res && res.data) || [];
+          if (items.length === 0) { renderEmpty(); return; }
+          container.innerHTML = items.map(renderKycCard).join('');
+        } catch (err) {
+          console.error(err);
+          renderError(err && err.message);
+        }
+      }
+      window.loadKycQueue = loadKycQueue;
+
+      async function approveKyc(id) {
+        var ok = true;
+        if (window.UI && UI.confirm) {
+          ok = await UI.confirm({
+            title: 'Approve KYC Verification',
+            message: 'Are you sure you want to approve this applicant? They will be granted full bidding and selling privileges.',
+            confirmText: 'Approve Applicant',
+            type: 'success'
+          });
+        }
+        if (!ok) return;
+        try {
+          await ApiClient.patch('/admin/kyc/' + encodeURIComponent(id) + '/review', { status: 'approved' });
+          showToast('KYC application approved successfully!', 'success');
+          loadKycQueue();
+        } catch (err) {
+          showToast((err && err.message) || 'Approval failed', 'error');
+        }
+      }
+      window.approveKyc = approveKyc;
+
+      var pendingRejectId = null;
+
+      function openRejectModal(id) {
+        pendingRejectId = id;
+        var modal = $('reject-modal');
+        modal.classList.remove('hidden');
+        requestAnimationFrame(function () { modal.classList.add('is-open'); });
+        var preset = $('reject-reason-preset');
+        if (preset) preset.selectedIndex = 0;
+        var custom = $('reject-custom-reason');
+        if (custom) custom.value = '';
+        document.body.style.overflow = 'hidden';
+      }
+      window.openRejectModal = openRejectModal;
+
+      function closeRejectModal() {
+        var modal = $('reject-modal');
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+        setTimeout(function () {
+          modal.classList.add('hidden');
+          pendingRejectId = null;
+        }, 250);
+      }
+      window.closeRejectModal = closeRejectModal;
+
+      async function confirmReject() {
+        var select = $('reject-reason-preset');
+        var custom = $('reject-custom-reason');
+        var reason = (custom && custom.value.trim()) || (select && select.value);
+        if (!reason) {
+          showToast('Please specify a rejection reason.', 'error');
+          return;
+        }
+        try {
+          await ApiClient.patch('/admin/kyc/' + encodeURIComponent(pendingRejectId) + '/review', {
+            status: 'rejected',
+            rejection_reason: reason
+          });
+          showToast('KYC application rejected.', 'info');
+          closeRejectModal();
+          loadKycQueue();
+        } catch (err) {
+          showToast((err && err.message) || 'Rejection failed', 'error');
+        }
+      }
+      window.confirmReject = confirmReject;
+
+      function initModal() {
+        var modal = $('reject-modal');
+        if (!modal) return;
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) closeRejectModal();
+        });
+        /* ✅ FIXED: Escape key closes both modals */
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape') {
+            if (modal.classList.contains('is-open')) closeRejectModal();
+            var preview = $('doc-preview-modal');
+            if (preview && !preview.classList.contains('hidden')) closeDocPreview();
+          }
+        });
+        /* ✅ NEW: clicking backdrop closes doc preview */
+        var previewModal = $('doc-preview-modal');
+        if (previewModal) {
+          previewModal.addEventListener('click', function (e) {
+            if (e.target === previewModal) closeDocPreview();
+          });
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        initModal();
+        const role = ApiClient.getUserRole && ApiClient.getUserRole();
+        if (!ApiClient.isAuthenticated() || role !== 'admin') {
+          window.location.href = '/login.html?redirect=/admin/kyc.html';
+          return;
+        }
+        loadKycQueue();
+      });
+    })();
+  </script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

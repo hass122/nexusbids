@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#05070f" media="(prefers-color-scheme: dark)">
+  <title>My Bids — NexusBids</title>
+  <meta name="description" content="See every bid you've placed and whether you're winning right now.">
+  <meta name="robots" content="noindex, follow">
+  <link rel="canonical" href="https://nexusbids.pk/buyer/bids.html">
+
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('nexusbids_theme') || 'system';
+        var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        document.documentElement.classList.toggle('dark', d);
+        document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+      } catch (e) { document.documentElement.classList.add('dark'); }
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* ============================================================
+       Tokens
+       ============================================================ */
+    :root {
+      --b-bg: #f4f6fb;
+      --b-surface: #ffffff;
+      --b-surface-2: #f7f9fc;
+      --b-surface-3: #eceff6;
+      --b-border: #e3e8f0;
+      --b-border-strong: #cfd7e5;
+      --b-text: #0f172a;
+      --b-text-muted: #58627a;
+      --b-text-light: #8d97ab;
+      --b-brand: #6366f1;
+      --b-brand-soft: rgba(99, 102, 241, .10);
+      --b-brand-ring: rgba(99, 102, 241, .22);
+      --b-ok: #059669;
+      --b-ok-soft: rgba(16, 185, 129, .12);
+      --b-danger: #e11d48;
+      --b-danger-soft: rgba(244, 63, 94, .11);
+      --b-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --b-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --b-shadow-lg: 0 22px 48px -22px rgba(15, 23, 42, .28);
+      --b-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --b-t: .22s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html.dark {
+      --b-bg: #05070f;
+      --b-surface: #0d1220;
+      --b-surface-2: #121a2b;
+      --b-surface-3: #1a2336;
+      --b-border: #1e2a40;
+      --b-border-strong: #2c3a56;
+      --b-text: #eef2f9;
+      --b-text-muted: #9aa6bd;
+      --b-text-light: #66738d;
+      --b-brand-soft: rgba(99, 102, 241, .14);
+      --b-brand-ring: rgba(99, 102, 241, .30);
+      --b-ok: #34d399;
+      --b-ok-soft: rgba(16, 185, 129, .16);
+      --b-danger: #fb7185;
+      --b-danger-soft: rgba(244, 63, 94, .16);
+      --b-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --b-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --b-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .8);
+      --b-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-tap-highlight-color: transparent;
+      /* MOBILE: kill blue tap flash */
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body.page {
+      background: var(--b-bg);
+      color: var(--b-text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color var(--b-t), color var(--b-t);
+      overflow-x: hidden;
+    }
+
+    /* ============================================================
+       Typography
+       ============================================================ */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--b-brand);
+      background: var(--b-brand-soft);
+      border: 1px solid var(--b-brand-ring);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.2vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.12;
+      color: var(--b-text);
+    }
+
+    .page-sub {
+      font-size: .84rem;
+      color: var(--b-text-muted);
+      margin-top: 7px;
+      line-height: 1.55;
+      max-width: 52ch;
+    }
+
+    /* ============================================================
+       Buttons
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 15px;
+      border-radius: 12px;
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform var(--b-t), box-shadow var(--b-t),
+        border-color var(--b-t), background-color var(--b-t), color var(--b-t);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--b-brand);
+      outline-offset: 2px;
+    }
+
+    .btn-ghost {
+      background: var(--b-surface);
+      border-color: var(--b-border);
+      color: var(--b-text-muted);
+      box-shadow: var(--b-shadow-sm);
+    }
+
+    .btn-ghost:hover {
+      color: var(--b-text);
+      border-color: var(--b-border-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--b-shadow-md);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 22px -10px rgba(79, 70, 229, .8);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(79, 70, 229, .95);
+    }
+
+    .btn[disabled] {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* ============================================================
+       Panel
+       ============================================================ */
+    .panel {
+      background: var(--b-surface);
+      border: 1px solid var(--b-border);
+      border-radius: 22px;
+      box-shadow: var(--b-shadow-sm);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--b-border);
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--b-text);
+      letter-spacing: -.01em;
+    }
+
+    .panel-sub {
+      font-size: .74rem;
+      color: var(--b-text-light);
+      margin-top: 4px;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .panel-toolbar {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--b-border);
+      background: var(--b-surface-2);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+
+    .panel-toolbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .panel-body {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ============================================================
+       Search input
+       ============================================================ */
+    .search-wrap {
+      position: relative;
+    }
+
+    .search-wrap .search-icon {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .72rem;
+      color: var(--b-text-light);
+      pointer-events: none;
+      transition: color var(--b-t);
+    }
+
+    .search-wrap:focus-within .search-icon {
+      color: var(--b-brand);
+    }
+
+    #bid-search {
+      width: 100%;
+      min-width: 160px;
+      max-width: 240px;
+      background: var(--b-surface-2);
+      border: 1px solid var(--b-border);
+      color: var(--b-text);
+      border-radius: 10px;
+      padding: 8px 12px 8px 32px;
+      font-size: .78rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color var(--b-t), box-shadow var(--b-t), background-color var(--b-t);
+    }
+
+    #bid-search::placeholder {
+      color: var(--b-text-light);
+    }
+
+    #bid-search:hover {
+      border-color: var(--b-border-strong);
+    }
+
+    #bid-search:focus {
+      border-color: var(--b-brand);
+      background: var(--b-surface);
+      box-shadow: 0 0 0 3px var(--b-brand-ring);
+    }
+
+    /* ============================================================
+       Tabs
+       ============================================================ */
+    .tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--b-surface-3);
+      border: 1px solid var(--b-border);
+      border-radius: 13px;
+      white-space: nowrap;
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 9px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--b-text-muted);
+      font-family: inherit;
+      transition: background-color var(--b-t), color var(--b-t), box-shadow var(--b-t);
+    }
+
+    .tab:hover:not(.is-active) {
+      color: var(--b-text);
+    }
+
+    .tab:focus-visible {
+      outline: 2px solid var(--b-brand);
+      outline-offset: 2px;
+    }
+
+    .tab.is-active {
+      background: var(--b-surface);
+      color: var(--b-text);
+      box-shadow: var(--b-shadow-sm);
+    }
+
+    .tab .count {
+      font-size: .63rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--b-surface-3);
+      color: var(--b-text-light);
+      font-variant-numeric: tabular-nums;
+      transition: background-color var(--b-t), color var(--b-t);
+    }
+
+    .tab.is-active .count {
+      background: var(--b-brand-soft);
+      color: var(--b-brand);
+    }
+
+    /* ============================================================
+       Bid row
+       ============================================================ */
+    .bid-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: var(--b-surface-2);
+      border: 1px solid var(--b-border);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: border-color var(--b-t), transform var(--b-t), box-shadow var(--b-t), background-color var(--b-t);
+      animation: cardIn .35s cubic-bezier(.2, .8, .2, 1) both;
+      position: relative;
+    }
+
+    .bid-row::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--stripe, transparent);
+    }
+
+    .bid-row:hover {
+      border-color: var(--b-border-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--b-shadow-md);
+      background: var(--b-surface);
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .bid-thumb {
+      flex: 0 0 auto;
+      width: 58px;
+      height: 58px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--b-surface-3);
+      border: 1px solid var(--b-border);
+      display: block;
+    }
+
+    .bid-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .bid-row:hover .bid-thumb img {
+      transform: scale(1.09);
+    }
+
+    .bid-main {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .bid-title {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: .875rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--b-text);
+      text-decoration: none;
+      transition: color var(--b-t);
+      word-break: break-word;
+    }
+
+    .bid-title:hover {
+      color: var(--b-brand);
+    }
+
+    .bid-title:focus-visible {
+      outline: 2px solid var(--b-brand);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .bid-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 7px;
+      flex-wrap: wrap;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .015em;
+      white-space: nowrap;
+    }
+
+    .badge-win {
+      background: var(--b-ok-soft);
+      color: var(--b-ok);
+    }
+
+    .badge-out {
+      background: var(--b-danger-soft);
+      color: var(--b-danger);
+    }
+
+    .badge-won {
+      background: var(--b-brand-soft);
+      color: var(--b-brand);
+    }
+
+    .badge-lost {
+      background: rgba(100, 116, 139, .12);
+      color: var(--b-text-muted);
+    }
+
+    .badge-active {
+      background: rgba(59, 130, 246, .12);
+      color: #3b82f6;
+    }
+
+    html.dark .badge-lost {
+      background: rgba(100, 116, 139, .18);
+    }
+
+    html.dark .badge-active {
+      background: rgba(59, 130, 246, .18);
+      color: #60a5fa;
+    }
+
+    /* Time / countdown */
+    .bid-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .69rem;
+      font-weight: 500;
+      color: var(--b-text-light);
+      white-space: nowrap;
+    }
+
+    .bid-time.is-urgent {
+      color: #ef4444;
+      font-weight: 700;
+    }
+
+    html.dark .bid-time.is-urgent {
+      color: #fb7185;
+    }
+
+    /* Price block */
+    .bid-price {
+      flex: 0 0 auto;
+      margin-left: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      text-align: right;
+    }
+
+    .bid-price-group {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+    }
+
+    .bid-price-label {
+      font-size: .63rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--b-text-light);
+    }
+
+    .bid-price-value {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--b-text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.01em;
+    }
+
+    .bid-price-value.is-secondary {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--b-text-muted);
+    }
+
+    .bid-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .bid-action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border-radius: 9px;
+      font-size: .72rem;
+      font-weight: 700;
+      border: 1px solid var(--b-border);
+      background: var(--b-surface);
+      color: var(--b-text-muted);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all var(--b-t);
+      white-space: nowrap;
+      font-family: inherit;
+    }
+
+    .bid-action-btn:hover {
+      background: var(--b-surface-3);
+      color: var(--b-text);
+      border-color: var(--b-border-strong);
+    }
+
+    .bid-action-btn:focus-visible {
+      outline: 2px solid var(--b-brand);
+      outline-offset: 2px;
+    }
+
+    .bid-action-btn.is-primary {
+      color: var(--b-brand);
+      border-color: var(--b-brand-ring);
+      background: var(--b-brand-soft);
+    }
+
+    .bid-action-btn.is-primary:hover {
+      background: var(--b-brand);
+      color: #fff;
+      border-color: var(--b-brand);
+    }
+
+    /* ============================================================
+       Empty state
+       ============================================================ */
+    .empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 52px 20px;
+      animation: cardIn .35s ease both;
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 1.45rem;
+      background: var(--b-surface-2);
+      border: 1px solid var(--b-border);
+      color: var(--b-text-light);
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--b-text);
+    }
+
+    .empty-text {
+      font-size: .78rem;
+      color: var(--b-text-muted);
+      margin-top: 6px;
+      max-width: 340px;
+      line-height: 1.55;
+    }
+
+    /* ============================================================
+       Skeleton + spin
+       ============================================================ */
+    .skeleton {
+      background: var(--b-skeleton);
+      background-size: 400% 100%;
+      border-radius: 8px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0 50%;
+      }
+    }
+
+    .spin {
+      animation: spin .9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ============================================================
+       ═══════════════════════════════════════════════════════════
+       MOBILE RESPONSIVENESS — section
+       ═══════════════════════════════════════════════════════════
+       */
+
+    /* ─── Base: mobile-first container padding ─── */
+    .page-main {
+      padding: 20px 16px 40px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+
+    @media (min-width: 640px) {
+      .page-main {
+        padding: 28px 24px 48px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .page-main {
+        padding: 32px 32px 56px;
+      }
+    }
+
+    /* ─── Tablet / large phone ─── */
+    @media (max-width: 640px) {
+      .panel-head {
+        padding: 14px 16px;
+        gap: 10px;
+      }
+
+      .panel-toolbar {
+        padding: 10px 16px;
+      }
+
+      .panel-body {
+        padding: 12px;
+        gap: 10px;
+      }
+
+      .page-title {
+        font-size: 1.5rem;
+        letter-spacing: -.02em;
+      }
+
+      .page-sub {
+        font-size: .8rem;
+        margin-top: 6px;
+      }
+
+      .btn {
+        padding: 11px 14px;
+        font-size: .8rem;
+        min-height: 42px;
+      }
+    }
+
+    /* ─── Small phone (≤480px) ─── */
+    @media (max-width: 480px) {
+
+      /* Panel head stacks vertically so search gets full row */
+      .panel-head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+      }
+
+      #bid-search {
+        min-width: 0;
+        max-width: none;
+        width: 100%;
+        padding: 10px 12px 10px 34px;
+        /* taller for touch */
+        font-size: .82rem;
+      }
+
+      .search-wrap .search-icon {
+        font-size: .78rem;
+      }
+
+      /* Thumb slightly smaller so title has more room */
+      .bid-thumb {
+        width: 50px;
+        height: 50px;
+        border-radius: 10px;
+      }
+
+      /* Bid row: thumb + title side by side, price + actions full-width */
+      .bid-row {
+        flex-wrap: wrap;
+        row-gap: 12px;
+        padding: 12px;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .bid-main {
+        flex: 1 1 calc(100% - 62px);
+      }
+
+      /* fill remainder next to thumb */
+
+      /* Price block: full-width flex row so label+value stay grouped */
+      .bid-price {
+        flex: 1 1 100%;
+        margin-left: 0;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-end;
+        text-align: left;
+        gap: 14px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--b-border);
+      }
+
+      .bid-price-group {
+        align-items: flex-start;
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+
+      .bid-price-group:last-child {
+        text-align: right;
+        align-items: flex-end;
+      }
+
+      .bid-price-label {
+        font-size: .6rem;
+      }
+
+      .bid-price-value {
+        font-size: .95rem;
+      }
+
+      .bid-price-value.is-secondary {
+        font-size: .74rem;
+      }
+
+      /* Actions: two equal columns, 44px+ tall */
+      .bid-actions {
+        flex: 1 1 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .bid-actions:has(> :only-child) {
+        grid-template-columns: 1fr;
+        /* single child: full-width */
+      }
+
+      .bid-action-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 11px 12px;
+        font-size: .78rem;
+        min-height: 44px;
+        /* tap target */
+        border-radius: 10px;
+      }
+
+      /* Tabs: bigger tap, thinner scroll strip */
+      .tab {
+        padding: 9px 13px;
+        font-size: .74rem;
+        min-height: 36px;
+      }
+
+      .tab .count {
+        font-size: .66rem;
+        padding: 1px 7px;
+      }
+
+      /* Right-edge fade hint so users know tabs scroll */
+      .panel-toolbar {
+        mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
+        -webkit-mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
+        padding-right: 24px;
+      }
+
+      /* Page header buttons: equal-width row */
+      .page-header-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 10px;
+      }
+
+      .page-header-actions .btn {
+        width: 100%;
+      }
+
+      /* Empty state tighter */
+      .empty {
+        padding: 40px 16px;
+      }
+
+      .empty-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.25rem;
+      }
+
+      .empty-title {
+        font-size: .9rem;
+      }
+
+      .empty-text {
+        font-size: .76rem;
+      }
+    }
+
+    /* ─── Very small (≤360px, iPhone SE) ─── */
+    @media (max-width: 360px) {
+      .page-main {
+        padding: 16px 12px 32px;
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+      }
+
+      .panel {
+        border-radius: 18px;
+      }
+
+      .page-title {
+        font-size: 1.35rem;
+      }
+
+      .eyebrow {
+        font-size: .62rem;
+        padding: 4px 9px;
+      }
+
+      .bid-thumb {
+        width: 44px;
+        height: 44px;
+      }
+
+      .bid-title {
+        font-size: .82rem;
+      }
+
+      .badge {
+        font-size: .6rem;
+        padding: 2px 7px;
+        gap: 4px;
+      }
+
+      .bid-time {
+        font-size: .64rem;
+      }
+
+      .bid-action-btn {
+        font-size: .72rem;
+        padding: 10px;
+      }
+
+      .tab {
+        padding: 8px 11px;
+        font-size: .7rem;
+      }
+
+      /* Icon-only refresh button on ultra-small */
+      .page-header-actions {
+        grid-template-columns: 44px 1fr;
+      }
+
+      #refresh-btn span {
+        display: none;
+      }
+    }
+
+    /* ─── Touch devices: kill sticky hover states ─── */
+    @media (hover: none) and (pointer: coarse) {
+      .bid-row:hover {
+        transform: none;
+        box-shadow: var(--b-shadow-sm);
+        background: var(--b-surface-2);
+        border-color: var(--b-border);
+      }
+
+      .bid-row:hover .bid-thumb img {
+        transform: none;
+      }
+
+      .bid-title:hover {
+        color: var(--b-text);
+      }
+
+      .btn-ghost:hover {
+        transform: none;
+        box-shadow: var(--b-shadow-sm);
+      }
+
+      .btn-primary:hover {
+        transform: none;
+      }
+
+      .bid-action-btn:hover {
+        background: var(--b-surface);
+        color: var(--b-text-muted);
+        border-color: var(--b-border);
+      }
+
+      .bid-action-btn.is-primary:hover {
+        background: var(--b-brand-soft);
+        color: var(--b-brand);
+        border-color: var(--b-brand-ring);
+      }
+
+      /* Active feedback on tap instead of hover */
+      .bid-row:active {
+        background: var(--b-surface-3);
+      }
+
+      .bid-action-btn:active {
+        background: var(--b-surface-3);
+      }
+
+      .btn-ghost:active {
+        background: var(--b-surface-3);
+      }
+    }
+
+    /* ─── Landscape phone (short height) ─── */
+    @media (max-height: 480px) and (orientation: landscape) {
+      .page-main {
+        padding-top: 14px;
+        padding-bottom: 24px;
+      }
+
+      .page-header-block {
+        margin-bottom: 16px;
+      }
+
+      .panel-body {
+        padding: 10px;
+      }
+
+      .bid-row {
+        padding: 10px 12px;
+      }
+    }
+
+    /* ─── Reduced motion ─── */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+
+  <noscript>
+    <style>
+      #bids-container {
+        display: none;
+      }
+
+      .noscript-banner {
+        display: flex !important;
+      }
+    </style>
+  </noscript>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+
+  <a href="#main-content" class="skip-link" style="position:absolute;left:-9999px">Skip to main content</a>
+
+  <noscript>
+    <div class="noscript-banner"
+      style="display:none;align-items:center;justify-content:center;gap:8px;padding:12px 16px;background:#fef3c7;color:#78350f;font-size:.8125rem;font-weight:600;text-align:center;border-bottom:1px solid #fde68a">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <span>JavaScript is disabled. Your bid list will not load.</span>
+    </div>
+  </noscript>
+
+  <header id="nb-header"></header>
+
+  <main id="main-content" class="page-main flex-1 max-w-7xl mx-auto w-full">
+
+    <!-- ================= Page header ================= -->
+    <div class="page-header-block flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-5 mb-6 sm:mb-7">
+      <div>
+        <span class="eyebrow"><i class="fa-solid fa-gavel" aria-hidden="true"></i> My activity</span>
+        <h1 class="page-title mt-3">My bids</h1>
+        <p class="page-sub">
+          Every bid you've placed, with live status and time left.
+        </p>
+      </div>
+      <div class="page-header-actions flex items-center gap-2.5 flex-wrap">
+        <button id="refresh-btn" type="button" class="btn btn-ghost" aria-label="Refresh bids">
+          <i class="fa-solid fa-rotate-right" id="refresh-icon" aria-hidden="true"></i>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+        <a href="/auctions.html" class="btn btn-ghost">
+          <i class="fa-solid fa-magnifying-glass" style="color:var(--b-brand)" aria-hidden="true"></i>
+          Browse auctions
+        </a>
+      </div>
+    </div>
+
+    <!-- ================= Bids panel ================= -->
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2 class="panel-title">Your bids</h2>
+          <p class="panel-sub" id="bids-meta">Loading your bids…</p>
+        </div>
+
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+          <input id="bid-search" type="search" placeholder="Search by title…" aria-label="Search bids by auction title"
+            autocomplete="off">
+        </div>
+      </div>
+
+      <div class="panel-toolbar">
+        <div class="tabs">
+          <button class="tab is-active" data-filter="all" type="button">All <span class="count"
+              id="cnt-all">0</span></button>
+          <button class="tab" data-filter="active" type="button">Active <span class="count"
+              id="cnt-active">0</span></button>
+          <button class="tab" data-filter="winning" type="button">Winning <span class="count"
+              id="cnt-winning">0</span></button>
+          <button class="tab" data-filter="outbid" type="button">Outbid <span class="count"
+              id="cnt-outbid">0</span></button>
+          <button class="tab" data-filter="won" type="button">Won <span class="count" id="cnt-won">0</span></button>
+          <button class="tab" data-filter="lost" type="button">Lost <span class="count" id="cnt-lost">0</span></button>
+        </div>
+      </div>
+
+      <div id="bids-container" class="panel-body" aria-live="polite" aria-busy="true">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js" defer></script>
+  <script src="/assets/js/ui.js" defer></script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&auto=format&fit=crop&q=70';
+
+      var state = {
+        bids: [],
+        filter: 'all',
+        search: ''
+      };
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function fmtPKR(v) {
+        if (window.UI && typeof UI.formatPKR === 'function') return UI.formatPKR(v);
+        return 'Rs. ' + (Number(v) || 0).toLocaleString('en-PK');
+      }
+
+      function timeAgo(d) {
+        if (!d) return '';
+        var t = new Date(d).getTime();
+        if (!isFinite(t)) return '';
+        var diff = (Date.now() - t) / 1000;
+        if (diff < 0) return 'just now';
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+        return new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      }
+
+      function countdown(endStr) {
+        if (!endStr) return { ended: true, text: 'Ended', urgent: false };
+        var t = new Date(endStr).getTime();
+        if (!isFinite(t)) return { ended: true, text: 'Ended', urgent: false };
+        var diff = Math.max(0, Math.floor((t - Date.now()) / 1000));
+        if (!diff) return { ended: true, text: 'Ended', urgent: false };
+        var d = Math.floor(diff / 86400);
+        var h = Math.floor((diff % 86400) / 3600);
+        var m = Math.floor((diff % 3600) / 60);
+        var s = diff % 60;
+        var text = d > 0 ? (d + 'd ' + h + 'h')
+          : h > 0 ? (h + 'h ' + m + 'm')
+            : (m + 'm ' + s + 's');
+        return { ended: false, text: text, urgent: diff < 3600 };
+      }
+
+      function getBidStatus(b) {
+        var aStatus = String(b.auction_status || '').toLowerCase();
+
+        // 1. Cancelled / removed → treated as lost
+        if (aStatus === 'cancelled' || aStatus === 'canceled' || aStatus === 'removed') {
+          return 'lost';
+        }
+
+        // 2. Explicitly settled
+        if (aStatus === 'sold' || aStatus === 'completed') {
+          return b.is_winning ? 'won' : 'lost';
+        }
+
+        // 3. Time-based truth — end_time guzra to ended hai
+        var endT = new Date(b.end_time).getTime();
+        var hasEndTime = isFinite(endT);
+        var pastEnd = hasEndTime && endT < Date.now();
+
+        if (aStatus === 'ended' || aStatus === 'closed' || aStatus === 'expired' || pastEnd) {
+          return b.is_winning ? 'won' : 'lost';
+        }
+
+        // 4. Truly live
+        if (aStatus === 'active' || aStatus === 'live' || aStatus === 'open') {
+          return b.is_winning ? 'winning' : 'outbid';
+        }
+
+        // 5. Fallback
+        return b.is_winning ? 'winning' : 'outbid';
+      }
+
+      function badgeFor(status) {
+        var map = {
+          winning: ['badge-win', 'fa-circle-check', 'Winning'],
+          outbid: ['badge-out', 'fa-arrow-trend-down', 'Outbid'],
+          won: ['badge-won', 'fa-trophy', 'Won'],
+          lost: ['badge-lost', 'fa-circle-xmark', 'Lost'],
+          active: ['badge-active', 'fa-bolt', 'Active']
+        };
+        var entry = map[status] || map.active;
+        return '<span class="badge ' + entry[0] + '">' +
+          '<i class="fa-solid ' + entry[1] + '" aria-hidden="true"></i>' + entry[2] +
+          '</span>';
+      }
+
+      function stripeFor(status) {
+        return {
+          winning: '#10b981',
+          outbid: '#f43f5e',
+          won: '#6366f1',
+          lost: '#64748b',
+          active: '#3b82f6'
+        }[status] || '#64748b';
+      }
+
+      function renderBidRow(b) {
+        var status = getBidStatus(b);
+        var href = '/auction-details.html?id=' + encodeURIComponent(b.auction_id);
+        var img = b.image || FALLBACK_IMG;
+        var cd = countdown(b.end_time);
+        var ago = timeAgo(b.bid_time);
+
+        var timeCls = 'bid-time' + (cd.urgent ? ' is-urgent' : '');
+        var currentPriceHTML = b.current_price
+          ? '<div class="bid-price-group">' +
+          '<span class="bid-price-label">Now</span>' +
+          '<span class="bid-price-value is-secondary">' + esc(fmtPKR(b.current_price)) + '</span>' +
+          '</div>'
+          : '';
+
+        var orderBtn = (status === 'won')
+          ? '<a href="/buyer/won-auctions.html" class="bid-action-btn is-primary">' +
+          '<i class="fa-solid fa-trophy" aria-hidden="true"></i> View Win' +
+          '</a>'
+          : '';
+
+        return (
+          '<article class="bid-row" style="--stripe:' + stripeFor(status) + '">' +
+          '<a class="bid-thumb" href="' + href + '" tabindex="-1" aria-hidden="true">' +
+          '<img src="' + esc(img) + '" alt="" loading="lazy" decoding="async" ' +
+          'onerror="this.onerror=null;this.src=\'' + FALLBACK_IMG + '\'">' +
+          '</a>' +
+          '<div class="bid-main">' +
+          '<a class="bid-title" href="' + href + '">' + esc(b.title || 'Untitled auction') + '</a>' +
+          '<div class="bid-meta">' +
+          badgeFor(status) +
+          (!cd.ended
+            ? '<span class="' + timeCls + '">' +
+            '<i class="fa-regular fa-clock" aria-hidden="true"></i>' + esc(cd.text) +
+            '</span>'
+            : '') +
+          (ago
+            ? '<span class="bid-time">' +
+            '<i class="fa-regular fa-calendar" aria-hidden="true"></i>' + esc(ago) +
+            '</span>'
+            : '') +
+          '</div>' +
+          '</div>' +
+          '<div class="bid-price">' +
+          '<div class="bid-price-group">' +
+          '<span class="bid-price-label">You bid</span>' +
+          '<span class="bid-price-value">' + esc(fmtPKR(b.bid_amount)) + '</span>' +
+          '</div>' +
+          currentPriceHTML +
+          '</div>' +
+          '<div class="bid-actions">' +
+          '<a href="' + href + '" class="bid-action-btn">' +
+          '<i class="fa-solid fa-eye" aria-hidden="true"></i> View' +
+          '</a>' +
+          orderBtn +
+          '</div>' +
+          '</article>'
+        );
+      }
+
+      function skeletons(n) {
+        n = n || 5;
+        var html = '';
+        for (var i = 0; i < n; i++) {
+          html +=
+            '<div class="bid-row" style="--stripe:transparent;pointer-events:none">' +
+            '<div class="bid-thumb skeleton" style="border:0;border-radius:12px"></div>' +
+            '<div class="bid-main">' +
+            '<div class="skeleton" style="height:13px;width:min(230px,62%)"></div>' +
+            '<div class="skeleton" style="height:11px;width:110px;margin-top:9px"></div>' +
+            '</div>' +
+            '<div class="bid-price">' +
+            '<div class="skeleton" style="height:10px;width:50px"></div>' +
+            '<div class="skeleton" style="height:16px;width:84px;margin-top:7px"></div>' +
+            '</div>' +
+            '</div>';
+        }
+        return html;
+      }
+
+      function empty(icon, title, text, ctaLabel, ctaHref) {
+        var cta = (ctaLabel && ctaHref)
+          ? '<a href="' + esc(ctaHref) + '" class="btn btn-primary" style="margin-top:16px">' +
+          esc(ctaLabel) + ' <i class="fa-solid fa-arrow-right" style="font-size:.6rem" aria-hidden="true"></i>' +
+          '</a>'
+          : '';
+        return (
+          '<div class="empty">' +
+          '<div class="empty-icon"><i class="fa-solid ' + esc(icon) + '" aria-hidden="true"></i></div>' +
+          '<p class="empty-title">' + esc(title) + '</p>' +
+          '<p class="empty-text">' + esc(text) + '</p>' +
+          cta +
+          '</div>'
+        );
+      }
+
+      function getFilteredBids() {
+        var list = state.bids.slice();
+        if (state.search) {
+          var q = state.search.toLowerCase();
+          list = list.filter(function (b) {
+            return (b.title || '').toLowerCase().indexOf(q) !== -1;
+          });
+        }
+        if (state.filter === 'all') return list;
+        if (state.filter === 'active') {
+          return list.filter(function (b) {
+            var s = getBidStatus(b);
+            return s === 'winning' || s === 'outbid';
+          });
+        }
+        return list.filter(function (b) { return getBidStatus(b) === state.filter; });
+      }
+
+      function updateCounts() {
+        var all = state.bids;
+        function count(f) {
+          if (f === 'all') return all.length;
+          if (f === 'active') {
+            return all.filter(function (b) {
+              var s = getBidStatus(b);
+              return s === 'winning' || s === 'outbid';
+            }).length;
+          }
+          return all.filter(function (b) { return getBidStatus(b) === f; }).length;
+        }
+        ['all', 'active', 'winning', 'outbid', 'won', 'lost'].forEach(function (f) {
+          var el = document.getElementById('cnt-' + f);
+          if (el) el.textContent = count(f);
+        });
+      }
+
+      function render() {
+        var container = document.getElementById('bids-container');
+        if (!container) return;
+
+        var list = getFilteredBids();
+
+        if (!list.length && state.filter === 'all' && !state.search) {
+          container.innerHTML = empty(
+            'fa-gavel',
+            'No bids yet',
+            "When you bid on an auction, it'll show up here.",
+            'Browse auctions',
+            '/auctions.html'
+          );
+        } else if (!list.length && state.search) {
+          container.innerHTML = empty(
+            'fa-magnifying-glass',
+            'No matches',
+            'Nothing here matches "' + state.search + '". Try a different search.'
+          );
+        } else if (!list.length) {
+          container.innerHTML = empty(
+            'fa-filter',
+            'Nothing in this tab',
+            'You have no bids with this status right now. Try a different tab.'
+          );
+        } else {
+          container.innerHTML = list.map(renderBidRow).join('');
+        }
+
+        container.setAttribute('aria-busy', 'false');
+
+        var meta = document.getElementById('bids-meta');
+        if (meta) {
+          var shown = list.length;
+          var total = state.bids.length;
+          var now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          var text;
+          if (shown === total) {
+            text = total + (total === 1 ? ' bid' : ' bids') + ' · Updated ' + now;
+          } else {
+            text = shown + ' of ' + total + ' · Updated ' + now;
+          }
+          meta.textContent = text;
+        }
+      }
+
+      async function load() {
+        var container = document.getElementById('bids-container');
+        var meta = document.getElementById('bids-meta');
+        if (container) {
+          container.innerHTML = skeletons(5);
+          container.setAttribute('aria-busy', 'true');
+        }
+        if (meta) meta.textContent = 'Pulling your bids…';
+
+        try {
+          var res = await ApiClient.get('/buyer/bids');
+          var raw = (res && Array.isArray(res.data)) ? res.data : [];
+
+          raw.sort(function (a, b) {
+            var ta = new Date(a.bid_time).getTime() || 0;
+            var tb = new Date(b.bid_time).getTime() || 0;
+            return tb - ta;
+          });
+
+          state.bids = raw;
+          updateCounts();
+          render();
+        } catch (err) {
+          console.error('[Bids] load failed:', err);
+          if (container) {
+            container.innerHTML = empty(
+              'fa-triangle-exclamation',
+              "Couldn't load your bids",
+              'Check your connection and try refreshing.'
+            );
+            container.setAttribute('aria-busy', 'false');
+          }
+          if (meta) meta.textContent = 'Failed to load';
+        }
+      }
+
+      function initTabs() {
+        var tabs = document.querySelectorAll('.tab[data-filter]');
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var f = tab.dataset.filter;
+            if (f === state.filter) return;
+            state.filter = f;
+
+            var searchEl = document.getElementById('bid-search');
+            if (searchEl && searchEl.value) {
+              searchEl.value = '';
+              state.search = '';
+            }
+
+            tabs.forEach(function (t) {
+              var active = t === tab;
+              t.classList.toggle('is-active', active);
+            });
+            render();
+          });
+        });
+      }
+
+      function initSearch() {
+        var el = document.getElementById('bid-search');
+        if (!el) return;
+        var timer;
+        el.addEventListener('input', function () {
+          clearTimeout(timer);
+          timer = setTimeout(function () {
+            state.search = el.value.trim();
+            render();
+          }, 200);
+        });
+      }
+
+      function initRefresh() {
+        var btn = document.getElementById('refresh-btn');
+        var icon = document.getElementById('refresh-icon');
+        if (!btn) return;
+        btn.addEventListener('click', async function () {
+          if (btn.disabled) return;
+          btn.disabled = true;
+          if (icon) icon.classList.add('spin');
+          try { await load(); }
+          finally {
+            if (icon) icon.classList.remove('spin');
+            btn.disabled = false;
+          }
+        });
+      }
+
+      function boot() {
+        if (typeof ApiClient === 'undefined' || typeof ApiClient.getAccessToken !== 'function') {
+          console.error('[Bids] ApiClient not available');
+          return;
+        }
+        if (!ApiClient.getAccessToken()) {
+          window.location.href = '/login.html?redirect=' + encodeURIComponent('/buyer/bids.html');
+          return;
+        }
+
+        initTabs();
+        initSearch();
+        initRefresh();
+        load();
+
+        // Refresh countdown text every 30s
+        setInterval(function () {
+          if (document.visibilityState === 'visible' && state.bids.length) {
+            render();
+          }
+        }, 30000);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+      } else {
+        boot();
+      }
+    })();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1714 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Identity Verification (KYC) — NexusBids</title>
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('nexusbids_theme') || 'system';
+        var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        document.documentElement.classList.toggle('dark', d);
+        document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+      } catch (e) { document.documentElement.classList.add('dark'); }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* ============================================================
+       Tokens
+       ============================================================ */
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --surface-3: #f1f5f9;
+      --border: #e5e9f0;
+      --border-strong: #d6dde8;
+      --text: #0f172a;
+      --text-muted: #5a667e;
+      --text-faint: #8d97ab;
+      --field-bg: #ffffff;
+      --field-focus-ring: rgba(99, 102, 241, .16);
+      --brand: #6366f1;
+      --brand-soft: rgba(99, 102, 241, .10);
+      --brand-ring: rgba(99, 102, 241, .22);
+      --ok: #059669;
+      --ok-soft: rgba(16, 185, 129, .10);
+      --warn: #b45309;
+      --warn-soft: rgba(245, 158, 11, .12);
+      --danger: #e11d48;
+      --danger-soft: rgba(244, 63, 94, .10);
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, .05);
+      --shadow-md: 0 4px 14px -6px rgba(15, 23, 42, .10);
+      --shadow-lg: 0 24px 50px -24px rgba(15, 23, 42, .25);
+      --t: .22s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html.dark {
+      --bg: #05070f;
+      --surface: #0d1220;
+      --surface-2: #121a2b;
+      --surface-3: #1a2336;
+      --border: #1e2a40;
+      --border-strong: #2c3a56;
+      --text: #eef2f9;
+      --text-muted: #9aa6bd;
+      --text-faint: #66738d;
+      --field-bg: #121a2b;
+      --field-focus-ring: rgba(99, 102, 241, .28);
+      --brand-soft: rgba(99, 102, 241, .14);
+      --brand-ring: rgba(99, 102, 241, .30);
+      --ok: #34d399;
+      --ok-soft: rgba(16, 185, 129, .14);
+      --warn: #fbbf24;
+      --warn-soft: rgba(245, 158, 11, .14);
+      --danger: #fb7185;
+      --danger-soft: rgba(244, 63, 94, .14);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .6);
+      --shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .8);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body.page {
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color var(--t), color var(--t);
+      overflow-x: hidden;
+    }
+
+    /* Subtle top glow */
+    .kyc-shell {
+      position: relative;
+    }
+
+    .kyc-shell::before {
+      content: '';
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(900px, 100vw);
+      height: 440px;
+      background: radial-gradient(closest-side, var(--brand-soft), transparent 75%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .kyc-shell>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================================
+       Typography
+       ============================================================ */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--brand);
+      background: var(--brand-soft);
+      border: 1px solid var(--brand-ring);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .page-title {
+      font-size: clamp(1.5rem, 4.2vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -.024em;
+      line-height: 1.15;
+      color: var(--text);
+    }
+
+    .page-sub {
+      font-size: .875rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 60ch;
+    }
+
+    /* ============================================================
+       Status card
+       ============================================================ */
+    .status-card {
+      position: relative;
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      overflow: hidden;
+      transition: border-color var(--t), box-shadow var(--t);
+    }
+
+    .status-icon {
+      flex: 0 0 auto;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.05rem;
+      background: var(--surface-3);
+      color: var(--text-muted);
+      transition: background-color var(--t), color var(--t);
+    }
+
+    .status-body {
+      flex: 1 1 200px;
+      min-width: 0;
+    }
+
+    .status-label {
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .status-value {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-top: 3px;
+      letter-spacing: -.01em;
+    }
+
+    .status-hint {
+      font-size: .74rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+
+    .status-badge {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 800;
+      background: var(--surface-3);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      transition: all var(--t);
+    }
+
+    .status-card.is-approved .status-icon {
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+
+    .status-card.is-pending .status-icon {
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+
+    .status-card.is-blocked .status-icon {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .status-badge.is-approved {
+      background: var(--ok-soft);
+      color: var(--ok);
+      border-color: rgba(16, 185, 129, .3);
+    }
+
+    .status-badge.is-pending {
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-color: rgba(245, 158, 11, .3);
+    }
+
+    .status-badge.is-blocked {
+      background: var(--danger-soft);
+      color: var(--danger);
+      border-color: rgba(244, 63, 94, .28);
+    }
+
+    .status-steps {
+      flex: 1 1 100%;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .step-dot {
+      flex: 1;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--surface-3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .step-dot.done::after,
+    .step-dot.active::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+    }
+
+    .step-dot.done::after {
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .step-dot.active::after {
+      background: linear-gradient(90deg, #6366f1, #8b5cf6);
+      animation: pulseBar 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulseBar {
+
+      0%,
+      100% {
+        opacity: .55;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    /* ============================================================
+       Form wrapper
+       ============================================================ */
+    .form-wrap {
+      padding: 22px;
+      border-radius: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-md);
+      animation: fadeUp .4s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    @media (min-width: 640px) {
+      .form-wrap {
+        padding: 28px 30px;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section {
+      padding-bottom: 22px;
+      margin-bottom: 22px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .section:last-of-type {
+      border-bottom: 0;
+      margin-bottom: 18px;
+      padding-bottom: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-num {
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: .7rem;
+      font-weight: 800;
+      background: var(--brand-soft);
+      color: var(--brand);
+      border: 1px solid var(--brand-ring);
+      margin-top: 1px;
+    }
+
+    .section-title {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.005em;
+      line-height: 1.3;
+    }
+
+    .section-desc {
+      font-size: .74rem;
+      color: var(--text-faint);
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    /* ============================================================
+       Fields — FIXED: !important + webkit-text-fill for dark mode
+       ============================================================ */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -.005em;
+    }
+
+    .field-label .req {
+      color: var(--danger);
+      font-size: .85rem;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .field-label .opt {
+      font-size: .72rem;
+      color: var(--text-faint);
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    /* Unified input — !important + high-specificity selectors to defeat Tailwind Forms */
+    .field-input,
+    input.field-input,
+    select.field-input,
+    textarea.field-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 13px;
+      border-radius: 10px;
+      background: var(--field-bg) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--text) !important;
+      font-size: .875rem;
+      font-family: inherit;
+      font-weight: 500;
+      outline: none;
+      line-height: 1.4;
+      transition: border-color var(--t), box-shadow var(--t), background-color var(--t);
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-text-fill-color: var(--text);
+      caret-color: var(--brand);
+      box-shadow: none;
+    }
+
+    .field-input::placeholder {
+      color: var(--text-faint) !important;
+      font-weight: 400;
+      opacity: 1;
+      -webkit-text-fill-color: var(--text-faint);
+    }
+
+    .field-input:hover:not(:disabled):not([readonly]) {
+      border-color: var(--border-strong) !important;
+    }
+
+    .field-input:focus,
+    .field-input:focus-visible {
+      border-color: var(--brand) !important;
+      box-shadow: 0 0 0 3px var(--field-focus-ring) !important;
+      background: var(--field-bg) !important;
+      outline: none !important;
+    }
+
+    .field-input:disabled,
+    .field-input[readonly] {
+      background: var(--surface-3) !important;
+      color: var(--text-muted) !important;
+      -webkit-text-fill-color: var(--text-muted);
+      cursor: not-allowed;
+      opacity: 1;
+    }
+
+    /* Kill Chrome/Safari autofill white flash */
+    .field-input:-webkit-autofill,
+    .field-input:-webkit-autofill:hover,
+    .field-input:-webkit-autofill:focus,
+    .field-input:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--text) !important;
+      -webkit-box-shadow: 0 0 0 1000px var(--field-bg) inset !important;
+      box-shadow: 0 0 0 1000px var(--field-bg) inset !important;
+      border-color: var(--border) !important;
+      transition: background-color 9999s ease-in-out 0s;
+      caret-color: var(--brand);
+    }
+
+    /* Date input — consistent across modes */
+    input[type="date"].field-input {
+      position: relative;
+      padding-right: 44px;
+      font-variant-numeric: tabular-nums;
+      color-scheme: dark light;
+    }
+
+    input[type="date"].field-input::-webkit-calendar-picker-indicator {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      padding: 4px;
+      border-radius: 6px;
+      cursor: pointer;
+      opacity: 0;
+      z-index: 2;
+    }
+
+    input[type="date"].field-input::-webkit-datetime-edit {
+      color: var(--text);
+    }
+
+    input[type="date"].field-input:not(:focus):invalid::-webkit-datetime-edit {
+      color: var(--text-faint);
+    }
+
+    /* Custom calendar icon overlay */
+    .date-wrap {
+      position: relative;
+    }
+
+    .date-wrap::after {
+      content: '\f133';
+      font-family: 'Font Awesome 6 Free';
+      font-weight: 400;
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-faint);
+      font-size: .85rem;
+      pointer-events: none;
+      transition: color var(--t);
+    }
+
+    .date-wrap:focus-within::after {
+      color: var(--brand);
+    }
+
+    .field-hint {
+      font-size: .7rem;
+      color: var(--text-faint);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      line-height: 1.4;
+      transition: color var(--t);
+    }
+
+    .field-hint.ok {
+      color: var(--ok);
+    }
+
+    .field-hint.err {
+      color: var(--danger);
+    }
+
+    .field.is-invalid .field-input {
+      border-color: var(--danger) !important;
+      box-shadow: 0 0 0 3px var(--danger-soft) !important;
+    }
+
+    /* Grid */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 560px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .grid-2+.grid-2 {
+      margin-top: 14px;
+    }
+
+    /* ============================================================
+       Upload cards
+       ============================================================ */
+    .upload-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 560px) {
+      .upload-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .upload-card {
+      position: relative;
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      transition: border-color var(--t), background-color var(--t), box-shadow var(--t);
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .upload-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .upload-card.filled {
+      border-color: rgba(16, 185, 129, .4);
+      background: var(--surface);
+      box-shadow: 0 8px 20px -14px rgba(16, 185, 129, .35);
+    }
+
+    .upload-preview {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 11px;
+      background: var(--surface-3);
+      border: 1.5px dashed var(--border-strong);
+      overflow: hidden;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: border-color var(--t), background-color var(--t), transform var(--t);
+      user-select: none;
+    }
+
+    .upload-card:hover .upload-preview {
+      border-color: var(--brand);
+    }
+
+    .upload-card.filled .upload-preview {
+      border-style: solid;
+      border-color: rgba(16, 185, 129, .4);
+    }
+
+    .upload-preview.is-dragover {
+      border-color: var(--brand);
+      background: var(--brand-soft);
+      transform: scale(1.005);
+    }
+
+    .upload-preview:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 3px;
+    }
+
+    .preview-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      padding: 8px;
+      color: var(--text-faint);
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .preview-empty i {
+      font-size: 1.5rem;
+      color: var(--brand);
+      opacity: .9;
+    }
+
+    .preview-empty-title {
+      font-size: .74rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .preview-empty-sub {
+      font-size: .65rem;
+      color: var(--text-faint);
+      font-weight: 500;
+      margin-top: -2px;
+    }
+
+    .preview-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+      background: var(--surface-3);
+    }
+
+    .upload-card.filled .preview-img {
+      display: block;
+    }
+
+    .upload-card.filled .preview-empty {
+      display: none;
+    }
+
+    .preview-overlay {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 7px 9px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: linear-gradient(to top, rgba(0, 0, 0, .72), rgba(0, 0, 0, 0));
+      color: #fff;
+    }
+
+    .upload-card.filled .preview-overlay {
+      display: flex;
+    }
+
+    .file-name {
+      font-size: .62rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 55%;
+      opacity: .92;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .icon-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 7px;
+      border: 0;
+      display: grid;
+      place-items: center;
+      font-size: .62rem;
+      cursor: pointer;
+      background: rgba(255, 255, 255, .2);
+      color: #fff;
+      backdrop-filter: blur(4px);
+      transition: background-color var(--t), transform var(--t);
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, .34);
+      transform: scale(1.06);
+    }
+
+    .icon-btn.danger:hover {
+      background: rgba(244, 63, 94, .9);
+    }
+
+    .upload-check-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: none;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: .6rem;
+      font-weight: 800;
+      background: rgba(16, 185, 129, .92);
+      color: #fff;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 4px 10px -4px rgba(16, 185, 129, .7);
+      animation: popIn .3s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .upload-card.filled .upload-check-badge {
+      display: inline-flex;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(.5);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .upload-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .upload-title {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .upload-title .req {
+      color: var(--danger);
+      font-size: .85rem;
+      font-weight: 700;
+    }
+
+    .upload-desc {
+      font-size: .68rem;
+      color: var(--text-faint);
+      line-height: 1.5;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    /* ============================================================
+       Security strip
+       ============================================================ */
+    .security-strip {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      font-size: .74rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+
+    .security-strip i {
+      color: var(--ok);
+      font-size: .9rem;
+      flex: 0 0 auto;
+      margin-top: 2px;
+    }
+
+    .security-strip strong {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    /* ============================================================
+       Submit
+       ============================================================ */
+    .btn-submit {
+      position: relative;
+      width: 100%;
+      padding: 13px 18px;
+      border: 0;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: .875rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      box-shadow: 0 12px 26px -12px rgba(79, 70, 229, .75);
+      transition: transform var(--t), box-shadow var(--t), opacity var(--t);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 32px -12px rgba(79, 70, 229, .85);
+    }
+
+    .btn-submit:active:not(:disabled) {
+      transform: translateY(0) scale(.995);
+    }
+
+    .btn-submit:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+
+    .btn-submit:focus-visible {
+      outline: 2px solid var(--brand);
+      outline-offset: 3px;
+    }
+
+    .spin {
+      animation: spin .85s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ============================================================
+       Result screens
+       ============================================================ */
+    .result {
+      text-align: center;
+      padding: 40px 22px;
+      animation: fadeUp .45s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .result-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+      margin: 0 auto 18px;
+      transition: transform .4s;
+    }
+
+    .result:hover .result-icon {
+      transform: scale(1.06) rotate(-4deg);
+    }
+
+    .result-icon.ok {
+      background: var(--ok-soft);
+      color: var(--ok);
+    }
+
+    .result-icon.pending {
+      background: var(--warn-soft);
+      color: var(--warn);
+    }
+
+    .result-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.015em;
+    }
+
+    .result-text {
+      font-size: .82rem;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      max-width: 400px;
+      margin: 26px auto 0;
+      text-align: left;
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 14px;
+      position: relative;
+      padding-bottom: 22px;
+    }
+
+    .tl-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .tl-item::before {
+      content: '';
+      position: absolute;
+      left: 13px;
+      top: 26px;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .tl-item:last-child::before {
+      display: none;
+    }
+
+    .tl-item.done::before {
+      background: rgba(16, 185, 129, .4);
+    }
+
+    .tl-dot {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: .68rem;
+      background: var(--surface-3);
+      color: var(--text-faint);
+      border: 1px solid var(--border);
+      z-index: 1;
+    }
+
+    .tl-item.done .tl-dot {
+      background: var(--ok-soft);
+      color: var(--ok);
+      border-color: rgba(16, 185, 129, .35);
+    }
+
+    .tl-item.active .tl-dot {
+      background: var(--warn-soft);
+      color: var(--warn);
+      border-color: rgba(245, 158, 11, .4);
+      animation: pulseRing 1.8s ease-out infinite;
+    }
+
+    @keyframes pulseRing {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, .35);
+      }
+
+      70% {
+        box-shadow: 0 0 0 8px rgba(245, 158, 11, 0);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+      }
+    }
+
+    .tl-title {
+      font-size: .8rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .tl-desc {
+      font-size: .72rem;
+      color: var(--text-faint);
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-size: .8rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform var(--t), box-shadow var(--t), border-color var(--t), background-color var(--t);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(79, 70, 229, .8);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+    }
+
+    /* Small screens */
+    @media (max-width: 520px) {
+      .status-card {
+        padding: 15px 16px;
+        gap: 12px;
+      }
+
+      .status-icon {
+        width: 42px;
+        height: 42px;
+        font-size: .95rem;
+      }
+
+      .status-badge {
+        padding: 6px 11px;
+        font-size: .68rem;
+      }
+
+      .form-wrap {
+        padding: 18px 16px;
+      }
+
+      .section-head {
+        gap: 10px;
+        margin-bottom: 15px;
+      }
+
+      .section-title {
+        font-size: .88rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+
+  <header id="nb-header"></header>
+
+  <main class="kyc-shell flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+
+    <!-- ================= Page header ================= -->
+    <div class="mb-7">
+      <span class="eyebrow">
+        <i class="fa-solid fa-shield-halved"></i> NADRA-compliant verification
+      </span>
+      <h1 class="page-title mt-3">Verify your identity</h1>
+      <p class="page-sub">
+        We verify every bidder before they can place a bid — it keeps NexusBids safe for buyers and sellers across
+        Pakistan. Your details are never shown publicly.
+      </p>
+    </div>
+
+    <!-- ================= Status card ================= -->
+    <div id="kyc-status-card" class="status-card mb-7" aria-live="polite">
+      <div class="status-icon" id="status-icon">
+        <i class="fa-solid fa-circle-notch spin"></i>
+      </div>
+
+      <div class="status-body">
+        <p class="status-label">Current status</p>
+        <p id="status-text" class="status-value">Checking…</p>
+        <p id="status-hint" class="status-hint">Retrieving your verification record…</p>
+      </div>
+
+      <div id="status-badge" class="status-badge">
+        <i class="fa-solid fa-ellipsis"></i> Loading
+      </div>
+
+      <div class="status-steps" aria-hidden="true">
+        <span class="step-dot" id="step-1"></span>
+        <span class="step-dot" id="step-2"></span>
+        <span class="step-dot" id="step-3"></span>
+      </div>
+    </div>
+
+    <!-- ================= Form / result ================= -->
+    <div id="kyc-form-wrapper" class="form-wrap">
+
+      <div class="security-strip">
+        <i class="fa-solid fa-lock"></i>
+        <span>
+          Your data is encrypted with <strong>AES-256</strong> and only visible to our compliance team. Documents are
+          never shown publicly.
+        </span>
+      </div>
+
+      <form id="kyc-form" novalidate>
+
+        <!-- ---------- Section 1 ---------- -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-num">1</div>
+            <div>
+              <p class="section-title">Your details</p>
+              <p class="section-desc">Enter them exactly as they appear on your CNIC.</p>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field" id="field-full_name_on_cnic">
+              <label class="field-label" for="full_name_on_cnic">
+                Full name <span class="req">*</span>
+              </label>
+              <input type="text" id="full_name_on_cnic" required placeholder="e.g. Muhammad Ali" autocomplete="name"
+                class="field-input">
+            </div>
+
+            <div class="field" id="field-cnic_number">
+              <label class="field-label" for="cnic_number">
+                CNIC number <span class="req">*</span>
+              </label>
+              <input type="text" id="cnic_number" required placeholder="35201-1234567-1" maxlength="15"
+                inputmode="numeric" autocomplete="off" class="field-input">
+              <span class="field-hint" id="cnic-hint">
+                <i class="fa-regular fa-circle-question"></i> 13 digits — dashes added automatically
+              </span>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <div class="field" id="field-date_of_birth">
+              <label class="field-label" for="date_of_birth">
+                Date of birth <span class="req">*</span>
+              </label>
+              <div class="date-wrap">
+                <input type="date" id="date_of_birth" required class="field-input">
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="father_name">
+                Father's name <span class="opt">(optional)</span>
+              </label>
+              <input type="text" id="father_name" placeholder="e.g. Ghulam Muhammad" autocomplete="off"
+                class="field-input">
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:14px">
+            <label class="field-label" for="address">
+              Residential address <span class="opt">(optional)</span>
+            </label>
+            <input type="text" id="address" placeholder="e.g. House 12, Street 4, Sector G-9, Islamabad"
+              autocomplete="street-address" class="field-input">
+          </div>
+        </div>
+
+        <!-- ---------- Section 2 ---------- -->
+        <div class="section">
+          <div class="section-head">
+            <div class="section-num">2</div>
+            <div>
+              <p class="section-title">Upload your documents</p>
+              <p class="section-desc">Tap any box to pick a photo. Max 5 MB each — JPG or PNG.</p>
+            </div>
+          </div>
+
+          <div class="upload-grid">
+
+            <!-- CNIC front -->
+            <div class="upload-card" data-upload-card>
+              <input type="hidden" id="cnic_front_path">
+              <input type="file" class="file-input" accept="image/*" data-file-input>
+              <div class="upload-preview" tabindex="0" role="button" aria-label="Upload CNIC front side" data-preview>
+                <div class="preview-empty">
+                  <i class="fa-regular fa-id-card"></i>
+                  <span class="preview-empty-title">CNIC — front</span>
+                  <span class="preview-empty-sub">Tap or drop a photo</span>
+                </div>
+                <img class="preview-img" alt="" data-preview-img>
+                <span class="upload-check-badge"><i class="fa-solid fa-check"></i> Added</span>
+                <div class="preview-overlay">
+                  <span class="file-name" data-file-name></span>
+                  <div class="preview-actions">
+                    <button type="button" class="icon-btn" data-action="change" aria-label="Change image">
+                      <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                    <button type="button" class="icon-btn danger" data-action="remove" aria-label="Remove image">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="upload-meta">
+                <p class="upload-title">Front side <span class="req">*</span></p>
+                <p class="upload-desc">The side with your photo and CNIC number.</p>
+              </div>
+            </div>
+
+            <!-- CNIC back -->
+            <div class="upload-card" data-upload-card>
+              <input type="hidden" id="cnic_back_path">
+              <input type="file" class="file-input" accept="image/*" data-file-input>
+              <div class="upload-preview" tabindex="0" role="button" aria-label="Upload CNIC back side" data-preview>
+                <div class="preview-empty">
+                  <i class="fa-regular fa-id-card"></i>
+                  <span class="preview-empty-title">CNIC — back</span>
+                  <span class="preview-empty-sub">Tap or drop a photo</span>
+                </div>
+                <img class="preview-img" alt="" data-preview-img>
+                <span class="upload-check-badge"><i class="fa-solid fa-check"></i> Added</span>
+                <div class="preview-overlay">
+                  <span class="file-name" data-file-name></span>
+                  <div class="preview-actions">
+                    <button type="button" class="icon-btn" data-action="change" aria-label="Change image">
+                      <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                    <button type="button" class="icon-btn danger" data-action="remove" aria-label="Remove image">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="upload-meta">
+                <p class="upload-title">Back side <span class="req">*</span></p>
+                <p class="upload-desc">The side with your address and expiry date.</p>
+              </div>
+            </div>
+
+            <!-- Selfie -->
+            <div class="upload-card" data-upload-card>
+              <input type="hidden" id="selfie_path">
+              <input type="file" class="file-input" accept="image/*" capture="user" data-file-input>
+              <div class="upload-preview" tabindex="0" role="button" aria-label="Upload selfie" data-preview>
+                <div class="preview-empty">
+                  <i class="fa-regular fa-user"></i>
+                  <span class="preview-empty-title">Selfie</span>
+                  <span class="preview-empty-sub">Take one or pick a photo</span>
+                </div>
+                <img class="preview-img" alt="" data-preview-img>
+                <span class="upload-check-badge"><i class="fa-solid fa-check"></i> Added</span>
+                <div class="preview-overlay">
+                  <span class="file-name" data-file-name></span>
+                  <div class="preview-actions">
+                    <button type="button" class="icon-btn" data-action="change" aria-label="Change image">
+                      <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                    <button type="button" class="icon-btn danger" data-action="remove" aria-label="Remove image">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="upload-meta">
+                <p class="upload-title">Your selfie <span class="req">*</span></p>
+                <p class="upload-desc">Clear face photo, good lighting, no filter.</p>
+              </div>
+            </div>
+
+            <!-- Selfie + CNIC -->
+            <div class="upload-card" data-upload-card>
+              <input type="hidden" id="selfie_with_cnic_path">
+              <input type="file" class="file-input" accept="image/*" data-file-input>
+              <div class="upload-preview" tabindex="0" role="button" aria-label="Upload selfie holding CNIC"
+                data-preview>
+                <div class="preview-empty">
+                  <i class="fa-solid fa-camera"></i>
+                  <span class="preview-empty-title">Selfie holding CNIC</span>
+                  <span class="preview-empty-sub">Tap or drop a photo</span>
+                </div>
+                <img class="preview-img" alt="" data-preview-img>
+                <span class="upload-check-badge"><i class="fa-solid fa-check"></i> Added</span>
+                <div class="preview-overlay">
+                  <span class="file-name" data-file-name></span>
+                  <div class="preview-actions">
+                    <button type="button" class="icon-btn" data-action="change" aria-label="Change image">
+                      <i class="fa-solid fa-arrows-rotate"></i>
+                    </button>
+                    <button type="button" class="icon-btn danger" data-action="remove" aria-label="Remove image">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="upload-meta">
+                <p class="upload-title">Selfie with your CNIC <span class="req">*</span></p>
+                <p class="upload-desc">Hold the CNIC next to your face — number readable.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <button type="submit" id="btn-submit" class="btn-submit">
+          <i class="fa-solid fa-paper-plane"></i>
+          <span id="btn-submit-text">Submit for verification</span>
+        </button>
+
+      </form>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var MAX_FILE_SIZE = 5 * 1024 * 1024;
+      function $(id) { return document.getElementById(id); }
+
+      function showToast(msg, type) {
+        try {
+          if (window.UI && typeof UI.showToast === 'function') UI.showToast(msg, type);
+          else console[type === 'error' ? 'error' : 'log'](msg);
+        } catch (e) { console.error(e); }
+      }
+
+      /* ─── Status card ─────────────────────────────────── */
+      function setStatusCardState(state) {
+        var card = $('kyc-status-card');
+        var icon = $('status-icon');
+        var badge = $('status-badge');
+        var text = $('status-text');
+        var hint = $('status-hint');
+
+        card.classList.remove('is-approved', 'is-pending', 'is-blocked');
+
+        var s1 = $('step-1'), s2 = $('step-2'), s3 = $('step-3');
+        [s1, s2, s3].forEach(function (d) { d.className = 'step-dot'; });
+
+        if (state === 'approved') {
+          card.classList.add('is-approved');
+          icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+          badge.className = 'status-badge is-approved';
+          badge.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Approved';
+          text.textContent = 'Identity verified';
+          hint.textContent = 'You can freely place bids on all live auctions.';
+          s1.classList.add('done'); s2.classList.add('done'); s3.classList.add('done');
+        } else if (state === 'pending') {
+          card.classList.add('is-pending');
+          icon.innerHTML = '<i class="fa-solid fa-clock"></i>';
+          badge.className = 'status-badge is-pending';
+          badge.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Under review';
+          text.textContent = 'Verification in progress';
+          hint.textContent = 'Our team is reviewing your documents — usually within 24–48 hours.';
+          s1.classList.add('done'); s2.classList.add('done'); s3.classList.add('active');
+        } else {
+          card.classList.add('is-blocked');
+          icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+          badge.className = 'status-badge is-blocked';
+          badge.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Action required';
+          text.textContent = 'Not verified yet';
+          hint.textContent = 'Complete the form below to unlock bidding.';
+          s1.classList.add('active');
+        }
+      }
+
+      /* ─── Result screens ──────────────────────────────── */
+      function renderApproved() {
+        $('kyc-form-wrapper').innerHTML =
+          '<div class="result">' +
+          '<div class="result-icon ok"><i class="fa-solid fa-check"></i></div>' +
+          '<h3 class="result-title">You\'re verified</h3>' +
+          '<p class="result-text">Your identity has been confirmed. You can now place bids on every live auction on NexusBids.</p>' +
+          '<a href="/auctions.html" class="btn btn-primary" style="margin-top:22px">' +
+          'Browse auctions <i class="fa-solid fa-arrow-right" style="font-size:.65rem"></i>' +
+          '</a>' +
+          '</div>';
+      }
+
+      function renderPending() {
+        $('kyc-form-wrapper').innerHTML =
+          '<div class="result">' +
+          '<div class="result-icon pending"><i class="fa-solid fa-clock"></i></div>' +
+          '<h3 class="result-title">Documents received</h3>' +
+          '<p class="result-text">Our team is reviewing your submission. Verification usually takes 24–48 hours and we\'ll email you the moment it\'s done.</p>' +
+          '<div class="timeline">' +
+          '<div class="tl-item done">' +
+          '<div class="tl-dot"><i class="fa-solid fa-check"></i></div>' +
+          '<div><p class="tl-title">Documents submitted</p>' +
+          '<p class="tl-desc">We received your CNIC and selfie photos.</p></div>' +
+          '</div>' +
+          '<div class="tl-item active">' +
+          '<div class="tl-dot"><i class="fa-solid fa-magnifying-glass"></i></div>' +
+          '<div><p class="tl-title">Under review</p>' +
+          '<p class="tl-desc">Our compliance team is verifying your identity.</p></div>' +
+          '</div>' +
+          '<div class="tl-item">' +
+          '<div class="tl-dot"><i class="fa-solid fa-flag-checkered"></i></div>' +
+          '<div><p class="tl-title">Verification complete</p>' +
+          '<p class="tl-desc">Bidding unlocks automatically.</p></div>' +
+          '</div>' +
+          '</div>' +
+          '</div>';
+      }
+
+      async function checkKycStatus() {
+        try {
+          var res = await ApiClient.get('/kyc/status');
+          var status = (res && res.data && res.data.kyc_status) || 'unverified';
+
+          if (status === 'approved') { setStatusCardState('approved'); renderApproved(); }
+          else if (status === 'pending') { setStatusCardState('pending'); renderPending(); }
+          else { setStatusCardState('unverified'); }
+        } catch (err) {
+          console.error(err);
+          setStatusCardState('unverified');
+        }
+      }
+
+      /* ─── CNIC auto-format ────────────────────────────── */
+      function initCnicFormatter() {
+        var input = $('cnic_number');
+        var hint = $('cnic-hint');
+        if (!input) return;
+
+        input.addEventListener('input', function () {
+          var digits = input.value.replace(/\D/g, '').slice(0, 13);
+          var out = digits;
+          if (digits.length > 5) out = digits.slice(0, 5) + '-' + digits.slice(5);
+          if (digits.length > 12) out = digits.slice(0, 5) + '-' + digits.slice(5, 12) + '-' + digits.slice(12);
+          input.value = out;
+
+          var field = $('field-cnic_number');
+          var valid = digits.length === 13;
+
+          if (digits.length === 0) {
+            field.classList.remove('is-invalid');
+            hint.className = 'field-hint';
+            hint.innerHTML = '<i class="fa-regular fa-circle-question"></i> 13 digits — dashes added automatically';
+          } else if (valid) {
+            field.classList.remove('is-invalid');
+            hint.className = 'field-hint ok';
+            hint.innerHTML = '<i class="fa-solid fa-circle-check"></i> Looks good';
+          } else {
+            field.classList.add('is-invalid');
+            hint.className = 'field-hint err';
+            hint.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> ' + (13 - digits.length) + ' more digit(s) needed';
+          }
+        });
+      }
+
+      /* ─── Upload cards ─────────────────────────────────── */
+      function initUploadCards() {
+        var cards = document.querySelectorAll('[data-upload-card]');
+
+        cards.forEach(function (card) {
+          var hiddenInput = card.querySelector('input[type="hidden"]');
+          var fileInput = card.querySelector('input[type="file"]');
+          var previewBox = card.querySelector('[data-preview]');
+          var previewImg = card.querySelector('[data-preview-img]');
+          var fileNameEl = card.querySelector('[data-file-name]');
+
+          if (!hiddenInput || !fileInput || !previewBox) return;
+
+          function applyFile(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+              showToast('Please pick an image file.', 'error');
+              return;
+            }
+            if (file.size > MAX_FILE_SIZE) {
+              showToast('That image is over 5 MB. Please pick a smaller one.', 'error');
+              return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function (ev) {
+              var dataUrl = ev.target.result;
+              previewImg.src = dataUrl;
+              hiddenInput.value = dataUrl;
+              if (fileNameEl) fileNameEl.textContent = file.name || 'image';
+              card.classList.add('filled');
+            };
+            reader.onerror = function () {
+              showToast('Could not read that image. Please try again.', 'error');
+            };
+            reader.readAsDataURL(file);
+          }
+
+          function clearFile() {
+            fileInput.value = '';
+            hiddenInput.value = '';
+            previewImg.removeAttribute('src');
+            if (fileNameEl) fileNameEl.textContent = '';
+            card.classList.remove('filled');
+          }
+
+          previewBox.addEventListener('click', function (e) {
+            if (e.target.closest('[data-action]')) return;
+            fileInput.click();
+          });
+
+          previewBox.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              fileInput.click();
+            }
+          });
+
+          fileInput.addEventListener('change', function () {
+            if (fileInput.files && fileInput.files[0]) applyFile(fileInput.files[0]);
+          });
+
+          card.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            e.stopPropagation();
+            var action = btn.getAttribute('data-action');
+            if (action === 'remove') clearFile();
+            else if (action === 'change') fileInput.click();
+          });
+
+          ['dragenter', 'dragover'].forEach(function (evt) {
+            previewBox.addEventListener(evt, function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              previewBox.classList.add('is-dragover');
+            });
+          });
+          ['dragleave', 'drop'].forEach(function (evt) {
+            previewBox.addEventListener(evt, function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              if (evt === 'dragleave' && previewBox.contains(e.relatedTarget)) return;
+              previewBox.classList.remove('is-dragover');
+            });
+          });
+
+          previewBox.addEventListener('drop', function (e) {
+            var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            if (file) {
+              try {
+                var dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+              } catch (err) { /* ignore */ }
+              applyFile(file);
+            }
+          });
+
+          if (hiddenInput.value && hiddenInput.value.trim()) {
+            previewImg.src = hiddenInput.value;
+            card.classList.add('filled');
+          }
+        });
+      }
+
+      /* ─── Submit ───────────────────────────────────────── */
+      async function submitKyc(e) {
+        e.preventDefault();
+        var btn = $('btn-submit');
+        var btnText = $('btn-submit-text');
+
+        var missing = [];
+        if (!$('full_name_on_cnic').value.trim()) missing.push('Full name');
+        if (!$('cnic_number').value.trim()) missing.push('CNIC number');
+        if (!$('date_of_birth').value) missing.push('Date of birth');
+        if (!$('cnic_front_path').value.trim()) missing.push('CNIC front photo');
+        if (!$('cnic_back_path').value.trim()) missing.push('CNIC back photo');
+        if (!$('selfie_path').value.trim()) missing.push('Selfie');
+        if (!$('selfie_with_cnic_path').value.trim()) missing.push('Selfie with CNIC');
+
+        if (missing.length) {
+          showToast('Still missing: ' + missing.join(', '), 'error');
+          var firstId = !$('full_name_on_cnic').value.trim() ? 'full_name_on_cnic'
+            : !$('cnic_number').value.trim() ? 'cnic_number'
+              : !$('date_of_birth').value ? 'date_of_birth'
+                : !$('cnic_front_path').value.trim() ? 'cnic_front_path'
+                  : !$('cnic_back_path').value.trim() ? 'cnic_back_path'
+                    : !$('selfie_path').value.trim() ? 'selfie_path'
+                      : 'selfie_with_cnic_path';
+          var target = $(firstId);
+          if (target) {
+            var card = target.closest('[data-upload-card]');
+            (card || target).scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          return;
+        }
+
+        btn.disabled = true;
+        btnText.textContent = 'Submitting…';
+        btn.querySelector('i').className = 'fa-solid fa-spinner spin';
+
+        var payload = {
+          full_name_on_cnic: $('full_name_on_cnic').value.trim(),
+          cnic_number: $('cnic_number').value.trim(),
+          date_of_birth: $('date_of_birth').value,
+          father_name: $('father_name').value.trim(),
+          address: $('address').value.trim(),
+          cnic_front_path: $('cnic_front_path').value.trim(),
+          cnic_back_path: $('cnic_back_path').value.trim(),
+          selfie_path: $('selfie_path').value.trim(),
+          selfie_with_cnic_path: $('selfie_with_cnic_path').value.trim()
+        };
+
+        try {
+          await ApiClient.post('/kyc/buyer', payload);
+          showToast('Submitted. We\'ll email you once it\'s reviewed.', 'success');
+          await checkKycStatus();
+        } catch (err) {
+          showToast(err && err.message ? err.message : 'Submission failed. Please try again.', 'error');
+        } finally {
+          btn.disabled = false;
+          btnText.textContent = 'Submit for verification';
+          btn.querySelector('i').className = 'fa-solid fa-paper-plane';
+        }
+      }
+
+      /* ─── Boot ─────────────────────────────────────────── */
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof ApiClient === 'undefined' || !ApiClient.getAccessToken || !ApiClient.getAccessToken()) {
+          window.location.href = '/login.html?redirect=' + encodeURIComponent('/buyer/kyc.html');
+          return;
+        }
+        var form = $('kyc-form');
+        if (form) form.addEventListener('submit', submitKyc);
+        initCnicFormatter();
+        initUploadCards();
+        checkKycStatus();
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

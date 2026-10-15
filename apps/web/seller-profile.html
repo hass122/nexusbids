@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Seller Store &amp; Verified Reviews — NexusBids</title>
+  <meta name="description" content="View verified seller reputation, transaction history, customer reviews and active marketplace auctions on NexusBids Pakistan.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --sp-bg: #f4f6fb;
+      --sp-surface: #ffffff;
+      --sp-surface-2: #f8fafc;
+      --sp-surface-3: #f1f5f9;
+      --sp-border: #e2e8f0;
+      --sp-border-strong: #cbd5e1;
+      --sp-text: #0f172a;
+      --sp-text-muted: #64748b;
+      --sp-text-light: #94a3b8;
+      --sp-shadow-sm: 0 1px 3px rgba(15, 23, 42, .06);
+      --sp-shadow-md: 0 8px 24px -6px rgba(15, 23, 42, .08);
+      --sp-shadow-lg: 0 20px 40px -15px rgba(15, 23, 42, .12);
+    }
+
+    html.dark {
+      --sp-bg: #05070f;
+      --sp-surface: #0b1120;
+      --sp-surface-2: #10172a;
+      --sp-surface-3: #182238;
+      --sp-border: #1e293b;
+      --sp-border-strong: #2e3d5b;
+      --sp-text: #f1f5f9;
+      --sp-text-muted: #94a3b8;
+      --sp-text-light: #64748b;
+      --sp-shadow-sm: 0 1px 3px rgba(0, 0, 0, .4);
+      --sp-shadow-md: 0 8px 24px -6px rgba(0, 0, 0, .6);
+      --sp-shadow-lg: 0 20px 40px -15px rgba(0, 0, 0, .8);
+    }
+
+    body {
+      background: var(--sp-bg);
+      color: var(--sp-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .card {
+      background: var(--sp-surface);
+      border: 1px solid var(--sp-border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: var(--sp-shadow-sm);
+    }
+
+    .stat-box {
+      background: var(--sp-surface-2);
+      border: 1px solid var(--sp-border);
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    .star-bar-bg {
+      background: var(--sp-surface-3);
+      border-radius: 9999px;
+      height: 0.5rem;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .star-bar-fill {
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      height: 100%;
+      border-radius: 9999px;
+      transition: width 0.4s ease;
+    }
+
+    .filter-chip {
+      padding: 0.375rem 0.875rem;
+      border-radius: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--sp-border);
+      background: var(--sp-surface);
+      color: var(--sp-text-muted);
+      transition: all .15s ease;
+    }
+
+    .filter-chip.active {
+      background: #6366f1;
+      border-color: #6366f1;
+      color: #ffffff;
+      box-shadow: 0 4px 12px -2px rgba(99, 102, 241, 0.4);
+    }
+  </style>
+</head>
+
+<body>
+  <header id="nb-header"></header>
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-6 font-medium">
+      <a href="/" class="hover:text-indigo-500 transition-colors">Home</a>
+      <i class="fa-solid fa-chevron-right text-[9px] opacity-40"></i>
+      <a href="/auctions.html" class="hover:text-indigo-500 transition-colors">Auctions</a>
+      <i class="fa-solid fa-chevron-right text-[9px] opacity-40"></i>
+      <span class="text-slate-800 dark:text-slate-200 font-bold" id="bc-seller-name">Seller Store</span>
+    </nav>
+
+    <!-- Loading State -->
+    <div id="page-loading" class="text-center py-24">
+      <i class="fa-solid fa-spinner fa-spin text-3xl text-indigo-500 mb-3"></i>
+      <p class="text-xs text-slate-500">Loading verified seller reputation &amp; reviews...</p>
+    </div>
+
+    <!-- Error State -->
+    <div id="page-error" class="hidden text-center py-24 max-w-md mx-auto">
+      <div class="w-16 h-16 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center text-2xl mx-auto mb-4">
+        <i class="fa-solid fa-store-slash"></i>
+      </div>
+      <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Seller Not Found</h3>
+      <p class="text-xs text-slate-500 dark:text-slate-400 mb-6" id="error-msg">This seller profile is not currently active on NexusBids.</p>
+      <a href="/auctions.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-indigo-600 text-white hover:bg-indigo-500 transition-colors">
+        Browse Auctions
+      </a>
+    </div>
+
+    <!-- Profile Content -->
+    <div id="profile-content" class="hidden space-y-8">
+      <!-- Seller Banner Card -->
+      <div class="card relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950/40 to-slate-900 border-indigo-500/20 text-white p-6 sm:p-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 relative z-10">
+          <div class="flex items-center gap-5">
+            <div id="seller-avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-indigo-600 text-white flex items-center justify-center text-3xl font-black shadow-lg shadow-indigo-500/30 border-2 border-indigo-400/40 shrink-0">
+              S
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5 flex-wrap mb-1.5">
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white" id="seller-name">Seller Name</h1>
+                <span id="badge-verified" class="hidden inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                  <i class="fa-solid fa-circle-check text-xs"></i>
+                  NADRA CNIC Verified
+                </span>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed max-w-xl mb-3" id="seller-bio">
+                Verified commercial auctioneer on NexusBids Pakistan.
+              </p>
+              <div class="flex items-center gap-4 text-xs text-slate-400">
+                <span class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-calendar-check text-indigo-400"></i>
+                  <span id="seller-member-since">Joined 2026</span>
+                </span>
+                <span class="flex items-center gap-1.5">
+                  <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                  <span>100% Escrow Protected</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-4 sm:pt-0 border-t sm:border-t-0 border-slate-800 shrink-0 gap-2">
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl sm:text-5xl font-black text-amber-400" id="big-rating">5.0</span>
+              <span class="text-lg text-amber-400/80 font-bold">/ 5.0</span>
+            </div>
+            <div class="flex items-center gap-1 text-amber-400 text-sm mb-1" id="big-stars"></div>
+            <p class="text-xs text-slate-400" id="big-reviews-count">0 verified reviews</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="stat-box">
+          <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Customer Satisfaction</p>
+          <h4 class="text-2xl font-black text-emerald-500" id="metric-satisfaction">100%</h4>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Positive rating ratio</p>
+        </div>
+
+        <div class="stat-box">
+          <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Completed Deliveries</p>
+          <h4 class="text-2xl font-black text-slate-900 dark:text-slate-100" id="metric-completed-orders">0</h4>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Successfully fulfilled</p>
+        </div>
+
+        <div class="stat-box">
+          <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Verified Reviews</p>
+          <h4 class="text-2xl font-black text-indigo-500" id="metric-total-reviews">0</h4>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">From real buyers</p>
+        </div>
+
+        <div class="stat-box">
+          <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Active Auctions</p>
+          <h4 class="text-2xl font-black text-blue-500" id="metric-active-auctions">0</h4>
+          <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Available for bidding</p>
+        </div>
+      </div>
+
+      <!-- Main Layout: Breakdown + Reviews List -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Left: Rating Breakdown Card -->
+        <div class="lg:col-span-4 card space-y-4">
+          <h3 class="text-base font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+            <i class="fa-solid fa-chart-bar text-indigo-500"></i>
+            Rating Distribution
+          </h3>
+
+          <div class="space-y-2.5 pt-1" id="breakdown-bars">
+            <!-- 5 to 1 Star Bars -->
+          </div>
+
+          <div class="rounded-xl p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 text-xs space-y-2">
+            <div class="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-100">
+              <i class="fa-solid fa-certificate text-indigo-500"></i>
+              Verified Transaction Reviews Only
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-[11px]">
+              Reviews can strictly only be submitted by registered buyers who paid and received items in completed transactions.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Reviews Stream -->
+        <div class="lg:col-span-8 space-y-4">
+          <div class="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-slate-200 dark:border-slate-800">
+            <h3 class="text-base font-extrabold text-slate-900 dark:text-slate-100">
+              Customer Feedback (<span id="reviews-header-count">0</span>)
+            </h3>
+
+            <!-- Star Filter Chips -->
+            <div class="flex items-center gap-1.5 flex-wrap">
+              <button type="button" class="filter-chip active" data-rating="all" onclick="filterReviews('all')">All</button>
+              <button type="button" class="filter-chip" data-rating="5" onclick="filterReviews(5)">5 ★</button>
+              <button type="button" class="filter-chip" data-rating="4" onclick="filterReviews(4)">4 ★</button>
+              <button type="button" class="filter-chip" data-rating="3" onclick="filterReviews(3)">3 ★</button>
+              <button type="button" class="filter-chip" data-rating="critical" onclick="filterReviews('critical')">1-2 ★</button>
+            </div>
+          </div>
+
+          <div id="reviews-list" class="space-y-3">
+            <!-- Review Cards -->
+          </div>
+
+          <div id="reviews-empty" class="hidden text-center py-12 border border-dashed border-slate-300 dark:border-slate-800 rounded-2xl p-6">
+            <i class="fa-solid fa-comment-slash text-2xl text-slate-400 mb-2"></i>
+            <p class="text-xs text-slate-500 dark:text-slate-400">No reviews found matching the selected filter.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      let state = {
+        sellerId: null,
+        data: null,
+        filter: 'all'
+      };
+
+      function esc(s) {
+        return String(s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+      }
+
+      function fmtDate(d) {
+        if (!d) return '—';
+        return new Date(d).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+
+      function renderStars(rating) {
+        let stars = '';
+        for (let i = 1; i <= 5; i++) {
+          if (i <= rating) {
+            stars += '<i class="fa-solid fa-star text-amber-400"></i>';
+          } else {
+            stars += '<i class="fa-solid fa-star text-slate-300 dark:text-slate-700"></i>';
+          }
+        }
+        return stars;
+      }
+
+      window.filterReviews = function (filter) {
+        state.filter = filter;
+        document.querySelectorAll('.filter-chip').forEach(btn => {
+          btn.classList.toggle('active', String(btn.dataset.rating) === String(filter));
+        });
+        renderReviews();
+      };
+
+      window.reportReview = async function (reviewId) {
+        const reason = prompt('Please explain why you are reporting this review for moderation (at least 5 characters):');
+        if (!reason || reason.trim().length < 5) return;
+
+        try {
+          await ApiClient.post(`/reviews/${reviewId}/report`, { reason });
+          UI.showToast('Review reported to administrator for moderation.', 'success');
+        } catch (err) {
+          UI.showToast(err.message || 'Failed to report review', 'error');
+        }
+      };
+
+      function renderBreakdown() {
+        const bd = state.data?.metrics?.rating_breakdown || { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+        const total = state.data?.metrics?.total_reviews || 0;
+        const container = document.getElementById('breakdown-bars');
+
+        let html = '';
+        [5, 4, 3, 2, 1].forEach(star => {
+          const count = bd[star] || 0;
+          const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+          html += `
+            <div class="flex items-center gap-3 text-xs">
+              <span class="w-8 font-bold text-slate-700 dark:text-slate-300 shrink-0">${star} ★</span>
+              <div class="star-bar-bg">
+                <div class="star-bar-fill" style="width: ${pct}%"></div>
+              </div>
+              <span class="w-10 text-right font-medium text-slate-500 shrink-0">${count}</span>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      function renderReviews() {
+        const list = document.getElementById('reviews-list');
+        const empty = document.getElementById('reviews-empty');
+        let reviews = state.data?.reviews || [];
+
+        if (state.filter === 'critical') {
+          reviews = reviews.filter(r => r.rating <= 2);
+        } else if (state.filter !== 'all') {
+          const target = parseInt(state.filter, 10);
+          reviews = reviews.filter(r => r.rating === target);
+        }
+
+        document.getElementById('reviews-header-count').textContent = reviews.length;
+
+        if (reviews.length === 0) {
+          list.classList.add('hidden');
+          empty.classList.remove('hidden');
+          return;
+        }
+
+        empty.classList.add('hidden');
+        list.classList.remove('hidden');
+
+        list.innerHTML = reviews.map(r => `
+          <div class="card p-4 sm:p-5 space-y-3">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center font-bold text-xs text-slate-600 dark:text-slate-300 shrink-0">
+                  ${esc(r.reviewer_name.slice(0, 2))}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-slate-900 dark:text-slate-100">${esc(r.reviewer_name)}</span>
+                    <span class="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                      <i class="fa-solid fa-circle-check text-[9px]"></i> Verified Purchase
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${fmtDate(r.created_at)}</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-1 text-xs shrink-0">
+                ${renderStars(r.rating)}
+              </div>
+            </div>
+
+            <div class="inline-block px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+              <i class="fa-solid fa-gavel text-[10px] text-indigo-500 mr-1"></i>
+              ${esc(r.auction_title)}
+            </div>
+
+            <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
+              ${esc(r.comment || 'No written comment provided.')}
+            </p>
+
+            ${r.seller_reply ? `
+              <div class="rounded-xl bg-indigo-500/5 border border-indigo-500/20 p-3.5 text-xs space-y-1">
+                <span class="font-bold text-indigo-400 block text-[11px]">
+                  <i class="fa-solid fa-reply mr-1"></i> Seller Response (${fmtDate(r.replied_at)}):
+                </span>
+                <p class="text-slate-700 dark:text-slate-300 leading-relaxed">${esc(r.seller_reply)}</p>
+              </div>
+            ` : ''}
+
+            <div class="flex items-center justify-end pt-1">
+              <button type="button" onclick="reportReview(${r.review_id})" class="text-[11px] text-slate-400 hover:text-rose-500 transition-colors flex items-center gap-1">
+                <i class="fa-regular fa-flag"></i> Report
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      async function loadSellerProfile() {
+        const params = new URLSearchParams(window.location.search);
+        state.sellerId = params.get('id');
+
+        if (!state.sellerId) {
+          document.getElementById('page-loading').classList.add('hidden');
+          document.getElementById('page-error').classList.remove('hidden');
+          return;
+        }
+
+        try {
+          const res = await ApiClient.get(`/sellers/${state.sellerId}/reputation`);
+          state.data = res?.data;
+
+          if (!state.data) throw new Error('Seller data not available.');
+
+          const d = state.data;
+          document.title = `${d.seller_name} Store & Reviews — NexusBids`;
+          document.getElementById('bc-seller-name').textContent = d.seller_name;
+          document.getElementById('seller-name').textContent = d.seller_name;
+          document.getElementById('seller-avatar').textContent = (d.seller_name || 'S').slice(0, 1).toUpperCase();
+          if (d.bio) document.getElementById('seller-bio').textContent = d.bio;
+          document.getElementById('seller-member-since').textContent = `Member since ${new Date(d.member_since).getFullYear()}`;
+
+          if (d.is_verified_seller) {
+            document.getElementById('badge-verified').classList.remove('hidden');
+          }
+
+          const m = d.metrics || {};
+          const hasReviews = (m.total_reviews || 0) > 0;
+          document.getElementById('big-rating').textContent = hasReviews ? Number(m.average_rating).toFixed(1) : '—';
+          document.getElementById('big-stars').innerHTML = hasReviews ? renderStars(Math.round(m.average_rating)) : '<span class="text-xs font-semibold text-slate-400">New Seller</span>';
+          document.getElementById('big-reviews-count').textContent = hasReviews ? `${m.total_reviews} verified reviews` : 'No reviews yet';
+
+          document.getElementById('metric-satisfaction').textContent = hasReviews ? `${m.positive_rating_percentage}%` : 'New';
+          document.getElementById('metric-completed-orders').textContent = m.completed_orders || 0;
+          document.getElementById('metric-total-reviews').textContent = m.total_reviews || 0;
+          document.getElementById('metric-active-auctions').textContent = m.active_auctions || 0;
+
+          renderBreakdown();
+          renderReviews();
+
+          document.getElementById('page-loading').classList.add('hidden');
+          document.getElementById('profile-content').classList.remove('hidden');
+        } catch (err) {
+          document.getElementById('page-loading').classList.add('hidden');
+          document.getElementById('page-error').classList.remove('hidden');
+          document.getElementById('error-msg').textContent = err.message || 'Could not load seller profile.';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        UI.setupNavbar();
+        loadSellerProfile();
+      });
+    })();
+  </script>
+</body>
+
+</html>

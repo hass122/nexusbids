@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buyer Dashboard — NexusBids Pakistan</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* ============================================================
+       NexusBids — Buyer Dashboard theme tokens
+       Self-contained: works in light & dark, no Tailwind slate hacks
+       ============================================================ */
+    :root {
+      --d-bg: #f4f6fb;
+      --d-surface: #ffffff;
+      --d-surface-2: #f7f9fc;
+      --d-surface-3: #eceff6;
+      --d-border: #e3e8f0;
+      --d-border-strong: #cfd7e5;
+      --d-text: #0f172a;
+      --d-text-muted: #58627a;
+      --d-text-light: #8d97ab;
+      --d-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --d-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --d-shadow-lg: 0 22px 48px -22px rgba(15, 23, 42, .28);
+      --d-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --d-glow: rgba(99, 102, 241, .18);
+    }
+
+    html.dark {
+      --d-bg: #05070f;
+      --d-surface: #0d1220;
+      --d-surface-2: #121a2b;
+      --d-surface-3: #1a2336;
+      --d-border: #1e2a40;
+      --d-border-strong: #2c3a56;
+      --d-text: #eef2f9;
+      --d-text-muted: #9aa6bd;
+      --d-text-light: #66738d;
+      --d-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --d-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --d-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .8);
+      --d-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+      --d-glow: rgba(99, 102, 241, .22);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--d-bg);
+      color: var(--d-text);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+      overflow-x: hidden;
+    }
+
+    /* Soft ambient glow behind the top of the dashboard */
+    main {
+      position: relative;
+    }
+
+    main::before {
+      content: "";
+      position: absolute;
+      top: -170px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1000px, 100vw);
+      height: 400px;
+      background: radial-gradient(closest-side, var(--d-glow), transparent 78%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    main>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ---------------- Typography ---------------- */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .18);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .14);
+      border-color: rgba(99, 102, 241, .25);
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.2vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.12;
+      color: var(--d-text);
+    }
+
+    .page-sub {
+      font-size: .84rem;
+      color: var(--d-text-muted);
+      margin-top: 7px;
+    }
+
+    /* ---------------- Buttons ---------------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 15px;
+      border-radius: 12px;
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform .22s cubic-bezier(.2, .8, .2, 1), box-shadow .22s, border-color .22s, background-color .22s, color .22s;
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(.975);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+
+    .btn-ghost {
+      background: var(--d-surface);
+      border-color: var(--d-border);
+      color: var(--d-text-muted);
+      box-shadow: var(--d-shadow-sm);
+    }
+
+    .btn-ghost:hover {
+      color: var(--d-text);
+      border-color: var(--d-border-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--d-shadow-md);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(79, 70, 229, .85);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(79, 70, 229, .95);
+    }
+
+    /* ---------------- Stat cards ---------------- */
+    .stat-card {
+      position: relative;
+      background: var(--d-surface);
+      border: 1px solid var(--d-border);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--d-shadow-sm);
+      overflow: hidden;
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s, border-color .3s;
+    }
+
+    .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(150px 100px at 100% 0%, var(--accent-glow), transparent 72%);
+      opacity: .9;
+      pointer-events: none;
+      transition: opacity .3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--d-shadow-lg);
+      border-color: var(--accent);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-icon {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      margin-bottom: 14px;
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .stat-card:hover .stat-icon {
+      transform: scale(1.09) rotate(-5deg);
+    }
+
+    .stat-label {
+      position: relative;
+      font-size: .67rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--d-text-light);
+    }
+
+    .stat-value {
+      position: relative;
+      font-size: clamp(1.5rem, 5vw, 1.9rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-top: 5px;
+      color: var(--accent-text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.02em;
+    }
+
+    /* Accent palettes (light → dark aware) */
+    .stat-brand {
+      --accent: #6366f1;
+      --accent-text: #4f46e5;
+      --accent-soft: rgba(99, 102, 241, .10);
+      --accent-glow: rgba(99, 102, 241, .16);
+    }
+
+    .stat-emerald {
+      --accent: #10b981;
+      --accent-text: #059669;
+      --accent-soft: rgba(16, 185, 129, .10);
+      --accent-glow: rgba(16, 185, 129, .16);
+    }
+
+    .stat-amber {
+      --accent: #f59e0b;
+      --accent-text: #d97706;
+      --accent-soft: rgba(245, 158, 11, .12);
+      --accent-glow: rgba(245, 158, 11, .18);
+    }
+
+    .stat-purple {
+      --accent: #a855f7;
+      --accent-text: #9333ea;
+      --accent-soft: rgba(168, 85, 247, .11);
+      --accent-glow: rgba(168, 85, 247, .17);
+    }
+
+    html.dark .stat-brand {
+      --accent: #818cf8;
+      --accent-text: #a5b4fc;
+      --accent-soft: rgba(99, 102, 241, .16);
+      --accent-glow: rgba(99, 102, 241, .24);
+    }
+
+    html.dark .stat-emerald {
+      --accent: #34d399;
+      --accent-text: #6ee7b7;
+      --accent-soft: rgba(16, 185, 129, .16);
+      --accent-glow: rgba(16, 185, 129, .22);
+    }
+
+    html.dark .stat-amber {
+      --accent: #fbbf24;
+      --accent-text: #fcd34d;
+      --accent-soft: rgba(245, 158, 11, .16);
+      --accent-glow: rgba(245, 158, 11, .22);
+    }
+
+    html.dark .stat-purple {
+      --accent: #c084fc;
+      --accent-text: #d8b4fe;
+      --accent-soft: rgba(168, 85, 247, .16);
+      --accent-glow: rgba(168, 85, 247, .24);
+    }
+
+    /* ---------------- Panel ---------------- */
+    .panel {
+      background: var(--d-surface);
+      border: 1px solid var(--d-border);
+      border-radius: 24px;
+      box-shadow: var(--d-shadow-sm);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--d-border);
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--d-text);
+      letter-spacing: -.01em;
+    }
+
+    .panel-sub {
+      font-size: .72rem;
+      color: var(--d-text-light);
+      margin-top: 3px;
+    }
+
+    .link-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      font-weight: 700;
+      color: #6366f1;
+      text-decoration: none;
+      transition: gap .22s ease, color .22s ease;
+    }
+
+    html.dark .link-more {
+      color: #a5b4fc;
+    }
+
+    .link-more:hover {
+      gap: 10px;
+    }
+
+    .panel-toolbar {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--d-border);
+      background: var(--d-surface-2);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .panel-toolbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .panel-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .panel-body {
+        padding: 20px;
+        gap: 12px;
+      }
+    }
+
+    /* ---------------- Filter tabs ---------------- */
+    .tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--d-surface-3);
+      border: 1px solid var(--d-border);
+      border-radius: 13px;
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 9px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--d-text-muted);
+      font-family: inherit;
+      transition: background-color .2s, color .2s, box-shadow .2s;
+    }
+
+    .tab:hover {
+      color: var(--d-text);
+    }
+
+    .tab:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 1px;
+    }
+
+    .tab.is-active {
+      background: var(--d-surface);
+      color: var(--d-text);
+      box-shadow: var(--d-shadow-sm);
+    }
+
+    .tab .count {
+      font-size: .63rem;
+      font-weight: 800;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: var(--d-surface-3);
+      color: var(--d-text-light);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tab.is-active .count {
+      background: rgba(99, 102, 241, .16);
+      color: #6366f1;
+    }
+
+    html.dark .tab.is-active .count {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .22);
+    }
+
+    /* ---------------- Bid cards ---------------- */
+    .bid-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: var(--d-surface-2);
+      border: 1px solid var(--d-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color .25s, transform .25s cubic-bezier(.2, .8, .2, 1), box-shadow .25s, background-color .25s;
+      animation: cardIn .35s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .bid-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--stripe, transparent);
+    }
+
+    .bid-card:hover {
+      border-color: var(--d-border-strong);
+      transform: translateY(-2px);
+      box-shadow: var(--d-shadow-md);
+      background: var(--d-surface);
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .bid-thumb {
+      position: relative;
+      flex: 0 0 auto;
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--d-surface-3);
+      border: 1px solid var(--d-border);
+      display: block;
+    }
+
+    .bid-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .bid-card:hover .bid-thumb img {
+      transform: scale(1.09);
+    }
+
+    .bid-main {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .bid-title {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: .875rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--d-text);
+      text-decoration: none;
+      transition: color .2s;
+      word-break: break-word;
+    }
+
+    .bid-title:hover {
+      color: #6366f1;
+    }
+
+    html.dark .bid-title:hover {
+      color: #a5b4fc;
+    }
+
+    .bid-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 7px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .015em;
+      white-space: nowrap;
+    }
+
+    .badge-win {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+    }
+
+    .badge-out {
+      background: rgba(244, 63, 94, .11);
+      color: #e11d48;
+    }
+
+    html.dark .badge-win {
+      background: rgba(16, 185, 129, .16);
+      color: #34d399;
+    }
+
+    html.dark .badge-out {
+      background: rgba(244, 63, 94, .16);
+      color: #fb7185;
+    }
+
+    .bid-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .69rem;
+      font-weight: 500;
+      color: var(--d-text-light);
+      white-space: nowrap;
+    }
+
+    .bid-price {
+      flex: 0 0 auto;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .bid-price-label {
+      display: block;
+      font-size: .63rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--d-text-light);
+    }
+
+    .bid-price-value {
+      display: block;
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--d-text);
+      margin-top: 3px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.01em;
+    }
+
+    /* ---------------- Empty state ---------------- */
+    .empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 52px 20px;
+      animation: cardIn .35s ease both;
+    }
+
+    .empty-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 1.45rem;
+      background: var(--d-surface-2);
+      border: 1px solid var(--d-border);
+      color: var(--d-text-light);
+      margin-bottom: 16px;
+    }
+
+    .empty-title {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--d-text);
+    }
+
+    .empty-text {
+      font-size: .78rem;
+      color: var(--d-text-muted);
+      margin-top: 6px;
+      max-width: 340px;
+      line-height: 1.55;
+    }
+
+    .empty .btn {
+      margin-top: 18px;
+    }
+
+    /* ---------------- Skeletons ---------------- */
+    .skeleton {
+      background: var(--d-skeleton);
+      background-size: 400% 100%;
+      border-radius: 8px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0 50%;
+      }
+    }
+
+    .spin {
+      animation: spin .9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ---------------- Mobile refinements ---------------- */
+    @media (max-width: 600px) {
+      .bid-card {
+        flex-wrap: wrap;
+        row-gap: 12px;
+        padding: 14px;
+        align-items: flex-start;
+      }
+
+      .bid-thumb {
+        width: 52px;
+        height: 52px;
+      }
+
+      .bid-main {
+        flex: 1 1 0;
+      }
+
+      .bid-price {
+        flex: 1 1 100%;
+        margin-left: 0;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed var(--d-border);
+      }
+
+      .bid-price-value {
+        margin-top: 0;
+        font-size: 1.05rem;
+      }
+
+      .stat-card {
+        padding: 15px;
+        border-radius: 18px;
+      }
+
+      .stat-icon {
+        width: 38px;
+        height: 38px;
+        font-size: .9rem;
+        margin-bottom: 12px;
+      }
+
+      .panel-head {
+        padding: 16px;
+      }
+
+      .panel-toolbar {
+        padding: 11px 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+
+  <!-- Shared Global Navbar Component -->
+  <header id="nb-header"></header>
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+
+    <!-- ================= Page Header ================= -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7">
+      <div>
+        <span class="eyebrow"><i class="fa-solid fa-bolt"></i> Buyer Workspace</span>
+        <h1 class="page-title mt-3">Buyer Dashboard</h1>
+        <p class="page-sub">Track your active bids, won auctions and orders — all in one place.</p>
+      </div>
+
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <button id="refresh-btn" type="button" class="btn btn-ghost" aria-label="Refresh dashboard">
+          <i class="fa-solid fa-rotate-right" id="refresh-icon"></i>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+
+        <a href="/buyer/kyc.html" class="btn btn-ghost">
+          <i class="fa-solid fa-id-card" style="color:#6366f1"></i> KYC Status
+        </a>
+
+        <a href="/buyer/orders.html" class="btn btn-primary">
+          <i class="fa-solid fa-box"></i> My Orders
+        </a>
+      </div>
+    </div>
+
+    <!-- ================= Quick Stats ================= -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 mb-6 sm:mb-8">
+
+      <a href="/buyer/bids.html" class="stat-card stat-brand cursor-pointer transition-all hover:scale-[1.02] block"
+        style="text-decoration:none">
+        <div class="stat-icon"><i class="fa-solid fa-gavel"></i></div>
+        <p class="stat-label">Active Bids</p>
+        <p id="stat-active-bids" class="stat-value">0</p>
+      </a>
+
+      <a href="/buyer/won-auctions.html"
+        class="stat-card stat-emerald cursor-pointer transition-all hover:scale-[1.02] block"
+        style="text-decoration:none">
+        <div class="stat-icon"><i class="fa-solid fa-trophy"></i></div>
+        <p class="stat-label">Auctions Won</p>
+        <p id="stat-won" class="stat-value">0</p>
+      </a>
+
+      <a href="/buyer/orders.html" class="stat-card stat-amber cursor-pointer transition-all hover:scale-[1.02] block"
+        style="text-decoration:none">
+        <div class="stat-icon"><i class="fa-solid fa-truck-fast"></i></div>
+        <p class="stat-label">Pending Orders</p>
+        <p id="stat-orders" class="stat-value">0</p>
+      </a>
+
+      <a href="/buyer/watchlist.html"
+        class="stat-card stat-purple cursor-pointer transition-all hover:scale-[1.02] block"
+        style="text-decoration:none">
+        <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
+        <p class="stat-label">Watchlist</p>
+        <p id="stat-watchlist" class="stat-value">0</p>
+      </a>
+    </div>
+
+    <!-- ================= Buyer Navigation Hub ================= -->
+    <div class="mb-8 flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+      <a href="/buyer/bids.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-gavel" style="color:#6366f1"></i> My Bids
+      </a>
+      <a href="/buyer/won-auctions.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-trophy" style="color:#10b981"></i> Won Auctions
+      </a>
+      <a href="/buyer/orders.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-box" style="color:#f59e0b"></i> Orders
+      </a>
+      <a href="/buyer/notifications.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-bell" style="color:#818cf8"></i> Notifications
+      </a>
+      <a href="/buyer/addresses.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-map-location-dot" style="color:#f43f5e"></i> Addresses
+      </a>
+      <a href="/buyer/payments.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-wallet" style="color:#10b981"></i> Wallet & Payments
+      </a>
+      <a href="/buyer/reviews.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-star" style="color:#f59e0b"></i> Reviews
+      </a>
+      <a href="/buyer/profile.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-user" style="color:#06b6d4"></i> Profile
+      </a>
+      <a href="/buyer/security.html" class="btn btn-ghost text-xs"
+        style="background:var(--d-surface);border:1px solid var(--d-border)">
+        <i class="fa-solid fa-shield-halved" style="color:#a855f7"></i> Security
+      </a>
+    </div>
+
+    <!-- ================= Recent Bids Panel ================= -->
+    <section class="panel">
+
+      <div class="panel-head">
+        <div>
+          <h2 class="panel-title">Your Recent Bids</h2>
+          <p class="panel-sub" id="bids-updated">Loading activity…</p>
+        </div>
+        <a href="/auctions.html" class="link-more">
+          Browse more <i class="fa-solid fa-arrow-right" style="font-size:.6rem"></i>
+        </a>
+      </div>
+
+      <div class="panel-toolbar">
+        <div class="tabs" role="tablist" aria-label="Filter bids">
+          <button class="tab is-active" data-filter="all" role="tab" aria-selected="true" type="button">
+            All <span class="count" id="count-all">0</span>
+          </button>
+          <button class="tab" data-filter="winning" role="tab" aria-selected="false" type="button">
+            Winning <span class="count" id="count-winning">0</span>
+          </button>
+          <button class="tab" data-filter="outbid" role="tab" aria-selected="false" type="button">
+            Outbid <span class="count" id="count-outbid">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="buyer-bids-table" class="panel-body" aria-live="polite">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Shared Global Footer Component -->
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200';
+
+      const state = {
+        bids: [],
+        filter: 'all',
+        lastUpdated: null
+      };
+
+      /* ---------------- Helpers ---------------- */
+
+      function esc(str) {
+        return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function fmtPKR(value) {
+        try {
+          if (window.UI && typeof UI.formatPKR === 'function') return UI.formatPKR(value);
+        } catch (e) { /* fall through */ }
+        const n = Number(value || 0);
+        return 'PKR ' + n.toLocaleString('en-PK');
+      }
+
+      function timeAgo(dateStr) {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '—';
+        const diff = (Date.now() - d.getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+        return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+
+      function absTime(dateStr) {
+        const d = new Date(dateStr);
+        return isNaN(d.getTime()) ? '' : d.toLocaleString();
+      }
+
+      /* ---------------- Stat animations ---------------- */
+
+      function setStatsLoading() {
+        ['stat-active-bids', 'stat-won', 'stat-orders', 'stat-watchlist'].forEach(function (id) {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.innerHTML = '<span class="skeleton" style="display:inline-block;width:46px;height:24px;border-radius:7px;vertical-align:middle"></span>';
+        });
+      }
+
+      function animateCount(el, target) {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const end = Number(target) || 0;
+
+        if (reduce || end === 0) {
+          el.textContent = end.toLocaleString();
+          return;
+        }
+
+        const duration = 700;
+        const start = performance.now();
+
+        function step(now) {
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = Math.round(end * eased).toLocaleString();
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+
+      function setStat(id, value) {
+        const el = document.getElementById(id);
+        if (el) animateCount(el, value);
+      }
+
+      /* ---------------- Rendering ---------------- */
+
+      function skeletonBids(n) {
+        let html = '';
+        for (let i = 0; i < n; i++) {
+          html +=
+            '<div class="bid-card" style="--stripe:transparent;pointer-events:none">' +
+            '<div class="bid-thumb skeleton" style="border:0;border-radius:12px"></div>' +
+            '<div class="bid-main">' +
+            '<div class="skeleton" style="height:13px;width:min(230px,62%)"></div>' +
+            '<div class="skeleton" style="height:11px;width:118px;margin-top:9px"></div>' +
+            '</div>' +
+            '<div class="bid-price">' +
+            '<div class="skeleton" style="height:10px;width:52px;margin-left:auto"></div>' +
+            '<div class="skeleton" style="height:16px;width:86px;margin-top:7px;margin-left:auto"></div>' +
+            '</div>' +
+            '</div>';
+        }
+        return html;
+      }
+
+      function emptyState(icon, title, text, ctaLabel, ctaHref) {
+        return (
+          '<div class="empty">' +
+          '<div class="empty-icon"><i class="fa-solid ' + icon + '"></i></div>' +
+          '<p class="empty-title">' + esc(title) + '</p>' +
+          '<p class="empty-text">' + esc(text) + '</p>' +
+          (ctaLabel && ctaHref
+            ? '<a href="' + esc(ctaHref) + '" class="btn btn-primary">' + esc(ctaLabel) + ' <i class="fa-solid fa-arrow-right" style="font-size:.6rem"></i></a>'
+            : '') +
+          '</div>'
+        );
+      }
+
+      function bidCard(b) {
+        const win = !!b.is_winning;
+        const href = '/auction-details.html?id=' + encodeURIComponent(b.auction_id);
+        const img = b.image || FALLBACK_IMG;
+
+        return (
+          '<article class="bid-card" style="--stripe:' + (win ? '#10b981' : '#f43f5e') + '">' +
+          '<a class="bid-thumb" href="' + href + '" tabindex="-1" aria-hidden="true">' +
+          '<img src="' + esc(img) + '" alt="" loading="lazy" ' +
+          'onerror="this.onerror=null;this.src=\'' + FALLBACK_IMG + '\'">' +
+          '</a>' +
+          '<div class="bid-main">' +
+          '<a class="bid-title" href="' + href + '">' + esc(b.title || 'Untitled auction') + '</a>' +
+          '<div class="bid-meta">' +
+          '<span class="badge ' + (win ? 'badge-win' : 'badge-out') + '">' +
+          '<i class="fa-solid ' + (win ? 'fa-circle-check' : 'fa-arrow-trend-down') + '"></i>' +
+          (win ? 'Winning' : 'Outbid') +
+          '</span>' +
+          '<span class="bid-time" title="' + esc(absTime(b.bid_time)) + '">' +
+          '<i class="fa-regular fa-clock"></i>' + esc(timeAgo(b.bid_time)) +
+          '</span>' +
+          '</div>' +
+          '</div>' +
+          '<div class="bid-price">' +
+          '<span class="bid-price-label">Your Bid</span>' +
+          '<span class="bid-price-value">' + esc(fmtPKR(b.bid_amount)) + '</span>' +
+          '</div>' +
+          '</article>'
+        );
+      }
+
+      function renderBids() {
+        const wrap = document.getElementById('buyer-bids-table');
+        if (!wrap) return;
+
+        if (!state.bids.length) {
+          wrap.innerHTML = emptyState(
+            'fa-gavel',
+            'No bids yet',
+            "You haven't placed any bids. Explore live auctions and start bidding.",
+            'Browse Auctions',
+            '/auctions.html'
+          );
+          return;
+        }
+
+        const list = state.bids.filter(function (b) {
+          if (state.filter === 'winning') return !!b.is_winning;
+          if (state.filter === 'outbid') return !b.is_winning;
+          return true;
+        });
+
+        if (!list.length) {
+          wrap.innerHTML = emptyState(
+            'fa-filter',
+            'Nothing to show',
+            'No bids match this filter right now. Try selecting a different tab.'
+          );
+          return;
+        }
+
+        wrap.innerHTML = list.map(bidCard).join('');
+      }
+
+      function updateTabCounts() {
+        const total = state.bids.length;
+        const winning = state.bids.filter(function (b) { return !!b.is_winning; }).length;
+        const outbid = total - winning;
+
+        const map = { 'count-all': total, 'count-winning': winning, 'count-outbid': outbid };
+        Object.keys(map).forEach(function (id) {
+          const el = document.getElementById(id);
+          if (el) el.textContent = map[id];
+        });
+      }
+
+      function setUpdatedLabel() {
+        const el = document.getElementById('bids-updated');
+        if (!el) return;
+        state.lastUpdated = new Date();
+        el.textContent = 'Updated ' + state.lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
+      /* ---------------- Data loading ---------------- */
+
+      async function loadDashboard() {
+        const wrap = document.getElementById('buyer-bids-table');
+        if (wrap) wrap.innerHTML = skeletonBids(3);
+        setStatsLoading();
+
+        const [statsRes, bidsRes] = await Promise.allSettled([
+          ApiClient.get('/buyer/dashboard'),
+          ApiClient.get('/buyer/bids')
+        ]);
+
+        // --- Stats ---
+        if (statsRes.status === 'fulfilled') {
+          const stats = (statsRes.value && statsRes.value.data) || {};
+          setStat('stat-active-bids', stats.active_bids_count || 0);
+          setStat('stat-won', stats.won_auctions_count || 0);
+          setStat('stat-orders', stats.pending_orders_count || 0);
+          setStat('stat-watchlist', stats.watchlist_count || 0);
+        } else {
+          console.error('Dashboard stats failed:', statsRes.reason);
+          ['stat-active-bids', 'stat-won', 'stat-orders', 'stat-watchlist'].forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = '—';
+          });
+        }
+
+        // --- Bids ---
+        if (bidsRes.status === 'fulfilled') {
+          const data = bidsRes.value && bidsRes.value.data;
+          state.bids = Array.isArray(data) ? data : [];
+          updateTabCounts();
+          renderBids();
+          setUpdatedLabel();
+        } else {
+          console.error('Bids fetch failed:', bidsRes.reason);
+          if (wrap) {
+            wrap.innerHTML = emptyState(
+              'fa-triangle-exclamation',
+              'Could not load your bids',
+              'Something went wrong while fetching your bidding activity. Please try again.'
+            );
+          }
+          const label = document.getElementById('bids-updated');
+          if (label) label.textContent = 'Failed to load';
+        }
+      }
+
+      /* ---------------- Interactions ---------------- */
+
+      function initTabs() {
+        const tabs = document.querySelectorAll('.tab[data-filter]');
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            const filter = tab.getAttribute('data-filter');
+            if (filter === state.filter) return;
+
+            state.filter = filter;
+            tabs.forEach(function (t) {
+              const active = t === tab;
+              t.classList.toggle('is-active', active);
+              t.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+            renderBids();
+          });
+        });
+      }
+
+      function initRefresh() {
+        const btn = document.getElementById('refresh-btn');
+        const icon = document.getElementById('refresh-icon');
+        if (!btn) return;
+
+        btn.addEventListener('click', async function () {
+          if (btn.disabled) return;
+          btn.disabled = true;
+          if (icon) icon.classList.add('spin');
+          try {
+            await loadDashboard();
+          } finally {
+            if (icon) icon.classList.remove('spin');
+            btn.disabled = false;
+          }
+        });
+      }
+
+      /* ---------------- Boot ---------------- */
+
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof ApiClient === 'undefined' || !ApiClient.getAccessToken || !ApiClient.getAccessToken()) {
+          window.location.href = '/login.html?redirect=' + encodeURIComponent('/buyer/dashboard.html');
+          return;
+        }
+        initTabs();
+        initRefresh();
+        loadDashboard();
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

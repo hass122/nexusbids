@@ -1,0 +1,30 @@
+{
+  "name": "NexusBids — Pakistan's Auction Marketplace",
+  "short_name": "NexusBids",
+  "description": "Buy and sell through secure, NADRA-verified online auctions in Pakistan.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "shortcuts": [
+    {
+      "name": "Live Auctions",
+      "short_name": "Auctions",
+      "description": "Browse active auction listings",
+      "url": "/auctions.html"
+    },
+    {
+      "name": "Seller Studio",
+      "short_name": "Seller",
+      "description": "Manage your listings",
+      "url": "/seller/dashboard.html"
+    }
+  ],
+  "categories": [
+    "shopping",
+    "finance"
+  ],
+  "lang": "ur-PK",
+  "dir": "ltr"
+}

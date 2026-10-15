@@ -1,0 +1,810 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Alerts &amp; Attacks — NexusBids Admin</title>
+  <meta name="description"
+    content="Monitor credential-stuffing attacks, brute force attempts, suspicious IP addresses and active device integrity.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </noscript>
+  <link id="gf-preload" rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --a-bg: #f4f6fb;
+      --a-surface: #ffffff;
+      --a-surface-2: #f7f9fc;
+      --a-surface-3: #eceff6;
+      --a-surface-inset: #f1f4fa;
+      --a-border: #e3e8f0;
+      --a-border-strong: #cfd7e5;
+      --a-text: #0f172a;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68;
+      --a-shadow-sm: 0 1px 2px rgba(15, 23, 41, .04), 0 2px 6px -1px rgba(15, 23, 41, .06);
+      --a-shadow-md: 0 4px 14px -2px rgba(15, 23, 41, .09), 0 2px 6px -1px rgba(15, 23, 41, .05);
+      --a-glow: rgba(244, 63, 94, .06);
+    }
+
+    html.dark {
+      --a-bg: #05070f;
+      --a-surface: #0d1220;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #1a2336;
+      --a-surface-inset: #0b1120;
+      --a-border: #1e2a40;
+      --a-border-strong: #2c3a56;
+      --a-text: #eef2f9;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88;
+      --a-shadow-sm: 0 1px 2px rgba(0, 0, 0, .4), 0 2px 6px -1px rgba(0, 0, 0, .35);
+      --a-shadow-md: 0 4px 16px -2px rgba(0, 0, 0, .55), 0 2px 6px -1px rgba(0, 0, 0, .35);
+      --a-glow: rgba(244, 63, 94, .14);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background-color .25s ease, color .25s ease;
+    }
+
+    /* ===== Panel ===== */
+    .panel {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 20px;
+      box-shadow: var(--a-shadow-sm);
+      overflow: hidden;
+    }
+
+    /* ===== Buttons ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 2px 6px -1px rgba(79, 70, 229, .35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px -2px rgba(79, 70, 229, .45);
+      background: linear-gradient(135deg, #6366f1, #4338ca);
+    }
+
+    .btn-ghost {
+      background: var(--a-surface-2);
+      border-color: var(--a-border);
+      color: var(--a-text-muted);
+    }
+
+    .btn-ghost:hover {
+      background: var(--a-surface-3);
+      color: var(--a-text);
+      border-color: var(--a-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost:disabled {
+      opacity: .55;
+      cursor: progress;
+      transform: none;
+    }
+
+    .btn-icon {
+      padding: 6px 9px;
+      border-radius: 8px;
+      background: var(--a-surface-2);
+      border: 1px solid var(--a-border);
+      color: var(--a-text-muted);
+      cursor: pointer;
+      transition: all .18s ease;
+      font-size: .7rem;
+      line-height: 1;
+    }
+
+    .btn-icon:hover {
+      background: #eef0fe;
+      color: #4f46e5;
+      border-color: #c7cdff;
+      transform: scale(1.05);
+    }
+
+    html.dark .btn-icon:hover {
+      background: rgba(99, 102, 241, .15);
+      color: #a5b4fc;
+      border-color: rgba(99, 102, 241, .35);
+    }
+
+    /* ===== Threat badge ===== */
+    .threat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #be123c;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+    }
+
+    html.dark .threat-badge {
+      color: #fda4af;
+      background: rgba(244, 63, 94, .12);
+      border-color: rgba(244, 63, 94, .25);
+    }
+
+    /* ===== Stat cards ===== */
+    .stat-card {
+      padding: 16px 18px;
+      border-radius: 14px;
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      box-shadow: var(--a-shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--a-shadow-md);
+      border-color: var(--a-border-strong);
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      font-size: .95rem;
+      flex-shrink: 0;
+    }
+
+    .stat-icon.is-rose {
+      background: #fff1f2;
+      color: #e11d48;
+      border: 1px solid #fecdd3;
+    }
+
+    .stat-icon.is-amber {
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+
+    .stat-icon.is-indigo {
+      background: #eef0fe;
+      color: #4f46e5;
+      border: 1px solid #c7cdff;
+    }
+
+    .stat-icon.is-slate {
+      background: var(--a-surface-3);
+      color: var(--a-text-muted);
+      border: 1px solid var(--a-border);
+    }
+
+    html.dark .stat-icon.is-rose {
+      background: rgba(244, 63, 94, .13);
+      color: #fb7185;
+      border-color: rgba(244, 63, 94, .25);
+    }
+
+    html.dark .stat-icon.is-amber {
+      background: rgba(245, 158, 11, .13);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, .25);
+    }
+
+    html.dark .stat-icon.is-indigo {
+      background: rgba(99, 102, 241, .13);
+      color: #a5b4fc;
+      border-color: rgba(99, 102, 241, .25);
+    }
+
+    .stat-label {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--a-text-light);
+    }
+
+    .stat-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--a-text);
+      letter-spacing: -.02em;
+      line-height: 1.1;
+      margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ===== Data Table ===== */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+    }
+
+    .data-table th {
+      padding: 13px 18px;
+      text-align: left;
+      font-size: .68rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--a-text-light);
+      background: var(--a-surface-2);
+      border-bottom: 1px solid var(--a-border);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--a-border);
+      color: var(--a-text);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr {
+      transition: background-color .15s ease;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--a-surface-2);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ===== Outcome badge ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .badge-failed {
+      color: #be123c;
+      background: #fff1f2;
+      border: 1px solid #fecdd3;
+    }
+
+    .badge-success {
+      color: #047857;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+    }
+
+    html.dark .badge-failed {
+      color: #fda4af;
+      background: rgba(244, 63, 94, .13);
+      border-color: rgba(244, 63, 94, .28);
+    }
+
+    html.dark .badge-success {
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, .13);
+      border-color: rgba(16, 185, 129, .28);
+    }
+
+    .badge::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: .85;
+    }
+
+    /* ===== IP chip ===== */
+    .ip-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+      font-size: .75rem;
+      font-weight: 600;
+      color: #4338ca;
+      background: #eef0fe;
+      border: 1px solid #dbe0ff;
+      padding: 3px 9px;
+      border-radius: 7px;
+    }
+
+    html.dark .ip-chip {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .12);
+      border-color: rgba(99, 102, 241, .25);
+    }
+
+    /* ===== Target cell ===== */
+    .target-email {
+      font-weight: 700;
+      font-size: .82rem;
+      color: var(--a-text);
+      word-break: break-all;
+    }
+
+    .target-email.is-anon {
+      color: var(--a-text-light);
+      font-style: italic;
+      font-weight: 600;
+    }
+
+    .target-meta {
+      font-size: .68rem;
+      color: var(--a-text-muted);
+      margin-top: 2px;
+      text-transform: capitalize;
+    }
+
+    /* ===== Timestamp ===== */
+    .ts-time {
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--a-text);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .ts-date {
+      font-size: .66rem;
+      color: var(--a-text-light);
+      margin-top: 2px;
+    }
+
+    /* ===== User Agent ===== */
+    .ua-cell {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .7rem;
+      color: var(--a-text-muted);
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      display: block;
+    }
+
+    /* ===== Failure reason ===== */
+    .reason {
+      font-size: .76rem;
+      font-weight: 600;
+    }
+
+    .reason.is-fail {
+      color: #be123c;
+    }
+
+    .reason.is-ok {
+      color: #047857;
+    }
+
+    html.dark .reason.is-fail {
+      color: #fda4af;
+    }
+
+    html.dark .reason.is-ok {
+      color: #6ee7b7;
+    }
+
+    /* ===== Empty / Loading states ===== */
+    .table-state {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--a-text-muted);
+      font-size: .85rem;
+    }
+
+    .table-state i {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+      display: block;
+      opacity: .55;
+    }
+
+    /* ===== Skeleton ===== */
+    .skel {
+      height: 12px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--a-surface-3) 20%, var(--a-surface-2) 45%, var(--a-surface-3) 70%);
+      background-size: 200% 100%;
+      animation: shimmer 1.3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: -100% 50%;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <!-- ================= Header ================= -->
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7">
+      <div>
+        <div class="threat-badge mb-3">
+          <i class="fa-solid fa-shield-virus"></i> Threat Intelligence
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black" style="color:var(--a-text);letter-spacing:-.025em">
+          Security &amp; Attack Monitoring
+        </h1>
+        <p class="text-xs sm:text-sm mt-2 max-w-2xl" style="color:var(--a-text-muted);line-height:1.6">
+          Audit failed authentication spikes, brute-force attempts, unauthorized role modifications and anomalous IP
+          sources.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2 flex-wrap">
+        <a href="/admin/activity-logs.html" class="btn btn-primary">
+          <i class="fa-solid fa-clipboard-list"></i>
+          <span>Activity Audit Log</span>
+        </a>
+        <button id="refresh-btn" onclick="loadSecurityAlerts()" class="btn btn-ghost">
+          <i class="fa-solid fa-rotate-right" id="refresh-icon"></i>
+          <span>Refresh</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= Stats Summary ================= -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5 mb-7">
+      <div class="stat-card">
+        <div class="stat-icon is-rose"><i class="fa-solid fa-circle-xmark"></i></div>
+        <div>
+          <div class="stat-label">Failed Attempts</div>
+          <div class="stat-value" id="stat-failed">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon is-indigo"><i class="fa-solid fa-fingerprint"></i></div>
+        <div>
+          <div class="stat-label">Unique IPs</div>
+          <div class="stat-value" id="stat-ips">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon is-amber"><i class="fa-solid fa-user-secret"></i></div>
+        <div>
+          <div class="stat-label">Unknown Accounts</div>
+          <div class="stat-value" id="stat-anon">—</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon is-slate"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        <div>
+          <div class="stat-label">Last Incident</div>
+          <div class="stat-value" id="stat-last" style="font-size:.95rem">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= Table ================= -->
+    <div class="panel">
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Target Account</th>
+              <th>IP Origin</th>
+              <th>Outcome</th>
+              <th>Failure Diagnostics</th>
+              <th>User Agent</th>
+              <th class="text-right">Mitigation</th>
+            </tr>
+          </thead>
+          <tbody id="security-table-body">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script>
+    // ─────────────────────────────────────────────────────────────────────────
+    // Helper: pick first non-empty field from a list of possible keys
+    // ─────────────────────────────────────────────────────────────────────────
+    function pick(obj, keys) {
+      if (!obj) return '';
+      for (const k of keys) {
+        const v = obj[k];
+        if (v !== null && v !== undefined && String(v).trim() !== '') return String(v);
+      }
+      return '';
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Extract best-guess target email from an attempt record
+    // ─────────────────────────────────────────────────────────────────────────
+    function extractTarget(a) {
+      // Try every plausible field name the backend might use
+      const email = pick(a, [
+        'email', 'attempted_email', 'username', 'identifier',
+        'login_identifier', 'target_email', 'account', 'user_email',
+        'attempted_username'
+      ]);
+
+      // Nested user object (some backends return { user: { email } })
+      const nestedEmail = a.user && (
+        pick(a.user, ['email', 'username']) ||
+        pick(a.user, ['email_address'])
+      );
+
+      const finalEmail = email || nestedEmail || '';
+
+      // Check if we have a real user account attached
+      const fullName = pick(a, ['full_name']) || (a.user && pick(a.user, ['full_name'])) || '';
+      const role = pick(a, ['role']) || (a.user && pick(a.user, ['role'])) || '';
+      const userId = pick(a, ['user_id']) || (a.user && pick(a.user, ['id'])) || '';
+
+      // Anonymous = no email AND no linked user ID
+      const isAnonymous = !finalEmail && !userId;
+
+      return { email: finalEmail, fullName, role, userId, isAnonymous };
+    }
+
+    function renderSkeletons(tbody) {
+      tbody.innerHTML = Array(5).fill(0).map(() => `
+        <tr>
+          <td><div class="skel" style="width:70px"></div><div class="skel" style="width:50px;margin-top:5px;height:8px"></div></td>
+          <td><div class="skel" style="width:140px"></div></td>
+          <td><div class="skel" style="width:90px"></div></td>
+          <td><div class="skel" style="width:70px"></div></td>
+          <td><div class="skel" style="width:120px"></div></td>
+          <td><div class="skel" style="width:180px"></div></td>
+          <td><div class="skel" style="width:32px;margin-left:auto"></div></td>
+        </tr>
+      `).join('');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Update top stat cards
+    // ─────────────────────────────────────────────────────────────────────────
+    function updateStats(attempts) {
+      let failed = 0, anon = 0;
+      const ipSet = new Set();
+      let latestTs = 0;
+
+      attempts.forEach(a => {
+        if (!a.success) failed++;
+        const t = extractTarget(a);
+        if (t.isAnonymous) anon++;
+        if (a.ip_address) ipSet.add(a.ip_address);
+        const ts = new Date(a.created_at).getTime();
+        if (ts > latestTs) latestTs = ts;
+      });
+
+      document.getElementById('stat-failed').textContent = failed.toLocaleString();
+      document.getElementById('stat-ips').textContent = ipSet.size.toLocaleString();
+      document.getElementById('stat-anon').textContent = anon.toLocaleString();
+
+      const lastEl = document.getElementById('stat-last');
+      if (latestTs) {
+        const diff = Date.now() - latestTs;
+        const mins = Math.floor(diff / 60000);
+        const hrs = Math.floor(mins / 60);
+        lastEl.textContent = mins < 1 ? 'Just now'
+          : mins < 60 ? `${mins}m ago`
+            : hrs < 24 ? `${hrs}h ago`
+              : new Date(latestTs).toLocaleDateString('en-PK');
+      } else {
+        lastEl.textContent = '—';
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Main loader
+    // ─────────────────────────────────────────────────────────────────────────
+    async function loadSecurityAlerts() {
+      const tbody = document.getElementById('security-table-body');
+      const refreshBtn = document.getElementById('refresh-btn');
+      const refreshIcon = document.getElementById('refresh-icon');
+
+      if (refreshBtn) refreshBtn.disabled = true;
+      if (refreshIcon) refreshIcon.classList.add('fa-spin');
+
+      renderSkeletons(tbody);
+
+      try {
+        const res = await ApiClient.get('/admin/security-alerts');
+        const attempts = (res && res.data) || [];
+
+        if (!attempts.length) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7">
+                <div class="table-state">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  <strong style="display:block;color:var(--a-text);margin-bottom:4px">All Clear</strong>
+                  No security alerts in the past 24 hours.
+                </div>
+              </td>
+            </tr>`;
+          updateStats([]);
+          return;
+        }
+
+        tbody.innerHTML = attempts.map(a => {
+          const isSuccess = !!a.success;
+          const target = extractTarget(a);
+          const created = new Date(a.created_at);
+          const ip = pick(a, ['ip_address', 'ip', 'source_ip']) || '127.0.0.1';
+          const ua = pick(a, ['user_agent', 'device', 'agent']) || 'Unknown Client';
+          const reason = pick(a, ['failure_reason', 'reason', 'message'])
+            || (isSuccess ? 'Successful Authentication' : 'Invalid Credentials');
+
+          // Target cell markup
+          const targetCell = target.isAnonymous
+            ? `<span class="target-email is-anon">
+                 <i class="fa-solid fa-user-secret" style="opacity:.7"></i>
+                 Unknown Account
+               </span>
+               <div class="target-meta">Not linked to a user record</div>`
+            : `<span class="target-email">${UI.escapeHtml(target.email)}</span>
+               ${target.fullName || target.role
+              ? `<div class="target-meta">
+                      ${target.fullName ? UI.escapeHtml(target.fullName) : ''}
+                      ${target.fullName && target.role ? ' · ' : ''}
+                      ${target.role ? UI.escapeHtml(target.role) : ''}
+                    </div>`
+              : ''}`;
+
+          return `
+            <tr>
+              <td>
+                <div class="ts-time">${created.toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
+                <div class="ts-date">${created.toLocaleDateString('en-PK')}</div>
+              </td>
+              <td>${targetCell}</td>
+              <td><span class="ip-chip">${UI.escapeHtml(ip)}</span></td>
+              <td>
+                <span class="badge ${isSuccess ? 'badge-success' : 'badge-failed'}">
+                  ${isSuccess ? 'Authorized' : 'Failed'}
+                </span>
+              </td>
+              <td>
+                <span class="reason ${isSuccess ? 'is-ok' : 'is-fail'}">
+                  ${UI.escapeHtml(reason)}
+                </span>
+              </td>
+              <td>
+                <span class="ua-cell" title="${UI.escapeHtml(ua)}">
+                  ${UI.escapeHtml(ua)}
+                </span>
+              </td>
+              <td class="text-right">
+                <button type="button" onclick="copyIp('${UI.escapeHtml(ip)}')" class="btn-icon" title="Copy IP address" aria-label="Copy IP address">
+                  <i class="fa-solid fa-copy"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        updateStats(attempts);
+      } catch (err) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="table-state" style="color:#e11d48">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <strong style="display:block;color:#e11d48;margin-bottom:4px">Failed to load alerts</strong>
+                ${UI.escapeHtml(err.message || 'Unknown error occurred.')}
+              </div>
+            </td>
+          </tr>`;
+      } finally {
+        if (refreshBtn) refreshBtn.disabled = false;
+        if (refreshIcon) refreshIcon.classList.remove('fa-spin');
+      }
+    }
+
+    function copyIp(ip) {
+      if (!ip) return;
+      navigator.clipboard.writeText(ip).then(() => {
+        UI.showToast(`IP ${ip} copied to clipboard.`, 'success');
+      }).catch(() => {
+        UI.showToast('Failed to copy IP.', 'error');
+      });
+    }
+
+    // ✅ FIXED: admin role guard added
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = ApiClient.getUserRole && ApiClient.getUserRole();
+      if (!ApiClient.isAuthenticated() || role !== 'admin') {
+        window.location.href = '/login.html?redirect=/admin/security.html';
+        return;
+      }
+
+      loadSecurityAlerts();
+    });
+  </script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

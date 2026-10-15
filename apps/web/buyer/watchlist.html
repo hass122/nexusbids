@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Watchlist — NexusBids Pakistan</title>
+  <meta name="description" content="Track your saved auctions, live bids, and real-time countdowns on NexusBids.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --o-bg: #f4f6fb;
+      --o-surface: #ffffff;
+      --o-surface-2: #f7f9fc;
+      --o-surface-3: #eceff6;
+      --o-border: #e3e8f0;
+      --o-border-strong: #cfd7e5;
+      --o-text: #0f172a;
+      --o-text-muted: #58627a;
+      --o-text-light: #8d97ab;
+      --o-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --o-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --o-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .30);
+      --o-glow: rgba(99, 102, 241, .13);
+      --o-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+    }
+
+    html.dark {
+      --o-bg: #05070f;
+      --o-surface: #0d1220;
+      --o-surface-2: #121a2b;
+      --o-surface-3: #1a2336;
+      --o-border: #1e2a40;
+      --o-border-strong: #2c3a56;
+      --o-text: #eef2f9;
+      --o-text-muted: #9aa6bd;
+      --o-text-light: #66738d;
+      --o-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --o-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --o-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .85);
+      --o-glow: rgba(99, 102, 241, .20);
+      --o-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+    }
+
+    body.page {
+      background: var(--o-bg);
+      color: var(--o-text);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+      overflow-x: hidden;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .28);
+    }
+
+    .page-title {
+      font-size: clamp(1.45rem, 2.8vw, 1.95rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      color: var(--o-text);
+      line-height: 1.2;
+    }
+
+    .page-sub {
+      font-size: .88rem;
+      color: var(--o-text-muted);
+      margin-top: 4px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 11px;
+      font-size: .8rem;
+      font-weight: 600;
+      line-height: 1;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .18s cubic-bezier(.4, 0, .2, 1);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #ffffff;
+      box-shadow: 0 4px 14px -2px rgba(79, 70, 229, .45);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4338ca, #4f46e5);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px -2px rgba(79, 70, 229, .55);
+    }
+
+    .btn-ghost {
+      background: var(--o-surface);
+      color: var(--o-text);
+      border-color: var(--o-border);
+    }
+
+    .btn-ghost:hover {
+      background: var(--o-surface-2);
+      border-color: var(--o-border-strong);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, .12);
+      color: #ef4444;
+      border-color: rgba(239, 68, 68, .28);
+    }
+
+    .btn-danger:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+      background: var(--o-surface);
+      border: 1px solid var(--o-border);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--o-shadow-sm);
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--o-border-strong);
+      box-shadow: var(--o-shadow-md);
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .stat-rose .stat-icon {
+      background: rgba(244, 63, 94, .12);
+      color: #f43f5e;
+      border: 1px solid rgba(244, 63, 94, .25);
+    }
+
+    .stat-emerald .stat-icon {
+      background: rgba(16, 185, 129, .12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, .25);
+    }
+
+    .stat-amber .stat-icon {
+      background: rgba(245, 158, 11, .12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, .25);
+    }
+
+    .stat-indigo .stat-icon {
+      background: rgba(99, 102, 241, .12);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, .25);
+    }
+
+    .stat-label {
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--o-text-muted);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .stat-val {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--o-text);
+      line-height: 1.15;
+      margin-top: 3px;
+    }
+
+    /* Toolbar & Tabs */
+    .toolbar {
+      background: var(--o-surface);
+      border: 1px solid var(--o-border);
+      border-radius: 16px;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--o-shadow-sm);
+    }
+
+    .tabs {
+      display: inline-flex;
+      background: var(--o-surface-2);
+      border: 1px solid var(--o-border);
+      border-radius: 12px;
+      padding: 4px;
+      gap: 4px;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
+    .tab-btn {
+      padding: 7px 14px;
+      border-radius: 9px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--o-text-muted);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      transition: all .16s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--o-text);
+      background: rgba(99, 102, 241, .06);
+    }
+
+    .tab-btn.is-active {
+      color: #ffffff;
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      box-shadow: 0 2px 8px rgba(79, 70, 229, .35);
+    }
+
+    .tab-badge {
+      font-size: .68rem;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .14);
+      font-weight: 700;
+    }
+
+    .tab-btn:not(.is-active) .tab-badge {
+      background: var(--o-surface-3);
+      color: var(--o-text-muted);
+    }
+
+    /* Grid & List Cards */
+    .watch-card {
+      background: var(--o-surface);
+      border: 1px solid var(--o-border);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--o-shadow-sm);
+      transition: transform .22s cubic-bezier(.4, 0, .2, 1), box-shadow .22s ease, border-color .22s ease;
+      position: relative;
+    }
+
+    .watch-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--o-shadow-md);
+      border-color: rgba(99, 102, 241, .35);
+    }
+
+    .watch-img-wrap {
+      position: relative;
+      height: 200px;
+      overflow: hidden;
+      background: var(--o-surface-2);
+    }
+
+    .watch-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .4s ease;
+    }
+
+    .watch-card:hover .watch-img {
+      transform: scale(1.04);
+    }
+
+    .remove-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, .75);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, .2);
+      color: #f43f5e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: .95rem;
+      transition: all .18s ease;
+      z-index: 2;
+    }
+
+    .remove-btn:hover {
+      background: #f43f5e;
+      color: #ffffff;
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(244, 63, 94, .45);
+    }
+
+    .countdown-chip {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 700;
+      backdrop-filter: blur(8px);
+      background: rgba(15, 23, 42, .82);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, .15);
+      z-index: 2;
+    }
+
+    .countdown-chip.is-urgent {
+      background: rgba(225, 29, 72, .92);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, .3);
+      animation: pulse-badge 1.8s infinite;
+    }
+
+    .countdown-chip.is-ended {
+      background: rgba(71, 85, 105, .88);
+      color: #cbd5e1;
+    }
+
+    @keyframes pulse-badge {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(225, 29, 72, .5);
+      }
+
+      50% {
+        box-shadow: 0 0 0 6px rgba(225, 29, 72, 0);
+      }
+    }
+
+    .category-chip {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      padding: 3px 9px;
+      border-radius: 8px;
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      background: rgba(15, 23, 42, .82);
+      backdrop-filter: blur(8px);
+      color: #818cf8;
+      border: 1px solid rgba(129, 140, 248, .3);
+      z-index: 2;
+    }
+
+    /* List View Format */
+    .watch-list-row {
+      background: var(--o-surface);
+      border: 1px solid var(--o-border);
+      border-radius: 16px;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--o-shadow-sm);
+      transition: all .2s ease;
+    }
+
+    @media (min-width: 768px) {
+      .watch-list-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .watch-list-row:hover {
+      border-color: rgba(99, 102, 241, .35);
+      box-shadow: var(--o-shadow-md);
+      transform: translateX(2px);
+    }
+
+    /* Skeletons */
+    .skel {
+      background: var(--o-skeleton);
+      background-size: 200% 100%;
+      animation: skel-anim 1.5s infinite;
+      border-radius: 8px;
+    }
+
+    @keyframes skel-anim {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+
+  <!-- Shared Global Navbar Component -->
+  <header id="nb-header"></header>
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+
+    <!-- ================= Page Header ================= -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="eyebrow"><i class="fa-solid fa-heart text-rose-500"></i> Buyer Watchlist</span>
+          <span id="header-count-pill"
+            class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            0 items
+          </span>
+        </div>
+        <h1 class="page-title mt-2.5">My Saved Auctions</h1>
+        <p class="page-sub">
+          Monitor real-time bidding updates, live time countdowns, and jump into auctions before they close.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <button id="refresh-btn" type="button" class="btn btn-ghost" onclick="WatchlistApp.loadWatchlist(true)"
+          title="Refresh Watchlist">
+          <i class="fa-solid fa-rotate-right" id="refresh-icon"></i>
+          <span class="hidden sm:inline">Refresh</span>
+        </button>
+
+        <a href="/auctions.html" class="btn btn-primary">
+          <i class="fa-solid fa-gavel"></i> Explore Auctions
+        </a>
+
+        <button id="clear-all-btn" type="button" class="btn btn-danger hidden" onclick="WatchlistApp.confirmClearAll()"
+          title="Clear all watchlist items">
+          <i class="fa-solid fa-trash-can"></i>
+          <span class="hidden sm:inline">Clear All</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= Stat Cards ================= -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="stat-card stat-rose">
+        <div class="stat-icon"><i class="fa-solid fa-heart"></i></div>
+        <div>
+          <p class="stat-label">Saved Items</p>
+          <p id="stat-total" class="stat-val">0</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-emerald">
+        <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div>
+          <p class="stat-label">Live &amp; Active</p>
+          <p id="stat-active" class="stat-val">0</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-amber">
+        <div class="stat-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+        <div>
+          <p class="stat-label">Ending in 24h</p>
+          <p id="stat-ending-soon" class="stat-val">0</p>
+        </div>
+      </div>
+
+      <div class="stat-card stat-indigo">
+        <div class="stat-icon"><i class="fa-solid fa-tag"></i></div>
+        <div>
+          <p class="stat-label">Tracked Value</p>
+          <p id="stat-value" class="stat-val">Rs. 0</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= Toolbar & Tabs ================= -->
+    <div class="toolbar mb-7">
+      <!-- Filter Tabs -->
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab-btn is-active" data-filter="all" onclick="WatchlistApp.setFilter('all')">
+          <i class="fa-solid fa-layer-group"></i> All Items
+          <span class="tab-badge" id="tab-cnt-all">0</span>
+        </button>
+        <button type="button" class="tab-btn" data-filter="active" onclick="WatchlistApp.setFilter('active')">
+          <i class="fa-solid fa-circle-check text-emerald-400"></i> Active
+          <span class="tab-badge" id="tab-cnt-active">0</span>
+        </button>
+        <button type="button" class="tab-btn" data-filter="urgent" onclick="WatchlistApp.setFilter('urgent')">
+          <i class="fa-solid fa-fire text-amber-400"></i> Ending Soon
+          <span class="tab-badge" id="tab-cnt-urgent">0</span>
+        </button>
+        <button type="button" class="tab-btn" data-filter="ended" onclick="WatchlistApp.setFilter('ended')">
+          <i class="fa-solid fa-flag-checkered text-slate-400"></i> Ended
+          <span class="tab-badge" id="tab-cnt-ended">0</span>
+        </button>
+      </div>
+
+      <!-- Search, Sort & View Mode -->
+      <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
+        <!-- Quick search -->
+        <div class="relative flex-1 md:w-56">
+          <i
+            class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+          <input type="text" id="watchlist-search" placeholder="Filter saved items…"
+            class="w-full pl-8 pr-3 py-1.5 text-xs rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500"
+            oninput="WatchlistApp.handleSearch(this.value)">
+        </div>
+
+        <!-- Sort Select -->
+        <select id="watchlist-sort"
+          class="py-1.5 px-3 text-xs rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-indigo-500 cursor-pointer"
+          onchange="WatchlistApp.setSort(this.value)">
+          <option value="recent">Recently Added</option>
+          <option value="ending">Ending Soonest</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+          <option value="bids">Most Bids</option>
+        </select>
+
+        <!-- View mode buttons -->
+        <div
+          class="hidden sm:inline-flex bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl p-0.5">
+          <button type="button" id="view-grid-btn"
+            class="p-1.5 px-2.5 rounded-lg text-xs font-bold text-indigo-500 bg-white dark:bg-slate-700 shadow-sm"
+            onclick="WatchlistApp.setViewMode('grid')" title="Grid view">
+            <i class="fa-solid fa-table-cells-large"></i>
+          </button>
+          <button type="button" id="view-list-btn"
+            class="p-1.5 px-2.5 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200"
+            onclick="WatchlistApp.setViewMode('list')" title="List view">
+            <i class="fa-solid fa-list"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= Content Container ================= -->
+    <div id="watchlist-container" class="min-h-[300px]">
+      <!-- Populated via JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- Shared Global Footer Component -->
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/ai-chat.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+
+      const state = {
+        items: [],
+        filter: 'all',
+        searchQuery: '',
+        sortBy: 'recent',
+        viewMode: localStorage.getItem('nb_watchlist_view') || 'grid',
+        loading: true,
+      };
+
+      let tickerInterval = null;
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function formatPKR(val) {
+        if (window.UI && UI.formatPKR) return UI.formatPKR(val);
+        const n = parseFloat(val) || 0;
+        return 'Rs. ' + n.toLocaleString('en-PK');
+      }
+
+      function getTimeRemaining(endTimeStr) {
+        if (!endTimeStr) return { ended: true, text: 'Ended', isUrgent: false };
+        const end = new Date(endTimeStr).getTime();
+        const now = window.UI && UI.getSyncedNow ? UI.getSyncedNow() : Date.now();
+        const diff = Math.max(0, Math.floor((end - now) / 1000));
+
+        if (diff <= 0) return { ended: true, text: 'Ended', isUrgent: false, diff: 0 };
+
+        const days = Math.floor(diff / 86400);
+        const hours = Math.floor((diff % 86400) / 3600);
+        const minutes = Math.floor((diff % 3600) / 60);
+        const seconds = diff % 60;
+        const isUrgent = diff < 3600; // < 1 hour
+
+        let text = '';
+        if (days > 0) text = `${days}d ${hours}h`;
+        else if (hours > 0) text = `${hours}h ${minutes}m`;
+        else text = `${minutes}m ${seconds}s`;
+
+        return { ended: false, text: text + ' left', isUrgent, diff };
+      }
+
+      const WatchlistApp = {
+        async init() {
+          // Check authentication
+          if (!ApiClient.getAccessToken || !ApiClient.getAccessToken()) {
+            this.renderAuthPrompt();
+            return;
+          }
+
+          this.syncViewButtons();
+          await this.loadWatchlist();
+          this.startTicker();
+        },
+
+        startTicker() {
+          if (tickerInterval) clearInterval(tickerInterval);
+          tickerInterval = setInterval(() => {
+            this.updateTimers();
+          }, 1000);
+        },
+
+        updateTimers() {
+          const timerEls = document.querySelectorAll('[data-timer-end]');
+          timerEls.forEach(el => {
+            const end = el.getAttribute('data-timer-end');
+            const res = getTimeRemaining(end);
+            el.textContent = res.text;
+            if (res.ended) {
+              el.closest('.countdown-chip')?.classList.add('is-ended');
+              el.closest('.countdown-chip')?.classList.remove('is-urgent');
+            } else if (res.isUrgent) {
+              el.closest('.countdown-chip')?.classList.add('is-urgent');
+              el.closest('.countdown-chip')?.classList.remove('is-ended');
+            }
+          });
+        },
+
+        async loadWatchlist(showSpin = false) {
+          const spinIcon = document.getElementById('refresh-icon');
+          if (showSpin && spinIcon) spinIcon.classList.add('fa-spin');
+
+          if (!showSpin) {
+            this.renderSkeletons();
+          }
+
+          try {
+            const res = await ApiClient.get('/watchlist');
+            state.items = Array.isArray(res?.data) ? res.data : [];
+            state.loading = false;
+            this.updateStats();
+            this.renderContent();
+          } catch (err) {
+            console.error('Watchlist fetch error:', err);
+            state.loading = false;
+            this.renderError(err.message || 'Failed to load watchlist items.');
+          } finally {
+            if (spinIcon) spinIcon.classList.remove('fa-spin');
+          }
+        },
+
+        updateStats() {
+          const now = window.UI && UI.getSyncedNow ? UI.getSyncedNow() : Date.now();
+          const total = state.items.length;
+
+          let activeCount = 0;
+          let endingSoonCount = 0;
+          let totalValue = 0;
+
+          state.items.forEach(item => {
+            const end = new Date(item.end_time).getTime();
+            const isActive = item.auction_status === 'active' && end > now;
+            const isEndingSoon = isActive && (end - now) < (24 * 3600 * 1000);
+            const price = parseFloat(item.current_bid || item.starting_price || 0);
+
+            if (isActive) activeCount++;
+            if (isEndingSoon) endingSoonCount++;
+            totalValue += price;
+          });
+
+          const endedCount = total - activeCount;
+
+          document.getElementById('stat-total').textContent = total;
+          document.getElementById('stat-active').textContent = activeCount;
+          document.getElementById('stat-ending-soon').textContent = endingSoonCount;
+          document.getElementById('stat-value').textContent = formatPKR(totalValue);
+
+          document.getElementById('tab-cnt-all').textContent = total;
+          document.getElementById('tab-cnt-active').textContent = activeCount;
+          document.getElementById('tab-cnt-urgent').textContent = endingSoonCount;
+          document.getElementById('tab-cnt-ended').textContent = endedCount;
+
+          document.getElementById('header-count-pill').textContent = `${total} ${total === 1 ? 'item' : 'items'}`;
+
+          const clearBtn = document.getElementById('clear-all-btn');
+          if (clearBtn) {
+            clearBtn.classList.toggle('hidden', total === 0);
+          }
+        },
+
+        getFilteredItems() {
+          const now = window.UI && UI.getSyncedNow ? UI.getSyncedNow() : Date.now();
+          let list = [...state.items];
+
+          // Tab Filter
+          if (state.filter === 'active') {
+            list = list.filter(i => i.auction_status === 'active' && new Date(i.end_time).getTime() > now);
+          } else if (state.filter === 'urgent') {
+            list = list.filter(i => {
+              const diff = new Date(i.end_time).getTime() - now;
+              return i.auction_status === 'active' && diff > 0 && diff < (24 * 3600 * 1000);
+            });
+          } else if (state.filter === 'ended') {
+            list = list.filter(i => i.auction_status !== 'active' || new Date(i.end_time).getTime() <= now);
+          }
+
+          // Search Filter
+          if (state.searchQuery.trim()) {
+            const q = state.searchQuery.toLowerCase();
+            list = list.filter(i =>
+              (i.title && i.title.toLowerCase().includes(q)) ||
+              (i.category_name && i.category_name.toLowerCase().includes(q))
+            );
+          }
+
+          // Sorting
+          list.sort((a, b) => {
+            if (state.sortBy === 'ending') {
+              return new Date(a.end_time).getTime() - new Date(b.end_time).getTime();
+            }
+            if (state.sortBy === 'price_asc') {
+              const pa = parseFloat(a.current_bid || a.starting_price || 0);
+              const pb = parseFloat(b.current_bid || b.starting_price || 0);
+              return pa - pb;
+            }
+            if (state.sortBy === 'price_desc') {
+              const pa = parseFloat(a.current_bid || a.starting_price || 0);
+              const pb = parseFloat(b.current_bid || b.starting_price || 0);
+              return pb - pa;
+            }
+            if (state.sortBy === 'bids') {
+              return (Number(b.bid_count || 0)) - (Number(a.bid_count || 0));
+            }
+            // 'recent' by default (added_at DESC)
+            return new Date(b.added_at || 0).getTime() - new Date(a.added_at || 0).getTime();
+          });
+
+          return list;
+        },
+
+        renderContent() {
+          const container = document.getElementById('watchlist-container');
+          if (!container) return;
+
+          if (state.items.length === 0) {
+            this.renderEmptyAll();
+            return;
+          }
+
+          const filtered = this.getFilteredItems();
+
+          if (filtered.length === 0) {
+            this.renderEmptyFilter();
+            return;
+          }
+
+          if (state.viewMode === 'list') {
+            container.className = 'flex flex-col gap-3.5';
+            container.innerHTML = filtered.map(item => this.renderListRow(item)).join('');
+          } else {
+            container.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5';
+            container.innerHTML = filtered.map(item => this.renderGridCard(item)).join('');
+          }
+        },
+
+        renderGridCard(item) {
+          const time = getTimeRemaining(item.end_time);
+          const price = formatPKR(item.current_bid || item.starting_price || 0);
+          const bidCount = Number(item.bid_count || 0);
+          const isUrgentClass = time.isUrgent ? 'is-urgent' : (time.ended ? 'is-ended' : '');
+          const img = item.image || FALLBACK_IMG;
+
+          return `
+            <article class="watch-card group" id="watch-card-${item.auction_id}">
+              <div class="watch-img-wrap">
+                <img src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" loading="lazy" class="watch-img"
+                  onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
+
+                <button type="button" class="remove-btn" title="Remove from watchlist" aria-label="Remove item"
+                  onclick="WatchlistApp.removeItem(${item.auction_id}, '${escapeHtml(item.title)}')">
+                  <i class="fa-solid fa-heart"></i>
+                </button>
+
+                <div class="countdown-chip ${isUrgentClass}">
+                  <i class="fa-regular fa-clock"></i>
+                  <span data-timer-end="${escapeHtml(item.end_time)}">${time.text}</span>
+                </div>
+
+                <div class="category-chip">
+                  ${escapeHtml(item.category_name || 'Auction')}
+                </div>
+              </div>
+
+              <div class="p-4 flex flex-col flex-1">
+                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-1.5">
+                  <span class="truncate">
+                    <i class="fa-solid fa-store text-indigo-400 mr-1 text-[11px]"></i>
+                    ${escapeHtml(item.seller_name || 'Verified Seller')}
+                  </span>
+                  <span class="font-semibold text-slate-700 dark:text-slate-300 shrink-0">
+                    <i class="fa-solid fa-gavel text-[10px] text-indigo-500 mr-1"></i>
+                    ${bidCount} ${bidCount === 1 ? 'bid' : 'bids'}
+                  </span>
+                </div>
+
+                <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug mb-3 group-hover:text-indigo-500 transition-colors">
+                  <a href="/auction-details.html?id=${item.auction_id}">${escapeHtml(item.title)}</a>
+                </h3>
+
+                <div class="mt-auto pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-end justify-between gap-2">
+                  <div>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 block">
+                      ${item.current_bid ? 'Current Bid' : 'Starting Price'}
+                    </span>
+                    <span class="text-base font-extrabold text-indigo-600 dark:text-indigo-400">
+                      ${price}
+                    </span>
+                  </div>
+
+                  <a href="/auction-details.html?id=${item.auction_id}"
+                    class="btn btn-primary py-2 px-3 text-xs rounded-xl shadow-sm">
+                    ${time.ended ? 'View Result' : 'Bid Now'}
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                  </a>
+                </div>
+              </div>
+            </article>
+          `;
+        },
+
+        renderListRow(item) {
+          const time = getTimeRemaining(item.end_time);
+          const price = formatPKR(item.current_bid || item.starting_price || 0);
+          const bidCount = Number(item.bid_count || 0);
+          const isUrgentClass = time.isUrgent ? 'is-urgent' : (time.ended ? 'is-ended' : '');
+          const img = item.image || FALLBACK_IMG;
+
+          return `
+            <article class="watch-list-row group" id="watch-card-${item.auction_id}">
+              <div class="flex items-center gap-4 min-w-0">
+                <div class="relative w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800">
+                  <img src="${escapeHtml(img)}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover"
+                    onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
+                </div>
+
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/40 text-indigo-500 border border-indigo-200 dark:border-indigo-800">
+                      ${escapeHtml(item.category_name || 'General')}
+                    </span>
+                    <span class="countdown-chip relative top-0 left-0 ${isUrgentClass} py-0.5 px-2 text-[10px]">
+                      <i class="fa-regular fa-clock"></i>
+                      <span data-timer-end="${escapeHtml(item.end_time)}">${time.text}</span>
+                    </span>
+                  </div>
+
+                  <h3 class="font-bold text-sm text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-500 transition-colors">
+                    <a href="/auction-details.html?id=${item.auction_id}">${escapeHtml(item.title)}</a>
+                  </h3>
+
+                  <p class="text-xs text-slate-400 mt-1 flex items-center gap-3">
+                    <span>Seller: <strong class="text-slate-600 dark:text-slate-300 font-medium">${escapeHtml(item.seller_name || 'Verified')}</strong></span>
+                    <span>&bull;</span>
+                    <span><i class="fa-solid fa-gavel text-[10px] mr-1"></i>${bidCount} bids placed</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between md:justify-end gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-slate-100 dark:border-slate-800 shrink-0">
+                <div class="text-left md:text-right">
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                    ${item.current_bid ? 'Current Bid' : 'Starting Price'}
+                  </span>
+                  <span class="text-lg font-black text-indigo-600 dark:text-indigo-400">
+                    ${price}
+                  </span>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button type="button" class="btn btn-ghost py-2 px-3 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                    onclick="WatchlistApp.removeItem(${item.auction_id}, '${escapeHtml(item.title)}')" title="Remove">
+                    <i class="fa-solid fa-trash-can"></i>
+                  </button>
+
+                  <a href="/auction-details.html?id=${item.auction_id}" class="btn btn-primary py-2 px-4 text-xs">
+                    ${time.ended ? 'View' : 'Bid Now'}
+                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                  </a>
+                </div>
+              </div>
+            </article>
+          `;
+        },
+
+        async removeItem(auctionId, title) {
+          // Optimistic UI update
+          const cardEl = document.getElementById(`watch-card-${auctionId}`);
+          if (cardEl) {
+            cardEl.style.transition = 'all .25s ease';
+            cardEl.style.opacity = '0.3';
+            cardEl.style.transform = 'scale(0.95)';
+          }
+
+          try {
+            await ApiClient.delete(`/watchlist/${auctionId}`);
+            state.items = state.items.filter(i => i.auction_id !== auctionId);
+            this.updateStats();
+            this.renderContent();
+            if (window.UI && UI.showToast) {
+              UI.showToast(`Removed "${title || 'Item'}" from watchlist.`, 'info');
+            }
+          } catch (err) {
+            console.error('Failed to remove item:', err);
+            if (cardEl) {
+              cardEl.style.opacity = '1';
+              cardEl.style.transform = 'scale(1)';
+            }
+            if (window.UI && UI.showToast) {
+              UI.showToast((err && err.message) || 'Could not remove item', 'error');
+            }
+          }
+        },
+
+        async confirmClearAll() {
+          if (!state.items.length) return;
+          const ok = await UI.confirm({
+            title: 'Clear Entire Watchlist?',
+            message: `Are you sure you want to remove all ${state.items.length} saved auctions from your watchlist?`,
+            confirmText: 'Yes, Clear All',
+            type: 'danger'
+          });
+
+          if (!ok) return;
+
+          try {
+            // Delete each one
+            await Promise.all(state.items.map(item => ApiClient.delete(`/watchlist/${item.auction_id}`).catch(() => { })));
+            state.items = [];
+            this.updateStats();
+            this.renderContent();
+            UI.showToast('Watchlist cleared.', 'success');
+          } catch (err) {
+            UI.showToast('Failed to clear watchlist completely.', 'error');
+            this.loadWatchlist();
+          }
+        },
+
+        setFilter(filterName) {
+          state.filter = filterName;
+          document.querySelectorAll('.tab-btn').forEach(btn => {
+            const active = btn.getAttribute('data-filter') === filterName;
+            btn.classList.toggle('is-active', active);
+          });
+          this.renderContent();
+        },
+
+        handleSearch(query) {
+          state.searchQuery = query;
+          this.renderContent();
+        },
+
+        setSort(sortVal) {
+          state.sortBy = sortVal;
+          this.renderContent();
+        },
+
+        setViewMode(mode) {
+          state.viewMode = mode;
+          localStorage.setItem('nb_watchlist_view', mode);
+          this.syncViewButtons();
+          this.renderContent();
+        },
+
+        syncViewButtons() {
+          const gBtn = document.getElementById('view-grid-btn');
+          const lBtn = document.getElementById('view-list-btn');
+          if (!gBtn || !lBtn) return;
+
+          if (state.viewMode === 'list') {
+            lBtn.className = 'p-1.5 px-2.5 rounded-lg text-xs font-bold text-indigo-500 bg-white dark:bg-slate-700 shadow-sm';
+            gBtn.className = 'p-1.5 px-2.5 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200';
+          } else {
+            gBtn.className = 'p-1.5 px-2.5 rounded-lg text-xs font-bold text-indigo-500 bg-white dark:bg-slate-700 shadow-sm';
+            lBtn.className = 'p-1.5 px-2.5 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200';
+          }
+        },
+
+        renderSkeletons() {
+          const container = document.getElementById('watchlist-container');
+          if (!container) return;
+          container.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5';
+          container.innerHTML = Array(4).fill(0).map(() => `
+            <div class="watch-card p-0">
+              <div class="skel h-48 w-full"></div>
+              <div class="p-4 space-y-3">
+                <div class="skel h-3 w-1/3"></div>
+                <div class="skel h-4 w-5/6"></div>
+                <div class="skel h-4 w-1/2"></div>
+                <div class="flex justify-between items-center pt-2">
+                  <div class="skel h-5 w-24"></div>
+                  <div class="skel h-8 w-20 rounded-xl"></div>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        },
+
+        renderEmptyAll() {
+          const container = document.getElementById('watchlist-container');
+          if (!container) return;
+          container.className = 'block';
+          container.innerHTML = `
+            <div class="text-center py-16 px-6 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 max-w-2xl mx-auto shadow-sm">
+              <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-5 text-rose-500 text-2xl shadow-inner">
+                <i class="fa-regular fa-heart"></i>
+              </div>
+              <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">Your Watchlist is Empty</h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-6 leading-relaxed">
+                You haven't saved any auctions yet. Click the heart icon on any auction card to bookmark it and track live bids.
+              </p>
+              <div class="flex items-center justify-center gap-3 flex-wrap">
+                <a href="/auctions.html" class="btn btn-primary py-2.5 px-6">
+                  <i class="fa-solid fa-magnifying-glass text-xs"></i> Browse Live Auctions
+                </a>
+                <a href="/categories.html" class="btn btn-ghost py-2.5 px-5">
+                  <i class="fa-solid fa-tags text-xs"></i> View Categories
+                </a>
+              </div>
+
+              <!-- Quick category tags -->
+              <div class="mt-8 pt-6 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-400">
+                <span class="font-medium mr-2">Popular Categories:</span>
+                <span class="inline-flex gap-2 flex-wrap justify-center mt-2">
+                  <a href="/auctions.html?search=iPhone" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-indigo-400 transition-colors">Phones &amp; Tech</a>
+                  <a href="/auctions.html?search=Toyota" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-indigo-400 transition-colors">Vehicles</a>
+                  <a href="/auctions.html?search=Watch" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-indigo-400 transition-colors">Luxury Watches</a>
+                  <a href="/auctions.html?search=Plot" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:text-indigo-400 transition-colors">Real Estate</a>
+                </span>
+              </div>
+            </div>
+          `;
+        },
+
+        renderEmptyFilter() {
+          const container = document.getElementById('watchlist-container');
+          if (!container) return;
+          container.className = 'block';
+          container.innerHTML = `
+            <div class="text-center py-14 px-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 max-w-lg mx-auto">
+              <div class="w-12 h-12 mx-auto rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-4 text-slate-400 text-xl">
+                <i class="fa-solid fa-filter"></i>
+              </div>
+              <h3 class="text-base font-bold text-slate-800 dark:text-slate-200 mb-1">No Matching Items Found</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mb-5">
+                No items match your active tab or search keyword "${escapeHtml(state.searchQuery)}".
+              </p>
+              <button type="button" class="btn btn-ghost text-xs" onclick="WatchlistApp.resetFilters()">
+                <i class="fa-solid fa-rotate-left"></i> Reset Filters
+              </button>
+            </div>
+          `;
+        },
+
+        resetFilters() {
+          state.searchQuery = '';
+          const s = document.getElementById('watchlist-search');
+          if (s) s.value = '';
+          this.setFilter('all');
+        },
+
+        renderAuthPrompt() {
+          const container = document.getElementById('watchlist-container');
+          if (!container) return;
+          container.className = 'block';
+          container.innerHTML = `
+            <div class="text-center py-16 px-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 max-w-md mx-auto shadow-sm">
+              <div class="w-14 h-14 mx-auto rounded-2xl bg-indigo-500/10 text-indigo-500 border border-indigo-500/20 flex items-center justify-center mb-4 text-2xl">
+                <i class="fa-solid fa-lock"></i>
+              </div>
+              <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1.5">Sign In to View Watchlist</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
+                Your watchlist is linked to your account. Sign in to see your tracked auctions, alerts, and live bids.
+              </p>
+              <div class="flex items-center justify-center gap-3">
+                <a href="/login.html?redirect=/buyer/watchlist.html" class="btn btn-primary py-2.5 px-5">
+                  Sign In
+                </a>
+                <a href="/register.html" class="btn btn-ghost py-2.5 px-5">
+                  Register
+                </a>
+              </div>
+            </div>
+          `;
+        },
+
+        renderError(msg) {
+          const container = document.getElementById('watchlist-container');
+          if (!container) return;
+          container.className = 'block';
+          container.innerHTML = `
+            <div class="text-center py-12 px-6 rounded-2xl border border-rose-200 dark:border-rose-900/40 bg-rose-50/50 dark:bg-rose-950/20 max-w-md mx-auto">
+              <i class="fa-solid fa-triangle-exclamation text-rose-500 text-2xl mb-3"></i>
+              <h3 class="text-sm font-bold text-rose-700 dark:text-rose-300 mb-1">Could Not Load Watchlist</h3>
+              <p class="text-xs text-rose-600/80 dark:text-rose-400/80 mb-4">${escapeHtml(msg)}</p>
+              <button type="button" class="btn btn-ghost text-xs" onclick="WatchlistApp.loadWatchlist()">
+                <i class="fa-solid fa-rotate-right"></i> Try Again
+              </button>
+            </div>
+          `;
+        }
+      };
+
+      window.WatchlistApp = WatchlistApp;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        WatchlistApp.init();
+      });
+    })();
+  </script>
+</body>
+
+</html>

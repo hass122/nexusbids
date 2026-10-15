@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Payments & Wallet — NexusBids</title>
+  <meta name="description" content="Manage your saved payment methods and wallet balance on NexusBids.">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('nexusbids_theme') || 'system';
+        var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        document.documentElement.classList.toggle('dark', d);
+        document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+      } catch (e) { document.documentElement.classList.add('dark'); }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' } }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* ── Tokens ───────────────────────────────────────────── */
+    :root {
+      --bg: #f5f7fb;
+      --bg-soft: #eef1f7;
+      --surface: #ffffff;
+      --surface-2: #f8fafc;
+      --surface-3: #f1f5f9;
+      --border: #e5e9f0;
+      --border-strong: #d6dde8;
+      --text: #0f172a;
+      --text-muted: #5a667e;
+      --text-faint: #8d97ab;
+      --brand: #6366f1;
+      --brand-soft: rgba(99, 102, 241, .10);
+      --brand-ring: rgba(99, 102, 241, .18);
+      --success: #10b981;
+      --success-soft: rgba(16, 185, 129, .10);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, .10);
+      --shadow-sm: 0 1px 2px rgba(15, 23, 42, .05);
+      --shadow-md: 0 4px 14px -6px rgba(15, 23, 42, .10);
+      --shadow-lg: 0 20px 45px -22px rgba(15, 23, 42, .22);
+      --transition: .22s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html.dark {
+      --bg: #05070f;
+      --bg-soft: #0a0e1a;
+      --surface: #0d1220;
+      --surface-2: #121a2b;
+      --surface-3: #1a2336;
+      --border: #1e2a40;
+      --border-strong: #2c3a56;
+      --text: #eef2f9;
+      --text-muted: #9aa6bd;
+      --text-faint: #66738d;
+      --brand-soft: rgba(99, 102, 241, .14);
+      --brand-ring: rgba(99, 102, 241, .25);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+      --shadow-md: 0 4px 14px -6px rgba(0, 0, 0, .55);
+      --shadow-lg: 0 22px 55px -22px rgba(0, 0, 0, .75);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      transition: background var(--transition), color var(--transition);
+      overflow-x: hidden;
+    }
+
+    /* ── Page header ───────────────────────────────────────── */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--brand);
+      background: var(--brand-soft);
+      border: 1px solid var(--brand-ring);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .page-title {
+      font-size: clamp(1.4rem, 3.5vw, 1.85rem);
+      font-weight: 800;
+      letter-spacing: -.024em;
+      color: var(--text);
+      line-height: 1.15;
+    }
+
+    .page-sub {
+      font-size: .875rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      max-width: 42rem;
+    }
+
+    /* ── Cards ─────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 16px;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .card-head {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: .92rem;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -.005em;
+    }
+
+    .card-hint {
+      font-size: .72rem;
+      color: var(--text-faint);
+      margin-top: 1px;
+      font-weight: 500;
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+    /* ── Buttons ───────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 15px;
+      border-radius: 11px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all var(--transition);
+      white-space: nowrap;
+      font-family: inherit;
+      line-height: 1;
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 6px 16px -6px rgba(79, 70, 229, .55);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px -6px rgba(79, 70, 229, .7);
+    }
+
+    .btn-ghost {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text-muted);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      color: var(--text);
+      border-color: var(--border-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger-ghost {
+      background: transparent;
+      border-color: transparent;
+      color: var(--text-faint);
+      padding: 7px 9px;
+    }
+
+    .btn-danger-ghost:hover:not(:disabled) {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .btn-icon {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: 10px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-faint);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition);
+    }
+
+    .btn-icon:hover {
+      color: var(--text);
+      background: var(--surface-3);
+      border-color: var(--border);
+    }
+
+    /* ── Inputs ────────────────────────────────────────────── */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 13px;
+    }
+
+    .field label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+    }
+
+    .field .hint {
+      font-size: .72rem;
+      color: var(--text-faint);
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    .nb-input {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 11px;
+      padding: 11px 13px;
+      font-size: .875rem;
+      width: 100%;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .nb-input::placeholder {
+      color: var(--text-faint);
+    }
+
+    .nb-input:focus {
+      border-color: var(--brand);
+      background: var(--surface);
+      box-shadow: 0 0 0 3px var(--brand-ring);
+    }
+
+    /* ── Payment type picker (grid of cards) ──────────────── */
+    .pay-picker {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    @media (min-width: 480px) {
+      .pay-picker {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .pay-opt {
+      position: relative;
+      padding: 11px 12px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: var(--surface-2);
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .pay-opt:hover {
+      border-color: var(--border-strong);
+      color: var(--text);
+    }
+
+    .pay-opt input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pay-opt .opt-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .72rem;
+      flex-shrink: 0;
+      transition: transform var(--transition);
+    }
+
+    .pay-opt:has(input:checked) {
+      border-color: var(--brand);
+      background: var(--brand-soft);
+      color: var(--text);
+    }
+
+    .pay-opt:has(input:checked) .opt-icon {
+      transform: scale(1.06);
+    }
+
+    /* ── Payment method row ───────────────────────────────── */
+    .pm-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      transition: all var(--transition);
+      animation: fadeUp .32s both;
+    }
+
+    .pm-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .pm-card.is-default {
+      border-color: var(--brand-ring);
+      background: linear-gradient(135deg, var(--brand-soft), transparent 60%);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .pm-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+      flex-shrink: 0;
+    }
+
+    .pm-label {
+      font-size: .66rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--text-faint);
+    }
+
+    .pm-value {
+      font-size: .875rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 1px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pm-sub {
+      font-size: .76rem;
+      color: var(--text-muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      margin-top: 1px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .default-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: .62rem;
+      font-weight: 800;
+      letter-spacing: .02em;
+      background: var(--brand-soft);
+      color: var(--brand);
+      border: 1px solid var(--brand-ring);
+      margin-top: 5px;
+      text-transform: uppercase;
+    }
+
+    .pm-actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+      opacity: 0;
+      transition: opacity var(--transition);
+    }
+
+    .pm-card:hover .pm-actions,
+    .pm-card:focus-within .pm-actions {
+      opacity: 1;
+    }
+
+    @media (hover: none) {
+      .pm-actions {
+        opacity: 1;
+      }
+    }
+
+    /* ── Wallet ───────────────────────────────────────────── */
+    .wallet-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      padding: 22px 20px;
+      background:
+        radial-gradient(circle at 100% 0%, rgba(99, 102, 241, .18), transparent 55%),
+        radial-gradient(circle at 0% 100%, rgba(168, 85, 247, .12), transparent 55%),
+        var(--surface-2);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .wallet-hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, var(--border) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: .15;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+      pointer-events: none;
+    }
+
+    .wallet-hero>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .wallet-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #6366f1, #818cf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      box-shadow: 0 10px 24px -8px rgba(99, 102, 241, .5);
+    }
+
+    /* ── Sidebar nav ──────────────────────────────────────── */
+    .sidebar-nav {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      position: sticky;
+      top: 84px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      transition: all var(--transition);
+      position: relative;
+    }
+
+    .sidebar-link:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-link:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    .sidebar-link.active {
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    .sidebar-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--brand);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .sidebar-link i {
+      width: 16px;
+      text-align: center;
+    }
+
+    /* ── Skeletons & animations ───────────────────────────── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+      border-radius: 10px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0 50%;
+      }
+    }
+
+    .spin {
+      animation: spin .9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Inline error banner ──────────────────────────────── */
+    .alert-error {
+      display: none;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 10px 12px;
+      border-radius: 11px;
+      font-size: .8rem;
+      color: var(--danger);
+      background: var(--danger-soft);
+      border: 1px solid rgba(239, 68, 68, .22);
+      margin-bottom: 13px;
+      line-height: 1.5;
+    }
+
+    .alert-error.is-visible {
+      display: flex;
+    }
+
+    /* ── Empty state ──────────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 34px 20px;
+    }
+
+    .empty-state .es-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      color: var(--text-faint);
+      margin: 0 auto 12px;
+    }
+
+    .empty-state .es-title {
+      font-size: .9rem;
+      font-weight: 800;
+      color: var(--text);
+      margin: 0 0 5px;
+    }
+
+    .empty-state .es-text {
+      font-size: .78rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      max-width: 22rem;
+      margin: 0 auto;
+    }
+
+    /* ── Layout ───────────────────────────────────────────── */
+    .account-grid {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 767px) {
+      .account-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar-nav {
+        display: none;
+      }
+    }
+
+    /* ── Reveal-on-mount ──────────────────────────────────── */
+    .reveal {
+      animation: fadeUp .35s both;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+
+  <header id="nb-header"></header>
+
+  <main class="flex-1 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+
+    <div class="mb-7 reveal">
+      <span class="eyebrow"><i class="fa-solid fa-wallet"></i> Account</span>
+      <h1 class="page-title mt-3">Payments &amp; wallet</h1>
+      <p class="page-sub mt-2">
+        Save your mobile wallets and bank details once — checkout takes seconds after that.
+      </p>
+    </div>
+
+    <div class="account-grid">
+
+      <nav class="sidebar-nav" aria-label="Account navigation">
+        <a href="/buyer/profile.html" class="sidebar-link"><i class="fa-solid fa-user"></i> Profile</a>
+        <a href="/buyer/security.html" class="sidebar-link"><i class="fa-solid fa-shield-halved"></i> Security</a>
+        <a href="/buyer/addresses.html" class="sidebar-link"><i class="fa-solid fa-map-location-dot"></i> Addresses</a>
+        <a href="/buyer/payments.html" class="sidebar-link active"><i class="fa-solid fa-wallet"></i> Payments</a>
+        <a href="/buyer/kyc.html" class="sidebar-link"><i class="fa-solid fa-id-card"></i> Verification</a>
+        <a href="/buyer/notifications.html" class="sidebar-link"><i class="fa-solid fa-bell"></i> Notifications</a>
+      </nav>
+
+      <div>
+
+        <!-- ─── Wallet ────────────────────────────────────── -->
+        <section class="card">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0">
+              <div class="card-icon" style="background:var(--brand-soft)">
+                <i class="fa-solid fa-wallet" style="color:var(--brand)"></i>
+              </div>
+              <div style="min-width:0">
+                <div class="card-title">NexusBids wallet</div>
+                <div class="card-hint">Refunds and payouts land here</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body" id="wallet-area" aria-live="polite">
+            <div class="skeleton" style="height:96px;border-radius:16px"></div>
+          </div>
+        </section>
+
+        <!-- ─── Payment methods ───────────────────────────── -->
+        <section class="card">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0">
+              <div class="card-icon" style="background:var(--success-soft)">
+                <i class="fa-solid fa-credit-card" style="color:var(--success)"></i>
+              </div>
+              <div style="min-width:0">
+                <div class="card-title">Saved payment methods</div>
+                <div class="card-hint">Used to auto-fill at checkout</div>
+              </div>
+            </div>
+            <button id="show-pm-btn" class="btn btn-primary" type="button">
+              <i class="fa-solid fa-plus text-[10px]"></i> Add one
+            </button>
+          </div>
+          <div class="card-body" id="pm-list-area" aria-live="polite">
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="skeleton" style="height:72px;border-radius:14px"></div>
+              <div class="skeleton" style="height:72px;border-radius:14px"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ─── Add method form ───────────────────────────── -->
+        <section class="card" id="add-pm-form" style="display:none">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="card-icon" style="background:var(--brand-soft)">
+                <i class="fa-solid fa-plus" style="color:var(--brand)"></i>
+              </div>
+              <div>
+                <div class="card-title">Add a payment method</div>
+                <div class="card-hint">You can save up to 5 methods</div>
+              </div>
+            </div>
+            <button type="button" class="btn-icon" id="close-pm-btn" aria-label="Close">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="alert-error" id="pm-err" role="alert">
+              <i class="fa-solid fa-circle-exclamation" style="margin-top:2px;flex-shrink:0"></i>
+              <span id="pm-err-text"></span>
+            </div>
+
+            <form id="pm-form" novalidate autocomplete="off">
+
+              <div class="field">
+                <label>What type of account is it?</label>
+                <div class="pay-picker" role="radiogroup" aria-label="Payment type">
+                  <label class="pay-opt">
+                    <input type="radio" name="payment_type" value="jazzcash" required>
+                    <span class="opt-icon" style="background:rgba(230,0,62,.12);color:#e6003e"><i
+                        class="fa-solid fa-mobile-screen"></i></span>
+                    <span>JazzCash</span>
+                  </label>
+                  <label class="pay-opt">
+                    <input type="radio" name="payment_type" value="easypaisa">
+                    <span class="opt-icon" style="background:rgba(0,150,68,.12);color:#009644"><i
+                        class="fa-solid fa-mobile-screen"></i></span>
+                    <span>Easypaisa</span>
+                  </label>
+                  <label class="pay-opt">
+                    <input type="radio" name="payment_type" value="nayapay">
+                    <span class="opt-icon" style="background:rgba(99,102,241,.12);color:#6366f1"><i
+                        class="fa-solid fa-wallet"></i></span>
+                    <span>NayaPay</span>
+                  </label>
+                  <label class="pay-opt">
+                    <input type="radio" name="payment_type" value="sadapay">
+                    <span class="opt-icon" style="background:var(--surface-3);color:var(--text)"><i
+                        class="fa-solid fa-wallet"></i></span>
+                    <span>SadaPay</span>
+                  </label>
+                  <label class="pay-opt">
+                    <input type="radio" name="payment_type" value="bank_transfer">
+                    <span class="opt-icon" style="background:rgba(59,130,246,.12);color:#3b82f6"><i
+                        class="fa-solid fa-building-columns"></i></span>
+                    <span>Bank</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="pm-title">Account holder name</label>
+                <input id="pm-title" name="account_title" type="text" class="nb-input"
+                  placeholder="Exactly as it appears on the account" required maxlength="80">
+              </div>
+
+              <div class="field">
+                <label for="pm-number">Account number or IBAN</label>
+                <input id="pm-number" name="account_number" type="text" class="nb-input"
+                  placeholder="03xx-xxxxxxx or PK00MEZN0000000000000000" required maxlength="34">
+                <span class="hint">For mobile wallets, use the 11-digit number. For banks, paste the full IBAN.</span>
+              </div>
+
+              <label for="pm-default"
+                style="display:flex;align-items:center;gap:9px;margin:6px 0 16px;cursor:pointer;user-select:none">
+                <input type="checkbox" id="pm-default" name="is_default"
+                  style="width:16px;height:16px;accent-color:var(--brand)">
+                <span style="font-size:.82rem;color:var(--text-muted)">
+                  Make this my default at checkout
+                </span>
+              </label>
+
+              <div style="display:flex;gap:9px;flex-wrap:wrap">
+                <button type="submit" class="btn btn-primary" id="save-pm-btn">
+                  <i class="fa-solid fa-check"></i> Save method
+                </button>
+                <button type="button" class="btn btn-ghost" id="cancel-pm-btn">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // ───────────────────────────────────────────────────────
+      // Helpers
+      // ───────────────────────────────────────────────────────
+      const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => (
+        { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+      ));
+
+      const fmt = (v) => (window.UI && UI.formatPKR)
+        ? UI.formatPKR(v)
+        : 'Rs. ' + (Number(v) || 0).toLocaleString('en-PK');
+
+      // ───────────────────────────────────────────────────────
+      // Payment type config
+      // ───────────────────────────────────────────────────────
+      const PM_META = {
+        jazzcash: { icon: 'fa-mobile-screen', color: '#e6003e', bg: 'rgba(230,0,62,.12)', label: 'JazzCash' },
+        easypaisa: { icon: 'fa-mobile-screen', color: '#009644', bg: 'rgba(0,150,68,.12)', label: 'Easypaisa' },
+        nayapay: { icon: 'fa-wallet', color: '#6366f1', bg: 'rgba(99,102,241,.12)', label: 'NayaPay' },
+        sadapay: { icon: 'fa-wallet', color: '#111827', bg: 'rgba(17,24,39,.12)', label: 'SadaPay' },
+        bank_transfer: { icon: 'fa-building-columns', color: '#3b82f6', bg: 'rgba(59,130,246,.12)', label: 'Bank transfer' }
+      };
+
+      const meta = (type) => PM_META[type] || {
+        icon: 'fa-credit-card',
+        color: '#6366f1',
+        bg: 'rgba(99,102,241,.12)',
+        label: type || 'Payment method'
+      };
+
+      // ───────────────────────────────────────────────────────
+      // Wallet
+      // ───────────────────────────────────────────────────────
+      async function loadWallet() {
+        const area = document.getElementById('wallet-area');
+        if (!area) return;
+
+        try {
+          const res = await ApiClient.get('/payments/wallet');
+          const w = res?.data || {};
+          const txs = Array.isArray(w.recent_transactions) ? w.recent_transactions.slice(0, 5) : [];
+
+          area.innerHTML = `
+          <div class="wallet-hero reveal">
+            <div class="wallet-icon"><i class="fa-solid fa-coins"></i></div>
+            <div style="min-width:0;flex:1">
+              <div style="font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text-muted)">
+                Available balance
+              </div>
+              <div style="font-size:1.65rem;font-weight:800;color:var(--text);letter-spacing:-.02em;line-height:1.15;margin-top:3px;font-variant-numeric:tabular-nums">
+                ${esc(fmt(w.balance || 0))}
+              </div>
+              <div style="font-size:.72rem;color:var(--text-faint);margin-top:3px">
+                ${esc(w.currency || 'PKR')} · ${txs.length ? 'Recent activity below' : 'No activity yet'}
+              </div>
+            </div>
+          </div>
+
+          ${txs.length ? `
+            <div style="margin-top:18px">
+              <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-faint);margin-bottom:9px">
+                Recent activity
+              </div>
+              <div style="display:flex;flex-direction:column;gap:7px">
+                ${txs.map(t => {
+            const credit = t.type === 'credit';
+            const when = t.created_at
+              ? new Date(t.created_at).toLocaleDateString('en-PK', { day: 'numeric', month: 'short' })
+              : '';
+            return `
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;background:var(--surface-2);border-radius:11px;border:1px solid var(--border)">
+                      <div style="min-width:0">
+                        <div style="font-size:.82rem;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                          ${esc(t.description || t.type || 'Transaction')}
+                        </div>
+                        <div style="font-size:.7rem;color:var(--text-faint);margin-top:1px">${esc(when)}</div>
+                      </div>
+                      <div style="font-size:.9rem;font-weight:800;color:${credit ? 'var(--success)' : 'var(--danger)'};font-variant-numeric:tabular-nums;flex-shrink:0">
+                        ${credit ? '+' : '−'}${esc(fmt(t.amount))}
+                      </div>
+                    </div>`;
+          }).join('')}
+              </div>
+            </div>
+          ` : ''}
+        `;
+        } catch (err) {
+          console.warn('[Wallet] load failed:', err);
+          area.innerHTML = `
+          <div class="empty-state">
+            <div class="es-icon"><i class="fa-solid fa-cloud-slash"></i></div>
+            <p class="es-title">Couldn't load your wallet</p>
+            <p class="es-text">Check your connection and refresh the page.</p>
+          </div>`;
+        }
+      }
+
+      // ───────────────────────────────────────────────────────
+      // Payment methods list
+      // ───────────────────────────────────────────────────────
+      async function loadPaymentMethods() {
+        const area = document.getElementById('pm-list-area');
+        if (!area) return;
+
+        try {
+          const res = await ApiClient.get('/payments/methods');
+          const methods = Array.isArray(res?.data) ? res.data : [];
+
+          if (!methods.length) {
+            area.innerHTML = `
+            <div class="empty-state">
+              <div class="es-icon"><i class="fa-solid fa-credit-card"></i></div>
+              <p class="es-title">No payment methods saved</p>
+              <p class="es-text">Add your JazzCash, Easypaisa or bank details and they'll auto-fill next time you check out.</p>
+              <button type="button" class="btn btn-primary" style="margin-top:16px" onclick="document.getElementById('show-pm-btn').click()">
+                <i class="fa-solid fa-plus text-[10px]"></i> Add your first one
+              </button>
+            </div>`;
+            return;
+          }
+
+          area.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:9px">
+            ${methods.map((m, i) => {
+            const p = meta(m.payment_type);
+            return `
+                <div class="pm-card${m.is_default ? ' is-default' : ''}" style="animation-delay:${i * 40}ms">
+                  <div class="pm-icon" style="background:${p.bg}">
+                    <i class="fa-solid ${p.icon}" style="color:${p.color}"></i>
+                  </div>
+                  <div style="flex:1;min-width:0">
+                    <div class="pm-label">${esc(p.label)}</div>
+                    <div class="pm-value">${esc(m.account_title || '')}</div>
+                    <div class="pm-sub">${esc(m.account_number || '')}</div>
+                    ${m.is_default ? '<span class="default-pill"><i class="fa-solid fa-star" style="font-size:.5rem"></i> Default</span>' : ''}
+                  </div>
+                                    <div class="pm-actions">
+                    ${!m.is_default ? `
+                      <button type="button" class="btn-icon" title="Make default"
+                              onclick="window.__pmMakeDefault('${esc(m.pm_id)}')" aria-label="Make default">
+                        <i class="fa-regular fa-star"></i>
+                      </button>` : ''}
+                    <button type="button" class="btn-icon" title="Remove"
+                            onclick="window.__pmDelete('${esc(m.pm_id)}', '${esc(p.label)}')" aria-label="Remove method">
+                      <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                  </div>
+                </div>`;
+          }).join('')}
+          </div>`;
+        } catch (err) {
+          console.warn('[PaymentMethods] load failed:', err);
+          area.innerHTML = `
+          <div class="empty-state">
+            <div class="es-icon"><i class="fa-solid fa-cloud-slash"></i></div>
+            <p class="es-title">Couldn't load your payment methods</p>
+            <p class="es-text">Refresh the page and try again.</p>
+          </div>`;
+        }
+      }
+
+      // ───────────────────────────────────────────────────────
+      // Actions: delete + make default
+      // ───────────────────────────────────────────────────────
+      window.__pmDelete = async function (id, label) {
+        const ok = await UI.confirm({
+          title: 'Remove this method?',
+          message: `Your ${label} account will no longer appear at checkout. You can always add it back later.`,
+          confirmText: 'Remove',
+          cancelText: 'Keep it',
+          type: 'danger'
+        });
+        if (!ok) return;
+
+        try {
+          await ApiClient.delete(`/payments/methods/${id}`);
+          UI.showToast('Method removed.', 'success', 2200);
+          loadPaymentMethods();
+        } catch (err) {
+          UI.showToast(err?.message || "Couldn't remove that method. Try again.", 'error');
+        }
+      };
+
+      window.__pmMakeDefault = async function (id) {
+        try {
+          await ApiClient.patch(`/payments/methods/${id}`, { is_default: true });
+          UI.showToast('Default updated.', 'success', 2200);
+          loadPaymentMethods();
+        } catch (err) {
+          UI.showToast(err?.message || "Couldn't update the default.", 'error');
+        }
+      };
+
+      // ───────────────────────────────────────────────────────
+      // Validation helpers
+      // ───────────────────────────────────────────────────────
+      function looksLikeMobileWallet(number) {
+        const digits = String(number).replace(/\D/g, '');
+        return digits.length === 11;
+      }
+      function looksLikeIBAN(number) {
+        const clean = String(number).replace(/\s/g, '').toUpperCase();
+        return /^PK\d{2}[A-Z]{4}\d{16}$/.test(clean);
+      }
+
+      function showFormError(msg) {
+        const wrap = document.getElementById('pm-err');
+        const text = document.getElementById('pm-err-text');
+        if (!wrap || !text) return;
+        text.textContent = msg;
+        wrap.classList.add('is-visible');
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      function clearFormError() {
+        const wrap = document.getElementById('pm-err');
+        if (wrap) wrap.classList.remove('is-visible');
+      }
+
+      // ───────────────────────────────────────────────────────
+      // Form open/close wiring
+      // ───────────────────────────────────────────────────────
+      function openForm() {
+        const form = document.getElementById('add-pm-form');
+        if (!form) return;
+        form.style.display = 'block';
+        form.classList.remove('reveal');
+        void form.offsetWidth; // restart animation
+        form.classList.add('reveal');
+        setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+      }
+
+      function closeForm() {
+        const form = document.getElementById('add-pm-form');
+        const pmForm = document.getElementById('pm-form');
+        if (!form) return;
+        form.style.display = 'none';
+        if (pmForm) pmForm.reset();
+        clearFormError();
+      }
+
+      // ───────────────────────────────────────────────────────
+      // Boot
+      // ───────────────────────────────────────────────────────
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!ApiClient.getAccessToken()) {
+          window.location.href = '/login.html?redirect=' + encodeURIComponent('/buyer/payments.html');
+          return;
+        }
+
+        loadWallet();
+        loadPaymentMethods();
+
+        document.getElementById('show-pm-btn')?.addEventListener('click', openForm);
+        document.getElementById('cancel-pm-btn')?.addEventListener('click', closeForm);
+        document.getElementById('close-pm-btn')?.addEventListener('click', closeForm);
+
+        // Live-clear error as user types
+        ['pm-title', 'pm-number'].forEach(id => {
+          document.getElementById(id)?.addEventListener('input', clearFormError);
+        });
+        document.querySelectorAll('input[name="payment_type"]').forEach(el => {
+          el.addEventListener('change', clearFormError);
+        });
+
+        // ─── Submit ─────────────────────────────────────────
+        document.getElementById('pm-form')?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          clearFormError();
+
+          const typeEl = document.querySelector('input[name="payment_type"]:checked');
+          const titleEl = document.getElementById('pm-title');
+          const numberEl = document.getElementById('pm-number');
+          const defaultEl = document.getElementById('pm-default');
+
+          const payment_type = typeEl?.value || '';
+          const account_title = titleEl?.value.trim() || '';
+          const account_number = numberEl?.value.trim() || '';
+          const is_default = !!defaultEl?.checked;
+
+          // Human validation — one message at a time
+          if (!payment_type) {
+            showFormError('Pick which type of account this is first.');
+            return;
+          }
+          if (account_title.length < 3) {
+            titleEl?.focus();
+            showFormError('Enter the account holder\'s full name.');
+            return;
+          }
+          if (!account_number) {
+            numberEl?.focus();
+            showFormError('We need the account number or IBAN to save this method.');
+            return;
+          }
+
+          if (payment_type === 'bank_transfer') {
+            if (!looksLikeIBAN(account_number)) {
+              numberEl?.focus();
+              showFormError('That doesn\'t look like a Pakistani IBAN. It should start with PK and be 24 characters.');
+              return;
+            }
+          } else {
+            if (!looksLikeMobileWallet(account_number)) {
+              numberEl?.focus();
+              showFormError('A mobile wallet number has 11 digits, like 03001234567.');
+              return;
+            }
+          }
+
+          const btn = document.getElementById('save-pm-btn');
+          const original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Saving…';
+
+          try {
+            await ApiClient.post('/payments/methods', {
+              payment_type,
+              account_title,
+              account_number,
+              is_default
+            });
+
+            UI.showToast('Saved. It\'ll show up at checkout from now on.', 'success', 2600);
+            closeForm();
+            loadPaymentMethods();
+          } catch (err) {
+            showFormError(err?.message || 'Something went wrong on our end. Please try again.');
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = original;
+          }
+        });
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

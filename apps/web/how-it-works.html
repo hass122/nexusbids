@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works — NexusBids Pakistan</title>
+  <meta name="description" content="Learn how NexusBids online auctions work — bidding, payments, KYC, escrow, shipping and more.">
+  <link rel="canonical" href="https://nexusbids.pk/how-it-works.html">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+  <script>(function(){var t=localStorage.getItem('nexusbids_theme')||'system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.setAttribute('data-theme',d?'dark':'light');})();</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif']},colors:{brand:{400:'#818cf8',500:'#6366f1',600:'#4f46e5'}}}}};</script>
+  <style>
+    body{overflow-x:hidden}
+    .step-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.25rem;padding:1.75rem;transition:all var(--transition);position:relative;overflow:hidden}
+    .step-card::before{content:'';position:absolute;inset:0;background:radial-gradient(160px 100px at 100% 0%,var(--step-glow,transparent),transparent 70%);opacity:.8;pointer-events:none}
+    .step-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-glow)}
+    .step-num{font-size:3.5rem;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--text-light);opacity:.18;position:absolute;top:1rem;right:1.25rem;font-variant-numeric:tabular-nums}
+    .step-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:1rem}
+    .step-title{font-size:1.05rem;font-weight:800;color:var(--text);margin-bottom:.5rem}
+    .step-desc{font-size:.85rem;color:var(--text-muted);line-height:1.65}
+    .feature-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .875rem;border-radius:999px;font-size:.75rem;font-weight:700;background:rgba(99,102,241,.1);color:var(--brand-500);border:1px solid rgba(99,102,241,.2)}
+    html.dark .feature-pill{color:#a5b4fc}
+    .cta-section{background:linear-gradient(135deg,rgba(99,102,241,.1),rgba(168,85,247,.07));border:1px solid rgba(99,102,241,.2);border-radius:1.5rem;padding:3rem 2rem;text-align:center;margin-top:3rem}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .fade-up{animation:fadeUp .6s ease both}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+
+  <!-- Hero -->
+  <section style="background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(168,85,247,.05));border-bottom:1px solid var(--border);padding:4.5rem 1.5rem 3.5rem;text-align:center">
+    <div class="max-w-3xl mx-auto">
+      <div class="feature-pill" style="margin-bottom:1.25rem"><i class="fa-solid fa-book-open"></i> Guide</div>
+      <h1 style="font-size:clamp(2rem,5.5vw,3.25rem);font-weight:800;letter-spacing:-.04em;color:var(--text);margin-bottom:1rem">How NexusBids Works</h1>
+      <p style="font-size:1.075rem;color:var(--text-muted);max-width:36rem;margin:0 auto 2rem">Pakistan's most secure auction platform. Bid smart, win fair, get it delivered — all with bank-grade protection.</p>
+      <div style="display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap">
+        <a href="/register.html" class="nb-btn nb-btn-primary" style="font-size:.9rem"><i class="fa-solid fa-rocket"></i> Get Started Free</a>
+        <a href="/auctions.html" class="nb-btn nb-btn-secondary" style="font-size:.9rem"><i class="fa-solid fa-gavel"></i> Browse Auctions</a>
+      </div>
+    </div>
+  </section>
+
+  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 w-full">
+
+    <!-- For Buyers -->
+    <div class="mb-14">
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <div class="feature-pill" style="margin-bottom:.875rem"><i class="fa-solid fa-bag-shopping"></i> Buyers</div>
+        <h2 style="font-size:clamp(1.5rem,4vw,2.25rem);font-weight:800;color:var(--text);letter-spacing:-.03em">Winning an Auction as a Buyer</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:1.25rem">
+        <div class="step-card fade-up" style="--step-glow:rgba(99,102,241,.1)">
+          <div class="step-num">01</div>
+          <div class="step-icon" style="background:rgba(99,102,241,.12)"><i class="fa-solid fa-user-plus" style="color:#6366f1"></i></div>
+          <div class="step-title">Create an Account</div>
+          <div class="step-desc">Sign up with your email and complete KYC (CNIC verification) to unlock bidding. KYC takes 24–48 hours.</div>
+        </div>
+        <div class="step-card fade-up" style="animation-delay:.1s;--step-glow:rgba(59,130,246,.1)">
+          <div class="step-num">02</div>
+          <div class="step-icon" style="background:rgba(59,130,246,.12)"><i class="fa-solid fa-magnifying-glass" style="color:#3b82f6"></i></div>
+          <div class="step-title">Find Your Auction</div>
+          <div class="step-desc">Browse thousands of live auctions across categories. Use filters for price range, time remaining, and more.</div>
+        </div>
+        <div class="step-card fade-up" style="animation-delay:.2s;--step-glow:rgba(245,158,11,.1)">
+          <div class="step-num">03</div>
+          <div class="step-icon" style="background:rgba(245,158,11,.12)"><i class="fa-solid fa-gavel" style="color:#f59e0b"></i></div>
+          <div class="step-title">Place a Bid</div>
+          <div class="step-desc">Enter your maximum bid. Our auto-bidding system bids on your behalf up to your limit, always keeping you in the lead.</div>
+        </div>
+        <div class="step-card fade-up" style="animation-delay:.3s;--step-glow:rgba(16,185,129,.1)">
+          <div class="step-num">04</div>
+          <div class="step-icon" style="background:rgba(16,185,129,.12)"><i class="fa-solid fa-trophy" style="color:#10b981"></i></div>
+          <div class="step-title">Win & Pay</div>
+          <div class="step-desc">If you win, you'll receive a notification. Complete payment within 48 hours via JazzCash, Easypaisa, or bank transfer.</div>
+        </div>
+        <div class="step-card fade-up" style="animation-delay:.4s;--step-glow:rgba(168,85,247,.1)">
+          <div class="step-num">05</div>
+          <div class="step-icon" style="background:rgba(168,85,247,.12)"><i class="fa-solid fa-shield-halved" style="color:#a855f7"></i></div>
+          <div class="step-title">Escrow Protection</div>
+          <div class="step-desc">Your payment is held in secure escrow. It's only released to the seller after you confirm receipt of the item.</div>
+        </div>
+        <div class="step-card fade-up" style="animation-delay:.5s;--step-glow:rgba(99,102,241,.1)">
+          <div class="step-num">06</div>
+          <div class="step-icon" style="background:rgba(99,102,241,.12)"><i class="fa-solid fa-truck-fast" style="color:#6366f1"></i></div>
+          <div class="step-title">Receive & Review</div>
+          <div class="step-desc">Track your shipment in real time. Once delivered, confirm receipt and leave a review for the seller.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Sellers -->
+    <div class="mb-14" style="background:var(--surface-2);border:1px solid var(--border);border-radius:1.5rem;padding:2.5rem">
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <div class="feature-pill" style="margin-bottom:.875rem;background:rgba(16,185,129,.1);color:#10b981;border-color:rgba(16,185,129,.25)"><i class="fa-solid fa-store"></i> Sellers</div>
+        <h2 style="font-size:clamp(1.5rem,4vw,2.25rem);font-weight:800;color:var(--text);letter-spacing:-.03em">Selling on NexusBids</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(260px,100%),1fr));gap:1.25rem">
+        <div class="step-card" style="--step-glow:rgba(16,185,129,.08)">
+          <div class="step-num">01</div>
+          <div class="step-icon" style="background:rgba(16,185,129,.12)"><i class="fa-solid fa-id-card" style="color:#10b981"></i></div>
+          <div class="step-title">Complete Seller KYC</div>
+          <div class="step-desc">Verify your identity and bank account. NADRA-verified sellers earn buyer trust and higher bid volumes.</div>
+        </div>
+        <div class="step-card" style="--step-glow:rgba(59,130,246,.08)">
+          <div class="step-num">02</div>
+          <div class="step-icon" style="background:rgba(59,130,246,.12)"><i class="fa-solid fa-camera" style="color:#3b82f6"></i></div>
+          <div class="step-title">List Your Item</div>
+          <div class="step-desc">Upload clear photos, set a starting price, reserve price, and auction duration. Our AI helps optimize your listing.</div>
+        </div>
+        <div class="step-card" style="--step-glow:rgba(245,158,11,.08)">
+          <div class="step-num">03</div>
+          <div class="step-icon" style="background:rgba(245,158,11,.12)"><i class="fa-solid fa-chart-line" style="color:#f59e0b"></i></div>
+          <div class="step-title">Auction Goes Live</div>
+          <div class="step-desc">Your item is shown to thousands of verified buyers. Monitor bids in real time from your seller dashboard.</div>
+        </div>
+        <div class="step-card" style="--step-glow:rgba(168,85,247,.08)">
+          <div class="step-num">04</div>
+          <div class="step-icon" style="background:rgba(168,85,247,.12)"><i class="fa-solid fa-box-open" style="color:#a855f7"></i></div>
+          <div class="step-title">Ship & Get Paid</div>
+          <div class="step-desc">Once buyer pays, ship the item with a tracking number. Funds are released to your account upon delivery confirmation.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust & Safety -->
+    <div style="margin-bottom:3rem">
+      <div style="text-align:center;margin-bottom:2rem">
+        <h2 style="font-size:clamp(1.4rem,3.5vw,2rem);font-weight:800;color:var(--text)">Platform Trust & Safety</h2>
+        <p style="font-size:.9rem;color:var(--text-muted);margin-top:.5rem">Every transaction is protected by multiple layers of security.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr));gap:1rem">
+        <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:1rem;padding:1.25rem;display:flex;gap:.875rem;align-items:flex-start">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(99,102,241,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-shield-halved" style="color:#6366f1"></i></div>
+          <div><div style="font-size:.85rem;font-weight:700;color:var(--text)">Bank-Grade Escrow</div><div style="font-size:.76rem;color:var(--text-muted);margin-top:3px">Funds held safely until delivery confirmed</div></div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:1rem;padding:1.25rem;display:flex;gap:.875rem;align-items:flex-start">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(16,185,129,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-id-card" style="color:#10b981"></i></div>
+          <div><div style="font-size:.85rem;font-weight:700;color:var(--text)">NADRA KYC Verification</div><div style="font-size:.76rem;color:var(--text-muted);margin-top:3px">All buyers and sellers verified</div></div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:1rem;padding:1.25rem;display:flex;gap:.875rem;align-items:flex-start">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-robot" style="color:#3b82f6"></i></div>
+          <div><div style="font-size:.85rem;font-weight:700;color:var(--text)">AI Fraud Detection</div><div style="font-size:.76rem;color:var(--text-muted);margin-top:3px">Real-time suspicious activity monitoring</div></div>
+        </div>
+        <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:1rem;padding:1.25rem;display:flex;gap:.875rem;align-items:flex-start">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(245,158,11,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fa-solid fa-flag" style="color:#f59e0b"></i></div>
+          <div><div style="font-size:.85rem;font-weight:700;color:var(--text)">Dispute Resolution</div><div style="font-size:.76rem;color:var(--text-muted);margin-top:3px">Admin-mediated disputes with full refunds</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Links Grid -->
+    <div class="mt-14 p-6 sm:p-8 rounded-2xl bg-[var(--surface-2)] border border-[var(--border)]">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h3 class="text-base font-bold text-[var(--text)]">Helpful Resources &amp; Documentation</h3>
+          <p class="text-xs text-[var(--text-muted)] mt-0.5">Explore our comprehensive guides, user policies, and direct assistance channels.</p>
+        </div>
+        <a href="/contact.html" class="nb-btn nb-btn-secondary text-xs shrink-0">
+          <i class="fa-solid fa-headset"></i> Contact Support
+        </a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <a href="/faq.html" class="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-brand-500/50 hover:shadow-sm transition-all text-xs font-semibold text-[var(--text)]">
+          <i class="fa-solid fa-circle-question text-brand-500 text-sm"></i>
+          <span>Frequently Asked Questions</span>
+        </a>
+        <a href="/contact.html" class="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-brand-500/50 hover:shadow-sm transition-all text-xs font-semibold text-[var(--text)]">
+          <i class="fa-solid fa-envelope text-emerald-500 text-sm"></i>
+          <span>Contact &amp; Helpdesk</span>
+        </a>
+        <a href="/terms.html" class="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-brand-500/50 hover:shadow-sm transition-all text-xs font-semibold text-[var(--text)]">
+          <i class="fa-solid fa-file-contract text-indigo-500 text-sm"></i>
+          <span>Terms &amp; Conditions</span>
+        </a>
+        <a href="/privacy.html" class="flex items-center gap-3 p-3.5 rounded-xl bg-[var(--card-bg)] border border-[var(--card-border)] hover:border-brand-500/50 hover:shadow-sm transition-all text-xs font-semibold text-[var(--text)]">
+          <i class="fa-solid fa-user-shield text-amber-500 text-sm"></i>
+          <span>Privacy Policy</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <div style="width:56px;height:56px;border-radius:16px;background:rgba(99,102,241,.15);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem"><i class="fa-solid fa-rocket" style="color:#6366f1;font-size:1.25rem"></i></div>
+      <h3 style="font-size:clamp(1.4rem,3.5vw,2rem);font-weight:800;color:var(--text);margin-bottom:.625rem">Ready to Start?</h3>
+      <p style="font-size:.9rem;color:var(--text-muted);margin-bottom:1.75rem;max-width:28rem;margin-left:auto;margin-right:auto">Join thousands of Pakistanis already buying and selling on NexusBids. It's free to sign up.</p>
+      <div style="display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap">
+        <a href="/register.html" class="nb-btn nb-btn-primary"><i class="fa-solid fa-user-plus"></i> Create Free Account</a>
+        <a href="/auctions.html" class="nb-btn nb-btn-secondary"><i class="fa-solid fa-gavel"></i> View Live Auctions</a>
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/ai-chat.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
+</body>
+</html>

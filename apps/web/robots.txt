@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /api/
+Disallow: /buyer/
+Disallow: /seller/
+Disallow: /login.html
+Disallow: /register.html
+Disallow: /forgot-password.html
+
+Sitemap: https://nexusbids.pk/sitemap.xml

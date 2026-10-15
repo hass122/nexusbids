@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications — Seller Studio | NexusBids Pakistan</title>
+  <meta name="description" content="Stay up-to-date with your auction and order notifications on NexusBids.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --n-bg: #f4f6fb;
+      --n-surface: #ffffff;
+      --n-surface-2: #f7f9fc;
+      --n-surface-3: #eceff6;
+      --n-border: #e3e8f0;
+      --n-text: #0f172a;
+      --n-text-muted: #58627a;
+      --n-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12);
+    }
+
+    html.dark {
+      --n-bg: #05070f;
+      --n-surface: #0d1220;
+      --n-surface-2: #121a2b;
+      --n-surface-3: #1a2336;
+      --n-border: #1e2a40;
+      --n-text: #eef2f9;
+      --n-text-muted: #9aa6bd;
+      --n-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--n-bg);
+      color: var(--n-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--n-surface);
+      border: 1px solid var(--n-border);
+      border-radius: 16px;
+      box-shadow: var(--n-shadow-md);
+    }
+
+    .notif-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--n-border);
+      transition: background .15s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .notif-item:last-child {
+      border-bottom: none;
+    }
+
+    .notif-item:hover {
+      background: var(--n-surface-2);
+    }
+
+    .notif-item.unread {
+      background: rgba(99, 102, 241, .05);
+    }
+
+    .notif-item.unread::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #6366f1, #818cf8);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .notif-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .notif-title {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--n-text);
+      margin-bottom: 3px;
+    }
+
+    .notif-body {
+      font-size: .8rem;
+      color: var(--n-text-muted);
+      line-height: 1.5;
+    }
+
+    .notif-time {
+      font-size: .72rem;
+      color: var(--n-text-muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-top: 3px;
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6366f1;
+      flex-shrink: 0;
+      margin-top: 7px;
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
+      background: var(--n-surface);
+      border: 1px solid var(--n-border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: .82rem;
+      color: var(--n-text);
+      font-family: inherit;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid var(--n-border);
+      cursor: pointer;
+      background: var(--n-surface-2);
+      color: var(--n-text-muted);
+      font-family: inherit;
+      transition: all .2s;
+    }
+
+    .btn-action:hover {
+      border-color: #6366f1;
+      color: #818cf8;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-weight: 700;
+      font-size: .8rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--n-text-muted);
+    }
+
+    .unread-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 800;
+      padding: 0 6px;
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--n-surface);border-color:var(--n-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <a href="/index.html" class="text-sm font-semibold" style="color:var(--n-text-muted);"><i
+          class="fa-solid fa-store mr-1"></i>View Store</a>
+    </div>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+    <div id="seller-subnav"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-extrabold">Notifications</h1>
+        <span id="unread-badge" class="unread-badge hidden">0</span>
+      </div>
+      <div class="flex gap-2">
+        <button id="btn-mark-all" class="btn-action">
+          <i class="fa-solid fa-check-double"></i> Mark All Read
+        </button>
+        <button id="btn-refresh" class="btn-action">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card p-4 mb-4">
+      <div class="filter-bar">
+        <select id="filter-type" class="filter-select">
+          <option value="">All Notifications</option>
+          <option value="bid">Bids</option>
+          <option value="order">Orders</option>
+          <option value="payment">Payments</option>
+          <option value="dispute">Disputes</option>
+          <option value="review">Reviews</option>
+          <option value="system">System</option>
+          <option value="kyc">KYC</option>
+        </select>
+        <select id="filter-read" class="filter-select">
+          <option value="">All</option>
+          <option value="unread">Unread Only</option>
+          <option value="read">Read Only</option>
+        </select>
+        <span id="notif-count-label" class="text-xs font-semibold ml-auto"
+          style="color:var(--n-text-muted);">Loading…</span>
+      </div>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="card overflow-hidden" id="notifications-card">
+      <div id="notifications-list">
+        <div class="py-16 text-center" style="color:var(--n-text-muted);">
+          <i class="fa-solid fa-spinner fa-spin text-2xl mb-3 block"></i>Loading notifications…
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/seller-nav.js"></script>
+  <script src="/assets/js/api-client.js"></script>
+  <script>
+    const API = window.ApiClient || {
+      get: (u) => fetch('/api' + u, { credentials: 'include' }).then(r => r.json()),
+      patch: (u, d) => fetch('/api' + u, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: d ? JSON.stringify(d) : undefined }).then(r => r.json())
+    };
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const timeAgo = ts => {
+      if (!ts) return '—';
+      const d = Date.now() - new Date(ts).getTime();
+      const m = Math.floor(d / 60000);
+      if (m < 1) return 'just now';
+      if (m < 60) return `${m}m ago`;
+      const h = Math.floor(m / 60);
+      if (h < 24) return `${h}h ago`;
+      const days = Math.floor(h / 24);
+      if (days < 30) return `${days}d ago`;
+      return new Date(ts).toLocaleDateString('en-PK', { day: '2-digit', month: 'short' });
+    };
+
+    let allNotifs = [];
+
+    function iconConfig(type) {
+      const configs = {
+        bid: { icon: 'fa-gavel', bg: 'rgba(99,102,241,.15)', color: '#818cf8' },
+        order: { icon: 'fa-box-open', bg: 'rgba(16,185,129,.15)', color: '#34d399' },
+        payment: { icon: 'fa-coins', bg: 'rgba(245,158,11,.15)', color: '#fbbf24' },
+        dispute: { icon: 'fa-triangle-exclamation', bg: 'rgba(239,68,68,.15)', color: '#f87171' },
+        review: { icon: 'fa-star', bg: 'rgba(251,191,36,.15)', color: '#fbbf24' },
+        system: { icon: 'fa-circle-info', bg: 'rgba(148,163,184,.12)', color: '#94a3b8' },
+        kyc: { icon: 'fa-id-card', bg: 'rgba(139,92,246,.15)', color: '#a78bfa' },
+      };
+      return configs[type] || configs.system;
+    }
+
+    async function loadNotifications() {
+      try {
+        const r = await API.get('/notifications');
+        allNotifs = Array.isArray(r.data) ? r.data : (Array.isArray(r) ? r : []);
+        updateUnreadBadge();
+        renderList();
+      } catch (e) {
+        document.getElementById('notifications-list').innerHTML = `<div class="py-10 text-center" style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Failed to load notifications</div>`;
+      }
+    }
+
+    function updateUnreadBadge() {
+      const unread = allNotifs.filter(n => !n.is_read).length;
+      const badge = document.getElementById('unread-badge');
+      if (unread > 0) {
+        badge.textContent = unread > 99 ? '99+' : unread;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+    }
+
+    function filteredNotifs() {
+      const type = document.getElementById('filter-type').value;
+      const readFilter = document.getElementById('filter-read').value;
+      return allNotifs.filter(n => {
+        const typeMatch = !type || (n.type || n.notification_type || '').includes(type);
+        const readMatch = !readFilter || (readFilter === 'unread' ? !n.is_read : n.is_read);
+        return typeMatch && readMatch;
+      });
+    }
+
+    function renderList() {
+      const notifs = filteredNotifs();
+      document.getElementById('notif-count-label').textContent = `${notifs.length} notification${notifs.length !== 1 ? 's' : ''}`;
+      const container = document.getElementById('notifications-list');
+      if (!notifs.length) {
+        container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-bell-slash text-4xl mb-4 opacity-20"></i><p class="text-lg font-bold mb-2">All caught up!</p><p class="text-sm">No notifications match your filters.</p></div>`;
+        return;
+      }
+      container.innerHTML = notifs.map(n => {
+        const { icon, bg, color } = iconConfig(n.type || n.notification_type);
+        return `
+          <div class="notif-item ${n.is_read ? '' : 'unread'}" data-id="${n.notification_id || n.id}" onclick="markRead(${n.notification_id || n.id}, this)">
+            <div class="notif-icon" style="background:${bg};color:${color};"><i class="fa-solid ${icon}"></i></div>
+                        <div class="flex-1 min-w-0">
+              <div class="notif-title">${esc(n.title || n.subject || 'Notification')}</div>
+              <div class="notif-body">${esc(n.message || n.body || '')}</div>
+              ${(function () {
+            // ✅ FIX: block javascript: and data: URLs in notification links
+            var link = String(n.link || '');
+            var safe = /^https?:\/\//i.test(link) || link.charAt(0) === '/' ? link : '';
+            return safe ? `<a href="${esc(safe)}" class="text-xs font-semibold mt-1 inline-block" style="color:#818cf8;" onclick="event.stopPropagation()">View Details →</a>` : '';
+          })()}
+            </div>
+            <div class="flex flex-col items-end gap-2">
+              <span class="notif-time">${timeAgo(n.created_at)}</span>
+              ${!n.is_read ? '<div class="badge-dot"></div>' : ''}
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    async function markRead(id, el) {
+      if (id == null) return;
+      try {
+        await API.patch(`/notifications/${id}/read`);
+        const notif = allNotifs.find(n => (n.notification_id || n.id) === id);
+        if (notif) { notif.is_read = true; }
+        el.classList.remove('unread');
+        el.querySelector('.badge-dot')?.remove();
+        updateUnreadBadge();
+      } catch { }
+    }
+
+    document.getElementById('btn-mark-all').addEventListener('click', async () => {
+      try {
+        await API.patch('/notifications/read-all');
+        allNotifs.forEach(n => n.is_read = true);
+        updateUnreadBadge();
+        renderList();
+      } catch { }
+    });
+
+    document.getElementById('btn-refresh').addEventListener('click', loadNotifications);
+    document.getElementById('filter-type').addEventListener('change', renderList);
+    document.getElementById('filter-read').addEventListener('change', renderList);
+
+    const token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+    const user = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
+    if (!token || !['seller', 'admin'].includes(user.role)) {
+      window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/notifications.html'));
+    } else {
+      loadNotifications();
+      // Refresh every 60 seconds
+      setInterval(loadNotifications, 60000);
+    }
+  </script>
+</body>
+
+</html>

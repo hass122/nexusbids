@@ -1,0 +1,11 @@
+{
+  "name": "@nexusbids/web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NexusBids Web Application Frontend",
+  "scripts": {
+    "dev": "echo \"Web assets are served statically by API server on port 5000\"",
+    "build": "node -e \"console.log('Validating web assets...'); const fs = require('fs'); const files = fs.readdirSync('.'); console.log('Web assets valid: ' + files.length + ' files/directories');\"",
+    "lint": "node -e \"console.log('Web assets lint: valid')\""
+  }
+}

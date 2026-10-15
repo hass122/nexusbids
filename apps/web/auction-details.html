@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Auction Details — NexusBids Pakistan</title>
+  <meta name="description"
+    content="View live bidding activity, verify seller credentials, and participate in real-time escrow-protected auctions.">
+
+  <script>
+    (function () {
+      var t = localStorage.getItem('nexusbids_theme') || 'system';
+      var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+      document.documentElement.classList.toggle('dark', d);
+      document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc',
+              400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca',
+              800: '#3730a3', 900: '#312e81',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --ring: 99, 102, 241;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ============ Light-mode Overrides ============ */
+    html:not(.dark) body {
+      background: #f7f8fc !important;
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .bg-slate-950 {
+      background: #f7f8fc !important;
+    }
+
+    html:not(.dark) .bg-slate-900,
+    html:not(.dark) .bg-slate-900\/70,
+    html:not(.dark) .bg-slate-900\/60,
+    html:not(.dark) .bg-slate-900\/50 {
+      background: #ffffff !important;
+    }
+
+    html:not(.dark) .bg-slate-800 {
+      background: #f1f5f9 !important;
+    }
+
+    html:not(.dark) .text-slate-100,
+    html:not(.dark) .text-slate-200,
+    html:not(.dark) .text-white {
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .text-slate-300,
+    html:not(.dark) .text-slate-400 {
+      color: #475569 !important;
+    }
+
+    html:not(.dark) .text-slate-500 {
+      color: #64748b !important;
+    }
+
+    html:not(.dark) .border-slate-800,
+    html:not(.dark) .border-slate-800\/80,
+    html:not(.dark) .border-slate-800\/60,
+    html:not(.dark) .border-slate-700 {
+      border-color: #e5e9f0 !important;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       IMAGE OVERLAY BADGES
+       ════════════════════════════════════════════════════════ */
+    .nb-img-badge {
+      background: rgba(2, 6, 23, .85) !important;
+      color: #f8fafc !important;
+      border: 1px solid rgba(255, 255, 255, .12) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 6px 20px -6px rgba(0, 0, 0, .35);
+    }
+
+    .nb-img-badge.is-urgent {
+      background: rgba(244, 63, 94, .95) !important;
+      color: #ffffff !important;
+      border-color: rgba(252, 165, 165, .4) !important;
+    }
+
+    .nb-img-badge .nb-badge-dot-idle {
+      background: #34d399;
+    }
+
+    .nb-img-badge.is-urgent .nb-badge-dot-idle {
+      background: #ffffff;
+    }
+
+    .nb-img-chip {
+      background: rgba(2, 6, 23, .85) !important;
+      color: #c7d2fe !important;
+      border: 1px solid rgba(99, 102, 241, .3) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nb-img-chip.neutral {
+      color: #e2e8f0 !important;
+      border-color: rgba(148, 163, 184, .35) !important;
+    }
+
+    .nb-mobile-bar {
+      background: #ffffff;
+      border-top: 1px solid #e5e9f0;
+      box-shadow: 0 -8px 24px -8px rgba(15, 23, 42, .1);
+    }
+
+    html.dark .nb-mobile-bar {
+      background: rgba(2, 6, 23, .95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid #1e293b;
+    }
+
+    .nb-bid-flash {
+      animation: nbBidFlash 1.2s ease-out;
+    }
+
+    @keyframes nbBidFlash {
+      0% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+      }
+
+      30% {
+        box-shadow: 0 0 0 6px rgba(99, 102, 241, .25);
+        background: rgba(99, 102, 241, .05);
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+      }
+    }
+
+    /* ════════════════════════════════════════════════════════
+       INPUTS
+       ════════════════════════════════════════════════════════ */
+    input.nb-input,
+    button.nb-btn-reset {
+      font-family: inherit;
+    }
+
+    input.nb-input {
+      display: block;
+      width: 100%;
+      background-color: #ffffff;
+      border: 1px solid #d8dbe3;
+      color: #0f172a;
+      border-radius: .875rem;
+      padding: .8rem 1rem;
+      font-size: .9375rem;
+      font-weight: 700;
+      line-height: 1.4;
+      outline: none;
+      transition: border-color .18s ease, box-shadow .18s ease;
+      -webkit-appearance: none;
+      appearance: none;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .01em;
+    }
+
+    input.nb-input::placeholder {
+      color: #9aa0ae;
+      font-weight: 500;
+    }
+
+    input.nb-input:hover {
+      border-color: #b7bcc9;
+    }
+
+    input.nb-input:focus {
+      border-color: rgb(var(--ring));
+      box-shadow: 0 0 0 4px rgba(var(--ring), .15);
+    }
+
+    html.dark input.nb-input {
+      background-color: #0b1220;
+      border-color: #1e293b;
+      color: #e2e8f0;
+    }
+
+    html.dark input.nb-input:hover {
+      border-color: #334155;
+    }
+
+    input.nb-money-input {
+      text-align: left;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ════════════════════════════════════════════════════════
+       MAIN IMAGE FIX (Object Contain & Background)
+       ════════════════════════════════════════════════════════ */
+    .nb-main-img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 320px;
+      background: #0f172a;
+      /* Fallback dark background */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (min-width: 640px) {
+      .nb-main-img-wrapper {
+        height: 450px;
+      }
+    }
+
+    .nb-main-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      /* Shows full image without cropping */
+    }
+
+    .nb-thumb {
+      position: relative;
+      border-radius: .75rem;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color .18s ease, transform .18s ease;
+      background: #f1f5f9;
+      flex-shrink: 0;
+    }
+
+    html.dark .nb-thumb {
+      background: #0b1220;
+    }
+
+    .nb-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .nb-thumb:hover {
+      transform: translateY(-2px);
+    }
+
+    .nb-thumb.active {
+      border-color: #6366f1;
+    }
+
+    .nb-bid-scroll {
+      max-height: 22rem;
+      overflow-y: auto;
+      padding-right: .25rem;
+    }
+
+    .nb-bid-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .nb-bid-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .nb-bid-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px;
+    }
+
+    html.dark .nb-bid-scroll::-webkit-scrollbar-thumb {
+      background: #334155;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid rgb(var(--ring));
+      outline-offset: 2px;
+      border-radius: .5rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white pb-24 lg:pb-0">
+
+  <header id="nb-header"></header>
+
+  <main class="flex-1 w-full" id="detail-root">
+    <!-- Skeleton Loader -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div class="lg:col-span-7 space-y-4">
+          <div class="h-[420px] rounded-3xl bg-slate-200 dark:bg-slate-800/60 animate-pulse"></div>
+          <div class="h-4 w-1/3 rounded bg-slate-200 dark:bg-slate-800/60 animate-pulse"></div>
+          <div class="h-24 rounded-2xl bg-slate-200 dark:bg-slate-800/60 animate-pulse"></div>
+        </div>
+        <div class="lg:col-span-5 space-y-4">
+          <div class="h-[400px] rounded-3xl bg-slate-200 dark:bg-slate-800/60 animate-pulse"></div>
+          <div class="h-64 rounded-3xl bg-slate-200 dark:bg-slate-800/60 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <!-- Mobile Sticky Bid Bar -->
+  <div id="mobile-sticky-bid-bar" class="nb-mobile-bar fixed bottom-0 left-0 right-0 z-40 px-4 py-3 lg:hidden hidden">
+    <div class="flex items-center justify-between gap-4 max-w-2xl mx-auto">
+      <div class="min-w-0">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Current bid</p>
+        <p id="mobile-sticky-bid"
+          class="text-lg font-black text-emerald-600 dark:text-emerald-400 leading-none mt-0.5 tabular-nums truncate">Rs
+          0</p>
+      </div>
+      <div class="flex items-center gap-3 shrink-0">
+        <div class="text-right">
+          <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Ends in</p>
+          <p id="mobile-sticky-time"
+            class="text-xs font-bold text-slate-800 dark:text-slate-200 tabular-nums leading-none mt-0.5">—</p>
+        </div>
+        <button type="button" id="mobile-bid-btn"
+          class="px-4 h-11 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all">Bid
+          now</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/realtime.js"></script>
+  <script src="/assets/js/ai-chat.js"></script>
+
+  <script>
+    (function () {
+
+
+      'use strict';
+
+      // ✅ 1. DEEP VALUE EXTRACTOR (Handles any backend field name)
+      function getVal(obj, keys, fallback = null) {
+        if (!obj) return fallback;
+        for (let k of keys) {
+          if (obj[k] !== undefined && obj[k] !== null && obj[k] !== '') return obj[k];
+        }
+        return fallback;
+      }
+
+      // ✅ 2. SAFE AMOUNT PARSER (Handles strings like "5,000 PKR")
+      function parseAmount(val) {
+        if (val === null || val === undefined) return 0;
+        if (typeof val === 'number') return val;
+        if (typeof val === 'string') {
+          const num = parseFloat(val.replace(/[^0-9.]/g, ''));
+          return isNaN(num) ? 0 : num;
+        }
+        return 0;
+      }
+
+      // ✅ 3. SAFE IMAGE URL FORMATTER (Handles base64, relative, objects)
+      function getImageUrl(imgData) {
+        const FALLBACK = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1000&auto=format&fit=crop&q=80';
+        if (!imgData) return FALLBACK;
+
+        let str = '';
+        if (typeof imgData === 'string') {
+          str = imgData.trim();
+        } else if (typeof imgData === 'object') {
+          str = imgData.secure_url || imgData.url || imgData.path || imgData.image_url || imgData.image || '';
+        }
+
+        if (!str) return FALLBACK;
+        if (str.startsWith('data:image')) return str;
+        if (str.startsWith('http://') || str.startsWith('https://') || str.startsWith('//')) return str;
+        if (str.startsWith('/')) return str;
+        return '/' + str.replace(/^\/+/, '');
+      }
+
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function initial(str, fallback = 'S') {
+        const s = String(str || '').trim();
+        return s ? s.charAt(0).toUpperCase() : fallback;
+      }
+
+      function fmtTime(ts) {
+        try {
+          const d = new Date(ts);
+          if (isNaN(d.getTime())) return '';
+          const now = Date.now();
+          const diff = (now - d.getTime()) / 1000;
+          if (diff < 60) return 'just now';
+          if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+          if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+          return d.toLocaleDateString('en-PK', { month: 'short', day: 'numeric' });
+        } catch { return ''; }
+      }
+
+      function fmtMoney(v) {
+        const n = parseAmount(v);
+        return 'Rs ' + n.toLocaleString('en-PK');
+      }
+
+      function fmtCompact(v) {
+        const n = Math.abs(parseAmount(v));
+        if (n >= 10000000) return (n / 10000000).toFixed(2).replace(/\.?0+$/, '') + ' Cr';
+        if (n >= 100000) return (n / 100000).toFixed(2).replace(/\.?0+$/, '') + ' Lac';
+        if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.?0+$/, '') + 'K';
+        return String(n);
+      }
+
+      function cleanCountdown(text) {
+        let s = String(text || '').trim();
+        if (!s) return s;
+        s = s.replace(/\b0d\b\s*/g, '').replace(/\b0h\b\s*/g, '').trim();
+        return s || '0m';
+      }
+
+      function formatNumberInput(el) {
+        if (!el) return;
+        const raw = String(el.value || '').replace(/[^\d]/g, '');
+        if (!raw) { el.value = ''; return; }
+        el.value = Number(raw).toLocaleString('en-PK');
+      }
+
+      function parseFormattedNumber(str) {
+        return parseFloat(String(str || '').replace(/[^\d.]/g, '')) || 0;
+      }
+
+      function toast(msg, type) {
+        if (window.UI && typeof UI.showToast === 'function') UI.showToast(msg, type);
+        else console.log(`[${type}] ${msg}`);
+      }
+
+      async function confirmDialog(opts) {
+        if (window.UI && typeof UI.confirm === 'function') return UI.confirm(opts);
+        return window.confirm(opts.message || 'Are you sure?');
+      }
+
+      const state = {
+        auctionId: new URLSearchParams(window.location.search).get('id'),
+        data: null,
+        sse: null,
+        ticker: null,
+        isWatched: false,
+        submitting: false,
+      };
+
+      const els = {};
+
+      if (!state.auctionId) {
+        window.location.replace('/auctions.html');
+        return;
+      }
+
+      async function init() {
+        els.root = document.getElementById('detail-root');
+        els.mobileBar = document.getElementById('mobile-sticky-bid-bar');
+        els.mobileBidBtn = document.getElementById('mobile-bid-btn');
+        els.mobileBidValue = document.getElementById('mobile-sticky-bid');
+        els.mobileTime = document.getElementById('mobile-sticky-time');
+
+        if (els.mobileBidBtn) els.mobileBidBtn.addEventListener('click', scrollToBidBox);
+
+        await loadAuction();
+      }
+
+      async function loadAuction() {
+        try {
+          const res = await ApiClient.get(`/auctions/${state.auctionId}`);
+
+          // 🔍 DEBUG: Yeh console mein print hoga taake humein pata chale backend kya bhej raha hai
+          console.log("=== BACKEND RESPONSE START ===");
+          console.log(res);
+          console.log("=== BACKEND RESPONSE END ===");
+
+          let payload = (res && res.data) ? res.data : null;
+          if (!payload) {
+            alert("Backend se data nahi aa raha! Response: " + JSON.stringify(res));
+            throw new Error('Auction not found');
+          }
+
+          // ✅ DEEP PARSE: Handle if backend wraps it in { auction: {...}, bids: [...] }
+          let auctionData = payload.auction ? payload.auction : payload;
+          let bidsData = payload.bids || auctionData.bids || [];
+
+          // 🔍 DEBUG: Check exact fields
+          console.log("Parsed Auction Data:", auctionData);
+          console.log("Image Field Check:", auctionData.image || auctionData.image_url || auctionData.images || auctionData.thumbnail);
+          console.log("Amount Field Check:", auctionData.current_bid || auctionData.starting_price || auctionData.price);
+
+          // ✅ NORMALIZE FIELDS: Different backends use different field names
+          state.data = {
+            ...auctionData,
+            // ID & Meta
+            auction_id: getVal(auctionData, ['auction_id', 'id']),
+            title: getVal(auctionData, ['title', 'name', 'item_name'], 'Untitled Auction'),
+            description: getVal(auctionData, ['description', 'desc', 'details'], ''),
+
+            // Pricing
+            current_bid: parseAmount(getVal(auctionData, ['current_bid', 'current_price', 'highest_bid', 'price'])),
+            starting_price: parseAmount(getVal(auctionData, ['starting_price', 'start_price', 'base_price'])),
+            buy_now_price: getVal(auctionData, ['buy_now_price', 'buy_price']) ? parseAmount(getVal(auctionData, ['buy_now_price', 'buy_price'])) : null,
+            reserve_price: getVal(auctionData, ['reserve_price', 'reserve']) ? parseAmount(getVal(auctionData, ['reserve_price', 'reserve'])) : null,
+            bid_increment: parseAmount(getVal(auctionData, ['bid_increment', 'min_increment'])) || 500,
+
+            // Images
+            image: getVal(auctionData, ['image', 'image_url', 'thumbnail', 'cover_image']),
+            images: auctionData.images || auctionData.gallery || [],
+
+            // Auction Meta
+            end_time: getVal(auctionData, ['end_time', 'end_date', 'ends_at']),
+            category_name: getVal(auctionData, ['category_name', 'category']),
+            location_city: getVal(auctionData, ['location_city', 'city', 'location']),
+            condition: getVal(auctionData, ['condition', 'item_condition']),
+
+            // Seller
+            seller_name: getVal(auctionData, ['seller_name', 'seller', 'user_name'], 'Verified Seller'),
+            seller_id: getVal(auctionData, ['seller_id', 'user_id']),
+            seller_rating: parseAmount(getVal(auctionData, ['seller_rating', 'rating'])),
+            seller_review_count: parseAmount(getVal(auctionData, ['seller_review_count', 'reviews_count'])),
+            seller_joined_at: getVal(auctionData, ['seller_joined_at', 'joined_at']),
+
+            // Counts
+            bid_count: parseAmount(getVal(auctionData, ['bid_count', 'total_bids'])) || bidsData.length,
+            watcher_count: parseAmount(getVal(auctionData, ['watcher_count', 'watch_count'])),
+            is_watched: !!getVal(auctionData, ['is_watched', 'watched']),
+
+            // Shipping
+            shipping_cost: getVal(auctionData, ['shipping_cost', 'delivery_fee']),
+            delivery_days: getVal(auctionData, ['delivery_days', 'estimated_delivery']),
+            inspection_hours: getVal(auctionData, ['inspection_hours', 'return_window']),
+
+            // Bids Array
+            bids: bidsData
+          };
+
+          // Fallbacks
+          if (!state.data.current_bid) state.data.current_bid = state.data.starting_price;
+          if (!state.data.auction_id) state.data.auction_id = state.auctionId;
+
+          if (typeof state.data.is_watched !== 'undefined') {
+            state.isWatched = state.data.is_watched;
+          }
+
+          render();
+          startTicker();
+
+          ApiClient.post(`/auctions/${state.auctionId}/view`).catch(() => { });
+
+          if (!state.sse && window.LiveAuctionStream) {
+            state.sse = new LiveAuctionStream(state.auctionId, {
+              onBid: handleLiveBid,
+              onStatus: handleStatusChange,
+            });
+          }
+        } catch (err) {
+          console.error('[auction] load failed:', err);
+          renderError(err && err.message ? err.message : 'Could not load this auction.');
+        }
+      }
+
+      function renderError(msg) {
+        els.root.innerHTML = `
+          <div class="max-w-md mx-auto px-4 py-20 text-center">
+            <div class="w-16 h-16 mx-auto rounded-2xl bg-rose-500/10 flex items-center justify-center mb-5">
+              <i class="fa-solid fa-triangle-exclamation text-2xl text-rose-500"></i>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Couldn't open this auction</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-6">${escapeHtml(msg)}</p>
+            <a href="/auctions.html" class="inline-flex items-center gap-2 px-5 h-11 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold transition-colors">
+              <i class="fa-solid fa-arrow-left text-xs"></i><span>Back to auctions</span>
+            </a>
+          </div>
+        `;
+      }
+
+      function render() {
+        const a = state.data;
+        const cd = (window.UI && UI.formatCountdown) ? UI.formatCountdown(a.end_time) : { text: '—', ended: false, isUrgent: false };
+        const cdText = cleanCountdown(cd.text);
+        const isUrgent = cd.isUrgent && !cd.ended;
+
+        const title = escapeHtml(a.title);
+        const desc = escapeHtml(a.description);
+        const sellerName = escapeHtml(a.seller_name);
+        const sellerInitial = initial(a.seller_name);
+        const category = escapeHtml(a.category_name || 'General');
+        const location = a.location_city ? escapeHtml(a.location_city) : null;
+        const condition = a.condition ? escapeHtml(String(a.condition)) : null;
+
+        const currentPrice = a.current_bid;
+        const increment = Math.max(1, a.bid_increment);
+        const minNextBid = currentPrice + increment;
+        const bidCount = a.bid_count;
+
+        // Parse images safely
+        let rawImages = [];
+        if (Array.isArray(a.images) && a.images.length > 0) {
+          rawImages = a.images.map(img => getImageUrl(img)).filter(Boolean);
+        } else if (a.image) {
+          rawImages = [getImageUrl(a.image)];
+        }
+        const images = rawImages.length > 0 ? rawImages : [getImageUrl(null)];
+
+        if (els.mobileBar) {
+          els.mobileBar.classList.remove('hidden');
+          if (els.mobileBidValue) els.mobileBidValue.textContent = fmtMoney(currentPrice);
+          if (els.mobileTime) els.mobileTime.textContent = cd.ended ? 'Ended' : cdText;
+        }
+
+        els.root.innerHTML = `
+          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 w-full">
+
+            <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 mb-6 font-medium overflow-hidden">
+              <a href="/" class="hover:text-indigo-500 transition-colors shrink-0">Home</a>
+              <i class="fa-solid fa-chevron-right text-[9px] opacity-50 shrink-0"></i>
+              <a href="/auctions.html" class="hover:text-indigo-500 transition-colors shrink-0">Auctions</a>
+              <i class="fa-solid fa-chevron-right text-[9px] opacity-50 shrink-0"></i>
+              <span class="text-slate-700 dark:text-slate-300 truncate">${title}</span>
+            </nav>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
+
+              <!-- LEFT -->
+              <div class="lg:col-span-7 space-y-6">
+
+                <div class="relative rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800/80 bg-slate-100 dark:bg-slate-900 shadow-sm group">
+                  <!-- ✅ FIXED: object-contain shows full image without cropping -->
+                  <div class="nb-main-img-wrapper">
+                    <img
+                      id="main-image"
+                      src="${escapeHtml(images[0])}"
+                      alt="${title}"
+                      class="nb-main-img transition-transform duration-500 group-hover:scale-[1.02]"
+                      onerror="this.onerror=null;this.src='${getImageUrl(null)}'"
+                    >
+                  </div>
+                  
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none"></div>
+
+                  <div class="absolute top-4 right-4">
+                    <span class="nb-img-badge ${isUrgent ? 'is-urgent' : ''} inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold">
+                      <span class="relative flex w-2 h-2">
+                        <span class="nb-badge-dot-idle absolute inline-flex w-full h-full rounded-full opacity-75 animate-ping"></span>
+                        <span class="nb-badge-dot-idle relative inline-flex w-2 h-2 rounded-full"></span>
+                      </span>
+                      <span id="countdown-text" class="tabular-nums">${cd.ended ? 'Ended' : escapeHtml(cdText) + ' left'}</span>
+                    </span>
+                  </div>
+
+                  <div class="absolute bottom-4 left-4 flex items-center gap-2 pointer-events-none">
+                    <span class="nb-img-chip px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">${category}</span>
+                    ${condition ? `<span class="nb-img-chip neutral px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider">${condition}</span>` : ''}
+                  </div>
+                </div>
+
+                ${images.length > 1 ? `
+                  <div class="flex items-center gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Product images">
+                    ${images.map((src, i) => `
+                      <button type="button" class="nb-thumb ${i === 0 ? 'active' : ''}" data-img-index="${i}" style="width:4.5rem;height:4.5rem" role="tab" aria-label="Image ${i + 1}" aria-selected="${i === 0}">
+                        <img src="${escapeHtml(src)}" alt="" loading="lazy" onerror="this.onerror=null;this.style.opacity=.35">
+                      </button>
+                    `).join('')}
+                  </div>
+                ` : ''}
+
+                <div class="lg:hidden">
+                  <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 leading-tight tracking-tight">${title}</h1>
+                  ${location ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-indigo-500"></i>${location}</p>` : ''}
+                </div>
+
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 p-5 sm:p-6">
+                  <h2 class="text-sm font-bold text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-list-ul text-indigo-500"></i>What you're getting
+                  </h2>
+                  ${desc ? `<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed whitespace-pre-line">${desc}</p>` : `<p class="text-sm text-slate-500 dark:text-slate-400 italic">The seller hasn't added a detailed description yet.</p>`}
+                </div>
+
+                <!-- Delivery / Inspection / Returns -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div class="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 p-4">
+                    <div class="w-9 h-9 rounded-xl bg-blue-500/10 flex items-center justify-center mb-3"><i class="fa-solid fa-truck-fast text-blue-500 text-sm"></i></div>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Delivery</p>
+                    <p class="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-snug">${a.shipping_cost ? fmtMoney(a.shipping_cost) + ' · ' : ''}TCS &amp; Leopards</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">${a.delivery_days ? `Typically ${escapeHtml(a.delivery_days)}` : '2–5 business days'}</p>
+                  </div>
+                  <div class="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 p-4">
+                    <div class="w-9 h-9 rounded-xl bg-amber-500/10 flex items-center justify-center mb-3"><i class="fa-solid fa-eye text-amber-500 text-sm"></i></div>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Inspection</p>
+                    <p class="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-snug">${a.inspection_hours ? escapeHtml(String(a.inspection_hours)) + ' hours' : '48 hours'} to check</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">From delivery</p>
+                  </div>
+                  <div class="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 p-4">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-3"><i class="fa-solid fa-rotate-left text-emerald-500 text-sm"></i></div>
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">Returns</p>
+                    <p class="text-xs font-semibold text-slate-800 dark:text-slate-200 leading-snug">Full refund</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">If item differs from listing</p>
+                  </div>
+                </div>
+
+                <div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 sm:p-6">
+                  <div class="flex items-start gap-4">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center shrink-0"><i class="fa-solid fa-shield-halved text-emerald-600 dark:text-emerald-400"></i></div>
+                    <div>
+                      <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1.5">Your money is held, not sent.</h3>
+                      <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">When you win, you pay NexusBids — not the seller. We hold your payment in a secure trust account until you've received the item and confirmed it's exactly as described.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 p-5 flex items-center justify-between gap-4">
+                  <a href="/seller-profile.html?id=${a.seller_id}" class="flex items-center gap-3 min-w-0 group cursor-pointer" title="View Seller Profile & Reviews">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 group-hover:border-indigo-500/50 flex items-center justify-center font-black text-indigo-500 text-lg shrink-0 transition-colors">${escapeHtml(sellerInitial)}</div>
+                    <div class="min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <p class="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 truncate transition-colors">${sellerName}</p>
+                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 shrink-0"><i class="fa-solid fa-circle-check text-[9px]"></i> CNIC verified</span>
+                      </div>
+                      <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5 flex-wrap">
+                        <span>${a.seller_joined_at ? 'Since ' + new Date(a.seller_joined_at).getFullYear() : 'Verified seller'}</span>
+                        ${a.seller_rating > 0 ? `<span>·</span><span class="inline-flex items-center text-amber-500 font-bold"><i class="fa-solid fa-star text-[10px] mr-1"></i>${a.seller_rating.toFixed(1)} (${a.seller_review_count || 0})</span>` : ''}
+                        <span class="text-indigo-500 group-hover:underline text-[10px] font-semibold">View Reviews &rarr;</span>
+                      </p>
+                    </div>
+                  </a>
+                  <button type="button" id="btn-watchlist" class="inline-flex items-center gap-2 px-4 h-10 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 transition-colors shrink-0">
+                    <i class="${state.isWatched ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart'}"></i>
+                    <span class="hidden sm:inline">${state.isWatched ? 'Saved' : 'Watch'}</span>
+                    ${a.watcher_count > 0 ? `<span class="hidden sm:inline text-slate-500 dark:text-slate-400 font-medium">· ${a.watcher_count}</span>` : ''}
+                  </button>
+                </div>
+
+              </div>
+
+              <!-- RIGHT -->
+              <div class="lg:col-span-5 space-y-5" id="bidding-panel">
+
+                <div class="rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 p-6 sm:p-7 shadow-sm relative overflow-hidden">
+                  <div class="hidden lg:block mb-4">
+                    <h1 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100 leading-tight tracking-tight">${title}</h1>
+                    ${location ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-2 inline-flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-indigo-500"></i>${location}</p>` : ''}
+                  </div>
+
+                  ${a.reserve_price !== null ? `
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider mb-4 ${currentPrice >= a.reserve_price ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25' : 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25'}">
+                      <i class="fa-solid ${currentPrice >= a.reserve_price ? 'fa-check' : 'fa-lock'} text-[9px]"></i> ${currentPrice >= a.reserve_price ? 'Reserve met' : 'Reserve not yet met'}
+                    </div>
+                  ` : ''}
+
+                  <div id="live-bid-card" class="rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800/60 p-5 transition-all duration-300">
+                    <div class="flex items-start justify-between gap-4">
+                      <div class="min-w-0">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                          ${bidCount > 0 ? 'Current highest bid' : 'Starting bid'}
+                        </p>
+                        <p id="live-bid-display" class="text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 leading-none mt-2 tabular-nums truncate">
+                          ${fmtMoney(currentPrice)}
+                        </p>
+                        ${bidCount > 0
+            ? `<p class="text-xs font-semibold text-slate-600 dark:text-slate-300 mt-2.5 inline-flex items-center gap-1.5"><i class="fa-solid fa-gavel text-indigo-500 text-[10px]"></i><span class="tabular-nums">${bidCount}</span> ${bidCount === 1 ? 'bid' : 'bids'} placed</p>`
+            : `<p class="text-xs font-semibold text-indigo-600 dark:text-indigo-400 mt-2.5 inline-flex items-center gap-1.5"><i class="fa-solid fa-bolt text-[10px]"></i>Be the first to bid</p>`
+          }
+                      </div>
+                      <div class="text-right shrink-0">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Min next bid</p>
+                        <p class="text-base font-black text-slate-800 dark:text-slate-200 mt-2 tabular-nums">${fmtMoney(minNextBid)}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 p-3.5 rounded-xl bg-indigo-500/8 border border-indigo-500/20 flex items-start gap-2.5">
+                    <i class="fa-solid fa-clock-rotate-left text-indigo-500 text-sm shrink-0 mt-0.5"></i>
+                    <p class="text-[11px] text-indigo-700 dark:text-indigo-300 leading-relaxed"><strong class="font-bold">Last-second bids extend the clock.</strong> If someone bids in the final 2 minutes, we add 2 more minutes. Nobody wins by sniping.</p>
+                  </div>
+
+                  ${cd.ended ? `
+                    <div class="mt-5 rounded-2xl border border-rose-500/25 bg-rose-500/5 p-4 text-center">
+                      <p class="text-sm font-bold text-rose-600 dark:text-rose-400">This auction has ended</p>
+                      <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Bidding is closed. Check out other live auctions.</p>
+                    </div>
+                  ` : `
+                    <form id="bid-form" class="mt-5 space-y-4" novalidate>
+                      <div>
+                        <label for="input-bid-amount" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">Your bid</label>
+                        <div class="flex items-center gap-2 mb-3" role="group" aria-label="Quick bid amounts">
+                          <button type="button" data-quick="${minNextBid}" class="quick-chip flex-1 h-9 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-500/15 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 transition-colors">+${fmtCompact(increment)}</button>
+                          <button type="button" data-quick="${currentPrice + increment * 2}" class="quick-chip flex-1 h-9 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-500/15 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 transition-colors">+${fmtCompact(increment * 2)}</button>
+                          <button type="button" data-quick="${currentPrice + increment * 5}" class="quick-chip flex-1 h-9 rounded-lg text-[11px] font-bold bg-slate-100 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-500/15 hover:text-indigo-600 dark:hover:text-indigo-400 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 transition-colors">+${fmtCompact(increment * 5)}</button>
+                        </div>
+                        <div class="flex gap-2">
+                          <div class="relative flex-1 min-w-0">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none z-10">PKR</span>
+                            <input type="text" id="input-bid-amount" class="nb-input nb-money-input" style="padding-left: 3.25rem;" value="${Number(minNextBid).toLocaleString('en-PK')}" inputmode="numeric" autocomplete="off" aria-describedby="bid-help">
+                          </div>
+                          <button type="submit" id="btn-place-bid" class="px-6 h-[46px] rounded-xl bg-indigo-600 hover:bg-indigo-500 active:scale-[.98] text-white font-bold text-sm shadow-lg shadow-indigo-600/25 transition-all shrink-0">Place bid</button>
+                        </div>
+                        <p id="bid-help" class="text-[11px] text-slate-500 dark:text-slate-400 mt-2">Bids are binding. If you win, you're committing to buy.</p>
+                      </div>
+
+                      ${a.buy_now_price ? `
+                        <div class="pt-4 border-t border-slate-200 dark:border-slate-800/70">
+                          <button type="button" id="btn-buy-now" class="w-full h-11 rounded-xl bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-white text-white dark:text-slate-900 font-bold text-xs transition-colors inline-flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-bolt text-[10px]"></i><span>Buy now for ${fmtMoney(a.buy_now_price)} — skip the wait</span>
+                          </button>
+                        </div>
+                      ` : ''}
+
+                      <div class="pt-4 border-t border-slate-200 dark:border-slate-800/70">
+                        <div class="flex items-center justify-between mb-2 gap-3">
+                          <label for="input-autobid-ceiling" class="text-xs font-bold text-slate-700 dark:text-slate-300">Auto-bid ceiling</label>
+                          <span class="text-[10px] text-indigo-500 dark:text-indigo-400 font-semibold">Optional</span>
+                        </div>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400 mb-3 leading-relaxed">Set the most you're willing to pay. We'll bid the smallest needed amount on your behalf — never more than your ceiling.</p>
+                        <div class="flex gap-2">
+                          <input type="text" id="input-autobid-ceiling" placeholder="e.g. 500,000" class="nb-input nb-money-input flex-1 min-w-0" style="font-weight: 600; font-size: .875rem;" inputmode="numeric" autocomplete="off">
+                          <button type="button" id="btn-autobid" class="px-5 h-[46px] rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold border border-slate-200 dark:border-slate-700 transition-colors shrink-0">Set</button>
+                        </div>
+                      </div>
+                    </form>
+                  `}
+                </div>
+
+                <div class="rounded-3xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 p-6 shadow-sm">
+                  <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 dark:border-slate-800/70">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                      <span class="relative flex w-1.5 h-1.5"><span class="absolute inline-flex w-full h-full rounded-full bg-emerald-500 opacity-75 animate-ping"></span><span class="relative inline-flex w-1.5 h-1.5 rounded-full bg-emerald-500"></span></span>
+                      Live bid activity
+                    </h2>
+                    <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400">Bidders shown anonymously</span>
+                  </div>
+
+                  <div id="bids-history-list" class="nb-bid-scroll space-y-2">
+                    ${renderBidList(a.bids)}
+                  </div>
+                </div>
+
+                <div class="rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/40 p-4">
+                  <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2.5">Before you bid</p>
+                  <ul class="space-y-1.5 text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5 shrink-0"></i><span>Read the description carefully — item is sold "as described"</span></li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5 shrink-0"></i><span>Ask the seller questions <em>before</em> bidding if anything's unclear</span></li>
+                    <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5 shrink-0"></i><span>Winning bidders who don't pay get flagged and may be suspended</span></li>
+                  </ul>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        `;
+
+        wireDynamicListeners();
+      }
+
+      function anonymizeName(name) {
+        const s = String(name || '').trim();
+        if (!s) return 'Bidder';
+        if (s.length === 1) return s + '*';
+        if (s.length === 2) return s[0] + '*';
+        return s[0] + '***' + s[s.length - 1];
+      }
+
+      function renderBidList(bids) {
+        if (!Array.isArray(bids) || bids.length === 0) {
+          return `<p class="text-center text-slate-500 dark:text-slate-400 py-6 text-xs">No bids yet. Be the first to bid — place yours in the panel above.</p>`;
+        }
+        return bids.map((b, idx) => {
+          const isTop = idx === 0;
+          const amount = parseAmount(b.bid_amount || b.amount || 0);
+          const timeAgo = fmtTime(b.bid_time || b.created_at || Date.now());
+
+          return `
+            <div class="flex items-center justify-between p-3 rounded-xl transition ${isTop ? 'bg-indigo-500/8 dark:bg-indigo-500/10 border border-indigo-500/25' : 'bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/60'}">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="w-7 h-7 rounded-full ${isTop ? 'bg-indigo-500 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'} flex items-center justify-center font-black text-[10px] shrink-0">
+                  ${isTop ? '<i class="fa-solid fa-crown text-[10px]"></i>' : '#' + (idx + 1)}
+                </div>
+                <div class="min-w-0">
+                  <p class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">${escapeHtml(anonymizeName(b.bidder_name || b.user_name))}</p>
+                  <p class="text-[10px] text-slate-500 dark:text-slate-400">${escapeHtml(timeAgo)}</p>
+                </div>
+              </div>
+              <span class="text-sm font-black tabular-nums shrink-0 ml-3 ${isTop ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-700 dark:text-slate-300'}">
+                ${fmtMoney(amount)}
+              </span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function wireDynamicListeners() {
+        els.root.querySelectorAll('.nb-thumb').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = parseInt(btn.getAttribute('data-img-index'), 10) || 0;
+            const images = Array.isArray(state.data.images) && state.data.images.length ? state.data.images.map(i => getImageUrl(i)) : [getImageUrl(state.data.image)];
+            const main = document.getElementById('main-image');
+            if (main && images[idx]) main.src = images[idx];
+            els.root.querySelectorAll('.nb-thumb').forEach((b, i) => {
+              b.classList.toggle('active', i === idx);
+              b.setAttribute('aria-selected', String(i === idx));
+            });
+          });
+        });
+
+        const wBtn = document.getElementById('btn-watchlist');
+        if (wBtn) wBtn.addEventListener('click', toggleWatchlist);
+
+        els.root.querySelectorAll('.quick-chip').forEach(chip => {
+          chip.addEventListener('click', () => {
+            const val = chip.getAttribute('data-quick');
+            const input = document.getElementById('input-bid-amount');
+            if (input) {
+              input.value = Number(val).toLocaleString('en-PK');
+              input.focus();
+              input.select();
+            }
+          });
+        });
+
+        const bidInput = document.getElementById('input-bid-amount');
+        if (bidInput) bidInput.addEventListener('input', () => formatNumberInput(bidInput));
+
+        const autoInput = document.getElementById('input-autobid-ceiling');
+        if (autoInput) autoInput.addEventListener('input', () => formatNumberInput(autoInput));
+
+        const form = document.getElementById('bid-form');
+        if (form) form.addEventListener('submit', (e) => { e.preventDefault(); submitBid(); });
+
+        const abBtn = document.getElementById('btn-autobid');
+        if (abBtn) abBtn.addEventListener('click', submitAutoBid);
+
+        const bnBtn = document.getElementById('btn-buy-now');
+        if (bnBtn) bnBtn.addEventListener('click', buyNow);
+      }
+
+      function scrollToBidBox() {
+        const el = document.getElementById('bidding-panel');
+        if (!el) return;
+        const y = el.getBoundingClientRect().top + window.scrollY - 80;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+        setTimeout(() => {
+          const input = document.getElementById('input-bid-amount');
+          if (input) input.focus();
+        }, 400);
+      }
+
+      function startTicker() {
+        if (state.ticker) clearInterval(state.ticker);
+        if (!window.UI || typeof UI.formatCountdown !== 'function') return;
+
+        state.ticker = setInterval(() => {
+          if (!state.data) return;
+          const cd = UI.formatCountdown(state.data.end_time);
+          const cleaned = cleanCountdown(cd.text);
+          const t1 = document.getElementById('countdown-text');
+          if (t1) t1.textContent = cd.ended ? 'Ended' : cleaned + ' left';
+          if (els.mobileTime) els.mobileTime.textContent = cd.ended ? 'Ended' : cleaned;
+        }, 1000);
+      }
+
+      function requireAuth(redirectBack = true) {
+        if (ApiClient.isAuthenticated()) return true;
+        const back = redirectBack ? encodeURIComponent(window.location.pathname + window.location.search) : '';
+        window.location.href = `/login.html${back ? '?redirect=' + back : ''}`;
+        return false;
+      }
+
+      async function submitBid() {
+        if (state.submitting) return;
+        if (!requireAuth()) return;
+
+        const input = document.getElementById('input-bid-amount');
+        if (!input) return;
+        const amount = parseFormattedNumber(input.value);
+
+        const a = state.data;
+        const currentPrice = a.current_bid;
+        const increment = a.bid_increment;
+        const minNextBid = currentPrice + increment;
+
+        if (!amount || amount < minNextBid) {
+          toast(`Your bid must be at least ${fmtMoney(minNextBid)}`, 'error');
+          input.focus();
+          return;
+        }
+
+        const ok = await confirmDialog({
+          title: 'Place this bid?',
+          message: `You're bidding ${fmtMoney(amount)}. If you win, you're committed to pay. Funds will be held in escrow until delivery is confirmed.`,
+          confirmText: 'Yes, place bid',
+          type: 'primary',
+        });
+        if (!ok) return;
+
+        state.submitting = true;
+        const btn = document.getElementById('btn-place-bid');
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> <span class="hidden sm:inline">Placing…</span>'; }
+
+        try {
+          const res = await ApiClient.post(`/auctions/${state.auctionId}/bid`, { bid_amount: amount });
+          toast((res && res.message) || `Bid placed at ${fmtMoney(amount)}`, 'success');
+          await loadAuction();
+        } catch (err) {
+          toast((err && err.message) || 'Could not place bid. Please try again.', 'error');
+        } finally {
+          state.submitting = false;
+          if (btn) { btn.disabled = false; btn.innerHTML = 'Place bid'; }
+        }
+      }
+
+      async function submitAutoBid() {
+        if (!requireAuth()) return;
+
+        const input = document.getElementById('input-autobid-ceiling');
+        if (!input) return;
+        const maxAmount = parseFormattedNumber(input.value);
+
+        const a = state.data;
+        const currentPrice = a.current_bid;
+        const increment = a.bid_increment;
+        const minNextBid = currentPrice + increment;
+
+        if (!maxAmount || maxAmount < minNextBid) {
+          toast(`Your ceiling must be at least ${fmtMoney(minNextBid)}`, 'error');
+          input.focus();
+          return;
+        }
+
+        const ok = await confirmDialog({
+          title: 'Activate auto-bid?',
+          message: `We'll automatically bid the smallest needed amount on your behalf, up to a maximum of ${fmtMoney(maxAmount)}. You can change or cancel this anytime.`,
+          confirmText: 'Activate auto-bid',
+          type: 'primary',
+        });
+        if (!ok) return;
+
+        const btn = document.getElementById('btn-autobid');
+        if (btn) { btn.disabled = true; btn.textContent = '…'; }
+
+        try {
+          await ApiClient.post(`/auctions/${state.auctionId}/auto-bid`, { max_amount: maxAmount });
+          toast(`Auto-bid set up to ${fmtMoney(maxAmount)}`, 'success');
+          input.value = '';
+        } catch (err) {
+          toast((err && err.message) || 'Could not activate auto-bid', 'error');
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = 'Set'; }
+        }
+      }
+
+      async function buyNow() {
+        if (!requireAuth()) return;
+        const a = state.data;
+        const price = a.buy_now_price;
+
+        const ok = await confirmDialog({
+          title: 'Buy this now?',
+          message: `You'll skip the auction and purchase for ${fmtMoney(price)}. Payment goes into escrow immediately. Auction ends.`,
+          confirmText: 'Buy now',
+          type: 'warning',
+        });
+        if (!ok) return;
+
+        try {
+          const res = await ApiClient.post(`/auctions/${state.auctionId}/buy-now`);
+          const orderId = res && res.data && res.data.order_id;
+          toast('Purchase confirmed. Redirecting to checkout…', 'success');
+          setTimeout(() => {
+            window.location.href = `/checkout.html${orderId ? '?order_id=' + encodeURIComponent(orderId) : ''}`;
+          }, 900);
+        } catch (err) {
+          toast((err && err.message) || 'Could not complete purchase', 'error');
+        }
+      }
+
+      async function toggleWatchlist() {
+        if (!requireAuth()) return;
+        try {
+          if (state.isWatched) {
+            await ApiClient.delete(`/watchlist/${state.auctionId}`);
+            state.isWatched = false;
+            toast('Removed from watchlist', 'info');
+          } else {
+            await ApiClient.post(`/watchlist/${state.auctionId}`);
+            state.isWatched = true;
+            toast('Added to watchlist', 'success');
+          }
+          updateWatchlistUI();
+        } catch (err) {
+          toast((err && err.message) || 'Could not update watchlist', 'error');
+        }
+      }
+
+      function updateWatchlistUI() {
+        const btn = document.getElementById('btn-watchlist');
+        if (!btn) return;
+        const icon = btn.querySelector('i');
+        const label = btn.querySelector('span');
+        if (icon) icon.className = state.isWatched ? 'fa-solid fa-heart text-rose-500' : 'fa-regular fa-heart';
+        if (label) label.textContent = state.isWatched ? 'Saved' : 'Watch';
+      }
+
+      function handleLiveBid(ev) {
+        const amt = parseAmount(ev && (ev.bid_amount || ev.amount));
+        toast(`New bid: ${fmtMoney(amt)}`, 'info');
+        const card = document.getElementById('live-bid-card');
+        if (card) {
+          card.classList.add('nb-bid-flash');
+          setTimeout(() => card.classList.remove('nb-bid-flash'), 1200);
+        }
+        loadAuction();
+      }
+
+      function handleStatusChange(ev) {
+        const status = ev && ev.status ? String(ev.status) : 'updated';
+        toast(`Auction ${status}`, 'warning');
+        loadAuction();
+      }
+
+      window.addEventListener('beforeunload', () => {
+        if (state.sse && typeof state.sse.close === 'function') state.sse.close();
+        if (state.ticker) clearInterval(state.ticker);
+      });
+
+      document.addEventListener('DOMContentLoaded', init);
+    })();
+
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escrow Supervision — NexusBids Admin</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --a-bg: #f4f6fb;
+      --a-surface: #fff;
+      --a-surface-2: #f7f9fc;
+      --a-surface-3: #eceff6;
+      --a-border: #e3e8f0;
+      --a-text: #0f172a;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68
+    }
+
+    html.dark {
+      --a-bg: #05070f;
+      --a-surface: #0d1220;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #1a2336;
+      --a-border: #1e2a40;
+      --a-text: #eef2f9;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .panel {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15)
+    }
+
+    .panel.p-0 {
+      padding: 0
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      font-family: inherit
+    }
+
+    .btn-emerald {
+      background: rgba(16, 185, 129, .15);
+      border-color: rgba(16, 185, 129, .3);
+      color: #34d399
+    }
+
+    .btn-emerald:hover {
+      background: rgba(16, 185, 129, .25)
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, .12);
+      border-color: rgba(239, 68, 68, .3);
+      color: #f87171
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, .25)
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase
+    }
+
+    .badge-held {
+      background: rgba(99, 102, 241, .15);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, .3)
+    }
+
+    .badge-released {
+      background: rgba(16, 185, 129, .15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, .3)
+    }
+
+    .badge-refunded {
+      background: rgba(239, 68, 68, .15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, .3)
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem
+    }
+
+    .data-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--a-text-muted);
+      border-bottom: 1px solid var(--a-border)
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--a-border);
+      vertical-align: middle
+    }
+
+    .data-table tr:hover td {
+      background: var(--a-surface-2)
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-brand-400 bg-brand-500/10 border border-brand-500/20 mb-2">
+          <i class="fa-solid fa-shield-halved"></i> Escrow Custody
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black text-[var(--a-text)]">Escrow Holds Supervision</h1>
+        <p class="text-xs sm:text-sm text-[var(--a-text-muted)] mt-1">Release funds upon delivery or execute buyer
+          refunds.</p>
+      </div>
+      <button onclick="loadEscrow()" class="btn btn-emerald text-xs"><i class="fa-solid fa-rotate-right"></i>
+        Refresh</button>
+    </div>
+
+    <div class="panel p-0 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order Ref</th>
+              <th>Auction Lot</th>
+              <th>Buyer</th>
+              <th>Seller</th>
+              <th>Gross</th>
+              <th>Fee (5%)</th>
+              <th>Status</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="escrow-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script>
+    function eEsc(s) {
+      if (window.UI && UI.escapeHtml) return UI.escapeHtml(s);
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function eFormatPKR(v) {
+      if (window.UI && UI.formatPKR) return UI.formatPKR(v);
+      return 'PKR ' + Number(v || 0).toLocaleString('en-PK');
+    }
+    function eToast(msg, type) {
+      if (window.UI && UI.showToast) UI.showToast(msg, type);
+      else console.log(type, msg);
+    }
+
+    async function loadEscrow() {
+      const tbody = document.getElementById('escrow-table-body');
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-[var(--a-text-muted)]"><i class="fa-solid fa-spinner fa-spin text-xl mb-2"></i><br>Loading escrow…</td></tr>';
+
+      try {
+        const res = await ApiClient.get('/admin/escrow');
+        const orders = (res && res.data) || [];
+
+        if (!orders.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-[var(--a-text-muted)]">No active escrow holds.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = orders.map(o => {
+          const orderStatus = String(o.order_status || '').toLowerCase();
+          const isCompleted = orderStatus === 'completed' || orderStatus === 'delivered';
+          const isRefunded = orderStatus === 'refunded';
+          const amount = parseFloat(o.total_amount || 0);
+          const safeAmount = isFinite(amount) ? amount : 0;
+          // ✅ FIXED: only use 5% fallback if platform_fee is null/undefined (not 0)
+          const feeRaw = o.platform_fee;
+          const fee = (feeRaw !== null && feeRaw !== undefined) ? parseFloat(feeRaw) : safeAmount * 0.05;
+          const safeFee = isFinite(fee) ? fee : 0;
+          const created = new Date(o.created_at);
+          const dateStr = isNaN(created.getTime()) ? '—' : created.toLocaleDateString('en-PK');
+          const oid = String(o.order_id);
+
+          return `
+            <tr>
+              <td><span class="font-mono text-xs font-bold text-brand-400 block">${eEsc(o.order_number || ('#' + o.order_id))}</span><span class="text-[10px] text-[var(--a-text-muted)]">${dateStr}</span></td>
+              <td><span class="font-bold text-xs text-[var(--a-text)]" style="display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${eEsc(o.auction_title)}</span></td>
+              <td><span class="text-xs text-[var(--a-text)] font-semibold">${eEsc(o.buyer_name)}</span></td>
+              <td><span class="text-xs text-[var(--a-text)] font-semibold">${eEsc(o.seller_name)}</span></td>
+              <td><strong class="text-xs font-black text-emerald-400">${eFormatPKR(safeAmount)}</strong></td>
+              <td><span class="text-xs font-bold text-brand-400">${eFormatPKR(safeFee)}</span></td>
+              <td><span class="badge ${isCompleted ? 'badge-released' : isRefunded ? 'badge-refunded' : 'badge-held'}">${isCompleted ? 'Released' : isRefunded ? 'Refunded' : 'Held in Escrow'}</span></td>
+              <td class="text-right">
+                ${!isCompleted && !isRefunded ? `<div class="flex items-center justify-end gap-1.5">
+                  <button onclick="releaseEscrow('${eEsc(oid)}')" class="btn btn-emerald text-[11px] py-1 px-2.5"><i class="fa-solid fa-lock-open"></i> Release</button>
+                  <button onclick="refundEscrow('${eEsc(oid)}')" class="btn btn-danger text-[11px] py-1 px-2.5"><i class="fa-solid fa-rotate-left"></i> Refund</button>
+                </div>` : `<span class="text-xs text-[var(--a-text-muted)] font-bold">Settled</span>`}
+              </td>
+            </tr>`;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-rose-400">' + eEsc(err.message || 'Error loading escrow.') + '</td></tr>';
+      }
+    }
+
+    async function releaseEscrow(orderId) {
+      if (!confirm('Release these funds to the seller? Ensure shipping is verified.')) return;
+      try {
+        await ApiClient.post('/admin/escrow/' + encodeURIComponent(orderId) + '/release');
+        eToast('Escrow released to seller', 'success');
+        loadEscrow();
+      } catch (err) { eToast(err.message || 'Release failed.', 'error'); }
+    }
+
+    async function refundEscrow(orderId) {
+      const reason = prompt('Refund reason for audit trail:');
+      if (!reason) return;
+      try {
+        await ApiClient.post('/admin/escrow/' + encodeURIComponent(orderId) + '/refund', { reason });
+        eToast('Escrow refunded to buyer', 'success');
+        loadEscrow();
+      } catch (err) { eToast(err.message || 'Refund failed.', 'error'); }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = ApiClient.getUserRole && ApiClient.getUserRole();
+      if (!ApiClient.isAuthenticated() || role !== 'admin') {
+        window.location.href = '/login.html?redirect=/admin/escrow.html';
+        return;
+      }
+      loadEscrow();
+    });
+  </script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

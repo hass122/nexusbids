@@ -1,0 +1,909 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Earnings & Ledger — Seller Studio</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --e-bg: #f4f6fb;
+      --e-surface: #ffffff;
+      --e-surface-2: #f7f9fc;
+      --e-surface-3: #eceff6;
+      --e-border: #e3e8f0;
+      --e-border-strong: #cfd7e5;
+      --e-text: #0f172a;
+      --e-text-muted: #58627a;
+      --e-text-light: #8d97ab;
+      --e-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --e-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --e-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .30);
+      --e-glow: rgba(99, 102, 241, .13);
+      --e-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --e-row-hover: #f4f7fd;
+    }
+
+    html.dark {
+      --e-bg: #05070f;
+      --e-surface: #0d1220;
+      --e-surface-2: #121a2b;
+      --e-surface-3: #1a2336;
+      --e-border: #1e2a40;
+      --e-border-strong: #2c3a56;
+      --e-text: #eef2f9;
+      --e-text-muted: #9aa6bd;
+      --e-text-light: #66738d;
+      --e-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --e-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --e-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .85);
+      --e-glow: rgba(99, 102, 241, .20);
+      --e-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+      --e-row-hover: #141d31;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--e-bg);
+      color: var(--e-text);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+      overflow-x: hidden;
+    }
+
+    .page-shell {
+      position: relative;
+    }
+
+    .page-shell::before {
+      content: "";
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1100px, 100vw);
+      height: 460px;
+      background: radial-gradient(closest-side, var(--e-glow), transparent 78%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-shell>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .28);
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.4vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.13;
+      color: var(--e-text);
+    }
+
+    .page-sub {
+      font-size: .85rem;
+      color: var(--e-text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 620px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--e-text-light);
+      margin-bottom: 14px;
+    }
+
+    .section-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--e-border);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform .22s cubic-bezier(.2, .8, .2, 1), box-shadow .22s, border-color .22s, background-color .22s, color .22s;
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(.975);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+
+    .btn-ghost {
+      background: var(--e-surface);
+      border-color: var(--e-border);
+      color: var(--e-text-muted);
+      box-shadow: var(--e-shadow-sm);
+    }
+
+    .btn-ghost:hover {
+      color: var(--e-text);
+      border-color: var(--e-border-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--e-shadow-md);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(79, 70, 229, .85);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(79, 70, 229, .95);
+    }
+
+    .btn-emerald {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(16, 185, 129, .85);
+    }
+
+    .btn-emerald:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(16, 185, 129, .95);
+    }
+
+    .btn-emerald:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn-emerald:disabled:hover {
+      transform: none;
+    }
+
+    .balance-card {
+      position: relative;
+      padding: 20px;
+      border-radius: 22px;
+      background: var(--e-surface);
+      border: 1px solid var(--e-border);
+      box-shadow: var(--e-shadow-sm);
+      overflow: hidden;
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1), box-shadow .3s, border-color .3s;
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+
+    .balance-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(240px 140px at 100% 0%, var(--accent-glow), transparent 72%);
+      pointer-events: none;
+      opacity: .9;
+      transition: opacity .3s ease;
+    }
+
+    .balance-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--e-shadow-lg);
+      border-color: var(--accent);
+    }
+
+    .balance-card:hover::before {
+      opacity: 1;
+    }
+
+    .balance-head {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .balance-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.05rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .balance-card:hover .balance-icon {
+      transform: scale(1.09) rotate(-5deg);
+    }
+
+    .balance-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .6rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      background: var(--e-surface-2);
+      border: 1px solid var(--e-border);
+      color: var(--e-text-light);
+      white-space: nowrap;
+    }
+
+    .balance-tag i {
+      font-size: .55rem;
+    }
+
+    .balance-label {
+      position: relative;
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--e-text-light);
+    }
+
+    .balance-value {
+      position: relative;
+      font-size: clamp(1.55rem, 5vw, 2rem);
+      font-weight: 800;
+      line-height: 1.05;
+      margin-top: 5px;
+      color: var(--accent-text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.025em;
+      word-break: break-word;
+    }
+
+    .balance-desc {
+      position: relative;
+      font-size: .72rem;
+      color: var(--e-text-light);
+      line-height: 1.5;
+      margin-top: 8px;
+    }
+
+    .balance-actions {
+      position: relative;
+      margin-top: auto;
+      padding-top: 16px;
+    }
+
+    .balance-emerald {
+      --accent: #10b981;
+      --accent-text: #059669;
+      --accent-soft: rgba(16, 185, 129, .10);
+      --accent-glow: rgba(16, 185, 129, .18);
+    }
+
+    .balance-indigo {
+      --accent: #6366f1;
+      --accent-text: #4f46e5;
+      --accent-soft: rgba(99, 102, 241, .10);
+      --accent-glow: rgba(99, 102, 241, .16);
+    }
+
+    .balance-slate {
+      --accent: #8d97ab;
+      --accent-text: var(--e-text);
+      --accent-soft: rgba(141, 151, 171, .10);
+      --accent-glow: rgba(141, 151, 171, .14);
+    }
+
+    html.dark .balance-emerald {
+      --accent: #34d399;
+      --accent-text: #6ee7b7;
+      --accent-soft: rgba(16, 185, 129, .18);
+      --accent-glow: rgba(16, 185, 129, .24);
+    }
+
+    html.dark .balance-indigo {
+      --accent: #818cf8;
+      --accent-text: #a5b4fc;
+      --accent-soft: rgba(99, 102, 241, .18);
+      --accent-glow: rgba(99, 102, 241, .26);
+    }
+
+    html.dark .balance-slate {
+      --accent: #9aa6bd;
+      --accent-text: var(--e-text);
+      --accent-soft: rgba(154, 166, 189, .14);
+      --accent-glow: rgba(154, 166, 189, .18);
+    }
+
+    .panel {
+      background: var(--e-surface);
+      border: 1px solid var(--e-border);
+      border-radius: 22px;
+      box-shadow: var(--e-shadow-sm);
+      overflow: hidden;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--e-border);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--e-text);
+      letter-spacing: -.01em;
+    }
+
+    .panel-title-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: .78rem;
+      background: rgba(99, 102, 241, .10);
+      color: #6366f1;
+    }
+
+    html.dark .panel-title-icon {
+      background: rgba(99, 102, 241, .18);
+      color: #a5b4fc;
+    }
+
+    .panel-sub {
+      font-size: .72rem;
+      color: var(--e-text-light);
+      margin-top: 3px;
+    }
+
+    .panel-count {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--e-text-light);
+      background: var(--e-surface-2);
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--e-border);
+    }
+
+    .ledger-list {
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width:640px) {
+      .ledger-list {
+        padding: 16px;
+        gap: 12px;
+      }
+    }
+
+    .ledger-row {
+      position: relative;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: var(--e-surface-2);
+      border: 1px solid var(--e-border);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: border-color .25s, transform .25s, box-shadow .25s, background-color .25s;
+      animation: rowIn .35s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .ledger-row::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 12px;
+      bottom: 12px;
+      width: 3px;
+      border-radius: 0 3px 3px 0;
+      background: var(--stripe, transparent);
+    }
+
+    .ledger-row:hover {
+      border-color: var(--e-border-strong);
+      background: var(--e-surface);
+      transform: translateY(-1px);
+      box-shadow: var(--e-shadow-md);
+    }
+
+    @keyframes rowIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .ledger-icon {
+      flex: 0 0 auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: .95rem;
+      background: var(--icon-bg, rgba(99, 102, 241, .10));
+      color: var(--icon-fg, #6366f1);
+    }
+
+    html.dark .ledger-icon {
+      background: var(--icon-bg-dark, rgba(99, 102, 241, .18));
+      color: var(--icon-fg-dark, #a5b4fc);
+    }
+
+    .ledger-info {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .ledger-desc {
+      font-size: .84rem;
+      font-weight: 700;
+      color: var(--e-text);
+      line-height: 1.35;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ledger-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      color: var(--e-text-light);
+      margin-top: 5px;
+      font-weight: 500;
+    }
+
+    .ledger-time i {
+      font-size: .62rem;
+      opacity: .85;
+    }
+
+    .ledger-amount {
+      flex: 0 0 auto;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.015em;
+    }
+
+    .ledger-amount-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1.1;
+      display: block;
+    }
+
+    .ledger-amount-value.credit {
+      color: #059669;
+    }
+
+    .ledger-amount-value.debit {
+      color: #e11d48;
+    }
+
+    .ledger-amount-value.neutral {
+      color: var(--e-text);
+    }
+
+    html.dark .ledger-amount-value.credit {
+      color: #34d399;
+    }
+
+    html.dark .ledger-amount-value.debit {
+      color: #fb7185;
+    }
+
+    .ledger-amount-type {
+      font-size: .62rem;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-top: 3px;
+      display: block;
+    }
+
+    .ledger-amount-type.credit {
+      color: #10b981;
+    }
+
+    .ledger-amount-type.debit {
+      color: #f43f5e;
+    }
+
+    .ledger-amount-type.neutral {
+      color: var(--e-text-light);
+    }
+
+    html.dark .ledger-amount-type.credit {
+      color: #6ee7b7;
+    }
+
+    html.dark .ledger-amount-type.debit {
+      color: #fda4af;
+    }
+
+    .skeleton {
+      background: var(--e-skeleton);
+      background-size: 400% 100%;
+      border-radius: 8px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0 50%;
+      }
+    }
+
+    .empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 52px 24px;
+      animation: rowIn .4s ease both;
+    }
+
+    .empty-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+      background: var(--e-surface-2);
+      border: 1px solid var(--e-border);
+      color: var(--e-text-light);
+      margin-bottom: 18px;
+    }
+
+    .empty-title {
+      font-size: .98rem;
+      font-weight: 800;
+      color: var(--e-text);
+    }
+
+    .empty-text {
+      font-size: .8rem;
+      color: var(--e-text-muted);
+      margin-top: 8px;
+      max-width: 400px;
+      line-height: 1.6;
+    }
+
+    .empty .btn {
+      margin-top: 20px;
+    }
+
+    @media (max-width:520px) {
+      .balance-card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .balance-icon {
+        width: 38px;
+        height: 38px;
+        font-size: .9rem;
+      }
+
+      .balance-head {
+        margin-bottom: 12px;
+      }
+
+      .balance-value {
+        font-size: 1.5rem;
+      }
+
+      .panel-head {
+        padding: 14px 16px;
+      }
+
+      .ledger-list {
+        padding: 12px;
+        gap: 8px;
+      }
+
+      .ledger-row {
+        padding: 12px 14px;
+        gap: 12px;
+      }
+
+      .ledger-icon {
+        width: 36px;
+        height: 36px;
+        font-size: .85rem;
+      }
+
+      .ledger-amount-value {
+        font-size: .95rem;
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+  <main class="page-shell flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7">
+      <div>
+        <span class="eyebrow"><i class="fa-solid fa-wallet"></i> Seller Studio</span>
+        <h1 class="page-title mt-3">Earnings &amp; Escrow Ledger</h1>
+        <p class="page-sub">Audit-trailed balance records and Pakistani bank payout requests — every transaction tracked
+          end-to-end.</p>
+      </div>
+      <a href="/seller/dashboard.html" class="btn btn-ghost self-start"><i class="fa-solid fa-arrow-left"></i> Back to
+        Dashboard</a>
+    </div>
+
+    <p class="section-label">Balance Overview</p>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mb-8">
+      <div class="balance-card balance-emerald">
+        <div class="balance-head">
+          <div class="balance-icon"><i class="fa-solid fa-wallet"></i></div>
+          <span class="balance-tag"><i class="fa-solid fa-circle" style="font-size:.4rem"></i> Ready</span>
+        </div>
+        <p class="balance-label">Available for Payout</p>
+        <p id="stat-available" class="balance-value">Rs. 0</p>
+        <p class="balance-desc">Funds you can withdraw to your verified bank account right now.</p>
+        <div class="balance-actions">
+          <button type="button" onclick="requestPayout()" id="btn-payout" class="btn btn-emerald" style="width:100%"><i
+              class="fa-solid fa-building-columns"></i> Request Bank Transfer</button>
+        </div>
+      </div>
+      <div class="balance-card balance-indigo">
+        <div class="balance-head">
+          <div class="balance-icon"><i class="fa-solid fa-shield-halved"></i></div>
+          <span class="balance-tag"><i class="fa-solid fa-lock" style="font-size:.5rem"></i> Locked</span>
+        </div>
+        <p class="balance-label">Held in Escrow</p>
+        <p id="stat-pending" class="balance-value">Rs. 0</p>
+        <p class="balance-desc">Automatically released to your balance when the buyer confirms delivery.</p>
+      </div>
+      <div class="balance-card balance-slate">
+        <div class="balance-head">
+          <div class="balance-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <span class="balance-tag"><i class="fa-solid fa-infinity" style="font-size:.55rem"></i> Lifetime</span>
+        </div>
+        <p class="balance-label">Lifetime Earnings</p>
+        <p id="stat-total" class="balance-value">Rs. 0</p>
+        <p class="balance-desc">Gross sales revenue across all auctions you've completed on NexusBids.</p>
+      </div>
+    </div>
+
+    <p class="section-label">Financial Activity</p>
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-title">
+          <span class="panel-title-icon"><i class="fa-solid fa-receipt"></i></span>
+          <div>
+            <p>Financial Ledger &amp; Audit Trail</p>
+            <p class="panel-sub">Every credit and debit from your seller wallet</p>
+          </div>
+        </div>
+        <span class="panel-count" id="ledger-count">Loading…</span>
+      </div>
+      <div id="ledger-container" class="ledger-list"></div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      /* ✅ AUTH GUARD — added */
+      var _token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      var _user = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+      if (!_token || !['seller', 'admin'].includes(_user.role)) {
+        window.location.href = '/auth/login.html?redirect=/seller/earnings.html';
+        return;
+      }
+
+      function $(id) { return document.getElementById(id); }
+      function esc(str) { return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+      function classifyTransaction(t) {
+        var type = (t.type || '').toLowerCase();
+        var desc = (t.description || '').toLowerCase();
+        if (type === 'credit' || type === 'deposit' || type === 'earning' || type === 'escrow_release' || type === 'sale') return 'credit';
+        if (type === 'debit' || type === 'withdrawal' || type === 'payout' || type === 'fee' || type === 'commission') return 'debit';
+        if (desc.indexOf('payout') !== -1 || desc.indexOf('withdraw') !== -1 || desc.indexOf('fee') !== -1 || desc.indexOf('commission') !== -1 || desc.indexOf('charge') !== -1) return 'debit';
+        if (desc.indexOf('sale') !== -1 || desc.indexOf('earning') !== -1 || desc.indexOf('released') !== -1 || desc.indexOf('credit') !== -1 || desc.indexOf('escrow') !== -1) return 'credit';
+        return 'credit';
+      }
+      function iconForTransaction(t, kind) {
+        var desc = (t.description || '').toLowerCase();
+        if (desc.indexOf('escrow') !== -1) return 'fa-shield-halved';
+        if (desc.indexOf('payout') !== -1 || desc.indexOf('withdraw') !== -1) return 'fa-building-columns';
+        if (desc.indexOf('sale') !== -1 || desc.indexOf('auction') !== -1) return 'fa-gavel';
+        if (desc.indexOf('commission') !== -1 || desc.indexOf('fee') !== -1) return 'fa-percent';
+        if (desc.indexOf('refund') !== -1) return 'fa-rotate-left';
+        if (kind === 'debit') return 'fa-arrow-up-right-from-square';
+        return 'fa-arrow-down-to-bracket';
+      }
+      function stripeColorFor(kind) { if (kind === 'credit') return '#10b981'; if (kind === 'debit') return '#f43f5e'; return 'transparent'; }
+      function iconColorsFor(kind) {
+        if (kind === 'credit') return { bg: 'rgba(16,185,129,.10)', fg: '#059669', bgDark: 'rgba(16,185,129,.18)', fgDark: '#34d399' };
+        if (kind === 'debit') return { bg: 'rgba(244,63,94,.10)', fg: '#e11d48', bgDark: 'rgba(244,63,94,.18)', fgDark: '#fb7185' };
+        return { bg: 'rgba(99,102,241,.10)', fg: '#4f46e5', bgDark: 'rgba(99,102,241,.18)', fgDark: '#a5b4fc' };
+      }
+      function fmtPKR(v) { try { if (window.UI && UI.formatPKR) return UI.formatPKR(v); } catch (e) { } var n = Number(v || 0); return 'PKR ' + n.toLocaleString('en-PK'); }
+      function fmtTime(iso) { if (!iso) return '—'; var d = new Date(iso); if (isNaN(d.getTime())) return '—'; return d.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+
+      function renderSkeletonRows(n) {
+        var out = '';
+        for (var i = 0; i < n; i++) out += '<div class="ledger-row" style="--stripe:transparent;pointer-events:none"><div class="skeleton ledger-icon" style="border:0"></div><div class="ledger-info"><div class="skeleton" style="height:13px;width:70%;max-width:240px"></div><div class="skeleton" style="height:10px;width:130px;margin-top:8px"></div></div><div class="ledger-amount"><div class="skeleton" style="height:16px;width:100px;margin-left:auto"></div><div class="skeleton" style="height:9px;width:60px;margin-top:6px;margin-left:auto"></div></div></div>';
+        return out;
+      }
+
+      function renderLedgerRow(t) {
+        var kind = classifyTransaction(t);
+        var icon = iconForTransaction(t, kind);
+        var colors = iconColorsFor(kind);
+        var sign = kind === 'debit' ? '–' : '+';
+        var amountClass = kind === 'debit' ? 'debit' : kind === 'credit' ? 'credit' : 'neutral';
+        var typeLabel = kind === 'debit' ? 'Debit' : kind === 'credit' ? 'Credit' : 'Entry';
+        var styleVars = ['--stripe:' + stripeColorFor(kind), '--icon-bg:' + colors.bg, '--icon-fg:' + colors.fg, '--icon-bg-dark:' + colors.bgDark, '--icon-fg-dark:' + colors.fgDark].join(';');
+        return '<div class="ledger-row" style="' + styleVars + '"><div class="ledger-icon"><i class="fa-solid ' + icon + '"></i></div><div class="ledger-info"><p class="ledger-desc">' + esc(t.description || 'Wallet Transaction') + '</p><span class="ledger-time"><i class="fa-regular fa-clock"></i>' + esc(fmtTime(t.created_at)) + '</span></div><div class="ledger-amount"><span class="ledger-amount-value ' + amountClass + '">' + sign + ' ' + esc(fmtPKR(Math.abs(t.amount || 0))) + '</span><span class="ledger-amount-type ' + amountClass + '">' + typeLabel + '</span></div></div>';
+      }
+      function renderEmpty() {
+        var container = $('ledger-container');
+        var countEl = $('ledger-count');
+        if (countEl) countEl.textContent = '0 entries';
+        container.innerHTML = '<div class="empty"><div class="empty-icon"><i class="fa-solid fa-receipt"></i></div><p class="empty-title">No transactions yet</p><p class="empty-text">Once buyers start paying for your auction wins, every credit and debit will appear here in your financial ledger.</p><a href="/seller/create-auction.html" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Create First Listing</a></div>';
+      }
+      function renderError(msg) {
+        var container = $('ledger-container');
+        var countEl = $('ledger-count');
+        if (countEl) countEl.textContent = 'Error';
+        container.innerHTML = '<div class="empty"><div class="empty-icon" style="color:#e11d48;background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.24)"><i class="fa-solid fa-triangle-exclamation"></i></div><p class="empty-title">Could not load ledger</p><p class="empty-text">' + esc(msg || 'Something went wrong. Please try again.') + '</p><button type="button" class="btn btn-primary" onclick="loadEarnings()"><i class="fa-solid fa-rotate-right"></i> Retry</button></div>';
+      }
+
+      async function loadEarnings() {
+        var container = $('ledger-container');
+        var countEl = $('ledger-count');
+        if (!container) return;
+        if (countEl) countEl.textContent = 'Loading…';
+        container.innerHTML = renderSkeletonRows(4);
+        try {
+          var statsRes = await ApiClient.get('/seller/dashboard');
+          var s = (statsRes && statsRes.data) || {};
+          // ✅ FIX: prefer explicit available_balance from backend; fallback to total_sales
+          var available = (s.available_balance != null)
+            ? Number(s.available_balance)
+            : Number(s.total_sales || 0);
+          var escrow = Number(s.escrow_held || 0);
+          var lifetime = available + escrow;
+          var availEl = $('stat-available');
+          var pendEl = $('stat-pending');
+          var totEl = $('stat-total');
+          if (availEl) availEl.textContent = fmtPKR(available);
+          if (pendEl) pendEl.textContent = fmtPKR(escrow);
+          if (totEl) totEl.textContent = fmtPKR(lifetime);
+          var payoutBtn = $('btn-payout');
+          if (payoutBtn) {
+            payoutBtn.disabled = available <= 0;
+            if (available <= 0) payoutBtn.innerHTML = '<i class="fa-solid fa-circle-info"></i> No Funds Available';
+            else payoutBtn.innerHTML = '<i class="fa-solid fa-building-columns"></i> Request Bank Transfer';
+          }
+          var walletRes = await ApiClient.get('/payments/wallet');
+          var txns = (walletRes && walletRes.data && walletRes.data.recent_transactions) || [];
+          if (countEl) countEl.textContent = txns.length + (txns.length === 1 ? ' entry' : ' entries');
+          if (txns.length === 0) { renderEmpty(); return; }
+          container.innerHTML = txns.map(renderLedgerRow).join('');
+        } catch (err) {
+          console.error(err);
+          renderError(err && err.message);
+        }
+      }
+      window.loadEarnings = loadEarnings;
+
+      /* ✅ FIX: Redirect to actual payouts page instead of fake toast */
+      function requestPayout() {
+        window.location.href = '/seller/payouts.html';
+      }
+      window.requestPayout = requestPayout;
+
+      document.addEventListener('DOMContentLoaded', loadEarnings);
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,10 @@
+@import url('./design-system.css');
+
+/* Base layout & typography aliases */
+body {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+}

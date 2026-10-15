@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipping — Seller Studio | NexusBids Pakistan</title>
+  <meta name="description"
+    content="Manage shipments, add tracking numbers and confirm deliveries for your NexusBids orders.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --sh-bg: #f4f6fb;
+      --sh-surface: #ffffff;
+      --sh-surface-2: #f7f9fc;
+      --sh-surface-3: #eceff6;
+      --sh-border: #e3e8f0;
+      --sh-border-strong: #cfd7e5;
+      --sh-text: #0f172a;
+      --sh-text-muted: #58627a;
+      --sh-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12);
+      --sh-row-hover: #f4f7fd;
+    }
+
+    html.dark {
+      --sh-bg: #05070f;
+      --sh-surface: #0d1220;
+      --sh-surface-2: #121a2b;
+      --sh-surface-3: #1a2336;
+      --sh-border: #1e2a40;
+      --sh-border-strong: #2c3a56;
+      --sh-text: #eef2f9;
+      --sh-text-muted: #9aa6bd;
+      --sh-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --sh-row-hover: #141d31;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--sh-bg);
+      color: var(--sh-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--sh-surface);
+      border: 1px solid var(--sh-border);
+      border-radius: 16px;
+      box-shadow: var(--sh-shadow-md);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .84rem;
+    }
+
+    .data-table th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--sh-text-muted);
+      border-bottom: 1px solid var(--sh-border);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--sh-border);
+      color: var(--sh-text);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--sh-row-hover);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, .12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, .3);
+    }
+
+    .badge-shipped {
+      background: rgba(99, 102, 241, .12);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, .3);
+    }
+
+    .badge-delivered {
+      background: rgba(16, 185, 129, .12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .3);
+    }
+
+    .badge-processing {
+      background: rgba(148, 163, 184, .12);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, .3);
+    }
+
+    .btn-track {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 7px 14px;
+      border-radius: 9px;
+      font-size: .75rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+      border: none;
+    }
+
+    .btn-track.add {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+    }
+
+    .btn-track.add:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-track.view {
+      background: rgba(16, 185, 129, .12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .3);
+    }
+
+    .btn-track.view:hover {
+      background: rgba(16, 185, 129, .2);
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 16px;
+    }
+
+    /* ✅ FIXED: Dark Mode Inputs Override */
+    input.search-input,
+    select.filter-select,
+    input.form-control,
+    select.form-control {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--sh-surface-2) !important;
+      border: 1px solid var(--sh-border) !important;
+      color: var(--sh-text) !important;
+      font-family: inherit !important;
+      outline: none !important;
+      box-shadow: none !important;
+      color-scheme: dark;
+      transition: border-color .2s;
+    }
+
+    html:not(.dark) input.search-input,
+    html:not(.dark) select.filter-select,
+    html:not(.dark) input.form-control,
+    html:not(.dark) select.form-control {
+      color-scheme: light;
+    }
+
+    input.search-input:focus,
+    select.filter-select:focus,
+    input.form-control:focus,
+    select.form-control:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16) !important;
+    }
+
+    input.search-input::placeholder,
+    input.form-control::placeholder {
+      color: var(--sh-text-muted) !important;
+    }
+
+    select.filter-select,
+    select.form-control {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 14px !important;
+      padding-right: 36px !important;
+    }
+
+    select.filter-select option,
+    select.form-control option {
+      background-color: var(--sh-surface-2);
+      color: var(--sh-text);
+    }
+
+    input[type="date"].form-control::-webkit-calendar-picker-indicator {
+      filter: invert(.75) brightness(1.3) !important;
+      cursor: pointer !important;
+    }
+
+    html:not(.dark) input[type="date"].form-control::-webkit-calendar-picker-indicator {
+      filter: none !important;
+      opacity: 0.55 !important;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 160px;
+      max-width: 280px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--sh-text-muted);
+      font-size: .8rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 8px 14px 8px 38px !important;
+      border-radius: 10px !important;
+      font-size: .82rem !important;
+    }
+
+    .filter-select {
+      padding: 8px 36px 8px 14px !important;
+      border-radius: 10px !important;
+      font-size: .82rem !important;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .75);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s;
+    }
+
+    .modal-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-box {
+      background: var(--sh-surface);
+      border: 1px solid var(--sh-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      padding: 32px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .8);
+      transform: translateY(18px) scale(.97);
+      transition: transform .25s;
+    }
+
+    .modal-overlay.is-open .modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    .form-label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--sh-text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .form-control {
+      width: 100%;
+      border-radius: 10px;
+      padding: 11px 14px !important;
+      font-size: .88rem !important;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-weight: 800;
+      font-size: .88rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(110%);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, .9);
+      color: #fff;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, .9);
+      color: #fff;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--sh-text-muted);
+    }
+
+    .stat-pill {
+      background: var(--sh-surface);
+      border: 1px solid var(--sh-border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--sh-surface);border-color:var(--sh-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <a href="/index.html" class="text-sm font-semibold" style="color:var(--sh-text-muted);"><i
+          class="fa-solid fa-store mr-1"></i>View Store</a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="seller-subnav"></div>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl font-extrabold mb-1">Shipping &amp; Tracking</h1>
+        <p style="color:var(--sh-text-muted);font-size:.85rem;">Manage order shipments, add tracking numbers and confirm
+          deliveries</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+      <div class="stat-pill">
+        <div
+          style="width:36px;height:36px;border-radius:9px;background:rgba(245,158,11,.15);color:#fbbf24;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-clock"></i>
+        </div>
+        <div>
+          <div class="text-xs font-semibold" style="color:var(--sh-text-muted);">Awaiting Shipment</div>
+          <div class="font-black" id="cnt-awaiting">—</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div
+          style="width:36px;height:36px;border-radius:9px;background:rgba(99,102,241,.15);color:#818cf8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-truck-fast"></i>
+        </div>
+        <div>
+          <div class="text-xs font-semibold" style="color:var(--sh-text-muted);">In Transit</div>
+          <div class="font-black" id="cnt-transit">—</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div
+          style="width:36px;height:36px;border-radius:9px;background:rgba(16,185,129,.15);color:#34d399;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-box-open"></i>
+        </div>
+        <div>
+          <div class="text-xs font-semibold" style="color:var(--sh-text-muted);">Delivered</div>
+          <div class="font-black" id="cnt-delivered">—</div>
+        </div>
+      </div>
+      <div class="stat-pill">
+        <div
+          style="width:36px;height:36px;border-radius:9px;background:rgba(99,102,241,.15);color:#818cf8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <i class="fa-solid fa-list"></i>
+        </div>
+        <div>
+          <div class="text-xs font-semibold" style="color:var(--sh-text-muted);">Total Orders</div>
+          <div class="font-black" id="cnt-total">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card overflow-hidden">
+      <div class="filter-bar" style="border-bottom:1px solid var(--sh-border);">
+        <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="search-input"
+            class="search-input" placeholder="Search order or buyer…"></div>
+        <select id="filter-status" class="filter-select">
+          <option value="">All Orders</option>
+          <option value="paid">Awaiting Shipment</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+        </select>
+        <span id="order-count-label" class="ml-auto text-xs font-semibold"
+          style="color:var(--sh-text-muted);">Loading…</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Buyer</th>
+              <th>Auction</th>
+              <th>Amount</th>
+              <th>Ship Status</th>
+              <th>Tracking</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-tbody">
+            <tr>
+              <td colspan="7" class="py-10 text-center" style="color:var(--sh-text-muted);"><i
+                  class="fa-solid fa-spinner fa-spin mr-2"></i>Loading orders…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="tracking-modal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-extrabold" style="color:var(--sh-text);">Add / Update Tracking</h2>
+        <button id="btn-close-modal"
+          style="background:var(--sh-surface-3);border:none;border-radius:9px;width:32px;height:32px;cursor:pointer;color:var(--sh-text-muted);display:flex;align-items:center;justify-content:center;"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="modal-order-info" class="mb-4 p-3 rounded-xl text-sm"
+        style="background:var(--sh-surface-2);border:1px solid var(--sh-border);color:var(--sh-text-muted);"></div>
+
+      <form id="tracking-form">
+        <div class="mb-4">
+          <label class="form-label">Courier</label>
+          <select id="trk-carrier" class="form-control" required>
+            <option value="">Select courier…</option>
+            <option value="TCS">TCS Express</option>
+            <option value="Leopards">Leopards Courier</option>
+            <option value="Trax">Trax Logistics</option>
+            <option value="PostEx">PostEx</option>
+            <option value="M&P">M&P Express Logistics</option>
+            <option value="CallCourier">Call Courier</option>
+            <option value="PakistanPost">Pakistan Post</option>
+            <option value="BlueEX">BlueEX</option>
+            <option value="Daewoo">Daewoo Express</option>
+            <option value="Self">Self / Local Courier</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Tracking Number</label>
+          <input type="text" id="trk-number" class="form-control" placeholder="e.g. TCS-123456789" required>
+        </div>
+        <div class="mb-5">
+          <label class="form-label">Estimated Delivery (optional)</label>
+          <input type="date" id="trk-eta" class="form-control">
+        </div>
+        <div id="tracking-error" class="text-sm mb-3" style="display:none;color:#f87171;"></div>
+        <button type="submit" id="btn-submit-tracking" class="btn-primary w-full"><i class="fa-solid fa-truck-fast"></i>
+          Submit &amp; Mark as Shipped</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/seller-nav.js"></script>
+  <script src="/assets/js/api-client.js"></script>
+  <script>
+    const API = window.ApiClient || {
+      get: (u) => fetch('/api' + u, { credentials: 'include' }).then(r => r.json()),
+      post: (u, d) => fetch('/api' + u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }).then(r => r.json())
+    };
+    const fmtPKR = v => 'PKR ' + Number(v || 0).toLocaleString('en-PK');
+    const fmtDate = ts => ts ? new Date(ts).toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+
+    let allOrders = [];
+    let activeOrderId = null;
+
+    function showToast(msg, type = 'success') {
+      const t = document.createElement('div');
+      t.className = `toast toast-${type}`;
+      t.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'triangle-exclamation'}"></i>${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 4500);
+    }
+
+    function shippingStatus(o) {
+      if (o.delivery_status === 'delivered' || o.order_status === 'delivered' || o.shipping_status === 'delivered') return 'delivered';
+      if (o.tracking_number || o.delivery_status === 'shipped' || o.order_status === 'shipped' || o.shipping_status === 'shipped') return 'shipped';
+      if (o.payment_status === 'paid') return 'paid';
+      return 'processing';
+    }
+
+    function statusBadge(s) {
+      const map = {
+        paid: ['badge-pending', 'fa-clock', 'Awaiting Shipment'],
+        shipped: ['badge-shipped', 'fa-truck-fast', 'In Transit'],
+        delivered: ['badge-delivered', 'fa-check-circle', 'Delivered'],
+        processing: ['badge-processing', 'fa-gear fa-spin', 'Processing'],
+      };
+      const [cls, ic, lbl] = map[s] || map.processing;
+      return `<span class="badge ${cls}"><i class="fa-solid ${ic}"></i>${lbl}</span>`;
+    }
+
+    async function loadOrders() {
+      try {
+        const r = await API.get('/orders/seller');
+        allOrders = Array.isArray(r.data) ? r.data : (Array.isArray(r) ? r : []);
+        renderSummary();
+        renderTable();
+      } catch (e) {
+        document.getElementById('orders-tbody').innerHTML = `<tr><td colspan="7" class="py-8 text-center" style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Failed to load orders</td></tr>`;
+      }
+    }
+
+    function renderSummary() {
+      const statuses = allOrders.map(shippingStatus);
+      document.getElementById('cnt-awaiting').textContent = statuses.filter(s => s === 'paid').length;
+      document.getElementById('cnt-transit').textContent = statuses.filter(s => s === 'shipped').length;
+      document.getElementById('cnt-delivered').textContent = statuses.filter(s => s === 'delivered').length;
+      document.getElementById('cnt-total').textContent = allOrders.length;
+    }
+
+    function filteredOrders() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase();
+      const status = document.getElementById('filter-status').value;
+      return allOrders.filter(o => {
+        // ✅ FIXED: Added counterparty_name instead of just buyer_name
+        const buyerName = o.counterparty_name || o.buyer_name || '';
+        const match = !q || (o.order_number || '').toLowerCase().includes(q) || buyerName.toLowerCase().includes(q) || (o.auction_title || '').toLowerCase().includes(q);
+        const ss = shippingStatus(o);
+        const sMatch = !status || ss === status;
+        return match && sMatch;
+      });
+    }
+
+    function renderTable() {
+      const orders = filteredOrders();
+      document.getElementById('order-count-label').textContent = `${orders.length} order${orders.length !== 1 ? 's' : ''}`;
+      const tbody = document.getElementById('orders-tbody');
+      if (!orders.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center"><div class="empty-state"><i class="fa-solid fa-truck-fast text-3xl mb-3 opacity-25"></i><p class="font-semibold">No orders found</p></div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = orders.map(o => {
+        const ss = shippingStatus(o);
+        const hasTracking = o.tracking_number;
+        const courierName = o.courier || o.carrier || '';
+        // ✅ FIXED: Fallback to counterparty_name for buyer name
+        const buyerName = o.counterparty_name || o.buyer_name || 'Buyer';
+
+        return `
+          <tr>
+            <td><span class="font-mono text-xs font-bold" style="color:#818cf8;">${o.order_number || '#' + o.order_id}</span><br><span class="text-xs" style="color:var(--sh-text-muted);">${fmtDate(o.created_at)}</span></td>
+            <td><span class="font-semibold text-sm">${buyerName}</span></td>
+            <td style="max-width:180px;"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;max-width:175px;" title="${o.auction_title || ''}">${o.auction_title || '—'}</span></td>
+            <td><span class="font-black text-sm">${fmtPKR(o.total_amount)}</span></td>
+            <td>${statusBadge(ss)}</td>
+            <td>
+              ${hasTracking ? `<div class="text-xs font-semibold" style="color:#34d399;">${courierName}</div><div class="font-mono text-xs" style="color:var(--sh-text-muted);">${o.tracking_number}</div>` : '<span class="text-xs" style="color:var(--sh-text-muted);">Not added</span>'}
+            </td>
+            <td>
+              <div class="flex gap-2 flex-wrap">
+                ${ss === 'paid' || (!hasTracking && ss !== 'delivered')
+            ? `<button class="btn-track add" onclick="openTracking(${o.order_id})"><i class="fa-solid fa-plus"></i>Add Tracking</button>`
+            : ''}
+                ${hasTracking && ss !== 'delivered'
+            ? `<button class="btn-track view" onclick="openTracking(${o.order_id})"><i class="fa-solid fa-pen"></i>Update</button>`
+            : ''}
+                <a href="/seller/order-details.html?id=${o.order_id}" class="btn-track" style="background:rgba(99,102,241,.12);color:#818cf8;border:1px solid rgba(99,102,241,.25);text-decoration:none;"><i class="fa-solid fa-eye"></i>View</a>
+              </div>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    function openTracking(orderId) {
+      activeOrderId = orderId;
+      const o = allOrders.find(x => x.order_id === orderId);
+      if (!o) return;
+
+      const orderNum = o.order_number || '#' + o.order_id;
+      document.getElementById('modal-order-info').innerHTML = `<i class="fa-solid fa-box mr-2"></i>Order <strong>${orderNum}</strong>`;
+
+      // ✅ FIXED: Pre-fill modal fields if updating
+      document.getElementById('trk-carrier').value = o.courier || o.carrier || '';
+      document.getElementById('trk-number').value = o.tracking_number || '';
+
+      // Handle date formatting for input type="date"
+      let etaValue = '';
+      if (o.estimated_delivery) {
+        const d = new Date(o.estimated_delivery);
+        if (!isNaN(d.getTime())) etaValue = d.toISOString().split('T')[0];
+      }
+      document.getElementById('trk-eta').value = etaValue;
+
+      document.getElementById('tracking-error').style.display = 'none';
+
+      const modal = document.getElementById('tracking-modal');
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => modal.classList.add('is-open'));
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('tracking-modal');
+      modal.classList.remove('is-open');
+      document.body.style.overflow = '';
+      setTimeout(() => { modal.style.display = 'none'; }, 250);
+    }
+
+    document.getElementById('btn-close-modal').addEventListener('click', closeModal);
+    document.getElementById('tracking-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+    document.getElementById('tracking-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('tracking-error');
+      errEl.style.display = 'none';
+      const btn = document.getElementById('btn-submit-tracking');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting…';
+
+      try {
+        const r = await API.post(`/shipping/orders/${activeOrderId}/ship`, {
+          courier: document.getElementById('trk-carrier').value,
+          tracking_number: document.getElementById('trk-number').value.trim(),
+          estimated_delivery: document.getElementById('trk-eta').value || null,
+          note: null
+        });
+
+        if (r.success || r.data) {
+          closeModal();
+          showToast('Tracking info added and order marked as shipped!', 'success');
+          await loadOrders();
+        } else {
+          errEl.textContent = r.message || r.error || 'Failed to submit tracking info.';
+          errEl.style.display = 'block';
+        }
+      } catch {
+        errEl.textContent = 'Network error. Please try again.';
+        errEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-truck-fast"></i> Submit &amp; Mark as Shipped';
+      }
+    });
+
+    document.getElementById('search-input').addEventListener('input', renderTable);
+    document.getElementById('filter-status').addEventListener('change', renderTable);
+
+    const token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+    const user = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
+    if (!token || !['seller', 'admin'].includes(user.role)) {
+      window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/shipping.html'));
+    } else {
+      loadOrders();
+    }
+  </script>
+</body>
+
+</html>

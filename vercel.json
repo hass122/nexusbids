@@ -1,0 +1,26 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "builds": [
+    {
+      "src": "apps/api/src/index.ts",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["apps/web/**", "db/**", "packages/**"],
+        "maxDuration": 30
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/apps/api/src/index.ts"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/v1/cron/auto-release-escrow",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}

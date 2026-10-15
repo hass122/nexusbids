@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Auctions — Seller Studio — NexusBids</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' } } } } };</script>
+  <style>
+    :root {
+      --s-bg: #05070f;
+      --s-surface: #0d1220;
+      --s-surface-2: #121a2b;
+      --s-surface-3: #1a2336;
+      --s-border: #1e2a40;
+      --s-border-strong: #2c3a56;
+      --s-text: #eef2f9;
+      --s-text-muted: #9aa6bd;
+      --s-text-light: #66738d;
+    }
+
+    html:not(.dark) {
+      --s-bg: #f4f6fb;
+      --s-surface: #ffffff;
+      --s-surface-2: #f7f9fc;
+      --s-surface-3: #eceff6;
+      --s-border: #e3e8f0;
+      --s-border-strong: #cfd7e5;
+      --s-text: #0f172a;
+      --s-text-muted: #58627a;
+      --s-text-light: #8d97ab;
+    }
+
+    body {
+      background: var(--s-bg);
+      color: var(--s-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    .panel {
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+    }
+
+    .auction-card {
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 18px;
+      overflow: hidden;
+      transition: all .25s ease;
+    }
+
+    .auction-card:hover {
+      border-color: rgba(99, 102, 241, .4);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .25);
+    }
+
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--s-border);
+      background: var(--s-surface-2);
+      color: var(--s-text-muted);
+      transition: all .2s;
+      white-space: nowrap;
+    }
+
+    .filter-pill:hover {
+      color: var(--s-text);
+      border-color: var(--s-border-strong);
+    }
+
+    .filter-pill.active {
+      background: var(--brand-500, #6366f1);
+      color: #fff;
+      border-color: var(--brand-500, #6366f1);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, .3);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: .65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .03em;
+    }
+
+    .status-active {
+      background: rgba(16, 185, 129, .12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, .25);
+    }
+
+    .status-pending {
+      background: rgba(245, 158, 11, .12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, .25);
+    }
+
+    .status-draft {
+      background: rgba(99, 102, 241, .12);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, .25);
+    }
+
+    .status-ended {
+      background: rgba(148, 163, 184, .12);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, .25);
+    }
+
+    .status-sold {
+      background: rgba(16, 185, 129, .2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .4);
+    }
+
+    .status-rejected {
+      background: rgba(239, 68, 68, .12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, .25);
+    }
+
+    .status-cancelled {
+      background: rgba(239, 68, 68, .1);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, .2);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="seller-subnav"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-brand-400 bg-brand-500/10 border border-brand-500/20 mb-2">
+          <i class="fa-solid fa-gavel"></i> Inventory Management</div>
+        <h1 class="text-2xl sm:text-3xl font-black text-[var(--s-text)]">My Auctions</h1>
+        <p class="text-xs sm:text-sm text-[var(--s-text-muted)] mt-1">Monitor, edit, and manage all your active listings
+          and past auction history.</p>
+      </div>
+      <div class="flex items-center gap-2.5">
+        <button onclick="loadAuctions()" class="nb-btn nb-btn-secondary text-xs"><i
+            class="fa-solid fa-rotate-right"></i> Refresh</button>
+        <a href="/seller/create-auction.html" class="nb-btn nb-btn-primary text-xs"><i class="fa-solid fa-plus"></i>
+          Create New Auction</a>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2 overflow-x-auto pb-3 mb-6 no-scrollbar">
+      <button class="filter-pill active" data-filter="all"><i class="fa-solid fa-layer-group"></i> All (<span
+          id="count-all">0</span>)</button>
+      <button class="filter-pill" data-filter="active"><i class="fa-solid fa-circle-play"></i> Active (<span
+          id="count-active">0</span>)</button>
+      <button class="filter-pill" data-filter="ending_soon"><i class="fa-solid fa-hourglass-half"></i> Ending Soon
+        (<span id="count-ending-soon">0</span>)</button>
+      <button class="filter-pill" data-filter="pending"><i class="fa-solid fa-clock"></i> Pending Approval (<span
+          id="count-pending">0</span>)</button>
+      <button class="filter-pill" data-filter="draft"><i class="fa-solid fa-file-pen"></i> Drafts (<span
+          id="count-draft">0</span>)</button>
+      <button class="filter-pill" data-filter="sold"><i class="fa-solid fa-circle-check"></i> Sold (<span
+          id="count-sold">0</span>)</button>
+      <button class="filter-pill" data-filter="ended"><i class="fa-solid fa-flag-checkered"></i> Ended (<span
+          id="count-ended">0</span>)</button>
+      <button class="filter-pill" data-filter="rejected"><i class="fa-solid fa-circle-xmark"></i> Rejected (<span
+          id="count-rejected">0</span>)</button>
+    </div>
+
+    <div class="panel p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="relative w-full sm:w-80">
+        <i
+          class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-xs text-[var(--s-text-light)]"></i>
+        <input type="text" id="auctionSearch" placeholder="Search by title, lot # or category..."
+          class="w-full pl-9 pr-3 py-2 rounded-xl bg-[var(--s-surface-2)] border border-[var(--s-border)] text-xs text-[var(--s-text)] placeholder-[var(--s-text-light)] focus:outline-none focus:border-brand-500">
+      </div>
+      <div class="text-xs text-[var(--s-text-muted)] w-full sm:w-auto text-right">Showing <strong id="visible-count"
+          class="text-[var(--s-text)]">0</strong> auctions</div>
+    </div>
+
+    <div id="auctions-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+    <div id="empty-state" class="hidden text-center py-16 panel">
+      <div
+        class="w-16 h-16 rounded-2xl bg-brand-500/10 text-brand-400 flex items-center justify-center mx-auto mb-4 text-2xl">
+        <i class="fa-solid fa-box-open"></i></div>
+      <h3 class="text-lg font-bold text-[var(--s-text)]">No auctions found</h3>
+      <p class="text-xs text-[var(--s-text-muted)] mt-1 max-w-sm mx-auto">There are no auction listings matching your
+        selected filter.</p>
+      <a href="/seller/create-auction.html" class="nb-btn nb-btn-primary text-xs mt-4 inline-flex items-center gap-2"><i
+          class="fa-solid fa-plus"></i> Create New Listing</a>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/seller-nav.js"></script>
+  <script src="/assets/js/ai-chat.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // ✅ AUTH GUARD
+      var _t = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      var _u = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+      if (!_t || !['seller', 'admin'].includes(_u.role)) {
+        window.location.href = '/auth/login.html?redirect=/seller/auctions.html';
+        return;
+      }
+
+      var allAuctions = [];
+      var currentFilter = 'all';
+
+      function getStatusClass(status) {
+        var map = { active: 'status-active', pending: 'status-pending', draft: 'status-draft', ended: 'status-ended', sold: 'status-sold', rejected: 'status-rejected', cancelled: 'status-cancelled' };
+        return map[status] || 'status-ended';
+      }
+      function isEndingSoon(a) {
+        if (a.auction_status !== 'active') return false;
+        var end = new Date(a.end_time).getTime();
+        var diffHrs = (end - Date.now()) / (1000 * 60 * 60);
+        return diffHrs > 0 && diffHrs <= 24;
+      }
+
+      function renderAuctions() {
+        var container = document.getElementById('auctions-container');
+        var emptyState = document.getElementById('empty-state');
+        var search = (document.getElementById('auctionSearch').value || '').trim().toLowerCase();
+        var filtered = allAuctions.filter(function (a) {
+          var matchFilter = true;
+          if (currentFilter === 'ending_soon') matchFilter = isEndingSoon(a);
+          else if (currentFilter !== 'all') matchFilter = a.auction_status === currentFilter;
+          var matchSearch = !search || (a.title && a.title.toLowerCase().includes(search)) || (a.category_name && a.category_name.toLowerCase().includes(search)) || String(a.auction_id).includes(search);
+          return matchFilter && matchSearch;
+        });
+        document.getElementById('visible-count').textContent = filtered.length;
+        if (!filtered.length) { container.innerHTML = ''; emptyState.classList.remove('hidden'); return; }
+        emptyState.classList.add('hidden');
+        container.innerHTML = filtered.map(function (a) {
+          // ✅ FIX: parseInt bid_count
+          var bidCountNum = parseInt(a.bid_count, 10) || 0;
+          var canCancel = ['active', 'pending', 'draft'].includes(a.auction_status) && bidCountNum === 0;
+          var canEdit = !['ended', 'sold', 'completed', 'cancelled'].includes(a.auction_status);
+          var canRelist = ['unsold', 'cancelled', 'ended'].includes(a.auction_status);
+          var highestPrice = parseFloat(a.current_bid || a.starting_price || 0);
+          return '<div class="auction-card flex flex-col justify-between">' +
+            '<div>' +
+            '<div class="relative h-48 bg-slate-950 overflow-hidden">' +
+            '<img src="' + (a.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400') + '" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" alt="' + UI.escapeHtml(a.title) + '">' +
+            '<div class="absolute top-3 left-3"><span class="status-badge ' + getStatusClass(a.auction_status) + '"><i class="fa-solid fa-circle text-[7px]"></i> ' + a.auction_status + '</span></div>' +
+            (isEndingSoon(a) ? '<div class="absolute top-3 right-3 bg-amber-500 text-black text-[10px] font-black uppercase px-2 py-0.5 rounded-full shadow"><i class="fa-solid fa-fire mr-1"></i> Ending Soon</div>' : '') +
+            '</div>' +
+            '<div class="p-4">' +
+            '<div class="text-[11px] font-semibold text-brand-400 mb-1 flex items-center justify-between"><span>' + UI.escapeHtml(a.category_name || 'General') + '</span><span class="text-[var(--s-text-light)]">Lot #' + a.auction_id + '</span></div>' +
+            '<h3 class="font-bold text-sm text-[var(--s-text)] line-clamp-2 mb-3 leading-snug">' + UI.escapeHtml(a.title) + '</h3>' +
+            '<div class="grid grid-cols-2 gap-2 p-2.5 rounded-xl bg-[var(--s-surface-2)] border border-[var(--s-border)] text-xs mb-3">' +
+            '<div><span class="text-[10px] text-[var(--s-text-light)] block">Current Price</span><strong class="text-sm font-extrabold text-emerald-400">' + UI.formatPKR(highestPrice) + '</strong></div>' +
+            '<div class="text-right"><span class="text-[10px] text-[var(--s-text-light)] block">Total Bids</span><strong class="text-sm font-extrabold text-[var(--s-text)]">' + bidCountNum + '</strong></div>' +
+            '</div>' +
+            '<div class="flex items-center justify-between text-[11px] text-[var(--s-text-muted)]">' +
+            '<span><i class="fa-regular fa-clock mr-1"></i> ' + new Date(a.end_time).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + '</span>' +
+            '<span><i class="fa-regular fa-eye mr-1"></i> ' + (a.view_count || 0) + ' views</span>' +
+            '</div></div></div>' +
+            '<div class="p-4 border-t border-[var(--s-border)] mt-2 pt-3 flex items-center gap-1.5 flex-wrap">' +
+            '<a href="/seller/auction-details.html?id=' + a.auction_id + '" class="nb-btn nb-btn-secondary text-[11px] py-1.5 px-2.5 flex-1 text-center"><i class="fa-solid fa-eye"></i> View</a>' +
+            (canEdit ? '<a href="/seller/edit-auction.html?id=' + a.auction_id + '" class="nb-btn nb-btn-secondary text-[11px] py-1.5 px-2.5 flex-1 text-center"><i class="fa-solid fa-pen-to-square"></i> Edit</a>' : '') +
+            (canRelist ? '<button onclick="relistAuction(' + a.auction_id + ')" class="nb-btn nb-btn-primary text-[11px] py-1.5 px-2.5 flex-1 text-center" title="Relist Auction"><i class="fa-solid fa-arrows-rotate"></i> Relist</button>' : '') +
+            '<a href="/seller/bids.html?auction_id=' + a.auction_id + '" class="nb-btn nb-btn-ghost text-[11px] py-1.5 px-2 text-center" title="Bid Activity"><i class="fa-solid fa-list-check"></i></a>' +
+            '<a href="/seller/analytics.html?auction_id=' + a.auction_id + '" class="nb-btn nb-btn-ghost text-[11px] py-1.5 px-2 text-center" title="Analytics"><i class="fa-solid fa-chart-line"></i></a>' +
+            (canCancel ? '<button onclick="cancelAuction(' + a.auction_id + ')" class="nb-btn nb-btn-ghost text-rose-400 hover:text-rose-300 text-[11px] py-1.5 px-2 text-center" title="Cancel Auction"><i class="fa-solid fa-ban"></i></button>' : '') +
+            '</div></div>';
+        }).join('');
+      }
+
+      async function relistAuction(auctionId) {
+        var ok = await UI.confirm({ title: 'Relist Auction', message: 'Do you want to relist this item as a new auction? All photos and description will be preserved, and bid stats will be reset.', confirmText: 'Yes, Relist Now', type: 'primary' });
+        if (!ok) return;
+        try { await ApiClient.post('/auctions/' + auctionId + '/relist'); UI.showToast('Auction relisted successfully!', 'success'); loadAuctions(); }
+        catch (err) { UI.showToast(err.message || 'Failed to relist auction', 'error'); }
+      }
+      window.relistAuction = relistAuction;
+
+      async function cancelAuction(auctionId) {
+        var ok = await UI.confirm({ title: 'Cancel Auction', message: 'Are you sure you want to cancel this auction? This action cannot be undone.', confirmText: 'Yes, Cancel', type: 'danger' });
+        if (!ok) return;
+        try { await ApiClient.post('/auctions/' + auctionId + '/cancel'); UI.showToast('Auction cancelled successfully', 'info'); loadAuctions(); }
+        catch (err) { UI.showToast(err.message || 'Failed to cancel auction', 'error'); }
+      }
+      window.cancelAuction = cancelAuction;
+
+      async function loadAuctions() {
+        try {
+          var res = await ApiClient.get('/seller/auctions');
+          allAuctions = (res && res.data) || [];
+          document.getElementById('count-all').textContent = allAuctions.length;
+          document.getElementById('count-active').textContent = allAuctions.filter(function (a) { return a.auction_status === 'active'; }).length;
+          document.getElementById('count-ending-soon').textContent = allAuctions.filter(isEndingSoon).length;
+          document.getElementById('count-pending').textContent = allAuctions.filter(function (a) { return a.auction_status === 'pending'; }).length;
+          document.getElementById('count-draft').textContent = allAuctions.filter(function (a) { return a.auction_status === 'draft'; }).length;
+          document.getElementById('count-sold').textContent = allAuctions.filter(function (a) { return a.auction_status === 'sold'; }).length;
+          document.getElementById('count-ended').textContent = allAuctions.filter(function (a) { return a.auction_status === 'ended'; }).length;
+          document.getElementById('count-rejected').textContent = allAuctions.filter(function (a) { return a.auction_status === 'rejected'; }).length;
+          renderAuctions();
+        } catch (err) { UI.showToast(err.message || 'Failed to load seller auctions', 'error'); }
+      }
+
+      document.querySelectorAll('.filter-pill').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.filter-pill').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          currentFilter = btn.dataset.filter;
+          renderAuctions();
+        });
+      });
+      document.getElementById('auctionSearch').addEventListener('input', renderAuctions);
+
+      document.addEventListener('DOMContentLoaded', loadAuctions);
+    })();
+  </script>
+</body>
+
+</html>

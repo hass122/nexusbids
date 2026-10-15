@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Auction Listing — Seller Studio | NexusBids</title>
+  <meta name="description" content="Modify your auction listing details, images, descriptions and reserves.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --s-bg: #05070f;
+      --s-surface: #0d1220;
+      --s-surface-2: #121a2b;
+      --s-surface-3: #1a2336;
+      --s-border: #1e2a40;
+      --s-border-strong: #2c3a56;
+      --s-text: #eef2f9;
+      --s-text-muted: #9aa6bd;
+      --s-text-light: #66738d;
+    }
+
+    html:not(.dark) {
+      --s-bg: #f4f6fb;
+      --s-surface: #ffffff;
+      --s-surface-2: #f7f9fc;
+      --s-surface-3: #eceff6;
+      --s-border: #e3e8f0;
+      --s-border-strong: #cfd7e5;
+      --s-text: #0f172a;
+      --s-text-muted: #58627a;
+      --s-text-light: #8d97ab;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      background: var(--s-bg);
+      color: var(--s-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .panel {
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15)
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px
+    }
+
+    .field label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--s-text-muted)
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FORM CONTROLS — Fixed for Tailwind Forms plugin override
+       Tailwind's @tailwindcss/forms styles `[type='text']` etc. with
+       specificity equal to `.nb-input` — the CDN injects styles at
+       runtime, so equal-specificity rules lose. Fix: element+class
+       selectors + !important on critical props.
+       ═══════════════════════════════════════════════════════════════ */
+
+    input.nb-input,
+    select.nb-select,
+    textarea.nb-textarea {
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--s-surface-2) !important;
+      background-image: none !important;
+      border: 1px solid var(--s-border) !important;
+      color: var(--s-text) !important;
+      border-radius: 12px !important;
+      padding: 11px 14px !important;
+      font-size: .875rem !important;
+      font-weight: 500 !important;
+      line-height: 1.4 !important;
+      width: 100% !important;
+      transition: border-color .2s ease, box-shadow .2s ease !important;
+      outline: none !important;
+      font-family: inherit !important;
+      box-shadow: none !important;
+      color-scheme: dark;
+    }
+
+    html:not(.dark) input.nb-input,
+    html:not(.dark) select.nb-select,
+    html:not(.dark) textarea.nb-textarea {
+      color-scheme: light;
+    }
+
+    input.nb-input:hover:not(:disabled),
+    select.nb-select:hover:not(:disabled),
+    textarea.nb-textarea:hover:not(:disabled) {
+      border-color: var(--s-border-strong) !important;
+    }
+
+    input.nb-input:focus,
+    select.nb-select:focus,
+    textarea.nb-textarea:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .18) !important;
+      background-color: var(--s-surface-2) !important;
+      color: var(--s-text) !important;
+    }
+
+    input.nb-input:disabled,
+    select.nb-select:disabled,
+    textarea.nb-textarea:disabled {
+      opacity: .55 !important;
+      cursor: not-allowed !important;
+      background-color: var(--s-surface-3) !important;
+      color: var(--s-text-muted) !important;
+    }
+
+    /* Placeholders */
+    input.nb-input::placeholder,
+    textarea.nb-textarea::placeholder {
+      color: var(--s-text-light) !important;
+      opacity: 1 !important;
+      font-weight: 400 !important;
+    }
+
+    /* Select — custom dropdown arrow that respects theme */
+    select.nb-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239aa6bd' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+      background-position: right 0.85rem center !important;
+      background-repeat: no-repeat !important;
+      background-size: 1.1em 1.1em !important;
+      padding-right: 2.75rem !important;
+    }
+
+    html:not(.dark) select.nb-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2358627a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+    }
+
+    /* Option elements inside select */
+    select.nb-select option,
+    select.nb-select optgroup {
+      background-color: var(--s-surface-2);
+      color: var(--s-text);
+      padding: 8px;
+    }
+
+    /* Autofill fix — Chrome aggressively overrides background */
+    input.nb-input:-webkit-autofill,
+    input.nb-input:-webkit-autofill:hover,
+    input.nb-input:-webkit-autofill:focus,
+    textarea.nb-textarea:-webkit-autofill {
+      -webkit-text-fill-color: var(--s-text) !important;
+      -webkit-box-shadow: 0 0 0 1000px var(--s-surface-2) inset !important;
+      box-shadow: 0 0 0 1000px var(--s-surface-2) inset !important;
+      transition: background-color 5000s ease-in-out 0s !important;
+      caret-color: var(--s-text) !important;
+    }
+
+    /* Date/time picker indicators */
+    input[type="datetime-local"].nb-input::-webkit-calendar-picker-indicator,
+    input[type="date"].nb-input::-webkit-calendar-picker-indicator,
+    input[type="time"].nb-input::-webkit-calendar-picker-indicator {
+      cursor: pointer !important;
+      opacity: .65 !important;
+      filter: invert(.85) !important;
+    }
+
+    html:not(.dark) input[type="datetime-local"].nb-input::-webkit-calendar-picker-indicator,
+    html:not(.dark) input[type="date"].nb-input::-webkit-calendar-picker-indicator,
+    html:not(.dark) input[type="time"].nb-input::-webkit-calendar-picker-indicator {
+      filter: none !important;
+      opacity: .55 !important;
+    }
+
+    /* Number spinner */
+    input[type="number"].nb-input::-webkit-inner-spin-button,
+    input[type="number"].nb-input::-webkit-outer-spin-button {
+      opacity: .55 !important;
+      height: 1.4em;
+    }
+
+    /* Textarea */
+    textarea.nb-textarea {
+      resize: vertical !important;
+      min-height: 100px !important;
+      line-height: 1.55 !important;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: .82rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+      text-decoration: none
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 6px 16px -4px rgba(99, 102, 241, .5)
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(99, 102, 241, .7)
+    }
+
+    .btn-primary:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .btn-ghost {
+      background: var(--s-surface-2);
+      border-color: var(--s-border);
+      color: var(--s-text)
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--s-border-strong);
+      background: var(--s-surface-3)
+    }
+
+    .btn-secondary {
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .3);
+      color: #818cf8
+    }
+
+    .btn-secondary:hover {
+      background: rgba(99, 102, 241, .25)
+    }
+
+    .upload-box {
+      border: 2px dashed var(--s-border);
+      background: var(--s-surface-2);
+      border-radius: 16px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .2s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .upload-box:hover {
+      border-color: #6366f1;
+      background: var(--s-surface-3)
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--s-surface);border-color:var(--s-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/seller/auctions.html"
+          class="text-sm font-semibold text-[var(--s-text-muted)] hover:text-[var(--s-text)]"><i
+            class="fa-solid fa-arrow-left mr-1"></i> My Auctions</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="seller-subnav"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-brand-400 bg-brand-500/10 border border-brand-500/20 mb-2">
+          <i class="fa-solid fa-pen-to-square"></i> Listing Editor
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black text-[var(--s-text)]">Edit Auction Listing</h1>
+        <p class="text-xs sm:text-sm text-[var(--s-text-muted)] mt-1" id="auction-subtitle">Update item details,
+          parameters, reserve prices and images.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <a id="btn-view-lot" href="#" class="btn btn-ghost text-xs" target="_blank"><i class="fa-solid fa-eye"></i> View
+          Live Lot</a>
+        <a href="/seller/auctions.html" class="btn btn-ghost text-xs"><i class="fa-solid fa-xmark"></i> Cancel</a>
+      </div>
+    </div>
+
+    <div id="bid-lock-banner"
+      class="hidden p-4 rounded-xl mb-6 bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+      <i class="fa-solid fa-triangle-exclamation text-amber-400 mt-0.5"></i>
+      <div class="text-xs text-[var(--s-text)]">
+        <strong class="font-bold text-amber-300 block mb-0.5">Listing Has Active Bids</strong>
+        Starting price, reserve price, and category cannot be altered once bids have been registered to protect fair
+        market rules.
+      </div>
+    </div>
+
+    <div id="loading-state" class="panel p-12 text-center">
+      <i class="fa-solid fa-spinner fa-spin text-3xl text-brand-400 mb-3"></i>
+      <p class="text-sm font-bold text-[var(--s-text)]">Loading auction data…</p>
+    </div>
+
+    <form id="edit-auction-form" class="hidden space-y-6" onsubmit="handleAuctionUpdate(event)">
+      <div class="panel">
+        <h2
+          class="text-sm font-extrabold uppercase tracking-wider text-brand-400 mb-4 pb-2 border-b border-[var(--s-border)]">
+          1. Basic Information</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="field md:col-span-2">
+            <label for="title">Auction Title *</label>
+            <input type="text" id="title" required maxlength="120" class="nb-input"
+              placeholder="e.g. Vintage Rolex Oyster Perpetual Datejust 1988">
+          </div>
+          <div class="field">
+            <label for="category_id">Category *</label>
+            <select id="category_id" required class="nb-select">
+              <option value="">Select Category</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="status">Listing Status</label>
+            <select id="status" class="nb-select">
+              <option value="draft">Draft (Unpublished)</option>
+              <option value="pending">Pending Approval</option>
+              <option value="active">Active</option>
+              <option value="sold">Sold</option>
+              <option value="ended">Ended</option>
+              <option value="cancelled">Cancelled</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <span class="field-hint" style="font-size:.68rem;color:var(--s-text-muted);">
+              <i class="fa-solid fa-circle-info"></i>
+              Sold / ended / cancelled statuses are read-only — backend will reject invalid transitions.
+            </span>
+          </div>
+        </div>
+        <div class="field mt-3">
+          <div class="flex items-center justify-between mb-1">
+            <label for="description">Detailed Description *</label>
+            <button type="button" onclick="polishWithAi()"
+              class="text-xs font-bold text-brand-400 hover:text-brand-300 inline-flex items-center gap-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Enhance with AI
+            </button>
+          </div>
+          <textarea id="description" rows="6" required class="nb-textarea"
+            placeholder="Describe provenance, item condition, specifications, flaws and box contents…"></textarea>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="flex items-center justify-between mb-4 pb-2 border-b border-[var(--s-border)] flex-wrap gap-2">
+          <h2 class="text-sm font-extrabold uppercase tracking-wider text-brand-400">2. Pricing &amp; Bidding Rules
+            (PKR)</h2>
+          <button type="button" onclick="suggestAiPriceEdit()" id="btn-suggest-price"
+            class="btn btn-secondary text-xs py-1.5 px-3"><i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+            Suggest Price with AI</button>
+        </div>
+
+        <div id="ai-price-box"
+          class="hidden mb-4 p-4 rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-950/40 via-purple-950/20 to-slate-900/60">
+          <div class="flex items-start justify-between gap-3 mb-3 flex-wrap">
+            <div>
+              <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                Valuation Guidance
+                <span id="ai-price-confidence"
+                  class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 uppercase">Medium</span>
+              </h4>
+              <p id="ai-price-reasoning" class="text-xs text-slate-400 mt-0.5">Estimated based on historical sales.</p>
+            </div>
+            <span
+              class="text-[10px] font-medium text-slate-400 bg-slate-800/80 px-2 py-1 rounded border border-slate-700/60">AI
+              suggestion, not guaranteed</span>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-lg bg-slate-900/80 border border-slate-800 text-center mb-3">
+            <div><span class="text-[11px] text-slate-400 block">Suggested Start</span><strong id="ai-val-start"
+                class="text-base font-extrabold text-indigo-300">PKR 0</strong></div>
+            <div><span class="text-[11px] text-slate-400 block">Suggested Reserve</span><strong id="ai-val-reserve"
+                class="text-base font-extrabold text-amber-300">Optional</strong></div>
+            <div><span class="text-[11px] text-slate-400 block">Expected Range</span><strong id="ai-val-range"
+                class="text-base font-extrabold text-emerald-400">PKR 0 - 0</strong></div>
+          </div>
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <span id="ai-val-comps" class="text-[11px] text-slate-400"><i
+                class="fa-solid fa-chart-simple text-indigo-400 mr-1"></i> Based on <strong
+                class="text-slate-200">0</strong> comparable sales</span>
+            <button type="button" onclick="applyAiPriceEdit()" class="btn btn-primary text-xs py-1.5 px-3"><i
+                class="fa-solid fa-check mr-1.5"></i> Apply to Form</button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="field"><label for="starting_price">Starting Price (PKR) *</label><input type="number"
+              id="starting_price" required min="1" step="100" class="nb-input" placeholder="5000"></div>
+          <div class="field"><label for="bid_increment">Min Bid Increment (PKR)</label><input type="number"
+              id="bid_increment" min="50" step="50" class="nb-input" placeholder="500"></div>
+          <div class="field"><label for="reserve_price">Reserve Price (PKR)</label><input type="number"
+              id="reserve_price" min="0" step="500" class="nb-input" placeholder="Hidden threshold"></div>
+          <div class="field"><label for="buy_now_price">Buy Now Price (PKR)</label><input type="number"
+              id="buy_now_price" min="0" step="500" class="nb-input" placeholder="Instant buyout"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+          <div class="field"><label for="start_time">Start Date &amp; Time *</label><input type="datetime-local"
+              id="start_time" required class="nb-input"></div>
+          <div class="field"><label for="end_time">End Date &amp; Time *</label><input type="datetime-local"
+              id="end_time" required class="nb-input"></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2
+          class="text-sm font-extrabold uppercase tracking-wider text-brand-400 mb-4 pb-2 border-b border-[var(--s-border)]">
+          3. Item Media &amp; Cover Image</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+          <div>
+            <label class="text-xs font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-2">Current
+              Cover Image</label>
+            <div
+              class="h-52 rounded-xl overflow-hidden bg-black/40 border border-[var(--s-border)] flex items-center justify-center relative">
+              <img id="current-image-preview" src="" alt="Listing Image" class="w-full h-full object-cover">
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-2">Replace
+              Image (Optional)</label>
+            <div class="upload-box" onclick="document.getElementById('image-file-input').click()">
+              <input type="file" id="image-file-input" accept="image/*" class="hidden"
+                onchange="handleImageSelect(event)">
+              <i class="fa-solid fa-cloud-arrow-up text-2xl text-brand-400 mb-2"></i>
+              <strong class="text-xs block text-[var(--s-text)]">Click to upload new photo</strong>
+              <span class="text-[10px] text-[var(--s-text-muted)]">PNG, JPG, WEBP up to 5MB</span>
+              <p id="new-filename" class="text-xs text-emerald-400 font-bold mt-2 hidden"></p>
+            </div>
+            <input type="hidden" id="image-data">
+          </div>
+        </div>
+      </div>
+
+      <div class="panel flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span class="text-xs text-[var(--s-text-muted)]">All changes take effect immediately on active auction
+          pages.</span>
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <a href="/seller/auctions.html" class="btn btn-ghost w-full sm:w-auto">Cancel</a>
+          <button type="submit" id="btn-save" class="btn btn-primary w-full sm:w-auto"><i
+              class="fa-solid fa-floppy-disk"></i> Save &amp; Update Listing</button>
+        </div>
+      </div>
+    </form>
+  </main>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/seller-nav.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // ✅ AUTH GUARD
+      var _token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      var _user = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+      if (!_token || !['seller', 'admin'].includes(_user.role)) {
+        window.location.href = '/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var auctionId = urlParams.get('id') || urlParams.get('auction_id');
+
+      if (!auctionId) {
+        alert('No auction ID provided.');
+        window.location.href = '/seller/auctions.html';
+        return;
+      }
+
+      var currentAiValuationEdit = null;
+
+      function $(id) { return document.getElementById(id); }
+      function esc(str) { return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+      async function loadCategories() {
+        try {
+          var res = await ApiClient.get('/categories');
+          var categories = (res && res.data) || res || [];
+          var select = $('category_id');
+          categories.forEach(function (c) {
+            var opt = document.createElement('option');
+            opt.value = c.category_id || c.id;
+            opt.textContent = c.category_name || c.name;
+            select.appendChild(opt);
+          });
+        } catch (err) { console.warn('Could not load categories', err); }
+      }
+
+      function formatForInput(dateStr) {
+        if (!dateStr) return '';
+        var d = new Date(dateStr);
+        if (isNaN(d.getTime())) return '';
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        return d.toISOString().slice(0, 16);
+      }
+
+      async function loadAuctionData() {
+        await loadCategories();
+        try {
+          var res = await ApiClient.get('/auctions/' + auctionId);
+          var a = (res && res.data) || res;
+          if (!a || !a.auction_id) throw new Error('Auction not found');
+
+          $('auction-subtitle').textContent = 'Editing Lot #' + a.auction_id + ': ' + a.title;
+          $('btn-view-lot').href = '/auction-details.html?id=' + a.auction_id;
+
+          $('title').value = a.title || '';
+          $('category_id').value = a.category_id || '';
+          $('description').value = a.description || '';
+          $('starting_price').value = a.starting_price || '';
+          $('bid_increment').value = a.bid_increment || 500;
+          $('reserve_price').value = a.reserve_price || '';
+          $('buy_now_price').value = a.buy_now_price || '';
+          $('start_time').value = formatForInput(a.start_time);
+          $('end_time').value = formatForInput(a.end_time);
+          $('status').value = a.auction_status || 'active';
+
+          var imgUrl = a.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400';
+          $('current-image-preview').src = imgUrl;
+          $('image-data').value = a.image || '';
+
+          // ✅ FIX: parseInt for bid_count
+          var bidCount = parseInt(a.bid_count, 10) || 0;
+          if (bidCount > 0) {
+            $('bid-lock-banner').classList.remove('hidden');
+            $('starting_price').disabled = true;
+            $('reserve_price').disabled = true;
+            $('category_id').disabled = true;
+          }
+
+          $('loading-state').classList.add('hidden');
+          $('edit-auction-form').classList.remove('hidden');
+        } catch (err) {
+          $('loading-state').innerHTML = '<i class="fa-solid fa-circle-exclamation text-3xl text-rose-400 mb-3"></i>' +
+            '<p class="text-sm font-bold text-rose-400">Failed to load auction: ' + esc(err.message) + '</p>' +
+            '<a href="/seller/auctions.html" class="btn btn-primary text-xs mt-4">Back to My Auctions</a>';
+        }
+      }
+
+      async function handleImageSelect(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { UI.showToast('Please select a valid image file.', 'error'); return; }
+        if (file.size > 5 * 1024 * 1024) { UI.showToast('Image size exceeds 5MB limit.', 'error'); return; }
+
+        var reader = new FileReader();
+        reader.onload = async function (ev) {
+          try {
+            var nameEl = $('new-filename');
+            nameEl.textContent = 'Uploading...';
+            nameEl.classList.remove('hidden');
+            UI.showToast('Uploading new image...', 'info');
+
+            // ✅ Upload to Cloudinary
+            var res = await ApiClient.post('/upload/base64', {
+              image: ev.target.result,
+              folder: 'nexusbids/auctions'
+            });
+
+            var imageUrl = (res.data && res.data.url) ? res.data.url : res.url;
+
+            $('image-data').value = imageUrl;
+            $('current-image-preview').src = imageUrl;
+            nameEl.textContent = 'Selected: ' + file.name;
+            UI.showToast('Image uploaded successfully!', 'success');
+          } catch (err) {
+            UI.showToast('Failed to upload image. Please try again.', 'error');
+            $('new-filename').classList.add('hidden');
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      async function polishWithAi() {
+        var title = $('title').value.trim();
+        var desc = $('description').value.trim();
+        if (!title) { UI.showToast('Please enter an auction title first.', 'error'); return; }
+        try {
+          UI.showToast('Polishing description with AI…', 'info');
+          var catSelect = $('category_id');
+          var catName = catSelect.options[catSelect.selectedIndex] ? catSelect.options[catSelect.selectedIndex].text : '';
+          var res = await ApiClient.post('/ai/generate-description', {
+            title: title, category: catName, condition: 'Original Condition',
+            features: desc || 'Verified authentic lot with premium quality standards.'
+          });
+          if (res && res.data && res.data.description) {
+            $('description').value = res.data.description;
+            UI.showToast('Description enhanced with AI!', 'success');
+          }
+        } catch (err) { UI.showToast(err.message || 'AI description enhancement unavailable.', 'error'); }
+      }
+
+      async function suggestAiPriceEdit() {
+        var title = $('title').value.trim();
+        if (!title) { UI.showToast('Please enter an item title first.', 'error'); $('title').focus(); return; }
+        var btn = $('btn-suggest-price');
+        var originalHtml = btn ? btn.innerHTML : '';
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Valuating…'; }
+        try {
+          var catSelect = $('category_id');
+          var catId = catSelect ? catSelect.value : 0;
+          var catName = catSelect && catSelect.selectedIndex >= 0 ? catSelect.options[catSelect.selectedIndex].text : '';
+          var desc = $('description').value.trim();
+          var res = await ApiClient.post('/ai/suggest-price', { title: title, category_id: catId, category: catName, description: desc });
+          if (res && res.data) {
+            currentAiValuationEdit = res.data;
+            $('ai-price-box').classList.remove('hidden');
+            $('ai-val-start').textContent = 'PKR ' + Number(res.data.suggested_start_price || 0).toLocaleString();
+            $('ai-val-reserve').textContent = res.data.suggested_reserve_price ? 'PKR ' + Number(res.data.suggested_reserve_price).toLocaleString() : 'Optional';
+            var low = Number((res.data.expected_price_range && res.data.expected_price_range.low) || 0).toLocaleString();
+            var high = Number((res.data.expected_price_range && res.data.expected_price_range.high) || 0).toLocaleString();
+            $('ai-val-range').textContent = 'PKR ' + low + ' - ' + high;
+            $('ai-price-reasoning').textContent = res.data.reasoning || '';
+            $('ai-val-comps').innerHTML = '<i class="fa-solid fa-chart-simple text-indigo-400 mr-1"></i> Based on <strong class="text-slate-200">' + (res.data.comparable_count || 0) + '</strong> comparable sales';
+            var conf = (res.data.confidence || 'low').toLowerCase();
+            var confColor = conf === 'high' ? 'bg-emerald-500/20 text-emerald-300' : conf === 'medium' ? 'bg-amber-500/20 text-amber-300' : 'bg-rose-500/20 text-rose-300';
+            var confEl = $('ai-price-confidence');
+            confEl.className = 'px-2 py-0.5 rounded text-[10px] font-semibold uppercase ' + confColor;
+            confEl.textContent = conf + ' confidence';
+            UI.showToast('Market valuation guidance calculated!', 'success');
+          }
+        } catch (err) { UI.showToast(err.message || 'Could not fetch price suggestion.', 'error'); }
+        finally { if (btn) { btn.disabled = false; btn.innerHTML = originalHtml || '<i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Suggest Price with AI'; } }
+      }
+
+      function applyAiPriceEdit() {
+        if (!currentAiValuationEdit) return;
+        if ($('starting_price') && currentAiValuationEdit.suggested_start_price) $('starting_price').value = currentAiValuationEdit.suggested_start_price;
+        if ($('reserve_price') && currentAiValuationEdit.suggested_reserve_price) $('reserve_price').value = currentAiValuationEdit.suggested_reserve_price;
+        UI.showToast('Applied suggested prices to form!', 'info');
+      }
+
+      async function handleAuctionUpdate(e) {
+        e.preventDefault();
+        var btn = $('btn-save');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Updates…';
+        var payload = {
+          title: $('title').value.trim(),
+          description: $('description').value.trim(),
+          start_time: $('start_time').value,
+          end_time: $('end_time').value,
+          bid_increment: parseFloat($('bid_increment').value) || 500,
+          buy_now_price: $('buy_now_price').value ? parseFloat($('buy_now_price').value) : null,
+          auction_status: $('status').value
+        };
+        if (!$('starting_price').disabled) payload.starting_price = parseFloat($('starting_price').value);
+        if (!$('reserve_price').disabled) payload.reserve_price = $('reserve_price').value ? parseFloat($('reserve_price').value) : null;
+        if (!$('category_id').disabled) payload.category_id = parseInt($('category_id').value, 10);
+        var newImg = $('image-data').value;
+        if (newImg) payload.image = newImg;
+        try {
+          var res = (typeof ApiClient.put === 'function')
+            ? await ApiClient.put('/auctions/' + auctionId, payload)
+            : await ApiClient.post('/auctions/' + auctionId, Object.assign({ _method: 'PUT' }, payload));
+          if (res && (res.success || res.data || res.message)) {
+            UI.showToast('Auction updated successfully!', 'success');
+            setTimeout(function () { window.location.href = '/seller/auctions.html'; }, 1200);
+          } else {
+            UI.showToast((res && res.message) || 'Failed to update auction.', 'error');
+          }
+        } catch (err) { UI.showToast(err.message || 'Error updating auction.', 'error'); }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save &amp; Update Listing'; }
+      }
+
+      window.handleImageSelect = handleImageSelect;
+      window.polishWithAi = polishWithAi;
+      window.suggestAiPriceEdit = suggestAiPriceEdit;
+      window.applyAiPriceEdit = applyAiPriceEdit;
+      window.handleAuctionUpdate = handleAuctionUpdate;
+
+      document.addEventListener('DOMContentLoaded', loadAuctionData);
+    })();
+  </script>
+</body>
+
+</html>

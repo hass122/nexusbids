@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "."
+  },
+  "include": [
+    "src/**/*",
+    "App.tsx"
+  ],
+  "exclude": [
+    "node_modules",
+    "../../node_modules",
+    "dist"
+  ],
+  "extends": "expo/tsconfig.base"
+}

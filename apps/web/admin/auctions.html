@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auction Moderation — NexusBids Admin</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --am-bg: #f4f6fb;
+      --am-surface: #fff;
+      --am-surface-2: #f7f9fc;
+      --am-surface-3: #eceff6;
+      --am-border: #e3e8f0;
+      --am-border-strong: #cfd7e5;
+      --am-text: #0f172a;
+      --am-text-muted: #565650;
+      --am-text-light: #6e6e68;
+      --am-row-hover: #f4f7fd;
+      --am-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%)
+    }
+
+    html.dark {
+      --am-bg: #05070f;
+      --am-surface: #0d1220;
+      --am-surface-2: #121a2b;
+      --am-surface-3: #1a2336;
+      --am-border: #1e2a40;
+      --am-border-strong: #2c3a56;
+      --am-text: #eef2f9;
+      --am-text-muted: #b8b8b0;
+      --am-text-light: #8f8f88;
+      --am-row-hover: #141d31;
+      --am-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body.page {
+      background: var(--am-bg);
+      color: var(--am-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .panel {
+      background: var(--am-surface);
+      border: 1px solid var(--am-border);
+      border-radius: 22px;
+      overflow: hidden
+    }
+
+    .table-scroll {
+      overflow-x: auto
+    }
+
+    table.admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem
+    }
+
+    table.admin-table thead {
+      background: var(--am-surface-2);
+      border-bottom: 1px solid var(--am-border)
+    }
+
+    table.admin-table thead th {
+      text-align: left;
+      padding: 13px 18px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--am-text-light);
+      white-space: nowrap
+    }
+
+    table.admin-table thead th.right {
+      text-align: right
+    }
+
+    table.admin-table tbody tr {
+      border-bottom: 1px solid var(--am-border);
+      transition: background-color .2s
+    }
+
+    table.admin-table tbody tr:last-child {
+      border-bottom: 0
+    }
+
+    table.admin-table tbody tr:hover {
+      background: var(--am-row-hover)
+    }
+
+    table.admin-table tbody td {
+      padding: 14px 18px;
+      vertical-align: middle
+    }
+
+    table.admin-table tbody td.right {
+      text-align: right
+    }
+
+    .item-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .item-thumb {
+      flex: 0 0 auto;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--am-surface-3);
+      border: 1px solid var(--am-border);
+      display: block
+    }
+
+    .item-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block
+    }
+
+    .item-title {
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--am-text);
+      text-decoration: none;
+      line-height: 1.3;
+      max-width: 240px
+    }
+
+    .item-title:hover {
+      color: #6366f1
+    }
+
+    .item-id {
+      font-size: .66rem;
+      color: var(--am-text-light);
+      margin-top: 3px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace
+    }
+
+    .cell-muted {
+      font-size: .78rem;
+      color: var(--am-text-muted);
+      white-space: nowrap
+    }
+
+    .cell-strong {
+      font-size: .82rem;
+      font-weight: 700;
+      white-space: nowrap
+    }
+
+    .cell-sub {
+      font-size: .66rem;
+      color: var(--am-text-light);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      margin-top: 2px
+    }
+
+    .price {
+      font-size: .84rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap
+    }
+
+    .price.current {
+      color: #059669;
+      font-weight: 800
+    }
+
+    html.dark .price.current {
+      color: #34d399
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border: 1px solid transparent
+    }
+
+    .pill-active {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .28)
+    }
+
+    .pill-pending {
+      background: rgba(245, 158, 11, .13);
+      color: #b45309;
+      border-color: rgba(245, 158, 11, .30)
+    }
+
+    .pill-ended {
+      background: var(--am-surface-3);
+      color: var(--am-text-muted);
+      border-color: var(--am-border)
+    }
+
+    .pill-suspended {
+      background: rgba(244, 63, 94, .11);
+      color: #e11d48;
+      border-color: rgba(244, 63, 94, .26)
+    }
+
+    .pill-draft {
+      background: rgba(139, 92, 246, .11);
+      color: #7c3aed;
+      border-color: rgba(139, 92, 246, .26)
+    }
+
+    html.dark .pill-active {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399
+    }
+
+    html.dark .pill-pending {
+      background: rgba(245, 158, 11, .18);
+      color: #fbbf24
+    }
+
+    html.dark .pill-suspended {
+      background: rgba(244, 63, 94, .16);
+      color: #fb7185
+    }
+
+    html.dark .pill-draft {
+      background: rgba(139, 92, 246, .18);
+      color: #c4b5fd
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: .7rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: transform .2s, background-color .2s, color .2s
+    }
+
+    .btn:active {
+      transform: scale(.97)
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px
+    }
+
+    .btn-approve {
+      background: rgba(16, 185, 129, .12);
+      border-color: rgba(16, 185, 129, .30);
+      color: #059669
+    }
+
+    .btn-approve:hover {
+      background: rgba(16, 185, 129, .20);
+      transform: translateY(-1px)
+    }
+
+    html.dark .btn-approve {
+      color: #34d399
+    }
+
+    .btn-suspend {
+      background: rgba(245, 158, 11, .11);
+      border-color: rgba(245, 158, 11, .30);
+      color: #b45309
+    }
+
+    .btn-suspend:hover {
+      background: rgba(245, 158, 11, .20);
+      transform: translateY(-1px)
+    }
+
+    html.dark .btn-suspend {
+      color: #fbbf24
+    }
+
+    .btn-delete {
+      background: var(--am-surface-2);
+      border-color: var(--am-border);
+      color: #e11d48;
+      padding: 7px 10px
+    }
+
+    .btn-delete:hover {
+      background: rgba(244, 63, 94, .10);
+      transform: translateY(-1px)
+    }
+
+    html.dark .btn-delete {
+      color: #fb7185
+    }
+
+    .actions-wrap {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      justify-content: flex-end
+    }
+
+    .skeleton {
+      background: var(--am-skeleton);
+      background-size: 400% 100%;
+      border-radius: 8px;
+      animation: shimmer 1.4s ease-in-out infinite
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0 50%
+      }
+    }
+
+    .state {
+      padding: 56px 24px;
+      text-align: center
+    }
+
+    .state-icon {
+      width: 66px;
+      height: 66px;
+      border-radius: 20px;
+      display: inline-grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background: var(--am-surface-2);
+      border: 1px solid var(--am-border);
+      color: var(--am-text-light);
+      margin-bottom: 16px
+    }
+
+    .state-icon.err {
+      background: rgba(244, 63, 94, .10);
+      border-color: rgba(244, 63, 94, .24);
+      color: #e11d48
+    }
+
+    .state-title {
+      font-size: .95rem;
+      font-weight: 800
+    }
+
+    .state-text {
+      font-size: .78rem;
+      color: var(--am-text-muted);
+      margin-top: 6px;
+      max-width: 380px;
+      margin-left: auto;
+      margin-right: auto
+    }
+
+    .state .btn {
+      margin-top: 18px;
+      padding: 10px 16px;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      border: 0
+    }
+
+    .filter-tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--am-surface);
+      border: 1px solid var(--am-border);
+      border-radius: 14px;
+      overflow-x: auto;
+      max-width: 100%;
+      scrollbar-width: none
+    }
+
+    .filter-tabs::-webkit-scrollbar {
+      display: none
+    }
+
+    .filter-tab {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 13px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: .74rem;
+      font-weight: 700;
+      color: var(--am-text-muted);
+      white-space: nowrap
+    }
+
+    .filter-tab:hover {
+      color: var(--am-text)
+    }
+
+    .filter-tab.is-active {
+      background: var(--am-surface-3);
+      color: var(--am-text)
+    }
+
+    .filter-tab.is-active i {
+      color: #6366f1
+    }
+
+    .result-count {
+      font-size: .74rem;
+      font-weight: 600;
+      color: var(--am-text-light);
+      white-space: nowrap
+    }
+
+    .result-count strong {
+      color: var(--am-text);
+      font-weight: 800
+    }
+
+    @media (max-width:900px) {
+      table.admin-table thead {
+        display: none
+      }
+
+      table.admin-table tbody tr {
+        display: block;
+        padding: 16px;
+        border-bottom: 1px solid var(--am-border)
+      }
+
+      table.admin-table tbody td {
+        display: block;
+        padding: 0;
+        text-align: left !important
+      }
+
+      td[data-label="Item"] {
+        padding-bottom: 12px;
+        border-bottom: 1px dashed var(--am-border);
+        margin-bottom: 12px
+      }
+
+      .item-title {
+        max-width: 100%
+      }
+
+      td[data-label="Seller"],
+      td[data-label="Category"] {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 6px 0
+      }
+
+      td[data-label="Seller"]::before,
+      td[data-label="Category"]::before {
+        content: attr(data-label);
+        font-size: .64rem;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--am-text-light)
+      }
+
+      td[data-label="Starting"],
+      td[data-label="Current"] {
+        display: inline-block;
+        width: calc(50% - 6px);
+        padding: 12px;
+        margin-top: 12px;
+        background: var(--am-surface-2);
+        border: 1px solid var(--am-border);
+        border-radius: 12px
+      }
+
+      td[data-label="Starting"] {
+        margin-right: 12px
+      }
+
+      td[data-label="Starting"]::before,
+      td[data-label="Current"]::before {
+        content: attr(data-label);
+        display: block;
+        font-size: .6rem;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: var(--am-text-light);
+        margin-bottom: 4px
+      }
+
+      td[data-label="Status"] {
+        margin-top: 12px
+      }
+
+      td[data-label="Actions"] {
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px dashed var(--am-border)
+      }
+
+      td[data-label="Actions"] .actions-wrap {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        width: 100%
+      }
+
+      td[data-label="Actions"] .btn {
+        padding: 10px 14px;
+        font-size: .76rem
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-6">
+      <div>
+        <span
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-indigo-500 bg-indigo-500/10 border border-indigo-500/20 mb-3">
+          <i class="fa-solid fa-gavel"></i> Admin · Marketplace
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-black" style="letter-spacing:-.025em">Auction Moderation</h1>
+        <p class="text-xs sm:text-sm text-[var(--am-text-muted)] mt-2">Review, approve, suspend or delete marketplace
+          listings.</p>
+      </div>
+    </div>
+
+    <div id="active-filter-chip" style="display:none;margin-bottom:14px"></div>
+
+    <div
+      style="display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div class="filter-tabs" role="tablist">
+        <button type="button" class="filter-tab is-active" data-value="" role="tab"><i
+            class="fa-solid fa-layer-group"></i>All</button>
+        <button type="button" class="filter-tab" data-value="active" role="tab"><i
+            class="fa-solid fa-bolt"></i>Active</button>
+        <button type="button" class="filter-tab" data-value="pending" role="tab"><i
+            class="fa-solid fa-hourglass-half"></i>Pending</button>
+        <button type="button" class="filter-tab" data-value="ended" role="tab"><i
+            class="fa-solid fa-flag-checkered"></i>Ended</button>
+        <button type="button" class="filter-tab" data-value="suspended" role="tab"><i
+            class="fa-solid fa-ban"></i>Suspended</button>
+        <button type="button" class="filter-tab" data-value="draft" role="tab"><i
+            class="fa-solid fa-pen-ruler"></i>Draft</button>
+      </div>
+      <select id="filter-status" style="display:none" aria-hidden="true" tabindex="-1">
+        <option value="">All Statuses</option>
+        <option value="active">Active</option>
+        <option value="pending">Pending</option>
+        <option value="ended">Ended</option>
+        <option value="suspended">Suspended</option>
+        <option value="draft">Draft</option>
+      </select>
+      <p class="result-count"><strong id="result-count">—</strong> listings</p>
+    </div>
+
+    <div class="panel">
+      <div class="table-scroll">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Seller</th>
+              <th>Category</th>
+              <th>Starting Price</th>
+              <th>Current Bid</th>
+              <th>Status</th>
+              <th class="right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="auctions-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=100';
+      function $(id) { return document.getElementById(id); }
+      function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+      function showToast(msg, type) { if (window.UI && UI.showToast) UI.showToast(msg, type); else console.log(type, msg); }
+      function formatPKR(v) { if (window.UI && UI.formatPKR) return UI.formatPKR(v); return 'PKR ' + Number(v || 0).toLocaleString('en-PK'); }
+
+      function getURLParams() {
+        var p = new URLSearchParams(window.location.search);
+        return { seller_id: p.get('seller_id') || '', category_id: p.get('category_id') || '', search: p.get('search') || '' };
+      }
+      window.clearURLFilters = function () { window.location.href = window.location.pathname; };
+
+      function renderActiveFilterChip() {
+        var chipEl = $('active-filter-chip'); if (!chipEl) return;
+        var p = getURLParams();
+        var parts = [];
+        if (p.seller_id) parts.push('Seller #' + esc(p.seller_id));
+        if (p.category_id) parts.push('Category #' + esc(p.category_id));
+        if (p.search) parts.push('"' + esc(p.search) + '"');
+        if (!parts.length) { chipEl.style.display = 'none'; chipEl.innerHTML = ''; return; }
+        chipEl.style.display = 'block';
+        chipEl.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;border-radius:999px;background:rgba(99,102,241,.10);border:1px solid rgba(99,102,241,.28);color:#4f46e5;font-size:.72rem;font-weight:700">' +
+          '<i class="fa-solid fa-filter" style="font-size:.65rem"></i>Filtered by: <strong>' + parts.join(' · ') + '</strong>' +
+          '<button type="button" onclick="clearURLFilters()" aria-label="Clear filter" style="display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;border:0;background:rgba(99,102,241,.18);color:inherit;cursor:pointer;font-size:.6rem;padding:0"><i class="fa-solid fa-xmark"></i></button></span>';
+      }
+
+      function statusPill(status) {
+        var s = (status || '').toLowerCase();
+        var map = {
+          active: { cls: 'pill-active', icon: 'fa-bolt' },
+          pending: { cls: 'pill-pending', icon: 'fa-hourglass-half' },
+          ended: { cls: 'pill-ended', icon: 'fa-flag-checkered' },
+          suspended: { cls: 'pill-suspended', icon: 'fa-ban' },
+          draft: { cls: 'pill-draft', icon: 'fa-pen-ruler' }
+        };
+        var m = map[s] || { cls: 'pill-ended', icon: 'fa-circle-info' };
+        var label = s ? s.charAt(0).toUpperCase() + s.slice(1) : 'Unknown';
+        return '<span class="pill ' + m.cls + '"><i class="fa-solid ' + m.icon + '"></i>' + esc(label) + '</span>';
+      }
+
+      function renderSkeletons(n) {
+        var out = '';
+        for (var i = 0; i < n; i++) {
+          out += '<tr>' +
+            '<td data-label="Item"><div class="item-cell"><div class="skeleton" style="width:48px;height:48px;border-radius:12px"></div><div style="flex:1;min-width:0"><div class="skeleton" style="height:12px;width:70%;max-width:180px"></div><div class="skeleton" style="height:9px;width:60px;margin-top:7px"></div></div></div></td>' +
+            '<td data-label="Seller"><div class="skeleton" style="height:11px;width:100px"></div></td>' +
+            '<td data-label="Category"><div class="skeleton" style="height:11px;width:80px"></div></td>' +
+            '<td data-label="Starting"><div class="skeleton" style="height:12px;width:90px"></div></td>' +
+            '<td data-label="Current"><div class="skeleton" style="height:12px;width:90px"></div></td>' +
+            '<td data-label="Status"><div class="skeleton" style="height:20px;width:80px;border-radius:999px"></div></td>' +
+            '<td data-label="Actions" class="right"><div style="display:inline-flex;gap:6px"><div class="skeleton" style="height:30px;width:70px;border-radius:10px"></div><div class="skeleton" style="height:30px;width:36px;border-radius:10px"></div></div></td>' +
+            '</tr>';
+        }
+        return out;
+      }
+
+      function renderRow(a) {
+        var status = (a.auction_status || a.status || '').toLowerCase();
+        var canApprove = status === 'pending' || status === 'suspended' || status === 'draft';
+        var currentBid = a.current_bid || a.starting_price || 0;
+
+        return '<tr>' +
+          '<td data-label="Item"><div class="item-cell">' +
+          '<a class="item-thumb" href="/auction-details.html?id=' + esc(a.auction_id) + '" target="_blank" rel="noopener">' +
+          '<img src="' + esc(a.image || FALLBACK_IMG) + '" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'' + FALLBACK_IMG + '\'">' +
+          '</a>' +
+          '<div style="min-width:0">' +
+          '<a class="item-title" href="/auction-details.html?id=' + esc(a.auction_id) + '" target="_blank" rel="noopener">' + esc(a.title || 'Untitled') + '</a>' +
+          '<span class="item-id"><i class="fa-solid fa-hashtag"></i>' + esc(a.auction_id) + '</span>' +
+          '</div>' +
+          '</div></td>' +
+          '<td data-label="Seller"><div style="line-height:1.3"><div class="cell-strong">' + esc(a.seller_name || ('Seller #' + a.seller_id)) + '</div>' +
+          (a.seller_id ? '<div class="cell-sub">ID: ' + esc(a.seller_id) + '</div>' : '') + '</div></td>' +
+          '<td data-label="Category"><span class="cell-muted">' + esc(a.category_name || 'General') + '</span></td>' +
+          '<td data-label="Starting"><span class="price">' + esc(formatPKR(a.starting_price)) + '</span></td>' +
+          '<td data-label="Current"><span class="price current">' + esc(formatPKR(currentBid)) + '</span></td>' +
+          '<td data-label="Status">' + statusPill(status) + '</td>' +
+          '<td data-label="Actions" class="right"><div class="actions-wrap">' +
+          (canApprove
+            ? '<button type="button" class="btn btn-approve" onclick="updateAuctionStatus(' + Number(a.auction_id) + ', \'approve\')"><i class="fa-solid fa-check"></i> Approve</button>'
+            : '<button type="button" class="btn btn-suspend" onclick="updateAuctionStatus(' + Number(a.auction_id) + ', \'suspend\')"><i class="fa-solid fa-pause"></i> Suspend</button>') +
+          '<button type="button" class="btn btn-delete" onclick="deleteAuction(' + Number(a.auction_id) + ')" title="Delete"><i class="fa-solid fa-trash-can"></i></button>' +
+          '</div></td>' +
+          '</tr>';
+      }
+
+      function renderEmpty(hasFilter) {
+        var tbody = $('auctions-table-body');
+        var countEl = $('result-count');
+        if (countEl) countEl.innerHTML = '<strong>0</strong> listings';
+        tbody.innerHTML = '<tr><td colspan="7"><div class="state"><div class="state-icon"><i class="fa-solid ' + (hasFilter ? 'fa-filter' : 'fa-box-open') + '"></i></div><p class="state-title">' + (hasFilter ? 'No matching listings' : 'No auctions yet') + '</p><p class="state-text">' + (hasFilter ? 'Try clearing filters.' : 'Listings will appear here for review.') + '</p>' + (hasFilter ? '<button type="button" class="btn" onclick="clearURLFilters()"><i class="fa-solid fa-xmark"></i> Clear filters</button>' : '') + '</div></td></tr>';
+      }
+
+      function renderError(msg) {
+        var tbody = $('auctions-table-body');
+        var countEl = $('result-count');
+        if (countEl) countEl.innerHTML = '<strong>—</strong> listings';
+        tbody.innerHTML = '<tr><td colspan="7"><div class="state"><div class="state-icon err"><i class="fa-solid fa-triangle-exclamation"></i></div><p class="state-title">Failed to load auctions</p><p class="state-text">' + esc(msg || 'Something went wrong.') + '</p><button type="button" class="btn" onclick="loadAdminAuctions()"><i class="fa-solid fa-rotate-right"></i> Retry</button></div></td></tr>';
+      }
+
+      async function loadAdminAuctions() {
+        var tbody = $('auctions-table-body');
+        var selectEl = $('filter-status');
+        var countEl = $('result-count');
+        if (!tbody || !selectEl) return;
+        var statusFilter = selectEl.value || '';
+        var urlParams = getURLParams();
+        var params = {};
+        if (statusFilter) params.status = statusFilter;
+        if (urlParams.seller_id) params.seller_id = urlParams.seller_id;
+        if (urlParams.category_id) params.category_id = urlParams.category_id;
+        if (urlParams.search) params.search = urlParams.search;
+        var hasAnyFilter = Object.keys(params).length > 0;
+
+        if (countEl) countEl.innerHTML = '<strong>…</strong> listings';
+        tbody.innerHTML = renderSkeletons(4);
+
+        try {
+          var res = await ApiClient.get('/admin/auctions', params);
+          var auctions = (res && res.data) || [];
+          if (countEl) countEl.innerHTML = '<strong>' + auctions.length + '</strong> ' + (auctions.length === 1 ? 'listing' : 'listings');
+          if (!auctions.length) { renderEmpty(hasAnyFilter); return; }
+          tbody.innerHTML = auctions.map(renderRow).join('');
+        } catch (err) {
+          console.error(err);
+          renderError(err && err.message);
+        }
+      }
+      window.loadAdminAuctions = loadAdminAuctions;
+
+      // ✅ FIXED: uses /moderate with { action } payload (backend matches)
+      async function updateAuctionStatus(id, action) {
+        var isApprove = action === 'approve';
+        var ok = true;
+        if (window.UI && UI.confirm) {
+          ok = await UI.confirm({
+            title: isApprove ? 'Approve Auction' : 'Suspend Auction',
+            message: isApprove ? 'Auction #' + id + ' will be published live.' : 'Auction #' + id + ' will be suspended.',
+            confirmText: isApprove ? 'Approve & Publish' : 'Suspend Listing',
+            type: isApprove ? 'success' : 'danger'
+          });
+        }
+        if (!ok) return;
+        try {
+          await ApiClient.patch('/admin/auctions/' + id + '/moderate', { action: action });
+          showToast('Auction #' + id + ' ' + (isApprove ? 'approved' : 'suspended'), 'success');
+          loadAdminAuctions();
+        } catch (err) { showToast((err && err.message) || 'Update failed', 'error'); }
+      }
+      window.updateAuctionStatus = updateAuctionStatus;
+
+      async function deleteAuction(id) {
+        var ok = true;
+        if (window.UI && UI.confirm) {
+          ok = await UI.confirm({ title: 'Delete Auction', message: 'Permanently delete auction #' + id + '?', confirmText: 'Delete', type: 'danger' });
+        }
+        if (!ok) return;
+        try {
+          await ApiClient.delete('/admin/auctions/' + id);
+          showToast('Auction deleted', 'success');
+          loadAdminAuctions();
+        } catch (err) { showToast((err && err.message) || 'Delete failed', 'error'); }
+      }
+      window.deleteAuction = deleteAuction;
+
+      function setStatusFilter(value) {
+        var selectEl = $('filter-status'); if (!selectEl) return;
+        selectEl.value = value;
+        document.querySelectorAll('.filter-tab').forEach(t => {
+          var isActive = t.getAttribute('data-value') === value;
+          t.classList.toggle('is-active', isActive);
+          t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        loadAdminAuctions();
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.filter-tab').forEach(tab => {
+          tab.addEventListener('click', () => {
+            var value = tab.getAttribute('data-value') || '';
+            if ($('filter-status').value === value) return;
+            setStatusFilter(value);
+          });
+        });
+        renderActiveFilterChip();
+
+        const role = ApiClient.getUserRole && ApiClient.getUserRole();
+        if (!ApiClient.isAuthenticated() || role !== 'admin') {
+          window.location.href = '/login.html?redirect=/admin/auctions.html';
+          return;
+        }
+        loadAdminAuctions();
+      });
+    })();
+  </script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

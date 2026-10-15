@@ -1,0 +1,897 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="NexusBids admin command center">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Command Center — NexusBids Pakistan</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --a-bg: #f4f6fb;
+      --a-surface: #fff;
+      --a-surface-2: #fafbfd;
+      --a-surface-3: #f1f4fa;
+      --a-surface-hover: #f6f8fd;
+      --a-border: #e4e8f0;
+      --a-border-strong: #cdd4e1;
+      --a-divider: #edf0f6;
+      --a-text: #0f1729;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68;
+      --brand: #6366f1;
+      --brand-strong: #4f46e5;
+      --brand-soft: #eef0fe;
+      --brand-glow: rgba(99, 102, 241, .12);
+      --a-glow: rgba(99, 102, 241, .08);
+      --a-skeleton: linear-gradient(90deg, #eef1f7 20%, #e3e8f1 45%, #eef1f7 70%);
+      --a-shadow-xs: 0 1px 2px rgba(15, 23, 41, .05);
+      --a-shadow-sm: 0 1px 2px rgba(15, 23, 41, .04), 0 2px 6px -1px rgba(15, 23, 41, .06);
+      --a-shadow-md: 0 4px 14px -2px rgba(15, 23, 41, .09), 0 2px 6px -1px rgba(15, 23, 41, .05)
+    }
+
+    html.dark {
+      --a-bg: #060911;
+      --a-surface: #0e1422;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #172033;
+      --a-surface-hover: #131c2e;
+      --a-border: #1c2740;
+      --a-border-strong: #2a3854;
+      --a-divider: #172033;
+      --a-text: #e9eef8;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88;
+      --brand: #818cf8;
+      --brand-strong: #6366f1;
+      --brand-soft: rgba(99, 102, 241, .14);
+      --brand-glow: rgba(99, 102, 241, .2);
+      --a-glow: rgba(99, 102, 241, .16);
+      --a-skeleton: linear-gradient(90deg, #121a2b 20%, #1b2539 45%, #121a2b 70%);
+      --a-shadow-xs: 0 1px 2px rgba(0, 0, 0, .4);
+      --a-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45), 0 2px 6px -1px rgba(0, 0, 0, .4);
+      --a-shadow-md: 0 4px 14px -2px rgba(0, 0, 0, .55), 0 2px 6px -1px rgba(0, 0, 0, .35)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body.page {
+      background: var(--a-bg);
+      color: var(--a-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      line-height: 1.5
+    }
+
+    .page-shell {
+      position: relative
+    }
+
+    .page-shell::before {
+      content: "";
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1100px, 100vw);
+      height: 440px;
+      background: radial-gradient(closest-side, var(--a-glow), transparent 75%);
+      pointer-events: none;
+      z-index: 0
+    }
+
+    .page-shell>* {
+      position: relative;
+      z-index: 1
+    }
+
+    .admin-hero {
+      position: relative;
+      padding: 2rem;
+      border-radius: 22px;
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      box-shadow: var(--a-shadow-sm);
+      overflow: hidden;
+      margin-bottom: 2rem
+    }
+
+    .admin-hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(600px 200px at 100% 0%, var(--brand-glow), transparent 60%);
+      pointer-events: none
+    }
+
+    .admin-hero-inner {
+      position: relative;
+      z-index: 1
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--brand-strong);
+      background: var(--brand-soft);
+      border: 1px solid rgba(99, 102, 241, .25);
+      padding: 6px 12px;
+      border-radius: 999px
+    }
+
+    html.dark .eyebrow {
+      color: #c7cdff
+    }
+
+    .page-title {
+      font-size: clamp(1.6rem, 4.2vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -.028em;
+      line-height: 1.15
+    }
+
+    .page-sub {
+      font-size: .875rem;
+      color: var(--a-text-muted);
+      margin-top: 8px;
+      line-height: 1.7;
+      max-width: 660px
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--a-text-muted);
+      margin: 0 0 16px 0
+    }
+
+    .section-label i {
+      color: var(--brand);
+      font-size: .8rem
+    }
+
+    .section-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--a-divider), transparent)
+    }
+
+    .metric {
+      position: relative;
+      padding: 18px 18px 16px;
+      border-radius: 16px;
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      box-shadow: var(--a-shadow-xs);
+      overflow: hidden;
+      transition: transform .28s, box-shadow .28s, border-color .28s;
+      text-decoration: none;
+      display: block;
+      cursor: pointer
+    }
+
+    .metric::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(160px 100px at 100% 0%, var(--accent-glow), transparent 70%);
+      pointer-events: none;
+      opacity: .9;
+      transition: opacity .28s;
+      z-index: -1
+    }
+
+    .metric:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--a-shadow-md)
+    }
+
+    .metric-top {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px
+    }
+
+    .metric-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(0, 0, 0, .05);
+      flex-shrink: 0
+    }
+
+    .metric-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .62rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--a-surface-3);
+      color: var(--a-text-light);
+      border: 1px solid var(--a-border);
+      white-space: nowrap
+    }
+
+    .metric-label {
+      position: relative;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--a-text-light)
+    }
+
+    .metric-value {
+      position: relative;
+      font-size: clamp(1.5rem, 4.6vw, 1.85rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-top: 6px;
+      color: var(--accent-text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.028em;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-height: 30px
+    }
+
+    .metric-brand {
+      --accent: #6366f1;
+      --accent-text: #4338ca;
+      --accent-soft: #eef0fe;
+      --accent-glow: rgba(99, 102, 241, .11)
+    }
+
+    .metric-emerald {
+      --accent: #059669;
+      --accent-text: #047857;
+      --accent-soft: #ecfdf5;
+      --accent-glow: rgba(5, 150, 105, .11)
+    }
+
+    .metric-amber {
+      --accent: #d97706;
+      --accent-text: #b45309;
+      --accent-soft: #fffbeb;
+      --accent-glow: rgba(217, 119, 6, .11)
+    }
+
+    .metric-rose {
+      --accent: #e11d48;
+      --accent-text: #be123c;
+      --accent-soft: #fff1f2;
+      --accent-glow: rgba(225, 29, 72, .11)
+    }
+
+    html.dark .metric-brand {
+      --accent: #818cf8;
+      --accent-text: #a5b4fc;
+      --accent-soft: rgba(99, 102, 241, .15);
+      --accent-glow: rgba(99, 102, 241, .2)
+    }
+
+    html.dark .metric-emerald {
+      --accent: #34d399;
+      --accent-text: #6ee7b7;
+      --accent-soft: rgba(16, 185, 129, .15);
+      --accent-glow: rgba(16, 185, 129, .18)
+    }
+
+    html.dark .metric-amber {
+      --accent: #fbbf24;
+      --accent-text: #fcd34d;
+      --accent-soft: rgba(245, 158, 11, .15);
+      --accent-glow: rgba(245, 158, 11, .18)
+    }
+
+    html.dark .metric-rose {
+      --accent: #fb7185;
+      --accent-text: #fda4af;
+      --accent-soft: rgba(244, 63, 94, .15);
+      --accent-glow: rgba(244, 63, 94, .18)
+    }
+
+    .metric.is-alert::after {
+      content: "";
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(225, 29, 72, .22);
+      animation: alertPulse 2.4s ease-in-out infinite
+    }
+
+    @keyframes alertPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .55;
+        transform: scale(.85)
+      }
+    }
+
+    .workflow {
+      position: relative;
+      padding: 22px;
+      border-radius: 18px;
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      box-shadow: var(--a-shadow-xs);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+      overflow: hidden;
+      transition: transform .28s, box-shadow .28s, border-color .28s;
+      min-height: 100%
+    }
+
+    .workflow::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0;
+      transform: scaleX(.4);
+      transform-origin: left;
+      transition: opacity .28s, transform .4s
+    }
+
+    .workflow:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--a-shadow-md)
+    }
+
+    .workflow:hover::after {
+      opacity: 1;
+      transform: scaleX(1)
+    }
+
+    .workflow-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px
+    }
+
+    .workflow-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      font-size: 1.05rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(0, 0, 0, .05)
+    }
+
+    .workflow-arrow {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--a-surface-3);
+      color: var(--a-text-light);
+      border: 1px solid var(--a-border);
+      font-size: .72rem;
+      transition: all .28s
+    }
+
+    .workflow:hover .workflow-arrow {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      transform: translateX(3px)
+    }
+
+    .workflow-title {
+      font-size: .98rem;
+      font-weight: 800;
+      letter-spacing: -.012em;
+      line-height: 1.3
+    }
+
+    .workflow-desc {
+      font-size: .78rem;
+      color: var(--a-text-muted);
+      line-height: 1.65;
+      margin-top: 6px
+    }
+
+    .workflow-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 14px;
+      margin-top: auto;
+      border-top: 1px dashed var(--a-divider);
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--a-text-light)
+    }
+
+    .workflow-brand {
+      --accent: #6366f1;
+      --accent-text: #4338ca;
+      --accent-soft: #eef0fe
+    }
+
+    .workflow-amber {
+      --accent: #d97706;
+      --accent-text: #b45309;
+      --accent-soft: #fffbeb
+    }
+
+    .workflow-rose {
+      --accent: #e11d48;
+      --accent-text: #be123c;
+      --accent-soft: #fff1f2
+    }
+
+    html.dark .workflow-brand {
+      --accent: #818cf8;
+      --accent-text: #a5b4fc;
+      --accent-soft: rgba(99, 102, 241, .15)
+    }
+
+    html.dark .workflow-amber {
+      --accent: #fbbf24;
+      --accent-text: #fcd34d;
+      --accent-soft: rgba(245, 158, 11, .15)
+    }
+
+    html.dark .workflow-rose {
+      --accent: #fb7185;
+      --accent-text: #fda4af;
+      --accent-soft: rgba(244, 63, 94, .15)
+    }
+
+    .quick-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      padding: 14px;
+      border-radius: 16px;
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      box-shadow: var(--a-shadow-xs)
+    }
+
+    .quick-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 13px;
+      border-radius: 10px;
+      font-size: .74rem;
+      font-weight: 600;
+      color: var(--a-text-muted);
+      background: var(--a-surface-3);
+      border: 1px solid var(--a-border);
+      text-decoration: none;
+      transition: all .2s;
+      cursor: pointer;
+      font-family: inherit
+    }
+
+    .quick-link:hover {
+      color: var(--a-text);
+      border-color: var(--a-border-strong);
+      transform: translateY(-1px)
+    }
+
+    .skeleton {
+      background: var(--a-skeleton);
+      background-size: 200% 100%;
+      border-radius: 7px;
+      animation: shimmer 1.3s ease-in-out infinite;
+      display: inline-block
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: -100% 50%
+      }
+    }
+
+    .live-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .7rem;
+      font-weight: 600;
+      color: var(--a-text-muted)
+    }
+
+    .live-dot::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, .2);
+      animation: livePulse 2s ease-in-out infinite
+    }
+
+    @keyframes livePulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    @media (max-width:640px) {
+      .admin-hero {
+        padding: 1.5rem 1.25rem;
+        border-radius: 18px
+      }
+
+      .metric {
+        padding: 14px;
+        border-radius: 14px
+      }
+
+      .metric-icon {
+        width: 38px;
+        height: 38px;
+        font-size: .9rem
+      }
+
+      .metric-value {
+        min-height: 26px;
+        font-size: 1.35rem
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+  <main class="page-shell flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="admin-hero">
+      <div class="admin-hero-inner">
+        <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+          <div>
+            <span class="eyebrow"><i class="fa-solid fa-satellite-dish"></i> Admin Console</span>
+            <h1 class="page-title mt-3">Platform Command Center</h1>
+            <p class="page-sub">Real-time marketplace monitoring, compliance queues and escrow controls — all in one
+              view.</p>
+          </div>
+          <div class="flex items-center gap-2.5 flex-wrap">
+            <span class="live-dot"><span id="last-updated-text">Loading…</span></span>
+            <button id="refresh-btn" type="button" class="quick-link" aria-label="Refresh">
+              <i class="fa-solid fa-rotate-right" id="refresh-icon"></i>
+              <span class="hidden sm:inline">Refresh</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="section-label"><i class="fa-solid fa-chart-line"></i> Platform Overview</h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 mb-10">
+      <a href="/admin/users.html" class="metric metric-brand">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-users"></i></div><span class="metric-trend">Total</span>
+        </div>
+        <p class="metric-label">Total Users</p>
+        <p id="stat-users" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/sellers.html" class="metric metric-brand">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-store"></i></div><span class="metric-trend">Active</span>
+        </div>
+        <p class="metric-label">Active Sellers</p>
+        <p id="stat-sellers" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/auctions.html" class="metric metric-emerald">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-gavel"></i></div><span class="metric-trend">Live</span>
+        </div>
+        <p class="metric-label">Active Auctions</p>
+        <p id="stat-auctions" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/bids.html" class="metric metric-brand">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-hand-holding-dollar"></i></div><span
+            class="metric-trend">Today</span>
+        </div>
+        <p class="metric-label">Today's Bids</p>
+        <p id="stat-bids" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/payments.html" class="metric metric-emerald">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-coins"></i></div><span class="metric-trend">Commission</span>
+        </div>
+        <p class="metric-label">Platform Revenue</p>
+        <p id="stat-revenue" class="metric-value"><span class="skeleton" style="width:76px;height:24px"></span></p>
+      </a>
+      <a href="/admin/orders.html" class="metric metric-amber">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-hourglass-half"></i></div><span
+            class="metric-trend">Unpaid</span>
+        </div>
+        <p class="metric-label">Pending Payments</p>
+        <p id="stat-payments" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/escrow.html" class="metric metric-brand">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-shield-halved"></i></div><span
+            class="metric-trend">Secured</span>
+        </div>
+        <p class="metric-label">Escrow Balance</p>
+        <p id="stat-escrow" class="metric-value"><span class="skeleton" style="width:76px;height:24px"></span></p>
+      </a>
+      <a href="/admin/payouts.html" class="metric metric-amber">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-money-bill-transfer"></i></div><span
+            class="metric-trend">Queue</span>
+        </div>
+        <p class="metric-label">Pending Payouts</p>
+        <p id="stat-payouts" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/disputes.html" class="metric metric-rose is-alert">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-scale-balanced"></i></div><span
+            class="metric-trend">Urgent</span>
+        </div>
+        <p class="metric-label">Disputes</p>
+        <p id="stat-disputes" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/kyc.html" class="metric metric-amber is-alert">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-id-card-clip"></i></div><span class="metric-trend">CNIC</span>
+        </div>
+        <p class="metric-label">KYC Pending</p>
+        <p id="stat-kyc" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/fraud-alerts.html" class="metric metric-rose is-alert">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-triangle-exclamation"></i></div><span class="metric-trend">AI
+            Risk</span>
+        </div>
+        <p class="metric-label">Fraud Alerts</p>
+        <p id="stat-fraud" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+      <a href="/admin/security.html" class="metric metric-rose is-alert">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-shield-virus"></i></div><span class="metric-trend">Auth</span>
+        </div>
+        <p class="metric-label">Security Alerts</p>
+        <p id="stat-security" class="metric-value"><span class="skeleton" style="width:52px;height:24px"></span></p>
+      </a>
+    </div>
+
+    <h2 class="section-label"><i class="fa-solid fa-diagram-project"></i> Admin Workflows</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+      <a href="/admin/kyc.html" class="workflow workflow-amber">
+        <div class="workflow-head">
+          <div class="workflow-icon"><i class="fa-solid fa-id-card-clip"></i></div>
+          <div class="workflow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+        <div>
+          <h3 class="workflow-title">KYC Compliance Queue</h3>
+          <p class="workflow-desc">Inspect uploaded CNIC documents and approve or reject buyer &amp; seller
+            applications.</p>
+        </div>
+        <div class="workflow-foot"><span>Compliance</span><span style="color:var(--accent-text)">Open queue <i
+              class="fa-solid fa-arrow-right" style="font-size:.6rem"></i></span></div>
+      </a>
+      <a href="/admin/auctions.html" class="workflow workflow-brand">
+        <div class="workflow-head">
+          <div class="workflow-icon"><i class="fa-solid fa-gavel"></i></div>
+          <div class="workflow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+        <div>
+          <h3 class="workflow-title">Auction Moderation</h3>
+          <p class="workflow-desc">Review new listings submitted by sellers before they become visible to bidders.</p>
+        </div>
+        <div class="workflow-foot"><span>Marketplace</span><span style="color:var(--accent-text)">Open moderation <i
+              class="fa-solid fa-arrow-right" style="font-size:.6rem"></i></span></div>
+      </a>
+      <a href="/admin/users.html" class="workflow workflow-rose">
+        <div class="workflow-head">
+          <div class="workflow-icon"><i class="fa-solid fa-users-gear"></i></div>
+          <div class="workflow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        </div>
+        <div>
+          <h3 class="workflow-title">User Management</h3>
+          <p class="workflow-desc">Inspect bidder profiles, adjust verification badges and ban or suspend bad actors.
+          </p>
+        </div>
+        <div class="workflow-foot"><span>Trust &amp; Safety</span><span style="color:var(--accent-text)">Manage users <i
+              class="fa-solid fa-arrow-right" style="font-size:.6rem"></i></span></div>
+      </a>
+    </div>
+
+    <h2 class="section-label"><i class="fa-solid fa-bolt"></i> Quick Access</h2>
+    <div class="quick-strip">
+      <a href="/admin/kyc.html" class="quick-link"><i class="fa-solid fa-id-card-clip" style="color:#d97706"></i> KYC
+        Queue</a>
+      <a href="/admin/auctions.html" class="quick-link"><i class="fa-solid fa-gavel" style="color:#6366f1"></i>
+        Auctions</a>
+      <a href="/admin/users.html" class="quick-link"><i class="fa-solid fa-users-gear" style="color:#e11d48"></i>
+        Users</a>
+      <a href="/admin/disputes.html" class="quick-link"><i class="fa-solid fa-scale-balanced" style="color:#f59e0b"></i>
+        Disputes</a>
+      <a href="/admin/escrow.html" class="quick-link"><i class="fa-solid fa-shield-halved" style="color:#059669"></i>
+        Escrow</a>
+      <a href="/auctions.html" class="quick-link"><i class="fa-solid fa-store" style="color:#7c3aed"></i> Public
+        Marketplace</a>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      function $(id) { return document.getElementById(id); }
+      function skeletonSpan(w) { return '<span class="skeleton" style="width:' + (w || 52) + 'px;height:24px;vertical-align:middle"></span>'; }
+      function setMetricLoading(id) { var el = $(id); if (el) el.innerHTML = skeletonSpan(); }
+
+      function animateCount(el, target) {
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var end = Number(target) || 0;
+        el.innerHTML = '';
+        if (reduce || end === 0) { el.textContent = end.toLocaleString(); return; }
+        var duration = 650, start = performance.now();
+        var span = document.createElement('span');
+        el.appendChild(span);
+        function step(now) {
+          var p = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          span.textContent = Math.round(end * eased).toLocaleString();
+          if (p < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      function setMetric(id, value) { var el = $(id); if (el) animateCount(el, value); }
+      function setCurrency(id, value) {
+        var el = $(id); if (!el) return;
+        el.textContent = (window.UI && UI.formatPKR) ? UI.formatPKR(value || 0) : ('Rs ' + Number(value || 0).toLocaleString());
+      }
+      function setDash(id) { var el = $(id); if (el) el.textContent = '—'; }
+
+      function setUpdatedLabel(ok) {
+        var el = $('last-updated-text'); if (!el) return;
+        if (ok === false) { el.textContent = 'Failed to sync'; return; }
+        el.textContent = 'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
+      const METRIC_IDS = ['stat-users', 'stat-sellers', 'stat-auctions', 'stat-bids', 'stat-revenue', 'stat-payments', 'stat-escrow', 'stat-payouts', 'stat-disputes', 'stat-kyc', 'stat-fraud', 'stat-security'];
+
+      async function loadAdminStats() {
+        METRIC_IDS.forEach(setMetricLoading);
+        try {
+          var res = await ApiClient.get('/admin/stats');
+          var s = (res && res.data) || {};
+          var has = function (k) { return Object.prototype.hasOwnProperty.call(s, k); };
+          var num = function (v) { return Number(v) || 0; };
+
+          if (has('total_users')) setMetric('stat-users', num(s.total_users)); else setDash('stat-users');
+          if (has('active_sellers')) setMetric('stat-sellers', num(s.active_sellers)); else setDash('stat-sellers');
+          if (has('active_auctions')) setMetric('stat-auctions', num(s.active_auctions)); else setDash('stat-auctions');
+          if (has('todays_bids')) setMetric('stat-bids', num(s.todays_bids)); else setDash('stat-bids');
+          if (has('pending_payments')) setMetric('stat-payments', num(s.pending_payments)); else setDash('stat-payments');
+          if (has('pending_payouts')) setMetric('stat-payouts', num(s.pending_payouts)); else setDash('stat-payouts');
+          if (has('open_disputes')) setMetric('stat-disputes', num(s.open_disputes)); else setDash('stat-disputes');
+          if (has('pending_kyc')) setMetric('stat-kyc', num(s.pending_kyc)); else setDash('stat-kyc');
+          if (has('fraud_alerts')) setMetric('stat-fraud', num(s.fraud_alerts)); else setDash('stat-fraud');
+          if (has('security_alerts')) setMetric('stat-security', num(s.security_alerts)); else setDash('stat-security');
+
+          // ✅ FIXED: use commission (backend returns platform_commission_pkr / commission_earned)
+          if (has('platform_commission_pkr')) setCurrency('stat-revenue', num(s.platform_commission_pkr));
+          else if (has('commission_earned')) setCurrency('stat-revenue', num(s.commission_earned));
+          else if (has('total_revenue_pkr')) setCurrency('stat-revenue', num(s.total_revenue_pkr));
+          else setDash('stat-revenue');
+
+          if (has('escrow_balance_pkr')) setCurrency('stat-escrow', num(s.escrow_balance_pkr));
+          else if (has('escrow_held')) setCurrency('stat-escrow', num(s.escrow_held));
+          else setDash('stat-escrow');
+
+          setUpdatedLabel(true);
+        } catch (err) {
+          console.error('[admin-dashboard]', err);
+          METRIC_IDS.forEach(setDash);
+          setUpdatedLabel(false);
+        }
+      }
+
+      function initRefresh() {
+        var btn = $('refresh-btn'), icon = $('refresh-icon');
+        if (!btn) return;
+        btn.addEventListener('click', async function () {
+          if (btn.disabled) return;
+          btn.disabled = true;
+          if (icon) icon.classList.add('fa-spin');
+          try { await loadAdminStats(); }
+          finally { if (icon) icon.classList.remove('fa-spin'); btn.disabled = false; }
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        // ✅ Admin role guard
+        const role = ApiClient.getUserRole && ApiClient.getUserRole();
+        if (!ApiClient.isAuthenticated() || role !== 'admin') {
+          window.location.href = '/login.html?redirect=/admin/dashboard.html';
+          return;
+        }
+        initRefresh();
+        loadAdminStats();
+      });
+    })();
+  </script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

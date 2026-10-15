@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Security — NexusBids</title>
+  <meta name="description" content="Update your password and keep your account protected.">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('nexusbids_theme') || 'system';
+        var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        document.documentElement.classList.toggle('dark', d);
+        document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+      } catch (e) { document.documentElement.classList.add('dark'); }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+
+  <style>
+    :root {
+      --s-bg: #f4f6fb;
+      --s-surface: #ffffff;
+      --s-surface-2: #f7f9fc;
+      --s-surface-3: #eceff6;
+      --s-border: #e3e8f0;
+      --s-border-strong: #cfd7e5;
+      --s-text: #0f172a;
+      --s-text-muted: #58627a;
+      --s-text-faint: #8d97ab;
+      --s-brand: #6366f1;
+      --s-brand-soft: rgba(99, 102, 241, .10);
+      --s-brand-ring: rgba(99, 102, 241, .22);
+      --s-ok: #059669;
+      --s-ok-soft: rgba(16, 185, 129, .10);
+      --s-warn: #b45309;
+      --s-warn-soft: rgba(245, 158, 11, .12);
+      --s-danger: #e11d48;
+      --s-danger-soft: rgba(244, 63, 94, .10);
+      --s-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .04);
+      --s-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .10), 0 2px 6px -2px rgba(15, 23, 42, .05);
+      --s-skel: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --s-t: .22s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html.dark {
+      --s-bg: #05070f;
+      --s-surface: #0d1220;
+      --s-surface-2: #121a2b;
+      --s-surface-3: #1a2336;
+      --s-border: #1e2a40;
+      --s-border-strong: #2c3a56;
+      --s-text: #eef2f9;
+      --s-text-muted: #9aa6bd;
+      --s-text-faint: #66738d;
+      --s-brand-soft: rgba(99, 102, 241, .14);
+      --s-brand-ring: rgba(99, 102, 241, .30);
+      --s-ok: #34d399;
+      --s-ok-soft: rgba(16, 185, 129, .14);
+      --s-warn: #fbbf24;
+      --s-warn-soft: rgba(245, 158, 11, .14);
+      --s-danger: #fb7185;
+      --s-danger-soft: rgba(244, 63, 94, .14);
+      --s-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --s-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .6);
+      --s-skel: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background: var(--s-bg);
+      color: var(--s-text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background var(--s-t), color var(--s-t);
+    }
+
+    .page-main {
+      flex: 1;
+      width: 100%;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    @media (min-width: 640px) {
+      .page-main {
+        padding: 28px 24px 48px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .page-main {
+        padding: 32px 32px 56px;
+      }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--s-brand);
+      background: var(--s-brand-soft);
+      border: 1px solid var(--s-brand-ring);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .page-title {
+      font-size: clamp(1.4rem, 3.8vw, 1.9rem);
+      font-weight: 800;
+      letter-spacing: -.024em;
+      line-height: 1.15;
+      color: var(--s-text);
+      margin: 12px 0 6px;
+    }
+
+    .page-sub {
+      font-size: .85rem;
+      color: var(--s-text-muted);
+      line-height: 1.55;
+      max-width: 52ch;
+    }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 767px) {
+      .account-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sidebar-nav {
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 18px;
+      overflow: hidden;
+      position: sticky;
+      top: 84px;
+      box-shadow: var(--s-shadow-sm);
+    }
+
+    @media (max-width: 767px) {
+      .sidebar-nav {
+        display: none;
+      }
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--s-text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--s-border);
+      transition: all var(--s-t);
+      position: relative;
+    }
+
+    .sidebar-link:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-link:hover {
+      background: var(--s-surface-2);
+      color: var(--s-text);
+    }
+
+    .sidebar-link.active {
+      background: var(--s-brand-soft);
+      color: var(--s-brand);
+      font-weight: 700;
+    }
+
+    .sidebar-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--s-brand);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .sidebar-link i {
+      width: 16px;
+      text-align: center;
+      font-size: .82rem;
+    }
+
+    .card {
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 18px;
+      box-shadow: var(--s-shadow-sm);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .card-head {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--s-border);
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .88rem;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: .92rem;
+      font-weight: 800;
+      color: var(--s-text);
+      letter-spacing: -.005em;
+      line-height: 1.25;
+    }
+
+    .card-hint {
+      font-size: .74rem;
+      color: var(--s-text-faint);
+      font-weight: 500;
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+    .card.is-danger {
+      border-color: rgba(244, 63, 94, .22);
+    }
+
+    .card.is-danger .card-head {
+      border-bottom-color: rgba(244, 63, 94, .18);
+    }
+
+    .card.is-danger .card-title {
+      color: var(--s-danger);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--s-text);
+      letter-spacing: -.005em;
+    }
+
+    .field-label .req {
+      color: var(--s-danger);
+      font-size: .85rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .nb-input,
+    input.nb-input,
+    select.nb-input,
+    textarea.nb-input {
+      width: 100%;
+      height: 44px;
+      padding: 0 42px 0 13px;
+      border-radius: 10px;
+      background: var(--s-surface-2) !important;
+      border: 1px solid var(--s-border) !important;
+      color: var(--s-text) !important;
+      font-family: inherit;
+      font-size: .875rem;
+      font-weight: 500;
+      outline: none;
+      line-height: 1.4;
+      transition: border-color var(--s-t), box-shadow var(--s-t), background var(--s-t);
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-text-fill-color: var(--s-text);
+      caret-color: var(--s-brand);
+      box-shadow: none;
+    }
+
+    .nb-input.is-numeric {
+      padding-right: 13px;
+    }
+
+    .nb-input::placeholder {
+      color: var(--s-text-faint) !important;
+      font-weight: 400;
+      opacity: 1;
+      -webkit-text-fill-color: var(--s-text-faint);
+    }
+
+    .nb-input:hover:not(:disabled):not([readonly]) {
+      border-color: var(--s-border-strong) !important;
+    }
+
+    .nb-input:focus,
+    .nb-input:focus-visible {
+      background: var(--s-surface) !important;
+      border-color: var(--s-brand) !important;
+      box-shadow: 0 0 0 3px var(--s-brand-ring) !important;
+      outline: none !important;
+    }
+
+    .nb-input:-webkit-autofill,
+    .nb-input:-webkit-autofill:hover,
+    .nb-input:-webkit-autofill:focus,
+    .nb-input:-webkit-autofill:active {
+      -webkit-text-fill-color: var(--s-text) !important;
+      -webkit-box-shadow: 0 0 0 1000px var(--s-surface-2) inset !important;
+      box-shadow: 0 0 0 1000px var(--s-surface-2) inset !important;
+      border-color: var(--s-border) !important;
+      transition: background-color 9999s ease-in-out 0s;
+      caret-color: var(--s-brand);
+    }
+
+    .field-wrap {
+      position: relative;
+    }
+
+    .field-wrap .pw-toggle {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 0;
+      background: transparent;
+      color: var(--s-text-faint);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: .82rem;
+      transition: all var(--s-t);
+    }
+
+    .field-wrap .pw-toggle:hover {
+      color: var(--s-text);
+      background: var(--s-surface-3);
+    }
+
+    .strength {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .strength-bars {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .strength-bars span {
+      height: 4px;
+      border-radius: 99px;
+      background: var(--s-surface-3);
+      transition: background .3s ease;
+    }
+
+    .strength-bars span.is-filled-weak {
+      background: #ef4444;
+    }
+
+    .strength-bars span.is-filled-fair {
+      background: #f59e0b;
+    }
+
+    .strength-bars span.is-filled-good {
+      background: #3b82f6;
+    }
+
+    .strength-bars span.is-filled-strong {
+      background: #10b981;
+    }
+
+    .strength-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+      color: var(--s-text-faint);
+      text-transform: uppercase;
+      min-width: 60px;
+      text-align: right;
+      transition: color var(--s-t);
+    }
+
+    .pw-rules {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 12px;
+      margin-top: 8px;
+    }
+
+    .pw-rule {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      color: var(--s-text-faint);
+      transition: color var(--s-t);
+    }
+
+    .pw-rule i {
+      font-size: .6rem;
+    }
+
+    .pw-rule.is-met {
+      color: var(--s-ok);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 16px;
+      border-radius: 11px;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--s-t);
+      min-height: 42px;
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--s-brand);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 8px 20px -10px rgba(79, 70, 229, .7);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px -10px rgba(79, 70, 229, .85);
+    }
+
+    .btn-ghost {
+      background: var(--s-surface);
+      border-color: var(--s-border);
+      color: var(--s-text-muted);
+      box-shadow: var(--s-shadow-sm);
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      color: var(--s-text);
+      border-color: var(--s-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #e11d48, #be123c);
+      color: #fff;
+      box-shadow: 0 8px 20px -10px rgba(225, 29, 72, .7);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px -10px rgba(225, 29, 72, .85);
+    }
+
+    .btn-danger-outline {
+      background: transparent;
+      border-color: rgba(244, 63, 94, .35);
+      color: var(--s-danger);
+    }
+
+    .btn-danger-outline:hover:not(:disabled) {
+      background: var(--s-danger-soft);
+      border-color: rgba(244, 63, 94, .55);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-row-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .toggle-row-title {
+      font-size: .88rem;
+      font-weight: 700;
+      color: var(--s-text);
+      letter-spacing: -.005em;
+    }
+
+    .toggle-row-sub {
+      font-size: .78rem;
+      color: var(--s-text-muted);
+      margin-top: 3px;
+      line-height: 1.55;
+      max-width: 44ch;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      margin-top: 9px;
+    }
+
+    .status-pill i {
+      font-size: .55rem;
+    }
+
+    .status-pill.is-on {
+      background: var(--s-ok-soft);
+      color: var(--s-ok);
+      border-color: rgba(16, 185, 129, .28);
+    }
+
+    .status-pill.is-off {
+      background: var(--s-surface-3);
+      color: var(--s-text-muted);
+      border-color: var(--s-border);
+    }
+
+    .setup-box {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px dashed var(--s-border);
+      animation: fadeUp .3s ease both;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .qr-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 20px;
+      background: var(--s-surface-2);
+      border: 1px solid var(--s-border);
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+
+    @media (min-width: 520px) {
+      .qr-card {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 20px;
+      }
+    }
+
+    .qr-box {
+      width: 180px;
+      height: 180px;
+      border-radius: 12px;
+      background: #fff;
+      padding: 10px;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      border: 1px solid var(--s-border);
+    }
+
+    .qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .qr-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .qr-info-title {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--s-text);
+    }
+
+    .qr-info-steps {
+      font-size: .76rem;
+      color: var(--s-text-muted);
+      line-height: 1.65;
+      margin-top: 6px;
+    }
+
+    .qr-info-steps strong {
+      color: var(--s-text);
+      font-weight: 700;
+    }
+
+    .qr-secret {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 7px 10px;
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 9px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .72rem;
+      color: var(--s-text);
+      word-break: break-all;
+    }
+
+    .qr-secret .copy-btn {
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+      color: var(--s-text-faint);
+      padding: 0 4px;
+      transition: color var(--s-t);
+    }
+
+    .qr-secret .copy-btn:hover {
+      color: var(--s-text);
+    }
+
+    .qr-secret .copy-btn.copied {
+      color: var(--s-ok);
+    }
+
+    .alert {
+      display: none;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px 13px;
+      border-radius: 11px;
+      font-size: .8rem;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .alert.is-visible {
+      display: flex;
+    }
+
+    .alert i {
+      margin-top: 2px;
+      flex-shrink: 0;
+      font-size: .85rem;
+    }
+
+    .alert.is-error {
+      color: var(--s-danger);
+      background: var(--s-danger-soft);
+      border: 1px solid rgba(244, 63, 94, .22);
+    }
+
+    .alert.is-ok {
+      color: var(--s-ok);
+      background: var(--s-ok-soft);
+      border: 1px solid rgba(16, 185, 129, .25);
+    }
+
+    .skeleton {
+      background: var(--s-skel);
+      background-size: 400% 100%;
+      border-radius: 10px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .spin {
+      animation: spin .9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="nb-header"></header>
+
+  <main class="page-main">
+    <div style="margin-bottom:24px">
+      <span class="eyebrow"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Account</span>
+      <h1 class="page-title">Security</h1>
+      <p class="page-sub">Update your password, add two-factor authentication, or sign out everywhere if something looks
+        off.</p>
+    </div>
+
+    <div class="account-grid">
+      <nav class="sidebar-nav" aria-label="Account navigation">
+        <a href="/buyer/profile.html" class="sidebar-link"><i class="fa-solid fa-user"></i> Profile</a>
+        <a href="/buyer/security.html" class="sidebar-link active"><i class="fa-solid fa-shield-halved"></i>
+          Security</a>
+        <a href="/buyer/addresses.html" class="sidebar-link"><i class="fa-solid fa-map-location-dot"></i> Addresses</a>
+        <a href="/buyer/payments.html" class="sidebar-link"><i class="fa-solid fa-wallet"></i> Payments</a>
+        <a href="/buyer/kyc.html" class="sidebar-link"><i class="fa-solid fa-id-card"></i> Verification</a>
+        <a href="/buyer/notifications.html" class="sidebar-link"><i class="fa-solid fa-bell"></i> Notifications</a>
+      </nav>
+
+      <div>
+        <!-- Change Password -->
+        <section class="card">
+          <div class="card-head">
+            <div class="card-icon" style="background:var(--s-brand-soft);color:var(--s-brand)"><i
+                class="fa-solid fa-lock"></i></div>
+            <div style="min-width:0">
+              <div class="card-title">Change password</div>
+              <div class="card-hint">Pick something long and unique — you'll use it every time you sign in.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="alert is-error" id="pw-err" role="alert">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span id="pw-err-text"></span>
+            </div>
+            <div class="alert is-ok" id="pw-ok" role="status">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>Password updated. Use it next time you sign in.</span>
+            </div>
+
+            <form id="pw-form" novalidate autocomplete="off">
+              <!-- ✅ FIX: Hidden fake fields to absorb browser autofill -->
+              <input type="text" name="fakeusernameremembered" style="display:none" autocomplete="username">
+              <input type="password" name="fakepasswordremembered" style="display:none" autocomplete="current-password">
+
+              <div class="field">
+                <label class="field-label" for="old-pw">Current password <span class="req">*</span></label>
+                <div class="field-wrap">
+                  <!-- ✅ FIX: Changed to autocomplete="new-password" to stop it from filling 'rashid' -->
+                  <input id="old-pw" name="old_password" type="password" required class="nb-input"
+                    placeholder="Your current password" autocomplete="new-password">
+                  <button type="button" class="pw-toggle" data-toggle="old-pw" aria-label="Show password"><i
+                      class="fa-regular fa-eye"></i></button>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="new-pw">New password <span class="req">*</span></label>
+                <div class="field-wrap">
+                  <input id="new-pw" name="new_password" type="password" required class="nb-input"
+                    placeholder="At least 8 characters" autocomplete="new-password">
+                  <button type="button" class="pw-toggle" data-toggle="new-pw" aria-label="Show password"><i
+                      class="fa-regular fa-eye"></i></button>
+                </div>
+                <div class="strength" aria-hidden="true">
+                  <div class="strength-bars" id="strength-bars"><span></span><span></span><span></span><span></span>
+                  </div>
+                  <div class="strength-label" id="strength-label">—</div>
+                </div>
+                <div class="pw-rules" aria-hidden="true">
+                  <span class="pw-rule" data-rule="length"><i class="fa-regular fa-circle"></i> 8+ characters</span>
+                  <span class="pw-rule" data-rule="case"><i class="fa-regular fa-circle"></i> Upper &amp; lower</span>
+                  <span class="pw-rule" data-rule="number"><i class="fa-regular fa-circle"></i> A number</span>
+                  <span class="pw-rule" data-rule="symbol"><i class="fa-regular fa-circle"></i> A symbol</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="confirm-pw">Confirm new password <span class="req">*</span></label>
+                <div class="field-wrap">
+                  <input id="confirm-pw" name="confirm_password" type="password" required class="nb-input"
+                    placeholder="Type the new password again" autocomplete="new-password">
+                  <button type="button" class="pw-toggle" data-toggle="confirm-pw" aria-label="Show password"><i
+                      class="fa-regular fa-eye"></i></button>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="pw-btn">
+                <i class="fa-solid fa-check"></i> Save new password
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- 2FA -->
+        <section class="card">
+          <div class="card-head">
+            <div class="card-icon" style="background:var(--s-ok-soft);color:var(--s-ok)"><i
+                class="fa-solid fa-mobile-screen-button"></i></div>
+            <div style="min-width:0">
+              <div class="card-title">Two-factor authentication</div>
+              <div class="card-hint">A 6-digit code from your phone, on top of your password.</div>
+            </div>
+          </div>
+          <div class="card-body" id="tfa-area" aria-live="polite">
+            <div class="skeleton" style="height:20px;width:60%;margin-bottom:10px"></div>
+            <div class="skeleton" style="height:14px;width:80%;margin-bottom:14px"></div>
+            <div class="skeleton" style="height:42px;width:130px;border-radius:11px"></div>
+          </div>
+        </section>
+
+        <!-- Danger Zone -->
+        <section class="card is-danger">
+          <div class="card-head">
+            <div class="card-icon" style="background:var(--s-danger-soft);color:var(--s-danger)"><i
+                class="fa-solid fa-triangle-exclamation"></i></div>
+            <div style="min-width:0">
+              <div class="card-title">Danger zone</div>
+              <div class="card-hint">Actions here can't be undone — use with care.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="toggle-row">
+              <div class="toggle-row-info">
+                <div class="toggle-row-title">Sign out of all devices</div>
+                <div class="toggle-row-sub">Ends every active session on all phones and browsers. You'll need to sign in
+                  again — useful if you've lost a device.</div>
+              </div>
+              <button id="logout-all-btn" type="button" class="btn btn-danger-outline">
+                <i class="fa-solid fa-right-from-bracket"></i> Sign out everywhere
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var $ = function (id) { return document.getElementById(id); };
+
+      function escapeHtml(s) {
+        if (s == null) return '';
+        return String(s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function showToast(msg, type) {
+        try { if (window.UI && UI.showToast) UI.showToast(msg, type); else console.log(msg); } catch (e) { }
+      }
+
+      /* ============================================================
+         Password Strength
+         ============================================================ */
+      function evaluateStrength(pw) {
+        var rules = {
+          length: pw.length >= 8,
+          case: /[a-z]/.test(pw) && /[A-Z]/.test(pw),
+          number: /[0-9]/.test(pw),
+          symbol: /[^A-Za-z0-9]/.test(pw)
+        };
+        var score = 0;
+        if (rules.length) score++;
+        if (rules.case) score++;
+        if (rules.number) score++;
+        if (rules.symbol) score++;
+        if (pw.length >= 12 && score >= 3) score = Math.min(4, score + 1);
+
+        var levels = [
+          { label: '—', cls: null },
+          { label: 'Weak', cls: 'weak' },
+          { label: 'Fair', cls: 'fair' },
+          { label: 'Good', cls: 'good' },
+          { label: 'Strong', cls: 'strong' }
+        ];
+        return { score: score, level: levels[score], rules: rules };
+      }
+
+      function renderStrength(pw) {
+        var bars = $('strength-bars');
+        var label = $('strength-label');
+        if (!bars || !label) return;
+
+        if (!pw) {
+          bars.querySelectorAll('span').forEach(function (s) { s.className = ''; });
+          label.textContent = '—';
+          label.style.color = '';
+          document.querySelectorAll('.pw-rule').forEach(function (r) {
+            r.classList.remove('is-met');
+            var i = r.querySelector('i');
+            if (i) i.className = 'fa-regular fa-circle';
+          });
+          return;
+        }
+
+        var res = evaluateStrength(pw);
+        bars.querySelectorAll('span').forEach(function (s, i) {
+          s.className = i < res.score && res.level.cls ? 'is-filled-' + res.level.cls : '';
+        });
+
+        label.textContent = res.level.label;
+        label.style.color = { weak: '#ef4444', fair: '#f59e0b', good: '#3b82f6', strong: '#10b981' }[res.level.cls] || '';
+
+        document.querySelectorAll('.pw-rule').forEach(function (r) {
+          var key = r.dataset.rule;
+          var ok = res.rules[key];
+          r.classList.toggle('is-met', ok);
+          var i = r.querySelector('i');
+          if (i) i.className = ok ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
+        });
+      }
+
+      function initPwToggles() {
+        document.querySelectorAll('[data-toggle]').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.dataset.toggle;
+            var input = $(id);
+            if (!input) return;
+            var isPw = input.type === 'password';
+            input.type = isPw ? 'text' : 'password';
+            var icon = btn.querySelector('i');
+            if (icon) icon.className = isPw ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+            btn.setAttribute('aria-label', isPw ? 'Hide password' : 'Show password');
+          });
+        });
+      }
+
+      /* ============================================================
+         Change Password
+         ============================================================ */
+      function initPwForm() {
+        var form = $('pw-form');
+        if (!form) return;
+
+        var newPw = $('new-pw');
+        if (newPw) {
+          newPw.addEventListener('input', function () { renderStrength(this.value); });
+        }
+
+        ['old-pw', 'new-pw', 'confirm-pw'].forEach(function (id) {
+          var el = $(id);
+          if (el) el.addEventListener('input', clearPwAlerts);
+        });
+
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          clearPwAlerts();
+
+          var oldPw = $('old-pw').value;
+          var nw = $('new-pw').value;
+          var cnf = $('confirm-pw').value;
+
+          if (!oldPw) { $('old-pw').focus(); return showPwError('Enter your current password.'); }
+          if (nw.length < 8) { $('new-pw').focus(); return showPwError('New password needs to be at least 8 characters.'); }
+          if (nw === oldPw) { $('new-pw').focus(); return showPwError('New password must be different from the old one.'); }
+          if (nw !== cnf) { $('confirm-pw').focus(); return showPwError('Passwords don\'t match — check again.'); }
+
+          var btn = $('pw-btn');
+          var original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Saving…';
+
+          try {
+            await ApiClient.post('/auth/change-password', { old_password: oldPw, new_password: nw });
+            var okEl = $('pw-ok');
+            if (okEl) { okEl.classList.add('is-visible'); setTimeout(function () { okEl.classList.remove('is-visible'); }, 5000); }
+            showToast('Password updated.', 'success', 2400);
+            form.reset();
+            renderStrength('');
+          } catch (err) {
+            // Clear the old password field on failure so user doesn't keep trying a wrong password
+            $('old-pw').value = '';
+            showPwError((err && err.message) || 'Couldn\'t update your password. Try again.');
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = original;
+          }
+        });
+      }
+
+      function showPwError(msg) {
+        var wrap = $('pw-err');
+        var text = $('pw-err-text');
+        if (!wrap || !text) return;
+        text.textContent = msg;
+        wrap.classList.add('is-visible');
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function clearPwAlerts() {
+        var err = $('pw-err');
+        var ok = $('pw-ok');
+        if (err) err.classList.remove('is-visible');
+        if (ok) ok.classList.remove('is-visible');
+      }
+
+      /* ============================================================
+         2FA Logic
+         ============================================================ */
+      async function load2FA() {
+        var area = $('tfa-area');
+        if (!area) return;
+
+        try {
+          var meRes = await ApiClient.get('/auth/me');
+          var user = (meRes && meRes.data) || {};
+
+          var enabled = !!(user.is_2fa_enabled || user.two_factor_enabled || user.two_factor_auth);
+
+          render2FA(area, enabled);
+
+        } catch (e) {
+          console.error('[2FA] load failed:', e);
+          area.innerHTML =
+            '<div style="text-align:center;padding:14px 4px">' +
+            '<p style="font-size:.82rem;color:var(--s-text-muted);margin:0 0 14px">Couldn\'t load your 2FA status.</p>' +
+            '<button type="button" class="btn btn-ghost" onclick="window.__reload2FA()">' +
+            '<i class="fa-solid fa-rotate-right"></i> Retry' +
+            '</button>' +
+            '</div>';
+        }
+      }
+
+      function render2FA(area, enabled) {
+        area.innerHTML =
+          '<div class="toggle-row">' +
+          '<div class="toggle-row-info">' +
+          '<div class="toggle-row-title">Authenticator app</div>' +
+          '<div class="toggle-row-sub">' +
+          (enabled
+            ? 'Your account is protected with a time-based one-time password. Keep your app safe.'
+            : 'Add Google Authenticator, Authy, or any TOTP app for a second layer of protection.') +
+          '</div>' +
+          '<span class="status-pill ' + (enabled ? 'is-on' : 'is-off') + '">' +
+          '<i class="fa-solid ' + (enabled ? 'fa-circle-check' : 'fa-circle-xmark') + '"></i>' +
+          '<span>' + (enabled ? 'Enabled' : 'Not enabled') + '</span>' +
+          '</span>' +
+          '</div>' +
+          '<button id="tfa-toggle-btn" type="button" class="btn ' + (enabled ? 'btn-danger-outline' : 'btn-primary') + '">' +
+          '<i class="fa-solid ' + (enabled ? 'fa-toggle-off' : 'fa-shield-halved') + '"></i>' +
+          '<span>' + (enabled ? 'Turn off 2FA' : 'Set up 2FA') + '</span>' +
+          '</button>' +
+          '</div>' +
+
+          (!enabled
+            ? '<div id="tfa-setup-area" class="setup-box" style="display:none">' +
+            '<div id="tfa-qr" class="qr-card">' +
+            '<div class="qr-box"><i class="fa-solid fa-spinner spin" style="color:var(--s-brand);font-size:1.3rem"></i></div>' +
+            '<div class="qr-info"><div class="qr-info-title">Preparing your setup code…</div><div class="qr-info-steps">Give us a second.</div></div>' +
+            '</div>' +
+            '<div class="field">' +
+            '<label class="field-label" for="tfa-code">Enter the 6-digit code from your app</label>' +
+            '<input id="tfa-code" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" class="nb-input is-numeric" placeholder="000000" autocomplete="one-time-code">' +
+            '</div>' +
+            '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
+            '<button id="tfa-confirm-btn" type="button" class="btn btn-primary"><i class="fa-solid fa-shield-halved"></i> Verify and enable</button>' +
+            '<button id="tfa-cancel-btn" type="button" class="btn btn-ghost">Cancel</button>' +
+            '</div>' +
+            '</div>'
+            : ''
+          );
+
+        var toggleBtn = $('tfa-toggle-btn');
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', function () {
+            if (enabled) disable2FA();
+            else begin2FASetup();
+          });
+        }
+
+        var confirmBtn = $('tfa-confirm-btn');
+        if (confirmBtn) confirmBtn.addEventListener('click', confirm2FA);
+
+        var cancelBtn = $('tfa-cancel-btn');
+        if (cancelBtn) {
+          cancelBtn.addEventListener('click', function () {
+            var setupArea = $('tfa-setup-area');
+            if (setupArea) setupArea.style.display = 'none';
+            var qrArea = $('tfa-qr');
+            if (qrArea) qrArea.innerHTML = '<div class="qr-box"><i class="fa-solid fa-spinner spin" style="color:var(--s-brand);font-size:1.3rem"></i></div><div class="qr-info"><div class="qr-info-title">Preparing your setup code…</div><div class="qr-info-steps">Give us a second.</div></div>';
+            if ($('tfa-code')) $('tfa-code').value = '';
+          });
+        }
+      }
+
+      async function begin2FASetup() {
+        var setupArea = $('tfa-setup-area');
+        var toggleBtn = $('tfa-toggle-btn');
+        if (!setupArea) return;
+
+        setupArea.style.display = 'block';
+
+        if (toggleBtn) {
+          toggleBtn.disabled = true;
+          toggleBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Setting up…';
+        }
+
+        try {
+          var res = await ApiClient.post('/auth/2fa/setup');
+          var data = (res && res.data) ? res.data : res;
+          var qrArea = $('tfa-qr');
+          if (!qrArea) return;
+
+          if (!data || (!data.qr_url && !data.secret)) {
+            qrArea.innerHTML = '<div class="qr-info"><div class="qr-info-title" style="color:var(--s-danger)">Setup Failed</div><div class="qr-info-steps">Could not retrieve your setup key. Please try again.</div></div>';
+            return;
+          }
+
+          const qrUrl = data.qr_url || data.qr_code || (data.otpauth_url ? `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.otpauth_url)}` : null);
+          if (qrUrl) {
+            qrArea.innerHTML =
+              '<div class="qr-box"><img src="' + escapeHtml(qrUrl) + '" alt="2FA QR code"></div>' +
+              '<div class="qr-info">' +
+              '<div class="qr-info-title">Scan this with your authenticator app</div>' +
+              '<div class="qr-info-steps">' +
+              '<strong>1.</strong> Open Google Authenticator, Authy, or 1Password.<br>' +
+              '<strong>2.</strong> Tap <em>Add account</em>, then scan the QR code.<br>' +
+              '<strong>3.</strong> Enter the 6-digit code below to finish.' +
+              '</div>' +
+              (data.secret ? '<div class="qr-secret"><span>Can\'t scan? Enter this key manually:</span><span style="font-weight:700">' + escapeHtml(data.secret) + '</span><button type="button" class="copy-btn" data-copy="' + escapeHtml(data.secret) + '" aria-label="Copy key"><i class="fa-regular fa-copy"></i></button></div>' : '') +
+              '</div>';
+            wireUpCopyButton();
+          } else {
+            // Agar sirf secret aaya hai (bina QR ke)
+            qrArea.innerHTML = '<div class="qr-info"><div class="qr-info-title">Use your authenticator app</div><div class="qr-info-steps">Enter this key manually in your app:<br><strong>' + escapeHtml(data.secret) + '</strong></div></div>';
+          }
+        } catch (err) {
+          showToast((err && err.message) || 'Couldn\'t start 2FA setup.', 'error');
+          setupArea.style.display = 'none';
+        } finally {
+          if (toggleBtn) {
+            toggleBtn.disabled = false;
+            toggleBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i><span>Set up 2FA</span>';
+          }
+        }
+      }
+
+      async function confirm2FA() {
+        var code = ($('tfa-code') && $('tfa-code').value.trim()) || '';
+        if (!code || code.length !== 6) {
+          showToast('Enter the 6-digit code from your app.', 'warning');
+          return;
+        }
+
+        var btn = $('tfa-confirm-btn');
+        var original = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Verifying…';
+
+        try {
+          await ApiClient.post('/auth/2fa/confirm', { token: code, code: code });
+          showToast('2FA is now on.', 'success', 2400);
+          load2FA();
+        } catch (err) {
+          showToast((err && err.message) || 'That code didn\'t work. Check your app and try again.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = original;
+        }
+      }
+
+      async function disable2FA() {
+        var ok = true;
+        if (window.UI && UI.confirm) {
+          ok = await UI.confirm({
+            title: 'Turn off 2FA?',
+            message: 'You\'ll only need your password to sign in. This makes your account easier to access — but also easier to break into.',
+            confirmText: 'Turn it off',
+            cancelText: 'Keep it on',
+            type: 'danger'
+          });
+        }
+        if (!ok) return;
+
+        var btn = $('tfa-toggle-btn');
+        var original = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Turning off…';
+
+        try {
+          await ApiClient.post('/auth/2fa/disable');
+          showToast('2FA turned off.', 'info', 2400);
+          load2FA();
+        } catch (err) {
+          showToast((err && err.message) || 'Couldn\'t turn off 2FA.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = original;
+        }
+      }
+
+      function wireUpCopyButton() {
+        var btn = document.querySelector('.copy-btn[data-copy]');
+        if (!btn) return;
+        btn.addEventListener('click', async function () {
+          var text = btn.dataset.copy;
+          try { await navigator.clipboard.writeText(text); } catch (e) {
+            var ta = document.createElement('textarea');
+            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+            document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); } catch (e2) { }
+            ta.remove();
+          }
+          var icon = btn.querySelector('i');
+          if (icon) {
+            var original = icon.className;
+            icon.className = 'fa-solid fa-check';
+            btn.classList.add('copied');
+            setTimeout(function () { icon.className = original; btn.classList.remove('copied'); }, 1400);
+          }
+        });
+      }
+
+      /* ============================================================
+         Sign Out Everywhere
+         ============================================================ */
+      function initLogoutAll() {
+        var btn = $('logout-all-btn');
+        if (!btn) return;
+
+        btn.addEventListener('click', async function () {
+          var ok = true;
+          if (window.UI && UI.confirm) {
+            ok = await UI.confirm({
+              title: 'Sign out everywhere?',
+              message: 'Every active session on all devices will end. You\'ll need to sign in again on each one.',
+              confirmText: 'Sign out all',
+              cancelText: 'Cancel',
+              type: 'danger'
+            });
+          }
+          if (!ok) return;
+
+          var original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Signing out…';
+
+          try {
+            await ApiClient.post('/auth/logout-all').catch(function () { });
+            ApiClient.setAccessToken(null);
+            showToast('All sessions ended. Redirecting to sign in…', 'info', 1800);
+            setTimeout(function () { window.location.href = '/login.html'; }, 1400);
+          } catch (e) {
+            btn.disabled = false;
+            btn.innerHTML = original;
+            showToast('Couldn\'t sign out everywhere. Try again.', 'error');
+          }
+        });
+      }
+
+      /* ============================================================
+         Boot
+         ============================================================ */
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof ApiClient === 'undefined' || !ApiClient.getAccessToken || !ApiClient.getAccessToken()) {
+          window.location.href = '/login.html?redirect=' + encodeURIComponent('/buyer/security.html');
+          return;
+        }
+        initPwToggles();
+        initPwForm();
+        initLogoutAll();
+        load2FA();
+
+        // ✅ FIX: Force clear the old-pw field on load just in case browser injected something
+        var oldPwField = $('old-pw');
+        if (oldPwField) oldPwField.value = '';
+      });
+
+      window.__reload2FA = load2FA;
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,660 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>About — NexusBids Pakistan</title>
+  <meta name="description"
+    content="NexusBids was built by three friends in Lahore who got tired of online scams. Here's our story, our team, and why we're fixing auctions in Pakistan.">
+
+  <script>
+    (function () {
+      var t = localStorage.getItem('nexusbids_theme') || 'system';
+      var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+      document.documentElement.classList.toggle('dark', d);
+      document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+    })();
+  </script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            display: ['Fraunces', 'Georgia', 'serif']
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc',
+              400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca',
+              800: '#3730a3', 900: '#312e81',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --ring: 99, 102, 241;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+    }
+
+    body {
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ============ Light-mode (fixed contrast) ============ */
+    html:not(.dark) body {
+      background: #f7f8fc !important;
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .bg-slate-950 {
+      background: #f7f8fc !important;
+    }
+
+    html:not(.dark) .bg-slate-900,
+    html:not(.dark) .bg-slate-900\/60,
+    html:not(.dark) .bg-slate-900\/50,
+    html:not(.dark) .bg-slate-900\/40 {
+      background: #ffffff !important;
+    }
+
+    html:not(.dark) .bg-slate-800 {
+      background: #f1f5f9 !important;
+    }
+
+    html:not(.dark) .bg-slate-100 {
+      background: #f1f5f9 !important;
+    }
+
+    html:not(.dark) .text-slate-100,
+    html:not(.dark) .text-slate-200,
+    html:not(.dark) .text-white {
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .text-slate-300,
+    html:not(.dark) .text-slate-400 {
+      color: #475569 !important;
+    }
+
+    html:not(.dark) .text-slate-500 {
+      color: #64748b !important;
+    }
+
+    html:not(.dark) .border-slate-800,
+    html:not(.dark) .border-slate-800\/60,
+    html:not(.dark) .border-slate-800\/70,
+    html:not(.dark) .border-slate-800\/80,
+    html:not(.dark) .border-slate-700 {
+      border-color: #e5e9f0 !important;
+    }
+
+    /* Hero band — explicit backgrounds so no blanket override */
+    .hero-band {
+      background: linear-gradient(to bottom, #0f172a, #030712);
+    }
+
+    html:not(.dark) .hero-band {
+      background: linear-gradient(to bottom, #eef2ff, #f7f8fc) !important;
+    }
+
+    /* Gradient word in heading — always readable */
+    .gradient-word {
+      background: linear-gradient(120deg, #6366f1 0%, #a855f7 50%, #6366f1 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    html:not(.dark) .gradient-word {
+      background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 50%, #4f46e5 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* ============ Story prose ============ */
+    .prose-story p {
+      font-size: 1rem;
+      line-height: 1.8;
+      color: #475569;
+      margin-bottom: 1.25rem;
+    }
+
+    html.dark .prose-story p {
+      color: #94a3b8;
+    }
+
+    .prose-story p:last-child {
+      margin-bottom: 0;
+    }
+
+    .prose-story strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    html.dark .prose-story strong {
+      color: #e2e8f0;
+    }
+
+    /* ============ Value card ============ */
+    .value-card {
+      position: relative;
+      transition:
+        transform .3s cubic-bezier(.16, 1, .3, 1),
+        border-color .3s ease,
+        box-shadow .3s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    .value-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(99, 102, 241, .5) !important;
+      box-shadow: 0 20px 40px -16px rgba(99, 102, 241, .22);
+    }
+
+    /* ============ Team avatar ============ */
+    .team-avatar {
+      width: 5rem;
+      height: 5rem;
+      border-radius: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fraunces', serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: #fff;
+      box-shadow: 0 8px 20px -8px rgba(15, 23, 42, .3);
+    }
+
+    /* ============ Timeline ============ */
+    .timeline-line {
+      position: absolute;
+      left: 1.75rem;
+      top: 3rem;
+      bottom: 1rem;
+      width: 2px;
+      background: linear-gradient(to bottom, rgba(99, 102, 241, .5), rgba(99, 102, 241, .05));
+    }
+
+    @media (min-width: 768px) {
+      .timeline-line {
+        left: 50%;
+        transform: translateX(-50%);
+        top: 3rem;
+        bottom: 1rem;
+      }
+    }
+
+    /* ============ Stat block ============ */
+    .stat-num {
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+
+    .stat-num.skeleton {
+      color: transparent;
+      background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+      background-size: 200% 100%;
+      animation: nbSkel 1.8s infinite;
+      border-radius: .5rem;
+      min-width: 4rem;
+      display: inline-block;
+      height: 1em;
+    }
+
+    html.dark .stat-num.skeleton {
+      background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+      background-size: 200% 100%;
+    }
+
+    @keyframes nbSkel {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    /* ============ Focus ============ */
+    a:focus-visible,
+    button:focus-visible {
+      outline: 2px solid rgb(var(--ring));
+      outline-offset: 2px;
+      border-radius: .5rem;
+    }
+
+    /* ============ Reduced motion ============ */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+
+      .value-card:hover {
+        transform: none;
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <header id="nb-header"></header>
+
+  <main class="flex-1 w-full">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero-band relative overflow-hidden border-b border-slate-200 dark:border-slate-800/60">
+      <!-- subtle grid -->
+      <div class="absolute inset-0 opacity-[.04] dark:opacity-[.06] pointer-events-none"
+        style="background-image:linear-gradient(to right,#94a3b8 1px,transparent 1px),linear-gradient(to bottom,#94a3b8 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,black,transparent 80%)">
+      </div>
+
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-16 sm:pt-14 sm:pb-20 relative">
+        <nav aria-label="Breadcrumb" class="flex items-center gap-2 text-xs text-slate-500 mb-6 font-medium">
+          <a href="/" class="hover:text-indigo-500 transition-colors">Home</a>
+          <i class="fa-solid fa-chevron-right text-[9px] opacity-50" aria-hidden="true"></i>
+          <span class="text-slate-700 dark:text-slate-300">About</span>
+        </nav>
+
+        <p class="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600 dark:text-indigo-400 mb-4">
+          Our story
+        </p>
+
+        <h1
+          class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-[1.05] mb-6">
+          We got tired of<br>
+          <span class="gradient-word italic">getting scammed.</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 leading-relaxed max-w-2xl">
+          So we built NexusBids — a place where you can buy and sell without wondering if the other person is real.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-4 mt-8 text-xs text-slate-500 dark:text-slate-400">
+          <span class="inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-location-dot text-indigo-500" aria-hidden="true"></i>
+            Built in Hyderabad, Pakistan
+          </span>
+          <span class="hidden sm:inline w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+          <span class="inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-calendar text-indigo-500" aria-hidden="true"></i>
+            Since 2026
+          </span>
+          <span class="hidden sm:inline w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700"></span>
+          <span class="inline-flex items-center gap-1.5">
+            <i class="fa-solid fa-users text-indigo-500" aria-hidden="true"></i>
+            Team of 3
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ THE STORY ═══════════ -->
+    <section class="py-16 sm:py-20 lg:py-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
+
+          <div class="lg:col-span-4 lg:sticky lg:top-24">
+            <p class="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600 dark:text-indigo-400 mb-3">
+              How it started
+            </p>
+            <h2
+              class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight mb-4">
+              A phone, a bad deal, and three very stubborn friends.
+            </h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              Every platform starts somewhere. Ours started with a phone that vanished after we'd paid for it — and
+              three friends who got tired of watching it happen to everyone else.
+            </p>
+          </div>
+
+          <div class="lg:col-span-8 prose-story">
+            <p>
+              In early 2026, one of our co-founders tried to sell his old iPhone on a Facebook group. A buyer showed up,
+              paid half the money on the spot, promised to transfer the rest after "checking the phone properly," and
+              then vanished. The phone was gone. The money was gone. And there was absolutely nothing he could do about
+              it — no receipt, no proof, no one to call.
+            </p>
+            <p>
+              That's normal in Pakistan. Almost everyone who has bought or sold online has a story like this. A bike
+              with a hidden crack in the frame. A "brand new" laptop that was refurbished. An Easypaisa transfer to a
+              seller who blocked the buyer two minutes later. The list goes on.
+            </p>
+            <p>
+              So we started asking a simple question: <strong>what would it take for two strangers in Karachi and
+                Peshawar to trust each other with a hundred thousand rupees?</strong>
+            </p>
+            <p>
+              The answer wasn't more reviews or more warnings. The answer was simple mechanics — verified identity on
+              both sides, money held safely by a third party until the buyer confirms delivery, and a clean record of
+              every bid. Basically, everything a bank does for a wire transfer, but for buying a motorcycle.
+            </p>
+            <p>
+              We launched NexusBids in late 2026 out of a two-bedroom apartment in Lahore, with three laptops, one
+              whiteboard, and a genuinely unreasonable amount of optimism. Today we're a team of twelve building what we
+              hope becomes Pakistan's most boringly reliable way to trade things online.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ WHAT WE BELIEVE ═══════════ -->
+    <section class="py-16 sm:py-20 border-y border-slate-200 dark:border-slate-800/60 bg-slate-50 dark:bg-slate-900/30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mb-12">
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600 dark:text-indigo-400 mb-3">
+            What we believe
+          </p>
+          <h2
+            class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">
+            Four things we won't compromise on.
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+          <div
+            class="value-card rounded-2xl p-6 sm:p-7 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+            <div
+              class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-5">
+              <i class="fa-solid fa-handshake text-emerald-600 dark:text-emerald-400 text-lg" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">No money moves until you're happy</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              When you win an auction, your money goes into an escrow account — not to the seller. They only get paid
+              after you've received the item and confirmed it matches what was listed. If it doesn't, we refund you. No
+              arguments, no waiting on a call center.
+            </p>
+          </div>
+
+          <div
+            class="value-card rounded-2xl p-6 sm:p-7 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+            <div
+              class="w-11 h-11 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-5">
+              <i class="fa-solid fa-id-card text-indigo-600 dark:text-indigo-400 text-lg" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Real names, real CNICs, real people
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              You can't sell on NexusBids without a verified CNIC. High-value bidders go through the same check. We know
+              this makes signup slower — that's the point. If someone tries to scam you, we can tell the police exactly
+              who they are.
+            </p>
+          </div>
+
+          <div
+            class="value-card rounded-2xl p-6 sm:p-7 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+            <div
+              class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5">
+              <i class="fa-solid fa-bolt text-amber-600 dark:text-amber-400 text-lg" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Bids land in the same second for
+              everyone</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              No "refresh the page and hope." Every bid shows up live on everyone's screen the moment it's placed. If
+              you're on a slow connection in Sialkot, you see the same bids as someone on fiber in Islamabad. The
+              playing field is flat.
+            </p>
+          </div>
+
+          <div
+            class="value-card rounded-2xl p-6 sm:p-7 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+            <div
+              class="w-11 h-11 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mb-5">
+              <i class="fa-solid fa-flag text-rose-600 dark:text-rose-400 text-lg" aria-hidden="true"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Built for Pakistan, not adapted to it
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              JazzCash and Easypaisa aren't bolted-on afterthoughts — they're how most of our users actually pay. Our
+              support team speaks Urdu and English. Our delivery partners are TCS and Leopards. This is a Pakistani
+              product for Pakistani problems.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ STATS ═══════════ -->
+    <section class="py-14 sm:py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="rounded-3xl border border-slate-200 dark:border-slate-800/60 bg-white dark:bg-slate-900/40 overflow-hidden">
+          <div
+            class="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-slate-200 dark:divide-slate-800/60">
+            <div class="p-6 sm:p-8 text-center">
+              <p id="stat-users"
+                class="stat-num skeleton text-3xl sm:text-4xl font-black text-slate-900 dark:text-slate-100 mb-2">32,591
+              </p>
+              <p
+                class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                People registered</p>
+            </div>
+            <div class="p-6 sm:p-8 text-center">
+              <p id="stat-auctions"
+                class="stat-num skeleton text-3xl sm:text-4xl font-black text-emerald-600 dark:text-emerald-400 mb-2">
+                1,248</p>
+              <p
+                class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Live right now</p>
+            </div>
+            <div class="p-6 sm:p-8 text-center">
+              <p id="stat-orders"
+                class="stat-num skeleton text-3xl sm:text-4xl font-black text-indigo-600 dark:text-indigo-400 mb-2">
+                8,417</p>
+              <p
+                class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Deals completed</p>
+            </div>
+            <div class="p-6 sm:p-8 text-center">
+              <p class="stat-num text-3xl sm:text-4xl font-black text-slate-900 dark:text-slate-100 mb-2">0</p>
+              <p
+                class="text-[11px] sm:text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                Payments lost to fraud</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-4">
+          Numbers update live from our systems. Last refreshed just now.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════ TEAM ═══════════ -->
+    <section class="py-16 sm:py-20 border-t border-slate-200 dark:border-slate-800/60 bg-slate-50 dark:bg-slate-900/30">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mb-12">
+          <p class="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600 dark:text-indigo-400 mb-3">
+            Who's building this
+          </p>
+          <h2
+            class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight">
+            The people you'll actually talk to.
+          </h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-4 max-w-xl leading-relaxed">
+            No C-suite, no corporate board. Just twelve people across Lahore and Karachi who answer their own emails.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <!-- Team member 1 -->
+          <div
+            class="value-card rounded-2xl p-6 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-4 mb-5">
+              <div class="team-avatar" style="background:linear-gradient(135deg,#6366f1,#4f46e5)">H</div>
+              <div class="min-w-0">
+                <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 truncate">Hassan Raza</h3>
+                <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium">Co-founder · Product</p>
+              </div>
+            </div>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Was on the losing end of the iPhone sale that started this whole thing. Former PM at a Karachi fintech.
+              Obsessed with making signup faster without cutting safety.
+            </p>
+          </div>
+
+          <!-- Team member 2 -->
+          <div
+            class="value-card rounded-2xl p-6 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-4 mb-5">
+              <div class="team-avatar" style="background:linear-gradient(135deg,#a855f7,#7c3aed)">R</div>
+              <div class="min-w-0">
+                <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 truncate">Rashid Jokhio</h3>
+                <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium">Co-founder · Trust & Safety</p>
+              </div>
+            </div>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Spent six years investigating online fraud for a local bank. Wrote our entire CNIC verification pipeline
+              from scratch. Personally reviews every high-value dispute.
+            </p>
+          </div>
+
+          <!-- Team member 3 -->
+          <div
+            class="value-card rounded-2xl p-6 bg-white dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-4 mb-5">
+              <div class="team-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">A</div>
+              <div class="min-w-0">
+                <h3 class="text-base font-bold text-slate-900 dark:text-slate-100 truncate">Arham Shaikh</h3>
+                <p class="text-xs text-indigo-600 dark:text-indigo-400 font-medium">Co-founder · Engineering</p>
+              </div>
+            </div>
+            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Built our real-time bidding engine so a 3G connection in Multan sees the same bid as a broadband line in
+              Karachi. Doesn't sleep before deployment days.
+            </p>
+          </div>
+
+        </div>
+
+        <p class="text-center text-xs text-slate-500 dark:text-slate-400 mt-10">
+          Plus nine more engineers, designers, and support staff — mostly in Lahore, a few remote.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════ WHAT'S NEXT ═══════════ -->
+    <section class="py-16 sm:py-20 border-t border-slate-200 dark:border-slate-800/60">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-xs font-bold uppercase tracking-[0.15em] text-indigo-600 dark:text-indigo-400 mb-3">
+          What's next
+        </p>
+        <h2
+          class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-tight mb-5">
+          We're just getting started.
+        </h2>
+        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 leading-relaxed mb-8">
+          This year we're adding live video auctions, expanding delivery to smaller cities, and opening our APIs so
+          local sellers can manage bulk listings from their own software. Same mission, bigger reach.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a href="/auctions.html"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 hover:-translate-y-px shadow-lg shadow-indigo-600/30 transition-all text-sm">
+            <i class="fa-solid fa-gavel" aria-hidden="true"></i>
+            <span>Browse live auctions</span>
+          </a>
+          <a href="/contact.html"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 transition-all text-sm">
+            <i class="fa-regular fa-envelope" aria-hidden="true"></i>
+            <span>Get in touch</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/ai-chat.js"></script>
+
+  <script>
+    (function () {
+      'use strict';
+
+      function animateCount(el, target) {
+        if (!el || isNaN(target)) return;
+        el.classList.remove('skeleton');
+        const duration = 1100;
+        const start = performance.now();
+        const startVal = 0;
+
+        function tick(now) {
+          const p = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - p, 3);
+          const current = Math.round(startVal + (target - startVal) * eased);
+          el.textContent = current.toLocaleString('en-PK');
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = target.toLocaleString('en-PK');
+        }
+        requestAnimationFrame(tick);
+      }
+
+      async function loadStats() {
+        const ids = ['stat-users', 'stat-auctions', 'stat-orders'];
+        try {
+          const res = await ApiClient.get('/stats');
+          const s = (res && res.data) ? res.data : {};
+
+          animateCount(document.getElementById('stat-users'), Number(s.total_users || 0));
+          animateCount(document.getElementById('stat-auctions'), Number(s.active_auctions || 0));
+          animateCount(document.getElementById('stat-orders'), Number(s.total_orders || 0));
+        } catch (err) {
+          console.warn('[about] Stats unavailable:', err);
+          ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.classList.remove('skeleton');
+              el.textContent = '—';
+            }
+          });
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', loadStats);
+    })();
+  </script>
+</body>
+
+</html>

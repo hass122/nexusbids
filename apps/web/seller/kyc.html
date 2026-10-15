@@ -1,0 +1,1679 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller KYC & Bank Verification — NexusBids Pakistan</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --sk-bg: #f4f6fb;
+      --sk-surface: #ffffff;
+      --sk-surface-2: #f7f9fc;
+      --sk-surface-3: #eceff6;
+      --sk-border: #e3e8f0;
+      --sk-border-strong: #cfd7e5;
+      --sk-text: #0f172a;
+      --sk-text-muted: #58627a;
+      --sk-text-light: #8d97ab;
+      --sk-field-bg: #ffffff;
+      --sk-field-bg-hover: #fbfcfe;
+      --sk-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --sk-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --sk-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .30);
+      --sk-glow: rgba(99, 102, 241, .13);
+    }
+
+    html.dark {
+      --sk-bg: #05070f;
+      --sk-surface: #0d1220;
+      --sk-surface-2: #121a2b;
+      --sk-surface-3: #1a2336;
+      --sk-border: #1e2a40;
+      --sk-border-strong: #2c3a56;
+      --sk-text: #eef2f9;
+      --sk-text-muted: #9aa6bd;
+      --sk-text-light: #66738d;
+      --sk-field-bg: #0a0f1c;
+      --sk-field-bg-hover: #0f1626;
+      --sk-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --sk-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --sk-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .85);
+      --sk-glow: rgba(99, 102, 241, .20);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--sk-bg);
+      color: var(--sk-text);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+      overflow-x: hidden;
+    }
+
+    .page-shell {
+      position: relative;
+    }
+
+    .page-shell::before {
+      content: "";
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(960px, 100vw);
+      height: 460px;
+      background: radial-gradient(closest-side, var(--sk-glow), transparent 78%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-shell>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .28);
+    }
+
+    .eyebrow.emerald {
+      color: #059669;
+      background: rgba(16, 185, 129, .10);
+      border-color: rgba(16, 185, 129, .24);
+    }
+
+    html.dark .eyebrow.emerald {
+      color: #34d399;
+      background: rgba(16, 185, 129, .15);
+      border-color: rgba(16, 185, 129, .30);
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.4vw, 2.1rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.13;
+      color: var(--sk-text);
+    }
+
+    .page-sub {
+      font-size: .84rem;
+      color: var(--sk-text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 660px;
+    }
+
+    .status-card {
+      position: relative;
+      padding: 20px;
+      border-radius: 22px;
+      background: var(--sk-surface);
+      border: 1px solid var(--sk-border);
+      box-shadow: var(--sk-shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      overflow: hidden;
+    }
+
+    .status-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(220px 120px at 0% 50%, var(--k-glow, rgba(99, 102, 241, .14)), transparent 72%);
+      pointer-events: none;
+    }
+
+    .status-card.is-approved::before {
+      background: radial-gradient(240px 130px at 0% 50%, rgba(16, 185, 129, .16), transparent 72%);
+    }
+
+    .status-card.is-pending::before {
+      background: radial-gradient(240px 130px at 0% 50%, rgba(245, 158, 11, .16), transparent 72%);
+    }
+
+    .status-card.is-blocked::before {
+      background: radial-gradient(240px 130px at 0% 50%, rgba(244, 63, 94, .16), transparent 72%);
+    }
+
+    .status-icon {
+      position: relative;
+      flex: 0 0 auto;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 1.15rem;
+      background: var(--sk-surface-3);
+      color: var(--sk-text-muted);
+      transition: background-color .3s, color .3s;
+    }
+
+    .status-card.is-approved .status-icon {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+    }
+
+    .status-card.is-pending .status-icon {
+      background: rgba(245, 158, 11, .14);
+      color: #d97706;
+    }
+
+    .status-card.is-blocked .status-icon {
+      background: rgba(244, 63, 94, .12);
+      color: #e11d48;
+    }
+
+    html.dark .status-card.is-approved .status-icon {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399;
+    }
+
+    html.dark .status-card.is-pending .status-icon {
+      background: rgba(245, 158, 11, .18);
+      color: #fbbf24;
+    }
+
+    html.dark .status-card.is-blocked .status-icon {
+      background: rgba(244, 63, 94, .18);
+      color: #fb7185;
+    }
+
+    .status-body {
+      position: relative;
+      flex: 1 1 200px;
+      min-width: 0;
+    }
+
+    .status-label {
+      font-size: .66rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--sk-text-light);
+    }
+
+    .status-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--sk-text);
+      margin-top: 3px;
+      letter-spacing: -.01em;
+    }
+
+    .status-hint {
+      font-size: .74rem;
+      color: var(--sk-text-muted);
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    .status-badge {
+      position: relative;
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 800;
+      background: var(--sk-surface-3);
+      color: var(--sk-text-muted);
+      border: 1px solid var(--sk-border);
+    }
+
+    .status-badge.is-approved {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .28);
+    }
+
+    .status-badge.is-pending {
+      background: rgba(245, 158, 11, .13);
+      color: #b45309;
+      border-color: rgba(245, 158, 11, .30);
+    }
+
+    .status-badge.is-blocked {
+      background: rgba(244, 63, 94, .11);
+      color: #e11d48;
+      border-color: rgba(244, 63, 94, .26);
+    }
+
+    html.dark .status-badge.is-approved {
+      background: rgba(16, 185, 129, .16);
+      color: #34d399;
+    }
+
+    html.dark .status-badge.is-pending {
+      background: rgba(245, 158, 11, .16);
+      color: #fbbf24;
+    }
+
+    html.dark .status-badge.is-blocked {
+      background: rgba(244, 63, 94, .16);
+      color: #fb7185;
+    }
+
+    .status-steps {
+      position: relative;
+      flex: 1 1 100%;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .step-dot {
+      flex: 1;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--sk-surface-3);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .step-dot.done::after,
+    .step-dot.active::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    }
+
+    .step-dot.done::after {
+      background: linear-gradient(90deg, #10b981, #34d399);
+    }
+
+    .step-dot.active::after {
+      animation: pulseBar 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulseBar {
+
+      0%,
+      100% {
+        opacity: .55
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+
+    .form-wrap {
+      padding: 22px;
+      border-radius: 24px;
+      background: var(--sk-surface);
+      border: 1px solid var(--sk-border);
+      box-shadow: var(--sk-shadow-md);
+      animation: fadeUp .4s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    @media (min-width:640px) {
+      .form-wrap {
+        padding: 30px;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .section {
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px dashed var(--sk-border);
+    }
+
+    .section:last-of-type {
+      border-bottom: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-num {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      font-size: .72rem;
+      font-weight: 800;
+      background: rgba(99, 102, 241, .12);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, .22);
+    }
+
+    html.dark .section-num {
+      background: rgba(99, 102, 241, .18);
+      color: #a5b4fc;
+    }
+
+    .section-num.emerald {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .24);
+    }
+
+    html.dark .section-num.emerald {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399;
+    }
+
+    .section-num.rose {
+      background: rgba(244, 63, 94, .12);
+      color: #e11d48;
+      border-color: rgba(244, 63, 94, .24);
+    }
+
+    html.dark .section-num.rose {
+      background: rgba(244, 63, 94, .18);
+      color: #fb7185;
+    }
+
+    .section-title {
+      font-size: .88rem;
+      font-weight: 800;
+      color: var(--sk-text);
+      letter-spacing: -.005em;
+    }
+
+    .section-desc {
+      font-size: .72rem;
+      color: var(--sk-text-light);
+      margin-top: 2px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--sk-text-muted);
+      letter-spacing: .01em;
+    }
+
+    .field-label .label-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-label i.label-icon {
+      font-size: .68rem;
+      opacity: .65;
+    }
+
+    .field-label .req {
+      color: #e11d48;
+      font-size: .8rem;
+      line-height: 1;
+      margin-left: 2px;
+    }
+
+    html.dark .field-label .req {
+      color: #fb7185;
+    }
+
+    .field-input,
+    .field-select {
+      width: 100% !important;
+      padding: 11px 14px !important;
+      border-radius: 12px !important;
+      background-color: var(--sk-field-bg) !important;
+      background-image: none;
+      border: 1px solid var(--sk-border) !important;
+      color: var(--sk-text) !important;
+      font-size: .84rem !important;
+      font-family: inherit !important;
+      font-weight: 500 !important;
+      outline: none !important;
+      transition: border-color .2s, box-shadow .2s, background-color .2s;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      line-height: 1.5 !important;
+    }
+
+    .field-input::placeholder {
+      color: var(--sk-text-light) !important;
+      font-weight: 400 !important;
+      opacity: 1 !important;
+    }
+
+    .field-input:hover,
+    .field-select:hover {
+      background-color: var(--sk-field-bg-hover) !important;
+      border-color: var(--sk-border-strong) !important;
+    }
+
+    .field-input:focus,
+    .field-select:focus {
+      background-color: var(--sk-field-bg) !important;
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16) !important;
+    }
+
+    .field-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 14px !important;
+      padding-right: 36px !important;
+      cursor: pointer;
+    }
+
+    html.dark .field-input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(.75) brightness(1.3);
+      cursor: pointer;
+    }
+
+    .field-input:-webkit-autofill,
+    .field-input:-webkit-autofill:hover,
+    .field-input:-webkit-autofill:focus {
+      -webkit-text-fill-color: var(--sk-text) !important;
+      -webkit-box-shadow: 0 0 0 1000px var(--sk-field-bg) inset !important;
+      box-shadow: 0 0 0 1000px var(--sk-field-bg) inset !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .field-hint {
+      font-size: .68rem;
+      color: var(--sk-text-light);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      line-height: 1.5;
+    }
+
+    .field-hint i {
+      font-size: .62rem;
+      opacity: .8;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width:560px) {
+      .grid-2 {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .docs-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width:640px) {
+      .docs-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .doc-tile {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .doc-tile-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .doc-tile-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .74rem;
+      font-weight: 800;
+      color: var(--sk-text);
+    }
+
+    .doc-tile-title i {
+      font-size: .68rem;
+      color: #6366f1;
+    }
+
+    html.dark .doc-tile-title i {
+      color: #a5b4fc;
+    }
+
+    .doc-tile-title .req {
+      color: #e11d48;
+      font-size: .8rem;
+      line-height: 1;
+    }
+
+    html.dark .doc-tile-title .req {
+      color: #fb7185;
+    }
+
+    .doc-tile-hint {
+      font-size: .66rem;
+      color: var(--sk-text-light);
+      line-height: 1.4;
+      margin-top: -4px;
+    }
+
+    .upload-zone {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/10;
+      border-radius: 14px;
+      border: 2px dashed var(--sk-border-strong);
+      background: var(--sk-surface-2);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px;
+      text-align: center;
+      transition: border-color .22s, background-color .22s, transform .22s;
+      overflow: hidden;
+    }
+
+    .upload-zone:hover {
+      border-color: #6366f1;
+      background: var(--sk-field-bg-hover);
+    }
+
+    .upload-zone:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 3px;
+    }
+
+    .upload-zone.is-dragover {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, .08);
+      transform: scale(1.005);
+    }
+
+    .upload-zone.has-image {
+      border-style: solid;
+      border-color: rgba(16, 185, 129, .5);
+      background: var(--sk-surface-3);
+      padding: 0;
+    }
+
+    .upload-zone .uz-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.05rem;
+      background: rgba(99, 102, 241, .12);
+      color: #6366f1;
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    html.dark .upload-zone .uz-icon {
+      background: rgba(99, 102, 241, .20);
+      color: #a5b4fc;
+    }
+
+    .upload-zone:hover .uz-icon {
+      transform: scale(1.08) rotate(-4deg);
+    }
+
+    .upload-zone .uz-title {
+      font-size: .76rem;
+      font-weight: 700;
+      color: var(--sk-text-muted);
+    }
+
+    .upload-zone .uz-sub {
+      font-size: .66rem;
+      color: var(--sk-text-light);
+      max-width: 240px;
+      line-height: 1.45;
+    }
+
+    .upload-zone .uz-sub .uz-browse {
+      color: #6366f1;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: rgba(99, 102, 241, .4);
+      text-underline-offset: 2px;
+    }
+
+    html.dark .upload-zone .uz-sub .uz-browse {
+      color: #a5b4fc;
+    }
+
+    .upload-zone .uz-preview {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    .upload-zone.has-image .uz-preview {
+      display: block;
+    }
+
+    .upload-zone .uz-success {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: none;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: .58rem;
+      font-weight: 800;
+      background: rgba(16, 185, 129, .92);
+      color: #fff;
+      box-shadow: 0 4px 10px -4px rgba(16, 185, 129, .8);
+      backdrop-filter: blur(4px);
+      animation: popIn .3s cubic-bezier(.2, .8, .2, 1) both;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .upload-zone.has-image .uz-success {
+      display: inline-flex;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(.5)
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1)
+      }
+    }
+
+    .upload-zone .uz-overlay {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 8px 10px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: linear-gradient(to top, rgba(0, 0, 0, .72), rgba(0, 0, 0, 0));
+      color: #fff;
+    }
+
+    .upload-zone.has-image .uz-overlay {
+      display: flex;
+    }
+
+    .upload-zone .uz-file {
+      font-size: .62rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 60%;
+      opacity: .92;
+    }
+
+    .uz-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .uz-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      border: 0;
+      display: grid;
+      place-items: center;
+      font-size: .65rem;
+      cursor: pointer;
+      background: rgba(255, 255, 255, .2);
+      color: #fff;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: background-color .2s, transform .2s;
+    }
+
+    .uz-btn:hover {
+      background: rgba(255, 255, 255, .34);
+      transform: scale(1.06);
+    }
+
+    .uz-btn.danger:hover {
+      background: rgba(244, 63, 94, .85);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .security-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--sk-surface-2);
+      border: 1px solid var(--sk-border);
+      font-size: .72rem;
+      color: var(--sk-text-muted);
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+
+    .security-strip i {
+      color: #10b981;
+      font-size: .95rem;
+      flex: 0 0 auto;
+    }
+
+    .security-strip strong {
+      color: var(--sk-text);
+    }
+
+    .btn-submit {
+      position: relative;
+      width: 100%;
+      padding: 15px 20px;
+      border: 0;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      box-shadow: 0 14px 30px -12px rgba(79, 70, 229, .9);
+      transition: transform .22s, box-shadow .22s, opacity .22s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 36px -12px rgba(79, 70, 229, .95);
+    }
+
+    .btn-submit:active:not(:disabled) {
+      transform: translateY(0) scale(.99);
+    }
+
+    .btn-submit:disabled {
+      opacity: .75;
+      cursor: not-allowed;
+    }
+
+    .btn-submit:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 3px;
+    }
+
+    .spin {
+      animation: spin .85s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .result {
+      text-align: center;
+      padding: 42px 24px;
+      animation: fadeUp .45s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .result-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      font-size: 1.7rem;
+      margin: 0 auto 20px;
+    }
+
+    .result-icon.ok {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+    }
+
+    .result-icon.pending {
+      background: rgba(245, 158, 11, .14);
+      color: #d97706;
+    }
+
+    html.dark .result-icon.ok {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399;
+    }
+
+    html.dark .result-icon.pending {
+      background: rgba(245, 158, 11, .18);
+      color: #fbbf24;
+    }
+
+    .result-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--sk-text);
+      letter-spacing: -.015em;
+    }
+
+    .result-text {
+      font-size: .82rem;
+      color: var(--sk-text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 420px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      max-width: 420px;
+      margin: 28px auto 0;
+      text-align: left;
+    }
+
+    .tl-item {
+      display: flex;
+      gap: 14px;
+      position: relative;
+      padding-bottom: 22px;
+    }
+
+    .tl-item:last-child {
+      padding-bottom: 0;
+    }
+
+    .tl-item::before {
+      content: "";
+      position: absolute;
+      left: 13px;
+      top: 26px;
+      bottom: 0;
+      width: 2px;
+      background: var(--sk-border);
+    }
+
+    .tl-item:last-child::before {
+      display: none;
+    }
+
+    .tl-item.done::before {
+      background: rgba(16, 185, 129, .4);
+    }
+
+    .tl-dot {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: .68rem;
+      background: var(--sk-surface-3);
+      color: var(--sk-text-light);
+      border: 1px solid var(--sk-border);
+      z-index: 1;
+    }
+
+    .tl-item.done .tl-dot {
+      background: rgba(16, 185, 129, .14);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .35);
+    }
+
+    .tl-item.active .tl-dot {
+      background: rgba(245, 158, 11, .16);
+      color: #d97706;
+      border-color: rgba(245, 158, 11, .4);
+      animation: pulseRing 1.8s ease-out infinite;
+    }
+
+    html.dark .tl-item.done .tl-dot {
+      background: rgba(16, 185, 129, .20);
+      color: #34d399;
+    }
+
+    html.dark .tl-item.active .tl-dot {
+      background: rgba(245, 158, 11, .20);
+      color: #fbbf24;
+    }
+
+    @keyframes pulseRing {
+      0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, .35)
+      }
+
+      70% {
+        box-shadow: 0 0 0 8px rgba(245, 158, 11, 0)
+      }
+
+      100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0)
+      }
+    }
+
+    .tl-title {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--sk-text);
+    }
+
+    .tl-desc {
+      font-size: .72rem;
+      color: var(--sk-text-light);
+      margin-top: 2px;
+      line-height: 1.5;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 18px;
+      border-radius: 12px;
+      font-size: .8rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform .22s, box-shadow .22s, border-color .22s, background-color .22s, color .22s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(79, 70, 229, .85);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(79, 70, 229, .95);
+    }
+
+    @media (max-width:520px) {
+      .status-card {
+        padding: 16px;
+        gap: 14px;
+      }
+
+      .status-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 1rem;
+      }
+
+      .status-badge {
+        padding: 6px 12px;
+        font-size: .68rem;
+      }
+
+      .form-wrap {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .result {
+        padding: 34px 16px;
+      }
+
+      .section {
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+      }
+
+      .section-num {
+        width: 26px;
+        height: 26px;
+        font-size: .68rem;
+      }
+
+      .section-title {
+        font-size: .84rem;
+      }
+
+      .upload-zone {
+        aspect-ratio: 4/3;
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+  <main class="page-shell flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+    <div class="mb-7">
+      <span class="eyebrow emerald"><i class="fa-solid fa-building-columns"></i> Pakistani Bank Settlement
+        Verification</span>
+      <h1 class="page-title mt-3">Seller KYC &amp; Bank Verification</h1>
+      <p class="page-sub">To list items and receive escrow settlements, Pakistani sellers must provide verified CNIC and
+        banking details. Your information is encrypted and handled only by authorised compliance staff.</p>
+    </div>
+
+    <div id="rejection-banner" style="display:none"></div>
+
+    <div id="kyc-status-card" class="status-card mb-7" aria-live="polite">
+      <div class="status-icon" id="status-icon"><i class="fa-solid fa-circle-notch spin"></i></div>
+      <div class="status-body">
+        <p class="status-label">Seller Verification Status</p>
+        <p id="status-text" class="status-value">Checking status…</p>
+        <p id="status-hint" class="status-hint">Retrieving your verification record…</p>
+      </div>
+      <div id="status-badge" class="status-badge"><i class="fa-solid fa-ellipsis"></i> Loading</div>
+      <div class="status-steps" aria-hidden="true"><span class="step-dot" id="step-1"></span><span class="step-dot"
+          id="step-2"></span><span class="step-dot" id="step-3"></span></div>
+    </div>
+
+    <div id="kyc-form-wrapper" class="form-wrap">
+      <div class="security-strip">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Your CNIC and bank details are encrypted with <strong>AES-256</strong> and shared only with authorised
+          compliance staff for verification.</span>
+      </div>
+
+      <form id="seller-kyc-form" novalidate>
+        <div class="section">
+          <div class="section-head">
+            <div class="section-num">1</div>
+            <div>
+              <p class="section-title">Personal Information</p>
+              <p class="section-desc">Must match exactly as printed on your CNIC</p>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field" id="field-full_name_on_cnic">
+              <label class="field-label" for="full_name_on_cnic"><span class="label-left"><i
+                    class="fa-solid fa-user label-icon"></i> Full Name (as on CNIC) <span
+                    class="req">*</span></span></label>
+              <input type="text" id="full_name_on_cnic" required placeholder="Muhammad Ali" autocomplete="name"
+                class="field-input">
+            </div>
+            <div class="field" id="field-cnic_number">
+              <label class="field-label" for="cnic_number"><span class="label-left"><i
+                    class="fa-solid fa-id-card label-icon"></i> CNIC Number <span class="req">*</span></span></label>
+              <input type="text" id="cnic_number" required placeholder="35201-1234567-1" maxlength="15"
+                inputmode="numeric" autocomplete="off" class="field-input">
+              <span class="field-hint" id="cnic-hint"><i class="fa-regular fa-circle-question"></i> 13 digits,
+                auto-formatted</span>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:14px">
+            <div class="field" id="field-date_of_birth">
+              <label class="field-label" for="date_of_birth"><span class="label-left"><i
+                    class="fa-regular fa-calendar label-icon"></i> Date of Birth <span
+                    class="req">*</span></span></label>
+              <input type="date" id="date_of_birth" required class="field-input">
+            </div>
+            <div class="field">
+              <label class="field-label" for="seller_type"><span class="label-left"><i
+                    class="fa-solid fa-briefcase label-icon"></i> Business / Seller Type</span></label>
+              <select id="seller_type" class="field-select">
+                <option value="individual">Individual Seller</option>
+                <option value="business">Registered Business / Enterprise</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <div class="section-num emerald">2</div>
+            <div>
+              <p class="section-title">Bank Account Details</p>
+              <p class="section-desc">Where your escrow settlements will be transferred</p>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="field">
+              <label class="field-label" for="bank_name"><span class="label-left"><i
+                    class="fa-solid fa-building-columns label-icon"></i> Bank Name <span
+                    class="req">*</span></span></label>
+              <select id="bank_name" required class="field-select">
+                <option value="Meezan Bank">Meezan Bank Limited</option>
+                <option value="Habib Bank Limited">Habib Bank Limited (HBL)</option>
+                <option value="United Bank Limited">United Bank Limited (UBL)</option>
+                <option value="MCB Bank">MCB Bank Limited</option>
+                <option value="Bank Alfalah">Bank Alfalah</option>
+                <option value="Faysal Bank">Faysal Bank</option>
+                <option value="Standard Chartered">Standard Chartered Pakistan</option>
+                <option value="Allied Bank">Allied Bank Limited</option>
+                <option value="JazzCash Merchant">JazzCash Direct Wallet</option>
+                <option value="Easypaisa Merchant">Easypaisa Direct Wallet</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label" for="bank_account_holder"><span class="label-left"><i
+                    class="fa-solid fa-user-check label-icon"></i> Account Title <span
+                    class="req">*</span></span></label>
+              <input type="text" id="bank_account_holder" required placeholder="Muhammad Ali" autocomplete="off"
+                class="field-input">
+              <span class="field-hint"><i class="fa-solid fa-circle-info"></i> Must match the name on your CNIC</span>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:14px">
+            <div class="field">
+              <label class="field-label" for="bank_account_number"><span class="label-left"><i
+                    class="fa-solid fa-hashtag label-icon"></i> Account Number / IBAN <span
+                    class="req">*</span></span></label>
+              <input type="text" id="bank_account_number" required placeholder="PK36MEZN00012345678901"
+                autocomplete="off" class="field-input">
+              <span class="field-hint"><i class="fa-regular fa-lightbulb"></i> PK-prefixed IBAN recommended</span>
+            </div>
+            <div class="field">
+              <label class="field-label" for="bank_branch"><span class="label-left"><i
+                    class="fa-solid fa-location-dot label-icon"></i> Bank Branch / City</span></label>
+              <input type="text" id="bank_branch" placeholder="Blue Area Branch, Islamabad" autocomplete="off"
+                class="field-input">
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-head">
+            <div class="section-num rose">3</div>
+            <div>
+              <p class="section-title">Identity Documents</p>
+              <p class="section-desc">Clear photos required for NADRA-compliant verification</p>
+            </div>
+          </div>
+          <div class="docs-grid">
+            <div class="doc-tile">
+              <div class="doc-tile-head">
+                <p class="doc-tile-title"><i class="fa-regular fa-id-card"></i> CNIC Front Side <span
+                    class="req">*</span></p>
+              </div>
+              <p class="doc-tile-hint">Front side showing your photo and CNIC number.</p>
+              <div class="upload-zone" data-doc="cnic_front" tabindex="0" role="button" aria-label="Upload CNIC front">
+                <div class="uz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <p class="uz-title">Upload photo</p>
+                <p class="uz-sub">Drag &amp; drop or <span class="uz-browse">browse</span></p>
+                <img class="uz-preview" alt="">
+                <span class="uz-success"><i class="fa-solid fa-check"></i> Uploaded</span>
+                <div class="uz-overlay"><span class="uz-file"></span>
+                  <div class="uz-actions"><button type="button" class="uz-btn" data-action="change"
+                      aria-label="Change image"><i class="fa-solid fa-arrows-rotate"></i></button><button type="button"
+                      class="uz-btn danger" data-action="remove" aria-label="Remove image"><i
+                        class="fa-solid fa-xmark"></i></button></div>
+                </div>
+              </div>
+              <input type="file" class="file-input" accept="image/*" capture="environment">
+              <input type="hidden" id="cnic_front_path">
+            </div>
+            <div class="doc-tile">
+              <div class="doc-tile-head">
+                <p class="doc-tile-title"><i class="fa-regular fa-id-card"></i> CNIC Back Side <span
+                    class="req">*</span></p>
+              </div>
+              <p class="doc-tile-hint">Back side showing your address and expiry date.</p>
+              <div class="upload-zone" data-doc="cnic_back" tabindex="0" role="button" aria-label="Upload CNIC back">
+                <div class="uz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <p class="uz-title">Upload photo</p>
+                <p class="uz-sub">Drag &amp; drop or <span class="uz-browse">browse</span></p>
+                <img class="uz-preview" alt="">
+                <span class="uz-success"><i class="fa-solid fa-check"></i> Uploaded</span>
+                <div class="uz-overlay"><span class="uz-file"></span>
+                  <div class="uz-actions"><button type="button" class="uz-btn" data-action="change"
+                      aria-label="Change image"><i class="fa-solid fa-arrows-rotate"></i></button><button type="button"
+                      class="uz-btn danger" data-action="remove" aria-label="Remove image"><i
+                        class="fa-solid fa-xmark"></i></button></div>
+                </div>
+              </div>
+              <input type="file" class="file-input" accept="image/*" capture="environment">
+              <input type="hidden" id="cnic_back_path">
+            </div>
+            <div class="doc-tile">
+              <div class="doc-tile-head">
+                <p class="doc-tile-title"><i class="fa-regular fa-user"></i> Selfie Photo <span class="req">*</span></p>
+              </div>
+              <p class="doc-tile-hint">Clear selfie of your face in good lighting.</p>
+              <div class="upload-zone" data-doc="selfie" tabindex="0" role="button" aria-label="Upload selfie">
+                <div class="uz-icon"><i class="fa-solid fa-camera"></i></div>
+                <p class="uz-title">Take or upload</p>
+                <p class="uz-sub">Tap to open camera, or <span class="uz-browse">browse</span></p>
+                <img class="uz-preview" alt="">
+                <span class="uz-success"><i class="fa-solid fa-check"></i> Uploaded</span>
+                <div class="uz-overlay"><span class="uz-file"></span>
+                  <div class="uz-actions"><button type="button" class="uz-btn" data-action="change"
+                      aria-label="Change image"><i class="fa-solid fa-arrows-rotate"></i></button><button type="button"
+                      class="uz-btn danger" data-action="remove" aria-label="Remove image"><i
+                        class="fa-solid fa-xmark"></i></button></div>
+                </div>
+              </div>
+              <input type="file" class="file-input" accept="image/*" capture="user">
+              <input type="hidden" id="selfie_path">
+            </div>
+            <div class="doc-tile">
+              <div class="doc-tile-head">
+                <p class="doc-tile-title"><i class="fa-solid fa-camera-retro"></i> Selfie Holding CNIC <span
+                    class="req">*</span></p>
+              </div>
+              <p class="doc-tile-hint">Hold your CNIC next to your face, clearly visible.</p>
+              <div class="upload-zone" data-doc="selfie_with_cnic" tabindex="0" role="button"
+                aria-label="Upload selfie with CNIC">
+                <div class="uz-icon"><i class="fa-solid fa-camera-retro"></i></div>
+                <p class="uz-title">Take or upload</p>
+                <p class="uz-sub">Tap to open camera, or <span class="uz-browse">browse</span></p>
+                <img class="uz-preview" alt="">
+                <span class="uz-success"><i class="fa-solid fa-check"></i> Uploaded</span>
+                <div class="uz-overlay"><span class="uz-file"></span>
+                  <div class="uz-actions"><button type="button" class="uz-btn" data-action="change"
+                      aria-label="Change image"><i class="fa-solid fa-arrows-rotate"></i></button><button type="button"
+                      class="uz-btn danger" data-action="remove" aria-label="Remove image"><i
+                        class="fa-solid fa-xmark"></i></button></div>
+                </div>
+              </div>
+              <input type="file" class="file-input" accept="image/*" capture="environment">
+              <input type="hidden" id="selfie_with_cnic_path">
+            </div>
+          </div>
+          <div class="field-hint" style="margin-top:12px"><i class="fa-solid fa-lock"></i> Photos are encrypted,
+            compressed, and visible only to authorised compliance staff.</div>
+        </div>
+
+        <button type="submit" id="btn-submit" class="btn-submit"><i class="fa-solid fa-paper-plane"></i><span
+            id="btn-submit-text">Submit Seller KYC Application</span></button>
+      </form>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var MAX_FILE_SIZE = 5 * 1024 * 1024;
+      function $(id) { return document.getElementById(id); }
+      function showToast(msg, type) { try { if (window.UI && UI.showToast) UI.showToast(msg, type); else console.log(msg); } catch (e) { console.error(e); } }
+
+      /* ✅ NEW: canvas-based image compression — keeps base64 payloads small enough for a single JSON POST */
+      function compressImage(file, maxDim, quality) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () {
+              var w = img.width, h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                else { w = Math.round(w * maxDim / h); h = maxDim; }
+              }
+              var canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+              resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function setStatusCardState(state) {
+        var card = $('kyc-status-card'); var icon = $('status-icon'); var badge = $('status-badge'); var text = $('status-text'); var hint = $('status-hint');
+        card.classList.remove('is-approved', 'is-pending', 'is-blocked');
+        var s1 = $('step-1'), s2 = $('step-2'), s3 = $('step-3');
+        [s1, s2, s3].forEach(function (d) { if (d) d.className = 'step-dot'; });
+
+        if (state === 'approved') {
+          card.classList.add('is-approved');
+          icon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+          badge.className = 'status-badge is-approved';
+          badge.innerHTML = '<i class="fa-solid fa-shield-halved"></i> Approved';
+          text.textContent = 'Seller Studio Authorized';
+          hint.textContent = 'Your CNIC and bank details are verified. You can list items and receive settlements.';
+          s1.classList.add('done'); s2.classList.add('done'); s3.classList.add('done');
+        } else if (state === 'pending') {
+          card.classList.add('is-pending');
+          icon.innerHTML = '<i class="fa-solid fa-clock"></i>';
+          badge.className = 'status-badge is-pending';
+          badge.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Under Review';
+          text.textContent = 'Application Under Review';
+          hint.textContent = 'Our banking and compliance team is reviewing your details. Verification takes 24–48 hours.';
+          s1.classList.add('done'); s2.classList.add('done'); s3.classList.add('active');
+        } else {
+          card.classList.add('is-blocked');
+          icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+          badge.className = 'status-badge is-blocked';
+          badge.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Action Required';
+          text.textContent = 'Unverified (Cannot Publish Listings)';
+          hint.textContent = 'Complete the form below with your CNIC, documents and bank details to start selling.';
+          s1.classList.add('active');
+        }
+      }
+
+      function renderApproved() {
+        $('kyc-form-wrapper').innerHTML = '<div class="result"><div class="result-icon ok"><i class="fa-solid fa-check"></i></div><h3 class="result-title">Seller Account Active</h3><p class="result-text">Your CNIC and bank settlement information have been verified. You can now list items and receive escrow payouts directly to your bank.</p><a href="/seller/create-auction.html" class="btn btn-primary" style="margin-top:22px">Create New Auction <i class="fa-solid fa-arrow-right" style="font-size:.65rem"></i></a></div>';
+      }
+
+      function renderPending() {
+        $('kyc-form-wrapper').innerHTML = '<div class="result">' +
+          '<div class="result-icon pending"><i class="fa-solid fa-clock"></i></div>' +
+          '<h3 class="result-title">Application Submitted</h3>' +
+          '<p class="result-text">Our banking and compliance team is reviewing your details. Verification takes 24–48 hours. We will notify you once approved.</p>' +
+          '<div class="timeline">' +
+          '<div class="tl-item done"><div class="tl-dot"><i class="fa-solid fa-check"></i></div><div><p class="tl-title">Application Submitted</p><p class="tl-desc">We received your CNIC, documents and bank details.</p></div></div>' +
+          '<div class="tl-item active"><div class="tl-dot"><i class="fa-solid fa-magnifying-glass"></i></div><div><p class="tl-title">Under Review</p><p class="tl-desc">Compliance is verifying your identity and bank information.</p></div></div>' +
+          '<div class="tl-item"><div class="tl-dot"><i class="fa-solid fa-flag-checkered"></i></div><div><p class="tl-title">Seller Account Activated</p><p class="tl-desc">You will be able to list items and receive payouts.</p></div></div>' +
+          '</div>' +
+          '<button type="button" class="btn btn-primary" style="margin-top:24px" onclick="checkSellerKycStatus()"><i class="fa-solid fa-rotate-right"></i> Refresh Status</button>' +
+          '</div>';
+      }
+
+      async function checkSellerKycStatus() {
+        try {
+          var res = await ApiClient.get('/kyc/status');
+          var data = (res && res.data) || {};
+          var status = data.seller_kyc_status || 'unverified';
+          var rejectionReason = null;
+
+          if (data.submissions && Array.isArray(data.submissions)) {
+            var sellerSubs = data.submissions.filter(function (s) { return s.kyc_scope === 'seller'; });
+            if (sellerSubs.length > 0) {
+              var latest = sellerSubs[0];
+              if (latest.status === 'rejected') {
+                status = 'unverified';
+                rejectionReason = latest.rejection_reason;
+              } else if (latest.status === 'pending') {
+                status = 'pending';
+              } else if (latest.status === 'approved') {
+                status = 'approved';
+              }
+            }
+          }
+
+          if (status === 'approved') {
+            setStatusCardState('approved');
+            renderApproved();
+            var b = $('rejection-banner'); if (b) b.style.display = 'none';
+          }
+          else if (status === 'pending') {
+            setStatusCardState('pending');
+            renderPending();
+            var b = $('rejection-banner'); if (b) b.style.display = 'none';
+          }
+          else {
+            setStatusCardState('unverified');
+            if (rejectionReason) {
+              var banner = $('rejection-banner');
+              if (!banner.innerHTML.trim()) {
+                banner.className = 'status-card is-blocked mb-7';
+                banner.innerHTML = '<div class="status-icon"><i class="fa-solid fa-circle-exclamation"></i></div><div class="status-body"><p class="status-label">Previous Application Rejected</p><p class="status-hint" style="color:var(--sk-text);font-size:.82rem;margin-top:4px">' + rejectionReason + '</p></div>';
+              } else {
+                banner.querySelector('.status-hint').textContent = rejectionReason;
+              }
+              banner.style.display = 'flex';
+            }
+          }
+        } catch (err) {
+          console.error(err);
+          setStatusCardState('unverified');
+        }
+      }
+      window.checkSellerKycStatus = checkSellerKycStatus;
+
+      function initCnicFormatter() {
+        var input = $('cnic_number'); var hint = $('cnic-hint');
+        if (!input) return;
+        input.addEventListener('input', function () {
+          var digits = input.value.replace(/\D/g, '').slice(0, 13);
+          var out = digits;
+          if (digits.length > 5) out = digits.slice(0, 5) + '-' + digits.slice(5);
+          if (digits.length > 12) out = digits.slice(0, 5) + '-' + digits.slice(5, 12) + '-' + digits.slice(12);
+          input.value = out;
+          var field = $('field-cnic_number');
+          var valid = digits.length === 13;
+          if (digits.length === 0) { field.classList.remove('is-invalid'); hint.className = 'field-hint'; hint.innerHTML = '<i class="fa-regular fa-circle-question"></i> 13 digits, auto-formatted'; }
+          else if (valid) { field.classList.remove('is-invalid'); hint.className = 'field-hint'; hint.innerHTML = '<i class="fa-solid fa-circle-check" style="color:#059669"></i> Valid CNIC format'; }
+          else { field.classList.add('is-invalid'); hint.className = 'field-hint'; hint.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:#e11d48"></i> ' + (13 - digits.length) + ' more digit(s) needed'; }
+        });
+      }
+
+      function initDocumentUploads() {
+        var zones = document.querySelectorAll('.upload-zone[data-doc]');
+        zones.forEach(function (zone) {
+          var docName = zone.getAttribute('data-doc');
+          var fileInput = zone.parentElement.querySelector('input[type="file"]');
+          var hidden = $(docName + '_path');
+          var preview = zone.querySelector('.uz-preview');
+          var fileLabel = zone.querySelector('.uz-file');
+          if (!fileInput || !hidden) return;
+          var defaultHidden = zone.querySelectorAll('.uz-icon, .uz-title, .uz-sub');
+
+          function showFilledState(dataUrl, name) {
+            zone.classList.add('has-image');
+            preview.src = dataUrl;
+            hidden.value = dataUrl;
+            if (fileLabel) fileLabel.textContent = name || 'image';
+            defaultHidden.forEach(function (el) { el.style.display = 'none'; });
+          }
+          function showEmptyState() {
+            zone.classList.remove('has-image');
+            preview.removeAttribute('src');
+            hidden.value = '';
+            if (fileLabel) fileLabel.textContent = '';
+            defaultHidden.forEach(function (el) { el.style.display = ''; });
+          }
+
+          // ✅ FIXED: Compress -> Upload to Cloudinary -> Store URL
+          async function applyFile(file) {
+            if (!file) return;
+            if (!file.type.startsWith('image/')) { showToast('Please select an image file (PNG, JPG or WEBP).', 'error'); return; }
+            if (file.size > MAX_FILE_SIZE) { showToast('Image is larger than 5MB. Please choose a smaller file.', 'error'); return; }
+            try {
+              var compressed = await compressImage(file, 1280, 0.7);
+
+              // Show loading state
+              if (fileLabel) fileLabel.textContent = 'Uploading...';
+              zone.style.pointerEvents = 'none';
+
+              // ✅ Upload to Cloudinary
+              var res = await ApiClient.post('/upload/base64', {
+                image: compressed,
+                folder: 'nexusbids/kyc'
+              });
+
+              var docUrl = (res.data && res.data.url) ? res.data.url : res.url;
+              showFilledState(docUrl, file.name);
+              showToast('Document uploaded successfully!', 'success');
+            } catch (e) {
+              showToast('Could not upload document. Please try again.', 'error');
+              if (fileLabel) fileLabel.textContent = '';
+            } finally {
+              zone.style.pointerEvents = 'auto';
+            }
+          }
+
+          zone.addEventListener('click', function (e) { if (e.target.closest('[data-action]')) return; fileInput.click(); });
+          zone.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+          fileInput.addEventListener('change', function () { if (fileInput.files && fileInput.files[0]) applyFile(fileInput.files[0]); });
+          zone.addEventListener('click', function (e) {
+            var btn = e.target.closest('[data-action]');
+            if (!btn) return;
+            e.stopPropagation();
+            var action = btn.getAttribute('data-action');
+            if (action === 'remove') { fileInput.value = ''; showEmptyState(); }
+            else if (action === 'change') { fileInput.click(); }
+          });
+          ['dragenter', 'dragover'].forEach(function (evt) { zone.addEventListener(evt, function (e) { e.preventDefault(); e.stopPropagation(); zone.classList.add('is-dragover'); }); });
+          ['dragleave', 'drop'].forEach(function (evt) { zone.addEventListener(evt, function (e) { e.preventDefault(); e.stopPropagation(); if (evt === 'dragleave' && zone.contains(e.relatedTarget)) return; zone.classList.remove('is-dragover'); }); });
+          zone.addEventListener('drop', function (e) {
+            var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            if (file) {
+              try { var dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files; } catch (err) { }
+              applyFile(file);
+            }
+          });
+          if (hidden.value && hidden.value.trim()) {
+            preview.src = hidden.value;
+            zone.classList.add('has-image');
+            defaultHidden.forEach(function (el) { el.style.display = 'none'; });
+          }
+        });
+      }
+
+      async function submitSellerKyc(e) {
+        e.preventDefault();
+        var btn = $('btn-submit'); var btnText = $('btn-submit-text');
+        var missing = [];
+        if (!$('full_name_on_cnic').value.trim()) missing.push('Full Name');
+        if (!$('cnic_number').value.trim()) missing.push('CNIC Number');
+        if (!$('date_of_birth').value) missing.push('Date of Birth');
+        if (!$('bank_name').value) missing.push('Bank Name');
+        if (!$('bank_account_holder').value.trim()) missing.push('Account Title');
+        if (!$('bank_account_number').value.trim()) missing.push('Account Number');
+        if (!$('cnic_front_path').value) missing.push('CNIC Front photo');
+        if (!$('cnic_back_path').value) missing.push('CNIC Back photo');
+        if (!$('selfie_path').value) missing.push('Selfie');
+        if (!$('selfie_with_cnic_path').value) missing.push('Selfie with CNIC');
+        if (missing.length) {
+          showToast('Please complete: ' + missing.join(', '), 'error');
+          var firstTarget = null;
+          if (!$('full_name_on_cnic').value.trim()) firstTarget = $('full_name_on_cnic');
+          else if (!$('cnic_number').value.trim()) firstTarget = $('cnic_number');
+          else if (!$('date_of_birth').value) firstTarget = $('date_of_birth');
+          else if (!$('bank_name').value) firstTarget = $('bank_name');
+          else if (!$('bank_account_holder').value.trim()) firstTarget = $('bank_account_holder');
+          else if (!$('bank_account_number').value.trim()) firstTarget = $('bank_account_number');
+          else if (!$('cnic_front_path').value) firstTarget = document.querySelector('.upload-zone[data-doc="cnic_front"]');
+          else if (!$('cnic_back_path').value) firstTarget = document.querySelector('.upload-zone[data-doc="cnic_back"]');
+          else if (!$('selfie_path').value) firstTarget = document.querySelector('.upload-zone[data-doc="selfie"]');
+          else firstTarget = document.querySelector('.upload-zone[data-doc="selfie_with_cnic"]');
+          if (firstTarget) { firstTarget.scrollIntoView({ behavior: 'smooth', block: 'center' }); try { firstTarget.focus({ preventScroll: true }); } catch (e2) { } }
+          return;
+        }
+        btn.disabled = true; btnText.textContent = 'Submitting…';
+        var icon = btn.querySelector('i'); if (icon) icon.className = 'fa-solid fa-spinner spin';
+        var payload = {
+          full_name_on_cnic: $('full_name_on_cnic').value.trim(),
+          cnic_number: $('cnic_number').value.trim(),
+          date_of_birth: $('date_of_birth').value,
+          seller_type: $('seller_type').value,
+          bank_name: $('bank_name').value,
+          bank_account_holder: $('bank_account_holder').value.trim(),
+          bank_account_number: $('bank_account_number').value.trim(),
+          bank_branch: $('bank_branch').value.trim(),
+          cnic_front_path: $('cnic_front_path').value,
+          cnic_back_path: $('cnic_back_path').value,
+          selfie_path: $('selfie_path').value,
+          selfie_with_cnic_path: $('selfie_with_cnic_path').value
+        };
+        try {
+          await ApiClient.post('/kyc/seller', payload);
+          showToast('Seller KYC application submitted!', 'success');
+          checkSellerKycStatus();
+        } catch (err) {
+          showToast((err && err.message) || 'Submission failed', 'error');
+          btn.disabled = false; btnText.textContent = 'Submit Seller KYC Application';
+          if (icon) icon.className = 'fa-solid fa-paper-plane';
+        }
+      }
+      window.submitSellerKyc = submitSellerKyc;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var _t = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+        var _u = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+        if (!_t || !['seller', 'admin'].includes(_u.role)) {
+          window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/kyc.html'));
+          return;
+        }
+        var form = $('seller-kyc-form');
+        if (form) form.addEventListener('submit', submitSellerKyc);
+        initCnicFormatter();
+        initDocumentUploads();
+        checkSellerKycStatus();
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#6366f1" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#6366f1">
+
+  <title>NexusBids — Pakistan's Premier Online Auction Marketplace</title>
+  <meta name="description"
+    content="NexusBids: live online auctions across Pakistan with NADRA-verified sellers, bank-grade escrow, JazzCash & Easypaisa payments, and real-time proxy bidding.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <meta name="author" content="NexusBids">
+  <meta name="format-detection" content="telephone=no">
+
+  <link rel="canonical" href="https://nexusbids.pk/">
+
+  <!-- Open Graph -->
+  <meta property="og:site_name" content="NexusBids">
+  <meta property="og:title" content="NexusBids — Pakistan's Premier Auction Marketplace">
+  <meta property="og:description" content="Bid smart. Win fair. Escrow-protected live auctions in Pakistan.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://nexusbids.pk/">
+  <meta property="og:locale" content="en_PK">
+  <meta property="og:locale:alternate" content="ur_PK">
+  <meta property="og:image" content="https://nexusbids.pk/assets/og/nexusbids-cover.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="NexusBids — Pakistan's Premier Online Auction Marketplace">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@nexusbids">
+  <meta name="twitter:creator" content="@nexusbids">
+  <meta name="twitter:title" content="NexusBids — Pakistan's Premier Auction Marketplace">
+  <meta name="twitter:description" content="Bid smart. Win fair. Escrow-protected live auctions in Pakistan.">
+  <meta name="twitter:image" content="https://nexusbids.pk/assets/og/nexusbids-cover.jpg">
+
+  <!-- Icons / PWA -->
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png">
+  <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#6366f1">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="msapplication-TileColor" content="#6366f1">
+  <meta name="msapplication-config" content="/browserconfig.xml">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="NexusBids">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="NexusBids">
+
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+    font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+    img-src 'self' data: blob: https:;
+    connect-src 'self' https: wss:;
+    base-uri 'self';
+    form-action 'self';
+    object-src 'none';
+    upgrade-insecure-requests
+  ">
+
+  <!-- Theme bootstrap (avoid FOUC) -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('nexusbids_theme') || 'system';
+        var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        document.documentElement.classList.toggle('dark', d);
+        document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+      } catch (e) {
+        document.documentElement.classList.add('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff', 100: '#e0e7ff', 200: '#c7d2fe', 300: '#a5b4fc', 400: '#818cf8',
+              500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 800: '#3730a3', 900: '#312e81'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://nexusbids.pk/#organization",
+        "name": "NexusBids",
+        "url": "https://nexusbids.pk/",
+        "logo": "https://nexusbids.pk/assets/icons/logo-512.png",
+        "sameAs": [
+          "https://twitter.com/nexusbids",
+          "https://www.facebook.com/nexusbids"
+        ],
+        "areaServed": { "@type": "Country", "name": "Pakistan" }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://nexusbids.pk/#website",
+        "url": "https://nexusbids.pk/",
+        "name": "NexusBids",
+        "publisher": { "@id": "https://nexusbids.pk/#organization" },
+        "inLanguage": "en-PK",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://nexusbids.pk/auctions.html?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    :root {
+      --surface-1: #ffffff;
+      --surface-2: #e2e8f0;
+      --surface-3: #f1f5f9;
+
+      --hero-mesh: radial-gradient(at 0% 0%, rgba(99, 102, 241, .18) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(168, 85, 247, .15) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(16, 185, 129, .08) 0px, transparent 50%);
+      --section-y: 5rem;
+      --section-y-lg: 7rem;
+    }
+
+    html.dark {
+      --surface-1: #0f172a;
+      --surface-2: #1e293b;
+      --surface-3: #334155;
+    }
+
+    @media (min-width: 768px) {
+      :root {
+        --section-y: 6rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      :root {
+        --section-y: var(--section-y-lg);
+      }
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-tap-highlight-color: transparent;
+      scroll-padding-top: 5rem;
+    }
+
+    body {
+      overflow-x: hidden;
+      width: 100%;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 1rem;
+      z-index: 9999;
+      padding: .75rem 1.25rem;
+      background: #4f46e5;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: .875rem;
+      border-radius: .75rem;
+      box-shadow: 0 10px 30px -10px rgba(79, 70, 229, .6);
+      transition: top .2s ease;
+      text-decoration: none;
+    }
+
+    .skip-link:focus,
+    .skip-link:focus-visible {
+      top: 1rem;
+      outline: 2px solid #ffffff;
+      outline-offset: 2px;
+    }
+
+    .noscript-banner {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      padding: .75rem 1rem;
+      background: #fef3c7;
+      color: #78350f;
+      font-size: .8125rem;
+      font-weight: 600;
+      text-align: center;
+      border-bottom: 1px solid #fde68a;
+    }
+
+    .noscript-banner i {
+      flex-shrink: 0;
+    }
+
+    html:not(.dark) body {
+      background: #f7f8fc !important;
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .bg-slate-950 {
+      background: #f7f8fc !important;
+    }
+
+    html:not(.dark) .bg-slate-900,
+    html:not(.dark) .bg-slate-900\/60,
+    html:not(.dark) .bg-slate-900\/70,
+    html:not(.dark) .bg-slate-900\/40,
+    html:not(.dark) .bg-slate-900\/50,
+    html:not(.dark) .bg-slate-900\/90 {
+      background: #ffffff !important;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 4px 12px -4px rgba(15, 23, 42, .06);
+    }
+
+    html:not(.dark) .bg-slate-800 {
+      background: #f1f5f9 !important;
+    }
+
+    html:not(.dark) .bg-slate-50 {
+      background: #f7f8fc !important;
+    }
+
+    html:not(.dark) .text-slate-100,
+    html:not(.dark) .text-slate-200 {
+      color: #0f172a !important;
+    }
+
+    html:not(.dark) .text-slate-300,
+    html:not(.dark) .text-slate-400 {
+      color: #475569 !important;
+    }
+
+    html:not(.dark) .text-slate-500 {
+      color: #64748b !important;
+    }
+
+    html:not(.dark) .border-slate-800,
+    html:not(.dark) .border-slate-800\/80,
+    html:not(.dark) .border-slate-800\/90,
+    html:not(.dark) .border-slate-700 {
+      border-color: #e5e9f0 !important;
+    }
+
+    html:not(.dark) .hero-mesh-bg {
+      background:
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, .06) 0px, transparent 55%),
+        radial-gradient(at 100% 0%, rgba(168, 85, 247, .05) 0px, transparent 50%),
+        #f7f8fc !important;
+    }
+
+    html.dark .hero-mesh-bg {
+      background: var(--hero-mesh), #030712;
+    }
+
+    .nb-img-badge {
+      background: rgba(2, 6, 23, .85) !important;
+      color: #f8fafc !important;
+      border: 1px solid rgba(255, 255, 255, .12) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 6px 20px -6px rgba(0, 0, 0, .35);
+    }
+
+    .nb-img-badge.is-urgent {
+      background: rgba(244, 63, 94, .95) !important;
+      color: #ffffff !important;
+      border-color: rgba(252, 165, 165, .4) !important;
+    }
+
+    .nb-img-badge .nb-badge-dot {
+      background: #34d399;
+      flex-shrink: 0;
+    }
+
+    .nb-img-badge.is-urgent .nb-badge-dot {
+      background: #ffffff;
+    }
+
+    .nb-img-badge .nb-badge-icon {
+      color: #818cf8;
+    }
+
+    .nb-img-badge.is-urgent .nb-badge-icon {
+      color: #ffffff;
+    }
+
+    .nb-img-chip {
+      background: rgba(2, 6, 23, .85) !important;
+      color: #c7d2fe !important;
+      border: 1px solid rgba(99, 102, 241, .3) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .nb-img-bid-count {
+      background: rgba(79, 70, 229, .95) !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(165, 180, 252, .35) !important;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .stat-loading {
+      color: transparent !important;
+      background: linear-gradient(90deg, rgba(148, 163, 184, .2) 25%, rgba(148, 163, 184, .4) 50%, rgba(148, 163, 184, .2) 75%);
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.6s infinite;
+      border-radius: .5rem;
+      display: inline-block;
+      min-width: 4.5rem;
+      height: 1em;
+      vertical-align: middle;
+    }
+
+    .stat-empty {
+      color: #94a3b8 !important;
+      font-weight: 700;
+    }
+
+    .hero-mesh-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(148, 163, 184, .05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, .05) 1px, transparent 1px);
+      background-size: 56px 56px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+      pointer-events: none;
+      opacity: .7;
+    }
+
+    .gradient-text-shimmer {
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 40%, #9333ea 80%, #2563eb 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: shimmerText 6s linear infinite;
+    }
+
+    @keyframes shimmerText {
+      0% {
+        background-position: 0% center;
+      }
+
+      50% {
+        background-position: 100% center;
+      }
+
+      100% {
+        background-position: 0% center;
+      }
+    }
+
+    .pulse-dot {
+      position: relative;
+      display: inline-flex;
+      width: .5rem;
+      height: .5rem;
+      border-radius: 9999px;
+      background: #10b981;
+      flex-shrink: 0;
+    }
+
+    .pulse-dot::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 9999px;
+      background: #10b981;
+      opacity: .75;
+      animation: ping 1.5s cubic-bezier(0, 0, .2, 1) infinite;
+    }
+
+    @keyframes ping {
+
+      75%,
+      100% {
+        transform: scale(2.4);
+        opacity: 0;
+      }
+    }
+
+    .ticker-wrapper {
+      display: flex;
+      overflow: hidden;
+      user-select: none;
+      mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    }
+
+    .ticker-content {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      gap: 2.5rem;
+      padding-right: 2.5rem;
+      animation: tickerScroll 40s linear infinite;
+      will-change: transform;
+    }
+
+    .ticker-wrapper:hover .ticker-content {
+      animation-play-state: paused;
+    }
+
+    @keyframes tickerScroll {
+      0% {
+        transform: translateX(0);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    .card-hover-lift {
+      transition:
+        transform .3s cubic-bezier(.16, 1, .3, 1),
+        box-shadow .3s cubic-bezier(.16, 1, .3, 1),
+        border-color .3s ease;
+    }
+
+    .card-hover-lift:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px -12px rgba(99, 102, 241, .22);
+      border-color: rgba(99, 102, 241, .5) !important;
+    }
+
+    .cat-pill {
+      transition:
+        transform .25s cubic-bezier(.16, 1, .3, 1),
+        border-color .25s ease,
+        background-color .25s ease,
+        box-shadow .25s ease;
+    }
+
+    .cat-pill:hover {
+      transform: translateY(-3px);
+    }
+
+    .cat-pill:hover .cat-icon {
+      transform: scale(1.12) rotate(4deg);
+    }
+
+    .cat-icon {
+      transition: transform .25s ease;
+    }
+
+    .nb-countdown-urgent {
+      color: #fecaca !important;
+      font-weight: 800 !important;
+      animation: urgentPulse 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes urgentPulse {
+      0% {
+        opacity: .85;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .skeleton-box {
+      background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%);
+      background-size: 200% 100%;
+      animation: skeletonShimmer 1.8s infinite;
+      border-radius: .75rem;
+    }
+
+    html.dark .skeleton-box {
+      background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+      background-size: 200% 100%;
+    }
+
+    @keyframes skeletonShimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .glass-card {
+      background: rgba(15, 23, 42, .75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    html:not(.dark) .glass-card {
+      background: #ffffff;
+      border: 1px solid rgba(15, 23, 42, .08);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 20px 40px -20px rgba(99, 102, 241, .18);
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+      border-radius: .5rem;
+    }
+
+    .section-y {
+      padding-top: var(--section-y);
+      padding-bottom: var(--section-y);
+    }
+
+    #hero-spotlight {
+      box-shadow:
+        0 1px 2px rgba(15, 23, 42, .06),
+        0 30px 60px -20px rgba(99, 102, 241, .35),
+        0 0 0 1px rgba(99, 102, 241, .15) inset;
+    }
+
+    html:not(.dark) #hero-spotlight {
+      box-shadow:
+        0 1px 2px rgba(15, 23, 42, .04),
+        0 30px 60px -20px rgba(99, 102, 241, .22);
+    }
+
+    @media (max-width: 640px) {
+      .hero-title {
+        font-size: 2.125rem !important;
+        line-height: 1.12 !important;
+        letter-spacing: -.03em !important;
+      }
+
+      .hero-sub {
+        font-size: .9375rem !important;
+      }
+
+      .stat-counter {
+        font-size: 1.375rem !important;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+
+  <noscript>
+    <style>
+      .skeleton-box,
+      .stat-loading {
+        display: none !important;
+      }
+
+      #hero-spotlight,
+      #categories-grid,
+      #trending-grid,
+      #recs-section {
+        display: none !important;
+      }
+
+      .noscript-banner {
+        display: flex !important;
+      }
+    </style>
+  </noscript>
+</head>
+
+<body
+  class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <noscript>
+    <div class="noscript-banner" role="status">
+      <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+      <span>JavaScript is disabled. Some live features (bidding, stats, listings) will not work.</span>
+    </div>
+  </noscript>
+
+  <header id="nb-header" role="banner"></header>
+
+  <main id="main-content" role="main" tabindex="-1" class="flex-1 w-full overflow-x-hidden">
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section
+      class="hero-mesh-bg relative border-b border-slate-800/80 pt-10 pb-16 sm:pt-16 sm:pb-20 lg:pt-20 lg:pb-24 overflow-hidden"
+      aria-labelledby="hero-heading">
+      <div
+        class="absolute top-10 left-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"
+        aria-hidden="true"></div>
+      <div
+        class="absolute bottom-10 right-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-purple-500/10 rounded-full blur-3xl pointer-events-none"
+        aria-hidden="true"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 sm:gap-14 lg:gap-16 items-center">
+
+          <div class="lg:col-span-7 flex flex-col items-start text-left">
+            <div
+              class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-indigo-500 dark:text-indigo-400 text-xs font-semibold tracking-wide mb-6">
+              <span class="pulse-dot" aria-hidden="true"></span>
+              <span>Pakistan's Verified Live Auction Platform</span>
+
+            </div>
+
+            <h1 id="hero-heading"
+              class="hero-title text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-[1.06] mb-5">
+              Bid Smart. Win Fair.<br>
+              <span class="gradient-text-shimmer">Every Single Second.</span>
+            </h1>
+
+            <p class="hero-sub text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed mb-8">
+              Explore thousands of verified auctions across Pakistan. Protected by
+              <strong class="text-slate-900 dark:text-slate-200 font-semibold">NADRA KYC</strong>,
+              real <strong class="text-slate-900 dark:text-slate-200 font-semibold">escrow holds</strong>, and automated
+              <strong class="text-slate-900 dark:text-slate-200 font-semibold">proxy bidding</strong>
+              so you never overpay or miss out.
+            </p>
+
+            <div class="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3 mb-10 sm:mb-12">
+              <a href="/auctions.html"
+                class="inline-flex items-center justify-center gap-2.5 px-7 h-12 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 shadow-lg shadow-indigo-600/30 hover:shadow-indigo-500/40 hover:-translate-y-px transition-all text-sm sm:text-base group">
+                <i class="fa-solid fa-gavel group-hover:rotate-12 transition-transform" aria-hidden="true"></i>
+                <span>Explore Live Auctions</span>
+                <i class="fa-solid fa-arrow-right text-xs opacity-75 group-hover:translate-x-0.5 transition-transform"
+                  aria-hidden="true"></i>
+              </a>
+
+              <a href="/register.html?role=seller"
+                class="inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700/80 transition-all text-sm sm:text-base">
+                <i class="fa-solid fa-store text-indigo-500 dark:text-indigo-400" aria-hidden="true"></i>
+                <span>Start Selling</span>
+              </a>
+            </div>
+
+            <div id="hero-stats" role="group" aria-label="Platform statistics"
+              class="w-full grid grid-cols-3 gap-2 sm:gap-8 pt-8 border-t border-slate-200 dark:border-slate-800/80">
+              <div class="px-1 sm:px-2">
+                <p id="stat-auctions"
+                  class="stat-counter stat-loading text-2xl sm:text-3xl font-black tracking-tight tabular-nums"
+                  aria-live="polite" aria-busy="true">—</p>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">Live Auctions</p>
+              </div>
+              <div class="px-1 sm:px-2 border-l border-slate-200 dark:border-slate-800/80">
+                <p id="stat-users"
+                  class="stat-counter stat-loading text-2xl sm:text-3xl font-black tracking-tight tabular-nums"
+                  aria-live="polite" aria-busy="true">—</p>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">Verified Bidders</p>
+              </div>
+              <div class="px-1 sm:px-2 border-l border-slate-200 dark:border-slate-800/80">
+                <p
+                  class="stat-counter text-2xl sm:text-3xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight tabular-nums">
+                  100%</p>
+                <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">Escrow Secured</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 w-full">
+            <div id="hero-spotlight"
+              class="glass-card rounded-2xl sm:rounded-3xl overflow-hidden border border-indigo-500/30 relative"
+              aria-busy="true" aria-live="polite" aria-label="Featured live auction">
+              <div class="skeleton-box h-48 sm:h-64 w-full"></div>
+              <div class="p-5 sm:p-6 space-y-4">
+                <div class="skeleton-box h-4 w-24"></div>
+                <div class="skeleton-box h-6 w-3/4"></div>
+                <div class="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-800">
+                  <div class="skeleton-box h-6 w-28"></div>
+                  <div class="skeleton-box h-10 w-24 rounded-lg"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ TRUST MARQUEE ═══════════ -->
+    <div
+      class="w-full bg-slate-100 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800/80 py-3.5 overflow-hidden">
+      <div class="ticker-wrapper" aria-hidden="true">
+        <div class="ticker-content text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-shield-halved text-emerald-500 dark:text-emerald-400"></i> NADRA KYC Verified
+            Sellers</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-lock text-indigo-500 dark:text-indigo-400"></i> 100% Escrow Hold Protection</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-bolt text-amber-500 dark:text-amber-400"></i> Real-Time WebSocket Bidding</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-mobile-screen text-pink-500 dark:text-pink-400"></i> JazzCash &amp; Easypaisa Instant
+            Pay</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-robot text-cyan-500 dark:text-cyan-400"></i> AI Smart Proxy Auto-Bidding</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-truck-fast text-emerald-500 dark:text-emerald-400"></i> Insured TCS &amp; Leopards
+            Delivery</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-shield-halved text-emerald-500 dark:text-emerald-400"></i> NADRA KYC Verified
+            Sellers</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-lock text-indigo-500 dark:text-indigo-400"></i> 100% Escrow Hold Protection</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-bolt text-amber-500 dark:text-amber-400"></i> Real-Time WebSocket Bidding</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-mobile-screen text-pink-500 dark:text-pink-400"></i> JazzCash &amp; Easypaisa Instant
+            Pay</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-robot text-cyan-500 dark:text-cyan-400"></i> AI Smart Proxy Auto-Bidding</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+          <span class="inline-flex items-center gap-2 whitespace-nowrap"><i
+              class="fa-solid fa-truck-fast text-emerald-500 dark:text-emerald-400"></i> Insured TCS &amp; Leopards
+            Delivery</span>
+          <span class="text-slate-400 dark:text-slate-700">•</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ TRUST PILLARS ═══════════ -->
+    <section class="section-y bg-white dark:bg-slate-900/30 border-b border-slate-200 dark:border-slate-800/80"
+      aria-label="Why choose NexusBids">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div
+            class="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 hover:border-emerald-500/40 hover:-translate-y-0.5 transition-all duration-300">
+            <div
+              class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-vault text-emerald-600 dark:text-emerald-400 text-lg" aria-hidden="true"></i>
+            </div>
+            <div class="min-w-0">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-slate-100">Bank-Grade Escrow</h2>
+              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Funds remain locked safely
+                until you inspect &amp; confirm the delivered item.</p>
+            </div>
+          </div>
+
+          <div
+            class="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 hover:border-indigo-500/40 hover:-translate-y-0.5 transition-all duration-300">
+            <div
+              class="w-11 h-11 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-id-card-clip text-indigo-600 dark:text-indigo-400 text-lg" aria-hidden="true"></i>
+            </div>
+            <div class="min-w-0">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-slate-100">NADRA CNIC Verified</h2>
+              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Sellers and high-value
+                bidders undergo biometric &amp; CNIC credential review.</p>
+            </div>
+          </div>
+
+          <div
+            class="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 hover:border-amber-500/40 hover:-translate-y-0.5 transition-all duration-300">
+            <div
+              class="w-11 h-11 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-money-bill-transfer text-amber-600 dark:text-amber-400 text-lg"
+                aria-hidden="true"></i>
+            </div>
+            <div class="min-w-0">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-slate-100">JazzCash &amp; Easypaisa</h2>
+              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Instant native Pakistan
+                checkout rails with zero international conversion fees.</p>
+            </div>
+          </div>
+
+          <div
+            class="flex items-start gap-4 p-5 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800/80 hover:border-cyan-500/40 hover:-translate-y-0.5 transition-all duration-300">
+            <div
+              class="w-11 h-11 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-robot text-cyan-600 dark:text-cyan-400 text-lg" aria-hidden="true"></i>
+            </div>
+            <div class="min-w-0">
+              <h2 class="text-sm font-bold text-slate-900 dark:text-slate-100">Smart Auto-Bidding</h2>
+              <p class="text-xs text-slate-600 dark:text-slate-400 mt-1.5 leading-relaxed">Enter your maximum limit. Our
+                engine automatically bids the minimal increment.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ CATEGORIES ═══════════ -->
+    <section class="section-y" aria-labelledby="categories-heading">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+          <div>
+            <div
+              class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+              <i class="fa-solid fa-shapes" aria-hidden="true"></i> Browse Marketplace
+            </div>
+            <h2 id="categories-heading"
+              class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Explore by
+              Category</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1.5">Discover verified listings across Pakistan's
+              most active auction verticals</p>
+          </div>
+
+          <a href="/categories.html"
+            class="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 transition-colors self-start sm:self-auto py-1">
+            <span>View All Categories</span>
+            <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div id="categories-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4" aria-busy="true"
+          aria-live="polite">
+          <div class="skeleton-box h-32"></div>
+          <div class="skeleton-box h-32"></div>
+          <div class="skeleton-box h-32"></div>
+          <div class="skeleton-box h-32"></div>
+          <div class="skeleton-box h-32"></div>
+          <div class="skeleton-box h-32"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ TRENDING ═══════════ -->
+    <section class="section-y bg-slate-50 dark:bg-slate-900/40 border-y border-slate-200 dark:border-slate-800/80"
+      aria-labelledby="trending-heading">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+          <div>
+            <div
+              class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-rose-600 dark:text-rose-500 mb-2">
+              <i class="fa-solid fa-fire-flame-curved animate-pulse" aria-hidden="true"></i> Ending Soon &amp; High
+              Demand
+            </div>
+            <h2 id="trending-heading"
+              class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Trending
+              Live Auctions</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1.5">Real-time bids updating every second. Place
+              your bid before the clock hits zero.</p>
+          </div>
+
+          <a href="/auctions.html"
+            class="inline-flex items-center gap-2 px-4 h-10 rounded-lg bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200 transition-colors self-start sm:self-auto">
+            <span>All Auctions</span>
+            <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
+          </a>
+        </div>
+
+        <div id="trending-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6" aria-busy="true"
+          aria-live="polite">
+          <div class="skeleton-box h-80"></div>
+          <div class="skeleton-box h-80"></div>
+          <div class="skeleton-box h-80"></div>
+          <div class="skeleton-box h-80"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ AI RECOMMENDATIONS ═══════════ -->
+    <section id="recs-section" class="section-y" style="display:none" aria-labelledby="recs-heading">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+          <div>
+            <div
+              class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 mb-2">
+              <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Personalized AI Intelligence
+            </div>
+            <h2 id="recs-heading"
+              class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">Tailored For
+              Your Profile</h2>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1.5">Based on your recent bids, watchlist activity,
+              and category preferences</p>
+          </div>
+        </div>
+
+        <div id="recs-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════ HOW IT WORKS ═══════════ -->
+    <section class="section-y bg-white dark:bg-slate-900/20 border-t border-slate-200 dark:border-slate-800/80 relative"
+      aria-labelledby="how-heading">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+          <div
+            class="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-2">
+            <i class="fa-solid fa-circle-question" aria-hidden="true"></i> Simple &amp; Secure
+          </div>
+          <h2 id="how-heading"
+            class="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">How NexusBids
+            Works</h2>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 mt-3">Win premium items or sell with escrow
+            protection in three seamless steps</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+          <div
+            class="card-hover-lift relative p-7 sm:p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-6">
+                <div
+                  class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center text-indigo-600 dark:text-indigo-400 text-xl">
+                  <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+                </div>
+                <span class="text-3xl font-black text-slate-300 dark:text-slate-800/60 font-mono tabular-nums"
+                  aria-hidden="true">01</span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Register &amp; Verify</h3>
+              <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Create your account in 60 seconds. Verify your phone and CNIC to unlock bidding limits and ensure a
+                trusted community.
+              </p>
+            </div>
+            <div
+              class="pt-6 mt-6 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-2 text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+              <i class="fa-solid fa-check-circle" aria-hidden="true"></i>
+              <span>KYC compliant via NADRA standards</span>
+            </div>
+          </div>
+
+          <div
+            class="card-hover-lift relative p-7 sm:p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-6">
+                <div
+                  class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-600 dark:text-amber-400 text-xl">
+                  <i class="fa-solid fa-gavel" aria-hidden="true"></i>
+                </div>
+                <span class="text-3xl font-black text-slate-300 dark:text-slate-800/60 font-mono tabular-nums"
+                  aria-hidden="true">02</span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Bid Real-Time or Auto</h3>
+              <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Place manual bids on live items or activate our automated proxy engine to protect your time and bid
+                within your budget.
+              </p>
+            </div>
+            <div
+              class="pt-6 mt-6 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-2 text-xs font-semibold text-amber-600 dark:text-amber-400">
+              <i class="fa-solid fa-bell" aria-hidden="true"></i>
+              <span>Instant outbid alerts &amp; notifications</span>
+            </div>
+          </div>
+
+          <div
+            class="card-hover-lift relative p-7 sm:p-8 rounded-2xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-6">
+                <div
+                  class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center text-emerald-600 dark:text-emerald-400 text-xl">
+                  <i class="fa-solid fa-box-open" aria-hidden="true"></i>
+                </div>
+                <span class="text-3xl font-black text-slate-300 dark:text-slate-800/60 font-mono tabular-nums"
+                  aria-hidden="true">03</span>
+              </div>
+              <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">Escrow Pay &amp; Receive</h3>
+              <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                Pay securely via JazzCash, Easypaisa, or 1Link transfer. Funds are held in escrow until you inspect and
+                approve the package.
+              </p>
+            </div>
+            <div
+              class="pt-6 mt-6 border-t border-slate-200 dark:border-slate-800/80 flex items-center gap-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+              <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+              <span>100% money-back escrow guarantee</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ CTA ═══════════ -->
+    <section
+      class="py-16 sm:py-24 bg-gradient-to-b from-indigo-50 dark:from-indigo-950/40 to-slate-100 dark:to-slate-950 border-t border-slate-200 dark:border-slate-800/80 relative overflow-hidden"
+      aria-labelledby="cta-heading">
+      <div
+        class="absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_50%,rgba(99,102,241,0.10),transparent)] pointer-events-none"
+        aria-hidden="true"></div>
+
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <span
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 text-xs font-bold tracking-wide uppercase mb-5">
+          <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Ready to start winning?
+        </span>
+
+        <h2 id="cta-heading"
+          class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-[1.1] mb-5">
+          Join <span id="cta-user-count" class="stat-loading" aria-live="polite">—</span> Verified Buyers &amp; Sellers
+          Across Pakistan
+        </h2>
+
+        <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-xl mx-auto mb-9 leading-relaxed">
+          Create your free account today and experience Pakistan's fastest, safest auction platform.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-md mx-auto">
+          <a href="/register.html"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 h-12 rounded-xl font-bold text-white bg-indigo-600 hover:bg-indigo-500 hover:-translate-y-px shadow-xl shadow-indigo-600/35 hover:shadow-indigo-500/45 transition-all text-sm sm:text-base">
+            <span>Create Free Account</span>
+            <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
+          </a>
+          <a href="/auctions.html"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 h-12 rounded-xl font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 transition-all text-sm sm:text-base">
+            <span>Browse Listings</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="nb-footer" role="contentinfo"></footer>
+
+  <script src="/assets/js/api-client.js" defer></script>
+  <script src="/assets/js/ui.js" defer></script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+      }
+
+      function animateCount(id, target) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        const n = Number(target);
+        if (!isFinite(n) || n < 0) { setStatUnavailable(id); return; }
+
+        el.classList.remove('stat-loading', 'stat-empty');
+        el.setAttribute('aria-busy', 'false');
+
+        if (n === 0) { el.textContent = '0'; return; }
+
+        const duration = 1200;
+        const frameDuration = 1000 / 60;
+        const totalFrames = Math.round(duration / frameDuration);
+        let frame = 0;
+        const counter = setInterval(() => {
+          frame++;
+          const progress = frame / totalFrames;
+          const current = Math.round(n * (1 - Math.pow(1 - progress, 3)));
+          el.textContent = current.toLocaleString('en-PK');
+          if (frame === totalFrames) {
+            clearInterval(counter);
+            el.textContent = n.toLocaleString('en-PK');
+          }
+        }, frameDuration);
+      }
+
+      function setStatUnavailable(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('stat-loading');
+        el.classList.add('stat-empty');
+        el.setAttribute('aria-busy', 'false');
+        el.textContent = '—';
+      }
+
+      function setCtaUserCount(value) {
+        const el = document.getElementById('cta-user-count');
+        if (!el) return;
+        const n = Number(value);
+        if (isFinite(n) && n > 0) {
+          el.classList.remove('stat-loading');
+          el.textContent = `${n.toLocaleString('en-PK')}+`;
+        } else {
+          el.classList.remove('stat-loading');
+          el.textContent = 'Thousands of';
+        }
+      }
+
+      let tickerInterval;
+      function startTicker() {
+        if (tickerInterval) clearInterval(tickerInterval);
+        tickerInterval = setInterval(() => {
+          document.querySelectorAll('[data-end-time]').forEach(el => {
+            const cd = UI.formatCountdown(el.dataset.endTime);
+            el.textContent = cd.ended ? 'Ended' : `${cd.text} left`;
+            el.classList.toggle('nb-countdown-urgent', !!(cd.isUrgent && !cd.ended));
+          });
+        }, 1000);
+      }
+
+      const CATEGORY_ICONS = {
+        cars: { icon: 'fa-car', color: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10' },
+        vehicles: { icon: 'fa-car', color: 'text-blue-500 dark:text-blue-400', bg: 'bg-blue-500/10' },
+        mobiles: { icon: 'fa-mobile-screen', color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10' },
+        phones: { icon: 'fa-mobile-screen', color: 'text-emerald-500 dark:text-emerald-400', bg: 'bg-emerald-500/10' },
+        electronics: { icon: 'fa-laptop-code', color: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10' },
+        computers: { icon: 'fa-laptop', color: 'text-cyan-500 dark:text-cyan-400', bg: 'bg-cyan-500/10' },
+        jewelry: { icon: 'fa-gem', color: 'text-amber-500 dark:text-amber-400', bg: 'bg-amber-500/10' },
+        watches: { icon: 'fa-clock', color: 'text-rose-500 dark:text-rose-400', bg: 'bg-rose-500/10' },
+        collectibles: { icon: 'fa-coins', color: 'text-yellow-500 dark:text-yellow-400', bg: 'bg-yellow-500/10' },
+        art: { icon: 'fa-palette', color: 'text-purple-500 dark:text-purple-400', bg: 'bg-purple-500/10' },
+        'real estate': { icon: 'fa-building', color: 'text-teal-500 dark:text-teal-400', bg: 'bg-teal-500/10' },
+        fashion: { icon: 'fa-shirt', color: 'text-pink-500 dark:text-pink-400', bg: 'bg-pink-500/10' }
+      };
+
+      function iconForCategory(name) {
+        const key = String(name || '').toLowerCase().trim();
+        if (CATEGORY_ICONS[key]) return CATEGORY_ICONS[key];
+        for (const [k, v] of Object.entries(CATEGORY_ICONS)) {
+          if (key.includes(k)) return v;
+        }
+        return { icon: 'fa-tag', color: 'text-indigo-500 dark:text-indigo-400', bg: 'bg-indigo-500/10' };
+      }
+
+      function renderAuctionCard(a) {
+        const cd = UI.formatCountdown(a.end_time);
+        const imgSrc = a.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=70';
+        const isUrgent = cd.isUrgent && !cd.ended;
+
+        return `
+          <article class="card-hover-lift rounded-2xl bg-white dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800/90 overflow-hidden flex flex-col group h-full shadow-sm">
+            <div class="relative h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+              <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(a.title)}"
+                   width="600" height="400" loading="lazy" decoding="async"
+                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                   onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&auto=format&fit=crop&q=70'">
+              <div class="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent pointer-events-none"></div>
+
+              <div class="absolute top-3 inset-x-3 flex items-center justify-between gap-2 pointer-events-none">
+                <span class="nb-img-badge ${isUrgent ? 'is-urgent' : ''} inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold tracking-wide">
+                  <i class="fa-regular fa-clock nb-badge-icon ${isUrgent ? 'animate-pulse' : ''}" aria-hidden="true"></i>
+                  <span data-end-time="${escapeHtml(a.end_time)}">${cd.ended ? 'Ended' : cd.text + ' left'}</span>
+                </span>
+
+                ${a.bid_count > 0 ? `
+                  <span class="nb-img-bid-count inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold">
+                    <i class="fa-solid fa-gavel text-[10px]" aria-hidden="true"></i> ${escapeHtml(a.bid_count)}
+                  </span>` : ''}
+              </div>
+
+              <div class="absolute bottom-3 left-3 pointer-events-none">
+                <span class="nb-img-chip px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider">
+                  ${escapeHtml(a.category_name || 'General')}
+                </span>
+              </div>
+            </div>
+
+            <div class="p-4 flex-1 flex flex-col justify-between">
+              <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2 leading-snug mb-3">
+                <a href="/auction-details.html?id=${encodeURIComponent(a.auction_id)}" class="hover:underline focus:outline-none">
+                  ${escapeHtml(a.title)}
+                </a>
+              </h3>
+
+              <div class="pt-3 border-t border-slate-200 dark:border-slate-800/80 flex items-end justify-between gap-2">
+                <div class="min-w-0">
+                  <p class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Current Bid</p>
+                  <p class="text-base sm:text-lg font-black text-emerald-600 dark:text-emerald-400 leading-none mt-1 tabular-nums truncate">
+                    ${UI.formatPKR(a.current_bid || a.starting_price)}
+                  </p>
+                </div>
+
+                <a href="/auction-details.html?id=${encodeURIComponent(a.auction_id)}"
+                   class="inline-flex items-center gap-1.5 px-3.5 h-9 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-95 transition-all shadow-md shadow-indigo-600/20 shrink-0">
+                  <span>Bid</span>
+                  <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      function emptySpotlight(msg, sub) {
+        return `
+          <div class="p-8 sm:p-10 text-center">
+            <div class="w-14 h-14 mx-auto rounded-2xl bg-indigo-500/10 border border-indigo-500/25 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-gavel text-indigo-500 dark:text-indigo-400 text-xl" aria-hidden="true"></i>
+            </div>
+            <p class="text-sm font-bold text-slate-800 dark:text-slate-200">${escapeHtml(msg)}</p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(sub || '')}</p>
+            <a href="/auctions.html"
+               class="inline-flex items-center gap-2 px-4 h-10 mt-5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 transition-all">
+              <span>Browse Auctions</span>
+              <i class="fa-solid fa-arrow-right text-[10px]" aria-hidden="true"></i>
+            </a>
+          </div>`;
+      }
+
+      function emptyGridBox(icon, title, sub, ctaHref, ctaLabel) {
+        return `
+          <div class="col-span-full text-center py-12 px-4 rounded-2xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800">
+            <i class="fa-solid ${icon} text-3xl text-slate-400 dark:text-slate-600 mb-3 block" aria-hidden="true"></i>
+            <p class="text-slate-800 dark:text-slate-300 font-semibold">${escapeHtml(title)}</p>
+            ${sub ? `<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">${escapeHtml(sub)}</p>` : ''}
+            ${ctaHref ? `
+              <a href="${escapeHtml(ctaHref)}"
+                 class="inline-flex items-center gap-1.5 px-4 h-10 mt-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500">
+                ${escapeHtml(ctaLabel || 'Continue')}
+              </a>` : ''}
+          </div>`;
+      }
+
+      /* ★★★ FILTER: only keep auctions whose end_time is in the future ★★★ */
+      function filterLiveAuctions(list) {
+        const now = Date.now();
+        return (list || []).filter(function (a) {
+          if (!a || !a.end_time) return false;
+          const endTs = new Date(a.end_time).getTime();
+          if (!isFinite(endTs)) return false;
+          return endTs > now;
+        });
+      }
+
+      async function initHome() {
+        if (typeof ApiClient === 'undefined') {
+          console.error('[home] ApiClient missing — check /assets/js/api-client.js');
+          setStatUnavailable('stat-auctions');
+          setStatUnavailable('stat-users');
+          setCtaUserCount(0);
+          return;
+        }
+
+        const trendGrid = document.getElementById('trending-grid');
+        const spotlight = document.getElementById('hero-spotlight');
+        const catGrid = document.getElementById('categories-grid');
+        const trendingIds = new Set();
+
+        /* ── STATS ── */
+        let usersCount = 0;
+        try {
+          const statsRes = await ApiClient.get('/stats');
+          const s = (statsRes && statsRes.data) ? statsRes.data : null;
+
+          if (s) {
+            const auctions = s.active_auctions ?? s.active_auctions_count ?? s.total_auctions;
+            const users = s.total_users ?? s.verified_users;
+
+            if (auctions != null && isFinite(Number(auctions))) animateCount('stat-auctions', Number(auctions));
+            else setStatUnavailable('stat-auctions');
+
+            if (users != null && isFinite(Number(users))) {
+              usersCount = Number(users);
+              animateCount('stat-users', usersCount);
+            } else {
+              setStatUnavailable('stat-users');
+            }
+          } else {
+            setStatUnavailable('stat-auctions');
+            setStatUnavailable('stat-users');
+          }
+        } catch (err) {
+          console.warn('[home] Stats unavailable:', err);
+          setStatUnavailable('stat-auctions');
+          setStatUnavailable('stat-users');
+        }
+
+        setCtaUserCount(usersCount);
+
+        /* ── CATEGORIES ── */
+        try {
+          const catRes = await ApiClient.get('/categories').catch(() => null);
+          const rawCats = (catRes && catRes.data) ? catRes.data : [];
+
+          const seen = new Set();
+          const cats = rawCats.filter(c => {
+            const key = String(c && c.category_name || '').toLowerCase().trim();
+            if (!key || seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          });
+
+          if (cats.length > 0) {
+            catGrid.innerHTML = cats.slice(0, 6).map(c => {
+              const conf = iconForCategory(c.category_name);
+              const count = c.active_auction_count ?? c.auction_count ?? 0;
+              return `
+                <a href="/auctions.html?category=${encodeURIComponent(c.category_id)}"
+                   class="cat-pill rounded-2xl p-4 flex flex-col items-center text-center group cursor-pointer border border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-900 hover:border-indigo-500/50 shadow-sm">
+                  <div class="w-12 h-12 rounded-xl ${conf.bg} flex items-center justify-center mb-3 cat-icon">
+                    <i class="fa-solid ${conf.icon} ${conf.color} text-lg" aria-hidden="true"></i>
+                  </div>
+                  <h3 class="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1">
+                    ${escapeHtml(c.category_name)}
+                  </h3>
+                  <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-medium tabular-nums">
+                    ${escapeHtml(count)} active
+                  </p>
+                </a>
+              `;
+            }).join('');
+          } else {
+            catGrid.innerHTML = emptyGridBox(
+              'fa-shapes',
+              'No categories available yet',
+              'Categories will appear once sellers start listing.'
+            );
+          }
+          catGrid.setAttribute('aria-busy', 'false');
+        } catch (err) {
+          console.error('[home] Categories failed:', err);
+          catGrid.innerHTML = emptyGridBox(
+            'fa-triangle-exclamation',
+            "Couldn't load categories",
+            'Please check your connection and try again.'
+          );
+          catGrid.setAttribute('aria-busy', 'false');
+        }
+
+        /* ── TRENDING + HERO SPOTLIGHT ── */
+        try {
+          // Fetch more than we need so filtering still leaves enough
+          const aRes = await ApiClient.get('/auctions', { status: 'active', limit: '12', sort: 'ending_soon' });
+          const rawAuctions = (aRes && aRes.data) ? aRes.data : [];
+
+          // ★ Filter out auctions whose end_time has already passed
+          const trendingAuctions = filterLiveAuctions(rawAuctions).slice(0, 5);
+
+          trendingAuctions.forEach(a => trendingIds.add(String(a.auction_id)));
+
+          if (trendingAuctions.length === 0) {
+            spotlight.setAttribute('aria-busy', 'false');
+            spotlight.innerHTML = emptySpotlight(
+              'No live auctions right now',
+              'Check back soon — or be the first to list an item.'
+            );
+            trendGrid.innerHTML = emptyGridBox(
+              'fa-gavel',
+              'No active auctions at this moment',
+              'Be the first to list an item or check back shortly!',
+              '/seller/create-auction.html',
+              'Create Listing'
+            );
+          } else {
+            const hero = trendingAuctions[0];
+            const hcd = UI.formatCountdown(hero.end_time);
+            const heroImg = hero.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=75';
+
+            spotlight.setAttribute('aria-busy', 'false');
+            spotlight.innerHTML = `
+              <div class="relative h-48 sm:h-64 overflow-hidden bg-slate-100 dark:bg-slate-900">
+                <img src="${escapeHtml(heroImg)}" alt="${escapeHtml(hero.title)}"
+                     width="800" height="600" fetchpriority="high" decoding="async"
+                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                     onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=75'">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/25 to-transparent pointer-events-none"></div>
+
+                <div class="absolute top-3.5 right-3.5 flex items-center gap-2">
+                  <span class="nb-img-badge is-urgent inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold">
+                    <span class="nb-badge-dot w-1.5 h-1.5 rounded-full animate-ping" aria-hidden="true"></span>
+                    <span data-end-time="${escapeHtml(hero.end_time)}">${hcd.ended ? 'Ended' : hcd.text + ' left'}</span>
+                  </span>
+                </div>
+
+                <div class="absolute bottom-3 left-4 pointer-events-none">
+                  <span class="nb-img-chip px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase tracking-wider">
+                    ${escapeHtml(hero.category_name || 'Featured Listing')}
+                  </span>
+                </div>
+              </div>
+
+              <div class="p-5 sm:p-6">
+                <h3 class="text-base sm:text-lg font-black text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug mb-5">
+                  <a href="/auction-details.html?id=${encodeURIComponent(hero.auction_id)}" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                    ${escapeHtml(hero.title)}
+                  </a>
+                </h3>
+
+                <div class="flex items-center justify-between gap-3 pt-5 border-t border-slate-200 dark:border-slate-800">
+                  <div class="min-w-0">
+                    <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Current Highest Bid</p>
+                    <p class="text-xl sm:text-2xl font-black text-emerald-600 dark:text-emerald-400 tracking-tight mt-1 tabular-nums truncate">
+                      ${UI.formatPKR(hero.current_bid || hero.starting_price)}
+                    </p>
+                  </div>
+
+                  <a href="/auction-details.html?id=${encodeURIComponent(hero.auction_id)}"
+                     class="inline-flex items-center gap-2 px-5 h-11 rounded-xl font-bold text-sm text-white bg-indigo-600 hover:bg-indigo-500 active:scale-95 shadow-lg shadow-indigo-600/30 transition-all shrink-0">
+                    <span>Bid Now</span>
+                    <i class="fa-solid fa-gavel text-xs" aria-hidden="true"></i>
+                  </a>
+                </div>
+              </div>
+            `;
+
+            const remaining = trendingAuctions.slice(1, 5);
+            trendGrid.innerHTML = remaining.length
+              ? remaining.map(a => renderAuctionCard(a)).join('')
+              : renderAuctionCard(hero);
+
+            startTicker();
+          }
+          trendGrid.setAttribute('aria-busy', 'false');
+        } catch (err) {
+          console.error('[home] Trending failed:', err);
+          spotlight.setAttribute('aria-busy', 'false');
+          spotlight.innerHTML = emptySpotlight(
+            "Couldn't load featured auction",
+            'Please refresh the page to try again.'
+          );
+          trendGrid.innerHTML = emptyGridBox(
+            'fa-triangle-exclamation',
+            "Couldn't load auctions right now",
+            'Please check your connection and refresh.'
+          );
+          trendGrid.setAttribute('aria-busy', 'false');
+        }
+
+        /* ── AI RECOMMENDATIONS ── */
+        /* ── AI RECOMMENDATIONS ── */
+        try {
+          if (ApiClient.isAuthenticated && ApiClient.isAuthenticated()) {
+            const recRes = { data: [] };
+            const rawRecs = (recRes && recRes.data) ? recRes.data : [];
+
+            // ★ Filter ended auctions here too
+            const recs = filterLiveAuctions(rawRecs)
+              .filter(r => !trendingIds.has(String(r.auction_id)))
+              .slice(0, 4);
+
+            if (recs.length > 0) {
+              const sec = document.getElementById('recs-section');
+              const grid = document.getElementById('recs-grid');
+              if (sec && grid) {
+                sec.style.display = 'block';
+                grid.innerHTML = recs.map(a => renderAuctionCard(a)).join('');
+              }
+            }
+          }
+        } catch (err) {
+          console.warn('[home] Recommendations non-critical failure:', err);
+        }
+      }
+
+      initHome();
+
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => { });
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

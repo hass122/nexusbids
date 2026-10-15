@@ -1,0 +1,36 @@
+# Exclude legacy code
+legacy/
+legacy_php/
+
+# Exclude test files
+tests/
+test-results/
+*.test.ts
+*.spec.ts
+playwright.config.ts
+vitest.config.mts
+
+# Exclude local dev files
+apps/api/.env
+apps/api/check-db.ts
+apps/api/debug-email.mjs
+apps/api/force-reset.ts
+apps/api/src/seed.ts
+
+# Exclude docs
+docs/
+
+# Exclude scratch
+scratch/
+
+# Exclude mobile app (not deployed to Vercel)
+apps/mobile/
+
+# Exclude uploads folder (use Cloudinary instead)
+uploads/
+
+# Standard exclusions
+*.log
+.DS_Store
+Thumbs.db
+

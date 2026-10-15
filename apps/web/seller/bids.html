@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bid Activity — Seller Studio | NexusBids Pakistan</title>
+  <meta name="description" content="Track all bids placed on your auctions in real time on NexusBids.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --b-bg: #f4f6fb;
+      --b-surface: #ffffff;
+      --b-surface-2: #f7f9fc;
+      --b-surface-3: #eceff6;
+      --b-border: #e3e8f0;
+      --b-border-strong: #cfd7e5;
+      --b-text: #0f172a;
+      --b-text-muted: #58627a;
+      --b-text-light: #8d97ab;
+      --b-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --b-glow: rgba(99, 102, 241, .13);
+      --b-row-hover: #f4f7fd;
+    }
+
+    html.dark {
+      --b-bg: #05070f;
+      --b-surface: #0d1220;
+      --b-surface-2: #121a2b;
+      --b-surface-3: #1a2336;
+      --b-border: #1e2a40;
+      --b-border-strong: #2c3a56;
+      --b-text: #eef2f9;
+      --b-text-muted: #9aa6bd;
+      --b-text-light: #66738d;
+      --b-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --b-glow: rgba(99, 102, 241, .20);
+      --b-row-hover: #141d31;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--b-bg);
+      color: var(--b-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--b-surface);
+      border: 1px solid var(--b-border);
+      border-radius: 16px;
+      box-shadow: var(--b-shadow-md);
+    }
+
+    .stat-card {
+      background: var(--b-surface);
+      border: 1px solid var(--b-border);
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: var(--b-shadow-md);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -8px rgba(99, 102, 241, .25);
+    }
+
+    .stat-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .stat-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--b-text);
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--b-text-muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      margin-top: 4px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+
+    .data-table th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--b-text-muted);
+      border-bottom: 1px solid var(--b-border);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--b-border);
+      color: var(--b-text);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--b-row-hover);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .03em;
+    }
+
+    .badge-auto {
+      background: rgba(139, 92, 246, .15);
+      color: #a78bfa;
+      border: 1px solid rgba(139, 92, 246, .3);
+    }
+
+    .badge-manual {
+      background: rgba(99, 102, 241, .12);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, .25);
+    }
+
+    .badge-winning {
+      background: rgba(16, 185, 129, .12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .3);
+    }
+
+    .badge-outbid {
+      background: rgba(245, 158, 11, .12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, .3);
+    }
+
+    .badge-reserve {
+      background: rgba(239, 68, 68, .12);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, .3);
+    }
+
+    .auction-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: var(--b-surface-3);
+      border: 1px solid var(--b-border);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: var(--b-text-muted);
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* ✅ FIXED: Dark Mode Inputs Override */
+    input.search-input,
+    select.filter-select {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--b-surface-2) !important;
+      border: 1px solid var(--b-border) !important;
+      color: var(--b-text) !important;
+      border-radius: 10px !important;
+      font-size: .82rem !important;
+      font-family: inherit !important;
+      outline: none !important;
+      box-shadow: none !important;
+      color-scheme: dark;
+    }
+
+    html:not(.dark) input.search-input,
+    html:not(.dark) select.filter-select {
+      color-scheme: light;
+    }
+
+    input.search-input:focus,
+    select.filter-select:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16) !important;
+    }
+
+    input.search-input::placeholder {
+      color: var(--b-text-light) !important;
+    }
+
+    select.filter-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 14px !important;
+      padding: 8px 36px 8px 14px !important;
+      cursor: pointer !important;
+    }
+
+    select.filter-select option {
+      background-color: var(--b-surface-2);
+      color: var(--b-text);
+    }
+
+    .search-input {
+      padding: 8px 14px 8px 38px !important;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+      max-width: 340px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--b-text-muted);
+      font-size: .8rem;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #34d399;
+      box-shadow: 0 0 8px #34d399;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: .5;
+        transform: scale(.85);
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--b-text-muted);
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--b-surface-2) 25%, var(--b-surface-3) 37%, var(--b-surface-2) 63%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -400px 0;
+      }
+
+      100% {
+        background-position: 400px 0;
+      }
+    }
+
+    .auction-scope-banner {
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, .12);
+      border: 1px solid rgba(99, 102, 241, .3);
+      font-size: .8rem;
+      font-weight: 600;
+      color: #818cf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--b-surface);border-color:var(--b-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/seller/auctions.html" class="text-sm font-semibold" style="color:var(--b-text-muted);"><i
+            class="fa-solid fa-arrow-left mr-1"></i>Back to Auctions</a>
+        <a href="/index.html" class="text-sm font-semibold" style="color:var(--b-text-muted);"><i
+            class="fa-solid fa-store mr-1"></i>View Store</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="seller-subnav"></div>
+    <div id="auction-scope-banner-wrap"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <div class="flex items-center gap-3 mb-1">
+          <h1 class="text-2xl font-extrabold" style="color:var(--b-text);">Bid Activity</h1>
+          <div class="live-dot"></div>
+          <span class="text-xs font-bold" style="color:#34d399;">LIVE</span>
+        </div>
+        <p style="color:var(--b-text-muted);font-size:.85rem;">All bids placed on your auctions — auto-refreshing every
+          30s</p>
+      </div>
+      <button id="btn-refresh" class="flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm"
+        style="background:rgba(99,102,241,.15);color:#818cf8;border:1px solid rgba(99,102,241,.3);"><i
+          class="fa-solid fa-rotate-right"></i> Refresh</button>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div class="stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="stat-icon" style="background:rgba(99,102,241,.15);color:#818cf8;"><i
+              class="fa-solid fa-hand-point-up"></i></div>
+        </div>
+        <div class="stat-val" id="stat-total-bids">—</div>
+        <div class="stat-lbl">Total Bids</div>
+      </div>
+      <div class="stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="stat-icon" style="background:rgba(16,185,129,.15);color:#34d399;"><i
+              class="fa-solid fa-trophy"></i></div>
+        </div>
+        <div class="stat-val" id="stat-unique-bidders">—</div>
+        <div class="stat-lbl">Unique Bidders</div>
+      </div>
+      <div class="stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="stat-icon" style="background:rgba(245,158,11,.15);color:#fbbf24;"><i
+              class="fa-solid fa-robot"></i></div>
+        </div>
+        <div class="stat-val" id="stat-auto-bids">—</div>
+        <div class="stat-lbl">Auto-Bids</div>
+      </div>
+      <div class="stat-card">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="stat-icon" style="background:rgba(239,68,68,.15);color:#f87171;"><i
+              class="fa-solid fa-arrow-up-right-dots"></i></div>
+        </div>
+        <div class="stat-val" id="stat-highest-bid">—</div>
+        <div class="stat-lbl">Highest Bid (PKR)</div>
+      </div>
+    </div>
+
+    <div class="card p-4 mb-6">
+      <div class="filter-bar">
+        <div class="search-wrap"><i class="fa-solid fa-magnifying-glass"></i><input type="text" id="search-input"
+            class="search-input" placeholder="Search auction or bidder…"></div>
+        <select id="filter-auction" class="filter-select">
+          <option value="">All Auctions</option>
+        </select>
+        <select id="filter-type" class="filter-select">
+          <option value="">All Types</option>
+          <option value="auto">Auto Bid</option>
+          <option value="manual">Manual Bid</option>
+        </select>
+        <select id="filter-status" class="filter-select">
+          <option value="">All Status</option>
+          <option value="winning">Winning</option>
+          <option value="outbid">Outbid</option>
+        </select>
+        <select id="filter-days" class="filter-select">
+          <option value="7">Last 7 Days</option>
+          <option value="14">Last 14 Days</option>
+          <option value="30">Last 30 Days</option>
+          <option value="all">All Time</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid var(--b-border);">
+        <h2 class="font-bold text-sm" style="color:var(--b-text);">Bid History</h2>
+        <span id="bid-count-label" class="text-xs font-semibold" style="color:var(--b-text-muted);">Loading…</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Auction</th>
+              <th>Bidder</th>
+              <th>Bid Amount</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bids-tbody">
+            <tr>
+              <td colspan="7" class="py-10 text-center" style="color:var(--b-text-muted);"><i
+                  class="fa-solid fa-spinner fa-spin mr-2"></i>Loading bid activity…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- ✅ FIXED: Removed !important so JS can show it -->
+      <div id="pagination" class="flex items-center justify-between px-6 py-4"
+        style="border-top:1px solid var(--b-border); display:none;">
+        <button id="btn-prev" class="text-sm font-semibold px-4 py-2 rounded-lg"
+          style="background:var(--b-surface-2);color:var(--b-text-muted);">← Previous</button>
+        <span id="page-info" class="text-xs font-semibold" style="color:var(--b-text-muted);"></span>
+        <button id="btn-next" class="text-sm font-semibold px-4 py-2 rounded-lg"
+          style="background:var(--b-surface-2);color:var(--b-text-muted);">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/seller-nav.js"></script>
+  <script src="/assets/js/ai-chat.js"></script>
+  <script>
+    const API = window.ApiClient || { get: (u) => fetch('/api' + u, { credentials: 'include' }).then(r => r.json()) };
+    const fmtPKR = v => 'PKR ' + Number(v || 0).toLocaleString('en-PK', { minimumFractionDigits: 0 });
+    const fmtTime = ts => { if (!ts) return '—'; const d = new Date(ts); return d.toLocaleDateString('en-PK', { day: '2-digit', month: 'short' }) + ' ' + d.toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' }); };
+
+    let allBids = [];
+    let currentPage = 1;
+    const PAGE_SIZE = 25;
+    const URL_AUCTION_ID = new URLSearchParams(window.location.search).get('auction_id');
+
+    // ✅ FIXED: Agar auction_id URL mein hai, toh default filter "All Time" set karo
+    if (URL_AUCTION_ID) {
+      document.getElementById('filter-days').value = 'all';
+    }
+
+    async function loadBids() {
+      try {
+        const days = document.getElementById('filter-days').value;
+        let params = [];
+        if (days !== 'all') params.push(`days=${days}`);
+        if (URL_AUCTION_ID) params.push(`auction_id=${URL_AUCTION_ID}`);
+        const qs = params.length ? '?' + params.join('&') : '';
+
+        const r = await API.get('/seller/bid-activity' + qs);
+        const bids = r.data || r || [];
+        allBids = Array.isArray(bids) ? bids : [];
+        populateAuctionFilter();
+
+        // Auto-select auction filter from URL
+        if (URL_AUCTION_ID) {
+          const sel = document.getElementById('filter-auction');
+          if (sel && Array.from(sel.options).some(o => o.value === String(URL_AUCTION_ID))) {
+            sel.value = String(URL_AUCTION_ID);
+          }
+          // Show scope banner
+          const bannerWrap = document.getElementById('auction-scope-banner-wrap');
+          const firstBid = allBids[0];
+          const auctionTitle = firstBid ? (firstBid.auction_title || firstBid.title || ('Auction #' + URL_AUCTION_ID)) : ('Auction #' + URL_AUCTION_ID);
+          bannerWrap.innerHTML = `<div class="auction-scope-banner"><i class="fa-solid fa-filter"></i> Showing bids for: <strong>${auctionTitle}</strong><a href="/seller/bids.html" style="margin-left:auto;color:#a5b4fc;text-decoration:underline;">Clear filter</a></div>`;
+        }
+
+        renderStats();
+        renderTable();
+      } catch (e) {
+        document.getElementById('bids-tbody').innerHTML = `<tr><td colspan="7" class="py-10 text-center" style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Failed to load bid activity. Please try again.</td></tr>`;
+      }
+    }
+
+    function populateAuctionFilter() {
+      const sel = document.getElementById('filter-auction');
+      const current = sel.value || URL_AUCTION_ID || '';
+      const titles = [...new Map(allBids.map(b => [b.auction_id, b.auction_title || b.title])).entries()];
+      sel.innerHTML = '<option value="">All Auctions</option>' + titles.map(([id, t]) => `<option value="${id}" ${String(current) === String(id) ? 'selected' : ''}>${t ? t.substring(0, 40) : 'Auction #' + id}</option>`).join('');
+    }
+
+    function filteredBids() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase();
+      const auction = document.getElementById('filter-auction').value;
+      const type = document.getElementById('filter-type').value;
+      const status = document.getElementById('filter-status').value;
+      return allBids.filter(b => {
+        const titleMatch = !q || (b.auction_title || b.title || '').toLowerCase().includes(q) || (b.bidder_name || b.full_name || '').toLowerCase().includes(q);
+        const auctionMatch = !auction || String(b.auction_id) === auction;
+        const typeMatch = !type || (type === 'auto' ? b.is_auto : !b.is_auto);
+        const statusMatch = !status || b.bid_status === status;
+        return titleMatch && auctionMatch && typeMatch && statusMatch;
+      });
+    }
+
+    function renderStats() {
+      const uniqueBidders = new Set(allBids.map(b => b.bidder_id || b.user_id)).size;
+      const autoBids = allBids.filter(b => b.is_auto).length;
+      const highestBid = Math.max(0, ...allBids.map(b => parseFloat(b.bid_amount || 0)));
+      document.getElementById('stat-total-bids').textContent = allBids.length.toLocaleString();
+      document.getElementById('stat-unique-bidders').textContent = uniqueBidders.toLocaleString();
+      document.getElementById('stat-auto-bids').textContent = autoBids.toLocaleString();
+      document.getElementById('stat-highest-bid').textContent = highestBid > 0 ? highestBid.toLocaleString('en-PK') : '—';
+    }
+
+    function renderTable() {
+      const bids = filteredBids();
+      const total = bids.length;
+      const pages = Math.ceil(total / PAGE_SIZE);
+      currentPage = Math.min(currentPage, Math.max(1, pages));
+      const start = (currentPage - 1) * PAGE_SIZE;
+      const slice = bids.slice(start, start + PAGE_SIZE);
+
+      document.getElementById('bid-count-label').textContent = `${total.toLocaleString()} bid${total !== 1 ? 's' : ''}`;
+
+      const tbody = document.getElementById('bids-tbody');
+      if (!slice.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center"><div class="empty-state"><i class="fa-solid fa-gavel text-3xl mb-3 opacity-30"></i><p class="font-semibold">No bids found</p><p class="text-sm mt-1">Try adjusting your filters</p></div></td></tr>`;
+        document.getElementById('pagination').style.display = 'none';
+        return;
+      }
+
+      tbody.innerHTML = slice.map(b => {
+        const typeClass = b.is_auto ? 'badge-auto' : 'badge-manual';
+        const typeLabel = b.is_auto ? '<i class="fa-solid fa-robot"></i> Auto' : '<i class="fa-solid fa-hand-point-up"></i> Manual';
+
+        let statusBadge = '';
+        if (b.bid_status === 'winning') statusBadge = `<span class="badge badge-winning"><i class="fa-solid fa-crown"></i> Winning</span>`;
+        else if (b.bid_status === 'outbid') statusBadge = `<span class="badge badge-outbid"><i class="fa-solid fa-arrow-down"></i> Outbid</span>`;
+        else if (b.reserve_met === false) statusBadge = `<span class="badge badge-reserve">Below Reserve</span>`;
+        else statusBadge = `<span class="badge" style="background:var(--b-surface-3);color:var(--b-text-muted);">—</span>`;
+
+        // ✅ FIXED: Image thumbnail loading
+        let imgUrl = b.auction_image || b.image || '';
+        if (imgUrl && !imgUrl.startsWith('http') && !imgUrl.startsWith('data:') && !imgUrl.startsWith('/')) {
+          imgUrl = '/uploads/' + imgUrl;
+        }
+        const thumbIcon = imgUrl
+          ? `<img src="${imgUrl}" class="auction-thumb" alt="Auction" onerror="this.outerHTML='<div class=\\'auction-thumb\\'><i class=\\'fa-solid fa-gavel\\'></i></div>';">`
+          : `<div class="auction-thumb"><i class="fa-solid fa-gavel"></i></div>`;
+
+        return `
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                ${thumbIcon}
+                <div>
+                  <a href="/seller/auction-details.html?id=${b.auction_id}" class="font-semibold text-brand-400 hover:underline text-sm" style="max-width:200px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${b.auction_title || b.title || 'Auction #' + b.auction_id}</a>
+                  <span class="text-xs" style="color:var(--b-text-muted);">#${b.auction_id}</span>
+                </div>
+              </div>
+            </td>
+            <td><div class="font-semibold text-sm">${b.bidder_name || b.full_name || 'Unknown'}</div><div class="text-xs" style="color:var(--b-text-muted);">${b.bidder_email || b.email || ''}</div></td>
+            <td><span class="font-black text-sm" style="color:#818cf8;">${fmtPKR(b.bid_amount)}</span></td>
+            <td><span class="badge ${typeClass}">${typeLabel}</span></td>
+            <td>${statusBadge}</td>
+            <td class="text-xs" style="color:var(--b-text-muted);">${fmtTime(b.bid_time || b.created_at)}</td>
+            <td><a href="/auction-details.html?id=${b.auction_id}" target="_blank" class="text-xs font-semibold px-3 py-1.5 rounded-lg" style="background:rgba(99,102,241,.12);color:#818cf8;"><i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>View</a></td>
+          </tr>`;
+      }).join('');
+
+      const pagination = document.getElementById('pagination');
+      if (pages > 1) {
+        pagination.style.display = 'flex';
+        document.getElementById('page-info').textContent = `Page ${currentPage} of ${pages}`;
+        document.getElementById('btn-prev').disabled = currentPage === 1;
+        document.getElementById('btn-next').disabled = currentPage === pages;
+      } else {
+        pagination.style.display = 'none';
+      }
+    }
+
+    document.getElementById('btn-refresh').addEventListener('click', loadBids);
+    document.getElementById('search-input').addEventListener('input', () => { currentPage = 1; renderTable(); });
+    document.getElementById('filter-auction').addEventListener('change', () => { currentPage = 1; renderTable(); });
+    document.getElementById('filter-type').addEventListener('change', () => { currentPage = 1; renderTable(); });
+    document.getElementById('filter-status').addEventListener('change', () => { currentPage = 1; renderTable(); });
+    document.getElementById('filter-days').addEventListener('change', loadBids);
+    document.getElementById('btn-prev').addEventListener('click', () => { currentPage--; renderTable(); });
+    document.getElementById('btn-next').addEventListener('click', () => { currentPage++; renderTable(); });
+
+    /* ✅ AUTH GUARD */
+    const token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+    const user = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
+    if (!token || !['seller', 'admin'].includes(user.role)) {
+      window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/bids.html'));
+    } else {
+      loadBids();
+      setInterval(loadBids, 30000);
+    }
+  </script>
+</body>
+
+</html>

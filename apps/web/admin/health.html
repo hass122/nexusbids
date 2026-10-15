@@ -1,0 +1,825 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Health — NexusBids Admin</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --a-bg: #f6f6f4;
+      --a-surface: #fff;
+      --a-surface-2: #fbfbf9;
+      --a-surface-3: #f1f1ee;
+      --a-border: #e8e8e3;
+      --a-text: #1a1a1a;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68;
+      --ok: #059669;
+      --ok-bg: #ecfdf5;
+      --ok-bd: #a7f3d0;
+      --warn: #d97706;
+      --warn-bg: #fffbeb;
+      --warn-bd: #fde68a;
+      --err: #dc2626;
+      --err-bg: #fef2f2;
+      --err-bd: #fecaca;
+      --info: #4f46e5;
+      --info-bg: #eef0fe;
+      --info-bd: #c7cdff
+    }
+
+    html.dark {
+      --a-bg: #111110;
+      --a-surface: #191917;
+      --a-surface-2: #1f1f1d;
+      --a-surface-3: #262623;
+      --a-border: #2a2a27;
+      --a-text: #f2f2ef;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88;
+      --ok: #34d399;
+      --ok-bg: rgba(16, 185, 129, .12);
+      --ok-bd: rgba(16, 185, 129, .25);
+      --warn: #fbbf24;
+      --warn-bg: rgba(245, 158, 11, .12);
+      --warn-bd: rgba(245, 158, 11, .25);
+      --err: #f87171;
+      --err-bg: rgba(239, 68, 68, .12);
+      --err-bd: rgba(239, 68, 68, .25);
+      --info: #a5b4fc;
+      --info-bg: rgba(99, 102, 241, .12);
+      --info-bd: rgba(99, 102, 241, .25)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .page-head {
+      margin-bottom: 24px
+    }
+
+    .page-head h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.15
+    }
+
+    .page-head .sub {
+      font-size: .82rem;
+      color: var(--a-text-muted);
+      margin-top: 6px
+    }
+
+    .page-head .meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      font-size: .72rem;
+      color: var(--a-text-muted);
+      flex-wrap: wrap
+    }
+
+    .pulse-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .pulse-dot::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, .2);
+      animation: pulse 2.2s ease-in-out infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .5;
+        transform: scale(.85)
+      }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: .76rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .15s;
+      font-family: inherit
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--a-border);
+      color: var(--a-text-muted)
+    }
+
+    .btn-ghost:hover {
+      color: var(--a-text);
+      border-color: var(--a-text-light);
+      background: var(--a-surface-2)
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed
+    }
+
+    .svc {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      position: relative
+    }
+
+    .svc:hover {
+      border-color: var(--a-text-light)
+    }
+
+    .svc-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px
+    }
+
+    .svc-name {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: .78rem;
+      font-weight: 700
+    }
+
+    .svc-name i {
+      font-size: .82rem;
+      color: var(--a-text-light)
+    }
+
+    .svc-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .svc-status-dot.ok {
+      background: var(--ok);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, .2)
+    }
+
+    .svc-status-dot.warn {
+      background: var(--warn);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, .2)
+    }
+
+    .svc-status-dot.err {
+      background: var(--err);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, .2)
+    }
+
+    .svc-value {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums
+    }
+
+    .svc-foot {
+      font-size: .68rem;
+      color: var(--a-text-light);
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .svc-foot strong {
+      color: var(--a-text-muted);
+      font-weight: 600;
+      font-variant-numeric: tabular-nums
+    }
+
+    .block {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px
+    }
+
+    .block-head {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--a-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--a-surface-2);
+      flex-wrap: wrap
+    }
+
+    .block-title {
+      font-size: .85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .block-title i {
+      font-size: .8rem;
+      color: var(--a-text-light)
+    }
+
+    .block-note {
+      font-size: .68rem;
+      color: var(--a-text-light)
+    }
+
+    .gw {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--a-border)
+    }
+
+    .gw:last-child {
+      border-bottom: none
+    }
+
+    .gw-id {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0
+    }
+
+    .gw-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: .82rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      border: 1px solid
+    }
+
+    .gw-logo.easypaisa {
+      color: #059669;
+      background: var(--ok-bg);
+      border-color: var(--ok-bd)
+    }
+
+    .gw-logo.jazzcash {
+      color: #dc2626;
+      background: var(--err-bg);
+      border-color: var(--err-bd)
+    }
+
+    .gw-logo.stripe {
+      color: #4f46e5;
+      background: var(--info-bg);
+      border-color: var(--info-bd)
+    }
+
+    .gw-name {
+      font-size: .82rem;
+      font-weight: 700;
+      line-height: 1.2
+    }
+
+    .gw-sub {
+      font-size: .68rem;
+      color: var(--a-text-light);
+      margin-top: 2px
+    }
+
+    .gw-rail {
+      font-size: .72rem;
+      color: var(--a-text-muted)
+    }
+
+    .gw-right {
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .gw-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: .66rem;
+      font-weight: 700;
+      border: 1px solid
+    }
+
+    .gw-pill.ok {
+      color: var(--ok);
+      background: var(--ok-bg);
+      border-color: var(--ok-bd)
+    }
+
+    .gw-pill.warn {
+      color: var(--warn);
+      background: var(--warn-bg);
+      border-color: var(--warn-bd)
+    }
+
+    .gw-pill.err {
+      color: var(--err);
+      background: var(--err-bg);
+      border-color: var(--err-bd)
+    }
+
+    .gw-pill::before {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: currentColor
+    }
+
+    .gw-uptime {
+      font-size: .72rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      min-width: 52px;
+      text-align: right
+    }
+
+    .res {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--a-border)
+    }
+
+    .res:last-child {
+      border-bottom: none
+    }
+
+    .res-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px
+    }
+
+    .res-name {
+      font-size: .78rem;
+      font-weight: 600
+    }
+
+    .res-num {
+      font-size: .82rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums
+    }
+
+    .res-num small {
+      font-size: .66rem;
+      color: var(--a-text-light);
+      font-weight: 600;
+      margin-left: 4px
+    }
+
+    .bar {
+      height: 6px;
+      border-radius: 3px;
+      background: var(--a-surface-3);
+      overflow: hidden
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .6s
+    }
+
+    .bar-fill.ok {
+      background: var(--ok)
+    }
+
+    .bar-fill.warn {
+      background: var(--warn)
+    }
+
+    .bar-fill.err {
+      background: var(--err)
+    }
+
+    .bar-fill.info {
+      background: var(--info)
+    }
+
+    .note {
+      display: flex;
+      gap: 11px;
+      padding: 14px 18px;
+      background: var(--ok-bg);
+      border: 1px solid var(--ok-bd);
+      border-radius: 11px;
+      font-size: .76rem;
+      color: var(--ok);
+      line-height: 1.6;
+      align-items: flex-start;
+      transition: background .3s, border-color .3s, color .3s
+    }
+
+    .note i {
+      margin-top: 2px;
+      flex-shrink: 0
+    }
+
+    @media (max-width:640px) {
+      .gw {
+        grid-template-columns: 1fr auto;
+        gap: 12px
+      }
+
+      .gw .gw-rail {
+        display: none
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="page-head flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div>
+        <h1>System Health</h1>
+        <p class="sub">Services, DB latency, cron heartbeats, and payment rails — live.</p>
+        <div class="meta">
+          <span class="pulse-dot" id="overallStatus">checking…</span>
+          <span>·</span>
+          <span>Checked <strong id="lastCheck" style="color:var(--a-text-muted)">just now</strong></span>
+        </div>
+      </div>
+      <button id="refresh-btn" onclick="fetchHealth(true)" class="btn btn-ghost">
+        <i class="fa-solid fa-rotate-right" id="refresh-icon" style="font-size:.7rem"></i><span>Refresh</span>
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mb-5">
+      <div class="svc">
+        <div class="svc-head">
+          <div class="svc-name"><i class="fa-solid fa-database"></i><span>Database</span></div><span
+            class="svc-status-dot ok" id="db-dot"></span>
+        </div>
+        <div class="svc-value" id="dbStatus">—</div>
+        <div class="svc-foot">latency <strong id="dbLatency">—</strong></div>
+      </div>
+      <div class="svc">
+        <div class="svc-head">
+          <div class="svc-name"><i class="fa-solid fa-server"></i><span>API Server</span></div><span
+            class="svc-status-dot ok" id="api-dot"></span>
+        </div>
+        <div class="svc-value" id="apiStatus">—</div>
+        <div class="svc-foot">uptime <strong id="apiUptime">—</strong></div>
+      </div>
+      <div class="svc">
+        <div class="svc-head">
+          <div class="svc-name"><i class="fa-solid fa-tower-broadcast"></i><span>Realtime</span></div><span
+            class="svc-status-dot ok" id="rt-dot"></span>
+        </div>
+        <div class="svc-value" id="realtimeStatus">—</div>
+        <div class="svc-foot">connections <strong id="realtimeConns">—</strong></div>
+      </div>
+      <div class="svc">
+        <div class="svc-head">
+          <div class="svc-name"><i class="fa-solid fa-clock"></i><span>Cron</span></div><span class="svc-status-dot ok"
+            id="cron-dot"></span>
+        </div>
+        <div class="svc-value" id="cronStatus">—</div>
+        <div class="svc-foot" id="cronLast">waiting for heartbeat</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-3.5 mb-4">
+      <div class="block" style="margin-bottom:0">
+        <div class="block-head">
+          <div class="block-title"><i class="fa-solid fa-credit-card"></i> Payment gateways</div><span
+            class="block-note">last 24h</span>
+        </div>
+        <div class="gw">
+          <div class="gw-id">
+            <div class="gw-logo easypaisa">EP</div>
+            <div>
+              <div class="gw-name">EasyPaisa</div>
+              <div class="gw-sub">mobile wallet</div>
+            </div>
+          </div>
+          <div class="gw-rail">PK rail</div>
+          <div class="gw-right">
+            <span class="gw-pill ok" id="gw-easypaisa-pill">unknown</span>
+            <span class="gw-uptime" id="up-easypaisa">—</span>
+          </div>
+        </div>
+        <div class="gw">
+          <div class="gw-id">
+            <div class="gw-logo jazzcash">JC</div>
+            <div>
+              <div class="gw-name">JazzCash</div>
+              <div class="gw-sub">mobile wallet</div>
+            </div>
+          </div>
+          <div class="gw-rail">PK rail</div>
+          <div class="gw-right">
+            <span class="gw-pill ok" id="gw-jazzcash-pill">unknown</span>
+            <span class="gw-uptime" id="up-jazzcash">—</span>
+          </div>
+        </div>
+        <div class="gw">
+          <div class="gw-id">
+            <div class="gw-logo stripe">S</div>
+            <div>
+              <div class="gw-name">Stripe</div>
+              <div class="gw-sub">cards + 3DS</div>
+            </div>
+          </div>
+          <div class="gw-rail">Global</div>
+          <div class="gw-right">
+            <span class="gw-pill ok" id="gw-stripe-pill">unknown</span>
+            <span class="gw-uptime" id="up-stripe">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="block" style="margin-bottom:0">
+        <div class="block-head">
+          <div class="block-title"><i class="fa-solid fa-microchip"></i> Runtime resources</div><span
+            class="block-note">live</span>
+        </div>
+        <div class="res">
+          <div class="res-head"><span class="res-name">API process heap</span><span class="res-num"><span
+                id="memValue">—</span><small>MB</small></span></div>
+          <div class="bar">
+            <div class="bar-fill info" id="memBar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="res">
+          <div class="res-head"><span class="res-name">Storage volume</span><span class="res-num"><span
+                id="storageValue">—</span><small>%</small></span></div>
+          <div class="bar">
+            <div class="bar-fill ok" id="storageBar" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="res">
+          <div class="res-head"><span class="res-name">DB connection pool</span><span class="res-num"><span
+                id="poolValue">—</span><small>/ 100</small></span></div>
+          <div class="bar">
+            <div class="bar-fill ok" id="poolBar" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ FIXED: dynamic status note -->
+    <div class="note" id="healthNote">
+      <i class="fa-solid fa-circle-check" id="healthNoteIcon"></i>
+      <div id="healthNoteText"><strong>Checking…</strong> Waiting for health telemetry.</div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script>
+    const $ = id => document.getElementById(id);
+
+    function setDot(id, status) {
+      const el = $(id); if (!el) return;
+      el.className = 'svc-status-dot ' + (status === 'ok' ? 'ok' : status === 'warn' ? 'warn' : 'err');
+    }
+
+    function statusToClass(s) {
+      const t = String(s || '').toLowerCase();
+      if (t.includes('online') || t.includes('active') || t.includes('ok') || t.includes('healthy') || t.includes('operational')) return 'ok';
+      if (t.includes('degrad') || t.includes('slow') || t.includes('warn')) return 'warn';
+      return 'err';
+    }
+    function prettyStatus(s) {
+      const t = String(s || '').toLowerCase();
+      if (t.includes('healthy') || t.includes('online') || t.includes('active') || t.includes('ok')) return 'Healthy';
+      if (t.includes('degrad')) return 'Degraded';
+      if (t.includes('down') || t.includes('offline')) return 'Down';
+      return s || 'Unknown';
+    }
+    function setStatusValue(elId, dotId, status) {
+      const cls = statusToClass(status);
+      setDot(dotId, cls);
+      const v = $(elId); if (v) v.textContent = prettyStatus(status);
+      return cls;
+    }
+
+    async function fetchHealth(manual) {
+      const btn = $('refresh-btn'), icon = $('refresh-icon');
+      if (btn) btn.disabled = true;
+      if (icon) icon.classList.add('fa-spin');
+
+      if (!manual) {
+        ['dbStatus', 'apiStatus', 'realtimeStatus', 'cronStatus'].forEach(id => { if ($(id)) $(id).textContent = 'checking…'; });
+      }
+
+      try {
+        const res = await ApiClient.get('/admin/health');
+        const h = (res && res.data) || {};
+
+        if (h.database) {
+          setStatusValue('dbStatus', 'db-dot', h.database.status);
+          $('dbLatency').textContent = (h.database.latency_ms != null ? h.database.latency_ms : '—') + ' ms';
+        }
+
+        if (h.api) {
+          setStatusValue('apiStatus', 'api-dot', h.api.status);
+          const sec = Number(h.api.uptime_seconds || 0);
+          const d = Math.floor(sec / 86400);
+          const hrs = Math.floor((sec % 86400) / 3600);
+          const mins = Math.floor((sec % 3600) / 60);
+          $('apiUptime').textContent = d > 0 ? d + 'd ' + hrs + 'h' : hrs > 0 ? hrs + 'h ' + mins + 'm' : mins + 'm';
+          const memMb = Number(h.api.memory_mb || 0);
+          $('memValue').textContent = memMb;
+          const memPct = Math.min(100, Math.round((memMb / 512) * 100));
+          $('memBar').style.width = memPct + '%';
+          $('memBar').className = 'bar-fill ' + (memPct > 85 ? 'err' : memPct > 65 ? 'warn' : 'info');
+        }
+
+        if (h.realtime) {
+          setStatusValue('realtimeStatus', 'rt-dot', h.realtime.status);
+          $('realtimeConns').textContent = (h.realtime.active_connections ?? 0).toLocaleString('en-PK');
+        }
+
+        if (h.cron) {
+          setStatusValue('cronStatus', 'cron-dot', h.cron.status_code || 'ACTIVE');
+          $('cronLast').textContent = h.cron.last_run ? 'last run ' + new Date(h.cron.last_run).toLocaleString('en-PK') : 'heartbeat verified';
+        }
+
+        if (typeof h.storage_percent === 'number') {
+          $('storageValue').textContent = h.storage_percent;
+          $('storageBar').style.width = h.storage_percent + '%';
+          $('storageBar').className = 'bar-fill ' + (h.storage_percent > 85 ? 'err' : h.storage_percent > 70 ? 'warn' : 'ok');
+        } else {
+          $('storageValue').textContent = '—';
+          $('storageBar').style.width = '0%';
+        }
+
+        if (h.database && typeof h.database.pool_used === 'number') {
+          const used = h.database.pool_used;
+          const max = h.database.pool_max || 100;
+          $('poolValue').textContent = used;
+          const pct = Math.round((used / max) * 100);
+          $('poolBar').style.width = pct + '%';
+          $('poolBar').className = 'bar-fill ' + (pct > 85 ? 'err' : pct > 65 ? 'warn' : 'ok');
+        } else {
+          $('poolValue').textContent = '—';
+          $('poolBar').style.width = '0%';
+        }
+
+        /* ✅ FIXED: real gateway uptime only — no hardcoded fallback */
+        const gws = h.gateways || {};
+        ['easypaisa', 'jazzcash', 'stripe'].forEach((key) => {
+          const gw = gws[key] || {};
+          const upEl = $('up-' + key);
+          if (upEl) {
+            upEl.textContent = (gw.uptime != null && isFinite(Number(gw.uptime)))
+              ? Number(gw.uptime).toFixed(2) + '%'
+              : '—';
+          }
+          const pillEl = $('gw-' + key + '-pill');
+          if (pillEl) {
+            const s = String(gw.status || 'unknown').toLowerCase();
+            const cls = (s.includes('down') || s.includes('offline') || s.includes('err') || s === 'unknown')
+              ? 'err'
+              : (s.includes('degrad') || s.includes('slow') || s.includes('warn'))
+                ? 'warn'
+                : 'ok';
+            pillEl.className = 'gw-pill ' + cls;
+            pillEl.textContent = gw.status || 'unknown';
+          }
+        });
+
+        const anyErr = ['db-dot', 'api-dot', 'rt-dot', 'cron-dot'].some(id => $(id)?.classList.contains('err'));
+        const anyWarn = ['db-dot', 'api-dot', 'rt-dot', 'cron-dot'].some(id => $(id)?.classList.contains('warn'));
+        $('overallStatus').textContent = anyErr ? 'some services degraded' : anyWarn ? 'minor degradation' : 'all systems operational';
+        $('lastCheck').textContent = 'just now';
+
+        /* ✅ FIXED: dynamic note banner */
+        const noteEl = $('healthNote');
+        const noteIconEl = $('healthNoteIcon');
+        const noteTextEl = $('healthNoteText');
+        if (noteEl && noteTextEl && noteIconEl) {
+          if (anyErr) {
+            noteEl.style.background = 'var(--err-bg)';
+            noteEl.style.borderColor = 'var(--err-bd)';
+            noteEl.style.color = 'var(--err)';
+            noteIconEl.className = 'fa-solid fa-triangle-exclamation';
+            noteTextEl.innerHTML = '<strong>Service degradation detected.</strong> One or more critical services are reporting errors. Check logs immediately.';
+          } else if (anyWarn) {
+            noteEl.style.background = 'var(--warn-bg)';
+            noteEl.style.borderColor = 'var(--warn-bd)';
+            noteEl.style.color = 'var(--warn)';
+            noteIconEl.className = 'fa-solid fa-circle-exclamation';
+            noteTextEl.innerHTML = '<strong>Minor degradation.</strong> Some services are slow or degraded — monitor closely.';
+          } else {
+            noteEl.style.background = '';
+            noteEl.style.borderColor = '';
+            noteEl.style.color = '';
+            noteIconEl.className = 'fa-solid fa-circle-check';
+            noteTextEl.innerHTML = '<strong>All clear.</strong> Services operational, latency within bounds.';
+          }
+        }
+
+      } catch (err) {
+        console.error('[health]', err);
+        ['db-dot', 'api-dot', 'rt-dot', 'cron-dot'].forEach(id => setDot(id, 'err'));
+        ['dbStatus', 'apiStatus', 'realtimeStatus', 'cronStatus'].forEach(id => { if ($(id)) $(id).textContent = 'Unavailable'; });
+        $('overallStatus').textContent = 'telemetry unavailable';
+        const noteEl = $('healthNote');
+        const noteIconEl = $('healthNoteIcon');
+        const noteTextEl = $('healthNoteText');
+        if (noteEl && noteTextEl && noteIconEl) {
+          noteEl.style.background = 'var(--err-bg)';
+          noteEl.style.borderColor = 'var(--err-bd)';
+          noteEl.style.color = 'var(--err)';
+          noteIconEl.className = 'fa-solid fa-triangle-exclamation';
+          noteTextEl.innerHTML = '<strong>Health check failed.</strong> API is not responding — inspect server logs.';
+        }
+        if (window.UI && UI.showToast) UI.showToast('Health check failed — API not responding.', 'error');
+      } finally {
+        if (btn) btn.disabled = false;
+        if (icon) icon.classList.remove('fa-spin');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = ApiClient.getUserRole && ApiClient.getUserRole();
+      if (!ApiClient.isAuthenticated() || role !== 'admin') {
+        window.location.href = '/login.html?redirect=/admin/health.html';
+        return;
+      }
+      fetchHealth(false);
+      setInterval(() => fetchHealth(false), 15000);
+    });
+  </script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

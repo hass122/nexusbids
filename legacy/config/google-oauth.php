@@ -1,0 +1,9 @@
+<?php
+
+
+
+define("GOOGLE_CLIENT_ID", getenv("GOOGLE_CLIENT_ID") ?: "YOUR_GOOGLE_CLIENT_ID_PLACEHOLDER");
+define("GOOGLE_CLIENT_SECRET", getenv("GOOGLE_CLIENT_SECRET") ?: "YOUR_GOOGLE_CLIENT_SECRET_PLACEHOLDER");
+
+
+define("GOOGLE_REDIRECT_URI", "http://localhost/NEXUS/auth/google-callback.php");

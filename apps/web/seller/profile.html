@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store Profile — Seller Studio | NexusBids Pakistan</title>
+  <meta name="description"
+    content="Update your seller store profile, logo, banner, bio and contact details on NexusBids.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --pr-bg: #f4f6fb;
+      --pr-surface: #ffffff;
+      --pr-surface-2: #f7f9fc;
+      --pr-surface-3: #eceff6;
+      --pr-border: #e3e8f0;
+      --pr-text: #0f172a;
+      --pr-text-muted: #58627a;
+      --pr-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12);
+    }
+
+    html.dark {
+      --pr-bg: #05070f;
+      --pr-surface: #0d1220;
+      --pr-surface-2: #121a2b;
+      --pr-surface-3: #1a2336;
+      --pr-border: #1e2a40;
+      --pr-text: #eef2f9;
+      --pr-text-muted: #9aa6bd;
+      --pr-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--pr-bg);
+      color: var(--pr-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--pr-surface);
+      border: 1px solid var(--pr-border);
+      border-radius: 16px;
+      box-shadow: var(--pr-shadow-md);
+    }
+
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--pr-text-muted);
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    /* ⭐ FORCE CORRECT THEME COLORS to override Tailwind Forms plugin */
+    input.form-control,
+    select.form-control,
+    textarea.form-control {
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--pr-surface-2) !important;
+      background-image: none !important;
+      border: 1.5px solid var(--pr-border) !important;
+      color: var(--pr-text) !important;
+      border-radius: 11px !important;
+      padding: 12px 15px !important;
+      font-size: .88rem !important;
+      font-weight: 500 !important;
+      line-height: 1.4 !important;
+      width: 100% !important;
+      transition: border-color .2s ease, box-shadow .2s ease !important;
+      outline: none !important;
+      font-family: inherit !important;
+      box-shadow: none !important;
+      color-scheme: dark;
+    }
+
+    html:not(.dark) input.form-control,
+    html:not(.dark) select.form-control,
+    html:not(.dark) textarea.form-control {
+      color-scheme: light;
+    }
+
+    input.form-control:hover:not(:disabled),
+    select.form-control:hover:not(:disabled),
+    textarea.form-control:hover:not(:disabled) {
+      border-color: var(--pr-text-muted) !important;
+    }
+
+    input.form-control:focus,
+    select.form-control:focus,
+    textarea.form-control:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16) !important;
+      background-color: var(--pr-surface-2) !important;
+      color: var(--pr-text) !important;
+    }
+
+    input.form-control::placeholder,
+    textarea.form-control::placeholder {
+      color: var(--pr-text-muted) !important;
+      opacity: 0.7 !important;
+      font-weight: 400 !important;
+    }
+
+    /* Custom select chevron */
+    select.form-control {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 14px !important;
+      padding-right: 36px !important;
+      cursor: pointer !important;
+    }
+
+    select.form-control option {
+      background-color: var(--pr-surface-2);
+      color: var(--pr-text);
+    }
+
+    /* Date input theming */
+    html.dark input[type="date"].form-control::-webkit-calendar-picker-indicator {
+      filter: invert(.75) brightness(1.3);
+      cursor: pointer;
+    }
+
+    /* Autofill fix — Chrome aggressively overrides background */
+    input.form-control:-webkit-autofill,
+    input.form-control:-webkit-autofill:hover,
+    input.form-control:-webkit-autofill:focus,
+    textarea.form-control:-webkit-autofill {
+      -webkit-text-fill-color: var(--pr-text) !important;
+      -webkit-box-shadow: 0 0 0 1000px var(--pr-surface-2) inset !important;
+      box-shadow: 0 0 0 1000px var(--pr-surface-2) inset !important;
+      transition: background-color 5000s ease-in-out 0s !important;
+      caret-color: var(--pr-text) !important;
+    }
+
+    .form-hint {
+      font-size: .75rem;
+      color: var(--pr-text-muted);
+      margin-top: 5px;
+    }
+
+    .section-header {
+      font-size: .8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--pr-text-muted);
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--pr-border);
+      margin-bottom: 22px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-weight: 800;
+      font-size: .88rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .avatar-upload {
+      width: 100px;
+      height: 100px;
+      border-radius: 22px;
+      border: 2px dashed var(--pr-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color .2s;
+      font-size: .72rem;
+      color: var(--pr-text-muted);
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      background: var(--pr-surface-2);
+    }
+
+    .avatar-upload:hover {
+      border-color: #6366f1;
+      color: #818cf8;
+    }
+
+    .avatar-upload img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .banner-upload {
+      width: 100%;
+      height: 140px;
+      border-radius: 14px;
+      border: 2px dashed var(--pr-border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color .2s;
+      font-size: .82rem;
+      color: var(--pr-text-muted);
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+      background: var(--pr-surface-2);
+    }
+
+    .banner-upload:hover {
+      border-color: #6366f1;
+      color: #818cf8;
+    }
+
+    .banner-upload img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(110%);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, .9);
+      color: #fff;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, .9);
+      color: #fff;
+    }
+
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: .82rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all .2s;
+      font-family: inherit;
+    }
+
+    .tab-btn.active {
+      background: rgba(99, 102, 241, .15);
+      color: #818cf8;
+      border-color: rgba(99, 102, 241, .3);
+    }
+
+    .tab-btn:not(.active) {
+      background: transparent;
+      color: var(--pr-text-muted);
+    }
+
+    .tab-btn:not(.active):hover {
+      background: var(--pr-surface-2);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .store-preview {
+      background: var(--pr-surface-2);
+      border: 1px solid var(--pr-border);
+      border-radius: 16px;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .preview-banner {
+      width: 100%;
+      height: 120px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: linear-gradient(135deg, #1a2036, #0f1527);
+      margin-bottom: -40px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .preview-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      border: 3px solid var(--pr-surface);
+      position: relative;
+      z-index: 1;
+      background: #6366f1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .preview-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--pr-surface);border-color:var(--pr-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <a href="/index.html" class="text-sm font-semibold" style="color:var(--pr-text-muted);"><i
+          class="fa-solid fa-store mr-1"></i>View Store</a>
+    </div>
+  </nav>
+
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+    <div id="seller-subnav"></div>
+
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-extrabold mb-1">Store Profile</h1>
+        <p style="color:var(--pr-text-muted);font-size:.85rem;">Customize how your seller store appears to buyers</p>
+      </div>
+      <a href="/seller/kyc.html" class="text-sm font-semibold flex items-center gap-2 px-4 py-2 rounded-xl"
+        style="background:rgba(99,102,241,.1);color:#818cf8;border:1px solid rgba(99,102,241,.25);">
+        <i class="fa-solid fa-id-card"></i> Manage KYC
+      </a>
+    </div>
+
+    <div class="flex gap-2 mb-6">
+      <button class="tab-btn active" data-tab="profile">Store Info</button>
+      <button class="tab-btn" data-tab="contact">Contact</button>
+      <button class="tab-btn" data-tab="personal">Personal Info</button>
+      <button class="tab-btn" data-tab="preview">Preview</button>
+    </div>
+
+    <!-- Store Info Tab -->
+    <div class="tab-pane active" id="tab-profile">
+      <div class="card p-8">
+        <div class="section-header">Store Identity</div>
+        <div class="flex flex-col sm:flex-row gap-8 mb-6">
+          <div>
+            <div class="form-label">Store Logo</div>
+            <div class="avatar-upload" id="logo-upload-area" onclick="document.getElementById('logo-input').click()">
+              <img id="logo-preview" src="" alt="" style="display:none;">
+              <i class="fa-solid fa-camera text-xl"></i>
+              <span>Upload Logo</span>
+            </div>
+            <input type="file" id="logo-input" accept="image/*" style="display:none;">
+            <div class="form-hint mt-2">JPG or PNG, max 2MB<br>Recommended: 200×200px</div>
+          </div>
+          <div class="flex-1">
+            <div class="form-label">Store Banner</div>
+            <div class="banner-upload" id="banner-upload-area"
+              onclick="document.getElementById('banner-input').click()">
+              <img id="banner-preview" src="" alt="" style="display:none;">
+              <i class="fa-solid fa-image text-2xl"></i>
+              <span>Upload Banner</span>
+            </div>
+            <input type="file" id="banner-input" accept="image/*" style="display:none;">
+            <div class="form-hint mt-2">JPG or PNG, max 4MB. Recommended: 1200×300px</div>
+          </div>
+        </div>
+
+        <form id="profile-form">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="form-group">
+              <label class="form-label">Store Name *</label>
+              <input type="text" id="store-name" class="form-control" placeholder="e.g. Ali's Auction House" required
+                maxlength="80">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Store Tagline</label>
+              <input type="text" id="store-tagline" class="form-control" placeholder="e.g. Authentic items, best prices"
+                maxlength="120">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Store Description</label>
+            <textarea id="store-bio" class="form-control" rows="4"
+              placeholder="Tell buyers about your store, what you sell, your experience…" maxlength="1000"></textarea>
+            <div class="form-hint"><span id="bio-chars">0</span>/1000 characters</div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="form-group">
+              <label class="form-label">City / Location</label>
+              <input type="text" id="store-city" class="form-control" placeholder="e.g. Lahore, Pakistan">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Return Policy</label>
+              <select id="store-returns" class="form-control">
+                <option value="no_returns">No Returns</option>
+                <option value="7_days">7-Day Returns</option>
+                <option value="14_days">14-Day Returns</option>
+                <option value="30_days">30-Day Returns</option>
+              </select>
+            </div>
+          </div>
+          <div id="profile-error" class="text-sm text-red-400 mb-3" style="display:none;"></div>
+          <button type="submit" id="btn-save-profile" class="btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Save Store Profile
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Contact Tab -->
+    <div class="tab-pane" id="tab-contact">
+      <div class="card p-8">
+        <div class="section-header">Contact Information</div>
+        <form id="contact-form">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="form-group">
+              <label class="form-label">Business Phone</label>
+              <input type="tel" id="c-phone" class="form-control" placeholder="+92 3XX XXXXXXX">
+            </div>
+            <div class="form-group">
+              <label class="form-label">WhatsApp Number</label>
+              <input type="tel" id="c-whatsapp" class="form-control" placeholder="+92 3XX XXXXXXX">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Website URL</label>
+            <input type="url" id="c-website" class="form-control" placeholder="https://yourstore.com">
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="form-group">
+              <label class="form-label">Facebook Page URL</label>
+              <input type="url" id="c-facebook" class="form-control" placeholder="https://facebook.com/yourpage">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Instagram Handle</label>
+              <input type="text" id="c-instagram" class="form-control" placeholder="@yourhandle">
+            </div>
+          </div>
+          <button type="submit" id="btn-save-contact" class="btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Save Contact Info
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Personal Info Tab -->
+    <div class="tab-pane" id="tab-personal">
+      <div class="card p-8">
+        <div class="section-header">Personal Information</div>
+        <form id="personal-form">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" id="p-fullname" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Username</label>
+              <input type="text" id="p-username" class="form-control">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="p-email" class="form-control" readonly style="opacity:.65;cursor:not-allowed;">
+            <div class="form-hint">Email cannot be changed. Contact support if needed.</div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" id="p-phone" class="form-control">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Date of Birth</label>
+              <input type="date" id="p-dob" class="form-control">
+            </div>
+          </div>
+          <button type="submit" id="btn-save-personal" class="btn-primary">
+            <i class="fa-solid fa-floppy-disk"></i> Save Personal Info
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Preview Tab -->
+    <div class="tab-pane" id="tab-preview">
+      <div class="card p-8">
+        <div class="section-header">Store Preview</div>
+        <div class="store-preview">
+          <div class="preview-banner" id="prev-banner"></div>
+          <div class="mb-4">
+            <div class="preview-avatar" id="prev-avatar">S</div>
+          </div>
+          <div class="text-xl font-extrabold mb-1" id="prev-name">Your Store Name</div>
+          <div class="text-sm mb-3" style="color:var(--pr-text-muted);" id="prev-tagline">Your tagline…</div>
+          <div class="text-sm leading-relaxed mb-4" style="color:var(--pr-text-muted);max-width:480px;margin:0 auto;"
+            id="prev-bio">Store description will appear here.</div>
+          <div class="flex items-center justify-center gap-4 flex-wrap">
+            <div class="flex items-center gap-2 text-xs" style="color:var(--pr-text-muted);" id="prev-location"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/seller-nav.js"></script>
+  <script src="/assets/js/api-client.js"></script>
+  <script>
+    /* ✅ FIX: wrap in IIFE so auth redirect actually stops execution */
+    (function () {
+      'use strict';
+
+      const token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      const user = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
+      if (!token || !['seller', 'admin'].includes(user.role)) {
+        window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/profile.html'));
+        return;
+      }
+
+      const API = window.ApiClient || {
+        get: (u) => fetch('/api' + u, { credentials: 'include' }).then(r => r.json()),
+        patch: (u, d) => fetch('/api' + u, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }).then(r => r.json())
+      };
+
+      // ✅ NEW: current logo/banner as base64 (source of truth for save)
+      let currentLogo = '';
+      let currentBanner = '';
+
+      function showToast(msg, type = 'success') {
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'triangle-exclamation'}"></i>${msg}`;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 4500);
+      }
+
+      /* ✅ NEW: canvas-based compression so payloads stay under limits */
+      function compressImage(file, maxDim, quality) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+              let { width, height } = img;
+              if (width > maxDim || height > maxDim) {
+                if (width > height) { height = Math.round(height * maxDim / width); width = maxDim; }
+                else { width = Math.round(width * maxDim / height); height = maxDim; }
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = width;
+              canvas.height = height;
+              canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+              resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+          if (btn.dataset.tab === 'preview') updatePreview();
+        });
+      });
+
+      document.getElementById('logo-input').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { showToast('Please select an image file.', 'error'); return; }
+        if (file.size > 2 * 1024 * 1024) { showToast('Logo must be under 2MB.', 'error'); return; }
+        try {
+          const dataUrl = await compressImage(file, 400, 0.85);
+          showToast('Uploading logo...', 'info');
+
+          const res = await API.post('/upload/base64', { image: dataUrl, folder: 'nexusbids/profiles' });
+          const logoUrl = (res.data && res.data.url) ? res.data.url : res.url;
+
+          currentLogo = logoUrl;
+          const img = document.getElementById('logo-preview');
+          img.src = logoUrl;
+          img.style.display = 'block';
+          showToast('Logo uploaded successfully!', 'success');
+        } catch {
+          showToast('Could not upload image.', 'error');
+        }
+      });
+
+      document.getElementById('banner-input').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { showToast('Please select an image file.', 'error'); return; }
+        if (file.size > 4 * 1024 * 1024) { showToast('Banner must be under 4MB.', 'error'); return; }
+        try {
+          const dataUrl = await compressImage(file, 1200, 0.78);
+          showToast('Uploading banner...', 'info');
+
+          const res = await API.post('/upload/base64', { image: dataUrl, folder: 'nexusbids/profiles' });
+          const bannerUrl = (res.data && res.data.url) ? res.data.url : res.url;
+
+          currentBanner = bannerUrl;
+          const img = document.getElementById('banner-preview');
+          img.src = bannerUrl;
+          img.style.display = 'block';
+          showToast('Banner uploaded successfully!', 'success');
+        } catch {
+          showToast('Could not upload image.', 'error');
+        }
+      });
+
+      document.getElementById('banner-input').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith('image/')) { showToast('Please select an image file.', 'error'); return; }
+        if (file.size > 4 * 1024 * 1024) { showToast('Banner must be under 4MB.', 'error'); return; }
+        try {
+          const dataUrl = await compressImage(file, 1200, 0.78);
+          currentBanner = dataUrl;
+          const img = document.getElementById('banner-preview');
+          img.src = dataUrl;
+          img.style.display = 'block';
+        } catch {
+          showToast('Could not process image.', 'error');
+        }
+      });
+
+      document.getElementById('store-bio').addEventListener('input', function () {
+        document.getElementById('bio-chars').textContent = this.value.length;
+      });
+
+      function updatePreview() {
+        document.getElementById('prev-name').textContent = document.getElementById('store-name').value || 'Your Store Name';
+        document.getElementById('prev-tagline').textContent = document.getElementById('store-tagline').value || 'Your store tagline…';
+        document.getElementById('prev-bio').textContent = document.getElementById('store-bio').value || 'Store description will appear here.';
+        const city = document.getElementById('store-city').value;
+        document.getElementById('prev-location').innerHTML = city ? `<i class="fa-solid fa-location-dot"></i>${city}` : '';
+
+        const avatar = document.getElementById('prev-avatar');
+        if (currentLogo) {
+          avatar.innerHTML = `<img src="${currentLogo}" alt="Logo">`;
+        } else {
+          const initials = (document.getElementById('store-name').value || 'S').charAt(0).toUpperCase();
+          avatar.textContent = initials;
+        }
+
+        const banner = document.getElementById('prev-banner');
+        if (currentBanner) {
+          banner.style.backgroundImage = `url(${currentBanner})`;
+        } else {
+          banner.style.backgroundImage = 'linear-gradient(135deg,#6366f1,#312e81)';
+        }
+      }
+
+      async function loadProfile() {
+        try {
+          const r = await API.get('/auth/me');
+          const d = r.data || r.user || r;
+          if (d.full_name) document.getElementById('p-fullname').value = d.full_name;
+          if (d.username) document.getElementById('p-username').value = d.username;
+          if (d.email) document.getElementById('p-email').value = d.email;
+          if (d.phone) document.getElementById('p-phone').value = d.phone;
+          if (d.date_of_birth) document.getElementById('p-dob').value = d.date_of_birth;
+          if (d.store_name) document.getElementById('store-name').value = d.store_name;
+          if (d.store_tagline) document.getElementById('store-tagline').value = d.store_tagline;
+          if (d.store_bio || d.bio) document.getElementById('store-bio').value = d.store_bio || d.bio;
+          document.getElementById('bio-chars').textContent = (d.store_bio || d.bio || '').length;
+          if (d.city || d.store_city) document.getElementById('store-city').value = d.city || d.store_city;
+
+          // ✅ NEW: restore saved logo and banner
+          if (d.store_logo) {
+            currentLogo = d.store_logo;
+            const img = document.getElementById('logo-preview');
+            img.src = d.store_logo;
+            img.style.display = 'block';
+          }
+          if (d.store_banner) {
+            currentBanner = d.store_banner;
+            const img = document.getElementById('banner-preview');
+            img.src = d.store_banner;
+            img.style.display = 'block';
+          }
+        } catch { /* silent */ }
+      }
+
+      document.getElementById('profile-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-profile');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+        try {
+          // ✅ FIXED: include store_logo and store_banner in payload
+          const payload = {
+            store_name: document.getElementById('store-name').value,
+            store_tagline: document.getElementById('store-tagline').value,
+            store_bio: document.getElementById('store-bio').value,
+            store_city: document.getElementById('store-city').value,
+            return_policy: document.getElementById('store-returns').value,
+          };
+          if (currentLogo) payload.store_logo = currentLogo;
+          if (currentBanner) payload.store_banner = currentBanner;
+
+          const r = await API.patch('/auth/profile', payload);
+          if (r.success || r.data) {
+            showToast('Store profile saved successfully!', 'success');
+          } else {
+            showToast(r.message || 'Failed to save profile.', 'error');
+          }
+        } catch { showToast('Network error.', 'error'); }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Store Profile'; }
+      });
+
+      document.getElementById('contact-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-contact');
+        btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+        try {
+          const r = await API.patch('/auth/profile', {
+            business_phone: document.getElementById('c-phone').value,
+            whatsapp: document.getElementById('c-whatsapp').value,
+            website: document.getElementById('c-website').value,
+            facebook: document.getElementById('c-facebook').value,
+            instagram: document.getElementById('c-instagram').value,
+          });
+          if (r.success || r.data) { showToast('Contact info saved!', 'success'); }
+          else { showToast(r.message || 'Failed to save.', 'error'); }
+        } catch { showToast('Network error.', 'error'); }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Contact Info'; }
+      });
+
+      document.getElementById('personal-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn-save-personal');
+        btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
+        try {
+          const r = await API.patch('/auth/profile', {
+            full_name: document.getElementById('p-fullname').value,
+            username: document.getElementById('p-username').value,
+            phone: document.getElementById('p-phone').value,
+            date_of_birth: document.getElementById('p-dob').value,
+          });
+          if (r.success || r.data) { showToast('Personal info saved!', 'success'); }
+          else { showToast(r.message || 'Failed to save.', 'error'); }
+        } catch { showToast('Network error.', 'error'); }
+        finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Personal Info'; }
+      });
+
+      loadProfile();
+    })();
+  </script>
+</body>
+
+</html>

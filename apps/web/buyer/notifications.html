@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications — NexusBids Pakistan</title>
+  <meta name="description" content="View and manage all your NexusBids notifications.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' } } } } };</script>
+  <style>
+    :root {
+      --n-bg: #f4f6fb;
+      --n-s: #fff;
+      --n-s2: #f7f9fc;
+      --n-s3: #eceff6;
+      --n-bd: #e3e8f0;
+      --n-bdg: #cfd7e5;
+      --n-tx: #0f172a;
+      --n-txm: #58627a;
+      --n-txl: #8d97ab;
+      --n-sh: 0 1px 2px rgba(15, 23, 42, .05);
+      --n-shm: 0 6px 16px -6px rgba(15, 23, 42, .1);
+      --n-sk: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%)
+    }
+
+    html.dark {
+      --n-bg: #05070f;
+      --n-s: #0d1220;
+      --n-s2: #121a2b;
+      --n-s3: #1a2336;
+      --n-bd: #1e2a40;
+      --n-bdg: #2c3a56;
+      --n-tx: #eef2f9;
+      --n-txm: #9aa6bd;
+      --n-txl: #66738d;
+      --n-sh: 0 1px 2px rgba(0, 0, 0, .45);
+      --n-shm: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --n-sk: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      background: var(--n-bg);
+      color: var(--n-tx);
+      -webkit-font-smoothing: antialiased;
+      transition: background .3s, color .3s;
+      overflow-x: hidden
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .14);
+      border-color: rgba(99, 102, 241, .25)
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.2vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      color: var(--n-tx)
+    }
+
+    .page-sub {
+      font-size: .84rem;
+      color: var(--n-txm);
+      margin-top: 7px
+    }
+
+    .panel {
+      background: var(--n-s);
+      border: 1px solid var(--n-bd);
+      border-radius: 24px;
+      box-shadow: var(--n-sh);
+      overflow: hidden
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--n-bd)
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--n-tx)
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 11px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .22s;
+      white-space: nowrap
+    }
+
+    .btn-ghost {
+      background: var(--n-s);
+      border-color: var(--n-bd);
+      color: var(--n-txm);
+      box-shadow: var(--n-sh)
+    }
+
+    .btn-ghost:hover {
+      color: var(--n-tx);
+      border-color: var(--n-bdg);
+      transform: translateY(-1px);
+      box-shadow: var(--n-shm)
+    }
+
+    .notif-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--n-bd);
+      transition: background .2s;
+      cursor: pointer;
+      position: relative;
+      text-decoration: none;
+      color: inherit
+    }
+
+    .notif-item:last-child {
+      border-bottom: none
+    }
+
+    .notif-item:hover {
+      background: var(--n-s2)
+    }
+
+    .notif-item.unread {
+      background: rgba(99, 102, 241, .04)
+    }
+
+    html.dark .notif-item.unread {
+      background: rgba(99, 102, 241, .07)
+    }
+
+    .notif-item.unread::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: #6366f1;
+      border-radius: 0 2px 2px 0
+    }
+
+    .notif-icon {
+      flex: 0 0 auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem
+    }
+
+    .notif-body {
+      flex: 1;
+      min-width: 0
+    }
+
+    .notif-title {
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--n-tx);
+      line-height: 1.35
+    }
+
+    .notif-msg {
+      font-size: .78rem;
+      color: var(--n-txm);
+      margin-top: 3px;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden
+    }
+
+    .notif-time {
+      font-size: .68rem;
+      color: var(--n-txl);
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 4px
+    }
+
+    .unread-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6366f1;
+      flex-shrink: 0;
+      margin-top: 4px
+    }
+
+    .skeleton {
+      background: var(--n-sk);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+      border-radius: 8px
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0 50%
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .notif-item {
+      animation: fadeIn .3s both
+    }
+
+    .tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--n-s3);
+      border: 1px solid var(--n-bd);
+      border-radius: 13px
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      border-radius: 9px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--n-txm);
+      font-family: inherit;
+      transition: all .2s
+    }
+
+    .tab:hover {
+      color: var(--n-tx)
+    }
+
+    .tab.is-active {
+      background: var(--n-s);
+      color: var(--n-tx);
+      box-shadow: var(--n-sh)
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+  <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10 w-full">
+
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-7">
+      <div>
+        <span class="eyebrow"><i class="fa-solid fa-bell"></i> Notifications</span>
+        <h1 class="page-title mt-3">Notifications</h1>
+        <p class="page-sub" id="notif-sub">Loading…</p>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <button id="mark-all-btn" class="btn btn-ghost" type="button" style="display:none">
+          <i class="fa-solid fa-check-double"></i> Mark All Read
+        </button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2 class="panel-title">All Notifications</h2>
+        <div class="tabs" role="tablist">
+          <button class="tab is-active" data-filter="all" role="tab" type="button">All</button>
+          <button class="tab" data-filter="unread" role="tab" type="button">Unread <span id="unread-badge"
+              style="background:#ef4444;color:#fff;border-radius:999px;padding:1px 6px;font-size:.6rem;font-weight:800;display:none">0</span></button>
+        </div>
+      </div>
+      <div id="notif-list">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      const state = { notifications: [], filter: 'all' };
+
+      function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+      function timeAgo(d) {
+        const diff = (Date.now() - new Date(d).getTime()) / 1000;
+        if (diff < 60) return 'just now';
+        if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+        if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+        return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      }
+
+      function iconFor(type) {
+        const map = {
+          bid_placed: ['fa-gavel', 'rgba(99,102,241,.15)', '#6366f1'],
+          outbid: ['fa-arrow-trend-down', 'rgba(239,68,68,.1)', '#ef4444'],
+          auction_won: ['fa-trophy', 'rgba(16,185,129,.12)', '#10b981'],
+          auction_lost: ['fa-circle-xmark', 'rgba(100,116,139,.1)', '#64748b'],
+          order_created: ['fa-box', 'rgba(59,130,246,.1)', '#3b82f6'],
+          payment_received: ['fa-credit-card', 'rgba(16,185,129,.12)', '#10b981'],
+          shipment_created: ['fa-truck-fast', 'rgba(59,130,246,.1)', '#3b82f6'],
+          kyc_approved: ['fa-id-card', 'rgba(16,185,129,.12)', '#10b981'],
+          kyc_rejected: ['fa-id-card', 'rgba(239,68,68,.1)', '#ef4444'],
+          dispute_raised: ['fa-flag', 'rgba(239,68,68,.1)', '#ef4444'],
+          auction_ending_soon: ['fa-clock', 'rgba(245,158,11,.1)', '#f59e0b'],
+        };
+        return map[type] || ['fa-bell', 'rgba(99,102,241,.1)', '#6366f1'];
+      }
+
+      function linkFor(n) {
+        const t = n.notification_type || n.type || '';
+        const d = n.data || {};
+        if (t.includes('bid') || t.includes('auction')) return d.auction_id ? `/auction-details.html?id=${d.auction_id}` : '';
+        if (t.includes('order')) return d.order_id ? `/buyer/order-details.html?id=${d.order_id}` : '';
+        if (t.includes('kyc')) return '/buyer/kyc.html';
+        return '';
+      }
+
+      function renderNotif(n) {
+        const [icon, iconBg, iconColor] = iconFor(n.notification_type || n.type);
+        const unread = !n.is_read;
+        const link = linkFor(n) || '#';
+        return `<a class="notif-item${unread ? ' unread' : ''}" data-id="${n.notification_id || n.id}" href="${link}" role="article">
+        <div class="notif-icon" style="background:${iconBg}"><i class="fa-solid ${icon}" style="color:${iconColor}"></i></div>
+        <div class="notif-body">
+          <div class="notif-title">${esc(n.title || n.notification_type || 'Notification')}</div>
+          <div class="notif-msg">${esc(n.message || '')}</div>
+          <div class="notif-time"><i class="fa-regular fa-clock"></i>${esc(timeAgo(n.created_at))}</div>
+        </div>
+        ${unread ? '<div class="unread-dot"></div>' : ''}
+      </a>`;
+      }
+
+      function skeletons(n = 8) {
+        return Array(n).fill(0).map(() => `
+        <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 20px;border-bottom:1px solid var(--n-bd)">
+          <div class="skeleton" style="width:40px;height:40px;border-radius:12px;flex-shrink:0"></div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+            <div class="skeleton" style="height:12px;width:60%"></div>
+            <div class="skeleton" style="height:11px;width:80%"></div>
+            <div class="skeleton" style="height:10px;width:40%"></div>
+          </div>
+        </div>`).join('');
+      }
+
+      function render() {
+        const list = document.getElementById('notif-list');
+        if (!list) return;
+        let items = state.notifications;
+        if (state.filter === 'unread') items = items.filter(n => !n.is_read);
+        if (!items.length) {
+          list.innerHTML = `<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:52px 20px;text-align:center;gap:12px">
+          <div style="width:56px;height:56px;border-radius:16px;background:var(--n-s2);border:1px solid var(--n-bd);display:grid;place-items:center;font-size:1.3rem;color:var(--n-txl)"><i class="fa-solid fa-bell"></i></div>
+          <h3 style="font-size:.95rem;font-weight:800;color:var(--n-tx);margin:0">${state.filter === 'unread' ? 'No unread notifications' : 'No notifications yet'}</h3>
+          <p style="font-size:.78rem;color:var(--n-txm);max-width:280px;line-height:1.55;margin:0">You're all caught up!</p>
+        </div>`;
+          return;
+        }
+        list.innerHTML = items.map(renderNotif).join('');
+        // Click to mark read
+        list.querySelectorAll('.notif-item.unread').forEach(el => {
+          el.addEventListener('click', () => {
+            const id = el.dataset.id;
+            if (id) ApiClient.patch(`/notifications/${id}/read`).catch(() => { });
+            el.classList.remove('unread');
+            el.querySelector('.unread-dot')?.remove();
+            var item = state.notifications.find(function (n) {
+              return String(n.notification_id || n.id) === String(id);
+            });
+            if (item) item.is_read = true;
+            updateBadge();
+          });
+        });
+      }
+
+      function updateBadge() {
+        const unread = state.notifications.filter(n => !n.is_read).length;
+        const badge = document.getElementById('unread-badge');
+        if (badge) { badge.textContent = unread; badge.style.display = unread ? 'inline' : 'none'; }
+        const sub = document.getElementById('notif-sub');
+        if (sub) sub.textContent = `${state.notifications.length} notification${state.notifications.length !== 1 ? 's' : ''} · ${unread} unread`;
+        const markBtn = document.getElementById('mark-all-btn');
+        if (markBtn) markBtn.style.display = unread ? 'flex' : 'none';
+      }
+
+      async function load() {
+        document.getElementById('notif-list').innerHTML = skeletons();
+        try {
+          const res = await ApiClient.get('/notifications');
+          state.notifications = Array.isArray(res?.data) ? res.data : [];
+          updateBadge();
+          render();
+        } catch (e) {
+          document.getElementById('notif-list').innerHTML = `<div style="padding:40px;text-align:center;color:var(--n-txm);font-size:.85rem">Failed to load notifications. <button onclick="load()" style="color:#6366f1;background:none;border:none;cursor:pointer;font-weight:700">Retry</button></div>`;
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!ApiClient.getAccessToken()) { window.location.href = '/login.html?redirect=/buyer/notifications.html'; return; }
+
+        document.querySelectorAll('.tab[data-filter]').forEach(tab => {
+          tab.addEventListener('click', () => {
+            state.filter = tab.dataset.filter;
+            document.querySelectorAll('.tab[data-filter]').forEach(t => t.classList.toggle('is-active', t === tab));
+            render();
+          });
+        });
+
+        document.getElementById('mark-all-btn')?.addEventListener('click', async () => {
+          const btn = document.getElementById('mark-all-btn');
+          btn.disabled = true;
+          try {
+            await ApiClient.patch('/notifications/read-all');
+            state.notifications.forEach(n => n.is_read = true);
+            updateBadge();
+            render();
+            if (window.UI && UI.showToast) UI.showToast('All notifications marked as read', 'success');
+          } catch (e) {
+            if (window.UI && UI.showToast) UI.showToast('Failed to mark notifications read', 'error');
+          } finally { btn.disabled = false; }
+        });
+
+        load();
+      });
+
+      window.load = load;
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+  <script src="/assets/js/buyer-role-guard.js"></script>
+</body>
+
+</html>

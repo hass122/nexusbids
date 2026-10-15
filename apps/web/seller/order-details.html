@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Fulfillment Details — Seller Studio | NexusBids</title>
+  <meta name="description"
+    content="View sold auction order details, buyer shipping destination, escrow release, and dispatch tracking.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --s-bg: #05070f;
+      --s-surface: #0d1220;
+      --s-surface-2: #121a2b;
+      --s-surface-3: #1a2336;
+      --s-border: #1e2a40;
+      --s-border-strong: #2c3a56;
+      --s-text: #eef2f9;
+      --s-text-muted: #9aa6bd;
+      --s-text-light: #66738d;
+    }
+
+    html:not(.dark) {
+      --s-bg: #f4f6fb;
+      --s-surface: #ffffff;
+      --s-surface-2: #f7f9fc;
+      --s-surface-3: #eceff6;
+      --s-border: #e3e8f0;
+      --s-border-strong: #cfd7e5;
+      --s-text: #0f172a;
+      --s-text-muted: #58627a;
+      --s-text-light: #8d97ab;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--s-bg);
+      color: var(--s-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .panel {
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--s-border);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .badge-paid {
+      background: rgba(16, 185, 129, .12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, .3);
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, .12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, .3);
+    }
+
+    .badge-shipped {
+      background: rgba(59, 130, 246, .12);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, .3);
+    }
+
+    .badge-delivered {
+      background: rgba(16, 185, 129, .2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .4);
+    }
+
+    .badge-disputed {
+      background: rgba(239, 68, 68, .12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, .3);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FORM CONTROLS — Fixed for Tailwind Forms plugin override
+       Tailwind CDN injects form styles at runtime, so we must use
+       element+class selectors (specificity 0,1,1) + !important to win.
+       ═══════════════════════════════════════════════════════════════ */
+
+    input.nb-input,
+    select.nb-select,
+    textarea.nb-textarea {
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--s-surface-2) !important;
+      background-image: none !important;
+      border: 1px solid var(--s-border) !important;
+      color: var(--s-text) !important;
+      border-radius: 12px !important;
+      padding: 11px 14px !important;
+      font-size: .875rem !important;
+      font-weight: 500 !important;
+      line-height: 1.4 !important;
+      width: 100% !important;
+      transition: border-color .2s ease, box-shadow .2s ease !important;
+      outline: none !important;
+      font-family: inherit !important;
+      box-shadow: none !important;
+      color-scheme: dark;
+    }
+
+    html:not(.dark) input.nb-input,
+    html:not(.dark) select.nb-select,
+    html:not(.dark) textarea.nb-textarea {
+      color-scheme: light;
+    }
+
+    input.nb-input:hover:not(:disabled),
+    select.nb-select:hover:not(:disabled),
+    textarea.nb-textarea:hover:not(:disabled) {
+      border-color: var(--s-border-strong) !important;
+    }
+
+    input.nb-input:focus,
+    select.nb-select:focus,
+    textarea.nb-textarea:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .18) !important;
+      background-color: var(--s-surface-2) !important;
+      color: var(--s-text) !important;
+    }
+
+    input.nb-input:disabled,
+    select.nb-select:disabled,
+    textarea.nb-textarea:disabled {
+      opacity: .55 !important;
+      cursor: not-allowed !important;
+      background-color: var(--s-surface-3) !important;
+      color: var(--s-text-muted) !important;
+    }
+
+    /* Placeholders */
+    input.nb-input::placeholder,
+    textarea.nb-textarea::placeholder {
+      color: var(--s-text-light) !important;
+      opacity: 1 !important;
+      font-weight: 400 !important;
+    }
+
+    /* Select — custom dropdown arrow that respects theme */
+    select.nb-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%239aa6bd' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+      background-position: right 0.85rem center !important;
+      background-repeat: no-repeat !important;
+      background-size: 1.1em 1.1em !important;
+      padding-right: 2.75rem !important;
+    }
+
+    html:not(.dark) select.nb-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2358627a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+    }
+
+    select.nb-select option,
+    select.nb-select optgroup {
+      background-color: var(--s-surface-2);
+      color: var(--s-text);
+      padding: 8px;
+    }
+
+    /* Autofill fix — Chrome aggressively overrides background */
+    input.nb-input:-webkit-autofill,
+    input.nb-input:-webkit-autofill:hover,
+    input.nb-input:-webkit-autofill:focus,
+    textarea.nb-textarea:-webkit-autofill {
+      -webkit-text-fill-color: var(--s-text) !important;
+      -webkit-box-shadow: 0 0 0 1000px var(--s-surface-2) inset !important;
+      box-shadow: 0 0 0 1000px var(--s-surface-2) inset !important;
+      transition: background-color 5000s ease-in-out 0s !important;
+      caret-color: var(--s-text) !important;
+    }
+
+    /* Date/time picker indicators */
+    input[type="datetime-local"].nb-input::-webkit-calendar-picker-indicator,
+    input[type="date"].nb-input::-webkit-calendar-picker-indicator,
+    input[type="time"].nb-input::-webkit-calendar-picker-indicator {
+      cursor: pointer !important;
+      opacity: .65 !important;
+      filter: invert(.85) !important;
+    }
+
+    html:not(.dark) input[type="datetime-local"].nb-input::-webkit-calendar-picker-indicator,
+    html:not(.dark) input[type="date"].nb-input::-webkit-calendar-picker-indicator,
+    html:not(.dark) input[type="time"].nb-input::-webkit-calendar-picker-indicator {
+      filter: none !important;
+      opacity: .55 !important;
+    }
+
+    /* Number spinner */
+    input[type="number"].nb-input::-webkit-inner-spin-button,
+    input[type="number"].nb-input::-webkit-outer-spin-button {
+      opacity: .55 !important;
+      height: 1.4em;
+    }
+
+    /* Textarea */
+    textarea.nb-textarea {
+      resize: vertical !important;
+      min-height: 100px !important;
+      line-height: 1.55 !important;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: .82rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 6px 16px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(99, 102, 241, .7);
+    }
+
+    .btn-ghost {
+      background: var(--s-surface-2);
+      border-color: var(--s-border);
+      color: var(--s-text);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--s-border-strong);
+      background: var(--s-surface-3);
+    }
+
+    .btn-secondary {
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .3);
+      color: #818cf8;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(99, 102, 241, .25);
+      border-color: rgba(99, 102, 241, .4);
+    }
+
+    .timeline-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 2px solid var(--s-surface);
+      flex-shrink: 0;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 14px;
+      bottom: -14px;
+      left: 6px;
+      width: 2px;
+      background: var(--s-border);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--s-surface);border-color:var(--s-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/seller/orders.html"
+          class="text-sm font-semibold text-[var(--s-text-muted)] hover:text-[var(--s-text)]"><i
+            class="fa-solid fa-arrow-left mr-1"></i> Back to Orders</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="seller-subnav"></div>
+
+    <nav class="flex items-center gap-2 text-xs text-[var(--s-text-muted)] mb-5">
+      <a href="/seller/dashboard.html" class="hover:text-[var(--s-text)]">Dashboard</a>
+      <i class="fa-solid fa-chevron-right text-[9px]"></i>
+      <a href="/seller/orders.html" class="hover:text-[var(--s-text)]">Orders</a>
+      <i class="fa-solid fa-chevron-right text-[9px]"></i>
+      <span class="text-[var(--s-text)] font-bold" id="bc-order-num">Order Fulfillment</span>
+    </nav>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div class="flex items-center gap-3 flex-wrap">
+          <h1 class="text-2xl sm:text-3xl font-black text-[var(--s-text)]" id="order-header-title">Order #—</h1>
+          <div id="header-badges" class="flex items-center gap-2"></div>
+        </div>
+        <p class="text-xs sm:text-sm text-[var(--s-text-muted)] mt-1" id="order-header-date">Placed on —</p>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <a id="btn-invoice" href="#" target="_blank" class="btn btn-ghost text-xs"><i
+            class="fa-solid fa-file-invoice text-brand-400"></i> View Invoice</a>
+        <a id="btn-dispute" href="/seller/disputes.html" class="btn btn-ghost text-xs"><i
+            class="fa-solid fa-triangle-exclamation text-amber-400"></i> Disputes</a>
+      </div>
+    </div>
+
+    <div id="loading-state" class="panel p-16 text-center">
+      <i class="fa-solid fa-spinner fa-spin text-3xl text-brand-400 mb-3"></i>
+      <p class="text-sm font-bold text-[var(--s-text)]">Loading order details…</p>
+    </div>
+
+    <div id="order-body" class="hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 space-y-6">
+        <div class="panel">
+          <div class="card-head"><i class="fa-solid fa-gavel text-brand-400"></i>
+            <h2 class="text-sm font-bold text-[var(--s-text)]">Sold Auction Item</h2>
+          </div>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div class="w-24 h-24 rounded-xl overflow-hidden bg-black/40 border border-[var(--s-border)] flex-shrink-0">
+              <img id="item-image" src="" alt="Item" class="w-full h-full object-cover">
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="text-[11px] font-bold text-brand-400 uppercase tracking-wider mb-1" id="item-category">General
+              </div>
+              <h3 class="text-base font-extrabold text-[var(--s-text)] line-clamp-2" id="item-title">Title</h3>
+              <div class="flex items-center gap-3 mt-2 text-xs text-[var(--s-text-muted)]">
+                <span>Lot #<strong id="item-lot" class="text-[var(--s-text)]">0</strong></span>
+                <span>•</span>
+                <a id="item-link" href="#" target="_blank" class="text-brand-400 hover:underline">View Public Lot</a>
+              </div>
+            </div>
+            <div class="text-right sm:border-l sm:border-[var(--s-border)] sm:pl-5 sm:min-w-[140px]">
+              <span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Winning Price</span>
+              <strong class="text-xl font-black text-emerald-400" id="item-price">Rs. 0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="card-head justify-between">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-truck-fast text-brand-400"></i>
+              <div>
+                <h2 class="text-sm font-bold text-[var(--s-text)]">Shipment &amp; Courier Fulfillment</h2>
+                <p class="text-xs text-[var(--s-text-muted)]">Track consignment or enter Pakistani courier dispatch
+                  details</p>
+              </div>
+            </div>
+            <span id="shipment-status-badge" class="badge"></span>
+          </div>
+
+          <div id="shipped-info-box"
+            class="hidden p-4 rounded-xl bg-[var(--s-surface-2)] border border-[var(--s-border)] space-y-3 mb-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Courier
+                  Partner</span><strong class="text-sm font-bold text-[var(--s-text)]" id="disp-courier">—</strong>
+              </div>
+              <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Tracking Airway Bill
+                  (AWB)</span><strong class="text-sm font-mono font-bold text-brand-400" id="disp-tracking">—</strong>
+              </div>
+              <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Est.
+                  Delivery</span><strong class="text-sm font-bold text-[var(--s-text)]" id="disp-est">—</strong></div>
+            </div>
+            <div class="pt-2 flex items-center justify-between border-t border-[var(--s-border)]">
+              <span class="text-xs text-[var(--s-text-muted)]" id="disp-note"></span>
+              <a id="btn-track-external" href="#" target="_blank" class="btn btn-secondary text-xs py-1.5 px-3"><i
+                  class="fa-solid fa-arrow-up-right-from-square"></i> Open Courier Tracking</a>
+            </div>
+          </div>
+
+          <form id="dispatch-form" onsubmit="handleDispatch(event)" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label
+                  class="text-[11px] font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-1">Select
+                  Courier Partner *</label>
+                <select id="ship-courier" required class="nb-select">
+                  <option value="">Select courier…</option>
+                  <option value="TCS">TCS Express</option>
+                  <option value="Leopards">Leopards Courier</option>
+                  <option value="Trax">Trax Logistics</option>
+                  <option value="PostEx">PostEx</option>
+                  <option value="M&P">M&P Express Logistics</option>
+                  <option value="CallCourier">Call Courier</option>
+                  <option value="PakistanPost">Pakistan Post</option>
+                  <option value="BlueEX">BlueEX</option>
+                  <option value="Daewoo">Daewoo Express</option>
+                  <option value="Self">Self / Local Courier</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label
+                  class="text-[11px] font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-1">Tracking
+                  Number / CN Number *</label>
+                <input type="text" id="ship-tracking" required class="nb-input" placeholder="e.g. 12893819283">
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label
+                  class="text-[11px] font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-1">Estimated
+                  Delivery Date</label>
+                <input type="date" id="ship-est-date" class="nb-input">
+              </div>
+              <div>
+                <label
+                  class="text-[11px] font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-1">Fulfillment
+                  Note (Optional)</label>
+                <input type="text" id="ship-note" class="nb-input"
+                  placeholder="e.g. Fragile box securely bubble-wrapped">
+              </div>
+            </div>
+            <div class="pt-2 text-right">
+              <button type="submit" id="btn-dispatch-submit" class="btn btn-primary text-xs"><i
+                  class="fa-solid fa-truck"></i> Confirm Dispatch &amp; Notify Buyer</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="card-head"><i class="fa-solid fa-timeline text-brand-400"></i>
+            <h2 class="text-sm font-bold text-[var(--s-text)]">Order Progress Timeline</h2>
+          </div>
+          <div class="relative pl-6 space-y-6" id="order-timeline"></div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="panel">
+          <div class="card-head"><i class="fa-solid fa-wallet text-emerald-400"></i>
+            <h2 class="text-sm font-bold text-[var(--s-text)]">Escrow &amp; Payout Summary</h2>
+          </div>
+          <div class="space-y-3 text-xs mb-5">
+            <div class="flex items-center justify-between text-[var(--s-text-muted)]"><span>Winning Bid
+                (Gross)</span><strong class="text-[var(--s-text)]" id="fin-gross">Rs. 0</strong></div>
+            <div class="flex items-center justify-between text-[var(--s-text-muted)]"><span>Platform Fee
+                (5%)</span><span class="text-rose-400" id="fin-fee">-Rs. 0</span></div>
+            <div class="flex items-center justify-between pt-3 border-t border-[var(--s-border)] text-sm">
+              <span class="font-bold text-[var(--s-text)]">Seller Payout (Net)</span>
+              <strong class="text-lg font-black text-emerald-400" id="fin-net">Rs. 0</strong>
+            </div>
+          </div>
+          <div class="p-3.5 rounded-xl bg-brand-500/10 border border-brand-500/20 text-xs">
+            <div class="flex items-start gap-2.5">
+              <i class="fa-solid fa-shield-halved text-brand-400 mt-0.5"></i>
+              <div>
+                <strong class="text-brand-300 block mb-0.5">Protected by NexusBids Escrow</strong>
+                <p class="text-[var(--s-text-muted)] leading-relaxed text-[11px]">Funds are secured in escrow and will
+                  be unlocked directly to your bank account / JazzCash upon confirmed delivery by the buyer.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="card-head"><i class="fa-solid fa-location-dot text-rose-400"></i>
+            <h2 class="text-sm font-bold text-[var(--s-text)]">Buyer Shipping Destination</h2>
+          </div>
+          <div class="space-y-3 text-xs">
+            <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Recipient</span><strong
+                class="text-sm text-[var(--s-text)]" id="buyer-name">—</strong></div>
+            <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Phone /
+                Mobile</span><span class="text-[var(--s-text)] font-mono" id="buyer-phone">—</span></div>
+            <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Destination
+                Address</span>
+              <p class="text-[var(--s-text)] leading-relaxed mt-0.5" id="buyer-address">—</p>
+            </div>
+            <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">City &amp; Postal
+                Code</span><span class="text-[var(--s-text)]" id="buyer-city">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/seller-nav.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      /* ✅ AUTH GUARD */
+      const _t = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      const _u = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
+      if (!_t || !['seller', 'admin'].includes(_u.role)) {
+        window.location.href = '/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('id') || urlParams.get('order_id');
+      if (!orderId) {
+        alert('No order ID provided.');
+        window.location.href = '/seller/orders.html';
+        return;
+      }
+
+      let currentOrder = null;
+
+      async function loadOrder() {
+        try {
+          const res = await ApiClient.get('/orders/' + orderId);
+          const o = (res && res.data) || res;
+          if (!o || (!o.order_id && !o.id)) throw new Error('Order details could not be retrieved.');
+          currentOrder = o;
+          renderOrderDetails(o);
+        } catch (err) {
+          document.getElementById('loading-state').innerHTML = `<i class="fa-solid fa-circle-exclamation text-3xl text-rose-400 mb-3"></i><p class="text-sm font-bold text-rose-400">Failed to load order: ${UI.escapeHtml(err.message)}</p><a href="/seller/orders.html" class="btn btn-primary text-xs mt-4">Back to Orders</a>`;
+        }
+      }
+
+      function renderOrderDetails(o) {
+        document.getElementById('bc-order-num').textContent = `Order #${o.order_number || o.order_id}`;
+        document.getElementById('order-header-title').textContent = `Order #${o.order_number || o.order_id}`;
+        document.getElementById('order-header-date').textContent = `Placed on ${new Date(o.created_at || Date.now()).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}`;
+        document.getElementById('btn-invoice').href = `/invoice.html?order_id=${o.order_id}&role=seller`;
+
+        const headerBadges = document.getElementById('header-badges');
+        const payStatus = (o.payment_status || 'paid').toLowerCase();
+        const shipStatus = (o.shipping_status || 'pending').toLowerCase();
+        headerBadges.innerHTML = `
+          <span class="badge ${payStatus === 'paid' ? 'badge-paid' : 'badge-pending'}"><i class="fa-solid fa-credit-card text-[9px]"></i> Payment: ${payStatus}</span>
+          <span class="badge ${shipStatus === 'delivered' ? 'badge-delivered' : shipStatus === 'shipped' ? 'badge-shipped' : 'badge-pending'}"><i class="fa-solid fa-truck text-[9px]"></i> Shipping: ${shipStatus}</span>
+        `;
+
+        document.getElementById('item-title').textContent = o.auction_title || 'Auction Lot';
+        document.getElementById('item-category').textContent = o.category_name || 'General Item';
+        document.getElementById('item-lot').textContent = o.auction_id || '—';
+        document.getElementById('item-link').href = `/auction-details.html?id=${o.auction_id}`;
+        document.getElementById('item-image').src = o.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200';
+        // ✅ FIXED: derive gross/fee/net from what backend actually sends
+        const totalAmt = parseFloat(o.total_amount || 0);
+        const sellerAmt = parseFloat(o.seller_amount || 0);
+        const commAmt = (o.commission_amount != null) ? parseFloat(o.commission_amount) : null;
+        let gross, fee, net;
+        if (commAmt != null && totalAmt > 0) {
+          gross = totalAmt; fee = commAmt; net = gross - fee;
+        } else if (totalAmt > 0 && sellerAmt > 0 && sellerAmt < totalAmt) {
+          gross = totalAmt; net = sellerAmt; fee = gross - net;
+        } else if (totalAmt > 0) {
+          gross = totalAmt; fee = gross * 0.05; net = gross - fee;
+        } else {
+          net = sellerAmt; gross = net > 0 ? net / 0.95 : 0; fee = gross - net;
+        }
+        document.getElementById('item-price').textContent = UI.formatPKR(gross);
+        document.getElementById('fin-gross').textContent = UI.formatPKR(gross);
+        document.getElementById('fin-fee').textContent = `-${UI.formatPKR(fee)}`;
+        document.getElementById('fin-net').textContent = UI.formatPKR(net);
+
+        document.getElementById('buyer-name').textContent = o.counterparty_name || o.buyer_name || 'Verified Buyer';
+        document.getElementById('buyer-phone').textContent = o.buyer_phone || '+92 3XX-XXXXXXX';
+        document.getElementById('buyer-address').textContent = o.shipping_address || o.delivery_address || 'Address provided upon checkout';
+        document.getElementById('buyer-city').textContent = `${o.city || 'Pakistan'}, ${o.postal_code || ''}`;
+
+        const shipBadge = document.getElementById('shipment-status-badge');
+        shipBadge.className = `badge ${shipStatus === 'delivered' ? 'badge-delivered' : shipStatus === 'shipped' ? 'badge-shipped' : 'badge-pending'}`;
+        shipBadge.textContent = shipStatus;
+
+        const courierName = o.courier || o.carrier || 'TCS';
+        const isDispatched = shipStatus === 'shipped' || shipStatus === 'delivered';
+        if (isDispatched) {
+          document.getElementById('shipped-info-box').classList.remove('hidden');
+          document.getElementById('disp-courier').textContent = courierName;
+          document.getElementById('disp-tracking').textContent = o.tracking_number || 'TRK-XXXXX';
+          document.getElementById('disp-est').textContent = o.estimated_delivery ? new Date(o.estimated_delivery).toLocaleDateString('en-PK') : 'In Transit';
+          document.getElementById('disp-note').textContent = o.note ? `Note: ${o.note}` : '';
+
+          const trackUrl = getCourierTrackingUrl(courierName, o.tracking_number);
+          document.getElementById('btn-track-external').href = trackUrl;
+          document.getElementById('btn-dispatch-submit').innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Update Dispatch Details';
+
+          const cSel = document.getElementById('ship-courier');
+          if (cSel) {
+            const cl = courierName.toLowerCase();
+            // ✅ Match both directions: legacy "TCS Express" ↔ canonical "TCS"
+            const match = Array.from(cSel.options).find(opt => opt.value === courierName)
+              || Array.from(cSel.options).find(opt => opt.value.toLowerCase() === cl)
+              || Array.from(cSel.options).find(opt => {
+                const ol = opt.value.toLowerCase();
+                return ol.indexOf(cl) === 0 || cl.indexOf(ol) === 0;
+              });
+            if (match) cSel.value = match.value;
+          }
+          const trkEl = document.getElementById('ship-tracking');
+          if (trkEl) trkEl.value = o.tracking_number || '';
+          const estEl = document.getElementById('ship-est-date');
+          if (estEl && o.estimated_delivery) {
+            const d = new Date(o.estimated_delivery);
+            if (!isNaN(d.getTime())) estEl.value = d.toISOString().split('T')[0];
+          }
+          const noteEl = document.getElementById('ship-note');
+          if (noteEl) noteEl.value = o.note || '';
+        }
+
+        renderTimeline(o);
+
+        document.getElementById('loading-state').classList.add('hidden');
+        document.getElementById('order-body').classList.remove('hidden');
+      }
+
+      function getCourierTrackingUrl(courier, num) {
+        if (!num) return '#';
+        const c = (courier || '').toLowerCase();
+        if (c.includes('tcs')) return `https://www.tcsexpress.com/tracking?track=${num}`;
+        if (c.includes('leopard')) return `https://www.leopardscourier.com/leopards-tracking/?track_no=${num}`;
+        if (c.includes('trax')) return `https://trax.pk/tracking?tracking_number=${num}`;
+        if (c.includes('postex')) return `https://postex.pk/tracking?tracking=${num}`;
+        return `https://www.google.com/search?q=${encodeURIComponent(courier + ' tracking ' + num)}`;
+      }
+
+      function renderTimeline(o) {
+        const shipStatus = (o.shipping_status || 'pending').toLowerCase();
+        const isShipped = shipStatus === 'shipped' || shipStatus === 'delivered';
+        const isDelivered = shipStatus === 'delivered';
+        const courierName = o.courier || o.carrier || 'Courier';
+        const events = [
+          { label: 'Auction Won & Order Generated', date: new Date(o.created_at || Date.now()).toLocaleDateString('en-PK'), done: true },
+          { label: 'Payment Secured in Escrow', date: 'Immediate verification', done: true },
+          { label: 'Dispatched via Courier', date: isShipped ? courierName + ' • ' + (o.tracking_number || '') : 'Pending Seller Dispatch', done: isShipped },
+          { label: 'Delivered & Escrow Released to Seller', date: isDelivered ? 'Funds Deposited' : 'Awaiting Delivery', done: isDelivered }
+        ];
+        const container = document.getElementById('order-timeline');
+        container.innerHTML = events.map((ev, idx) => `
+          <div class="relative flex items-start gap-4">
+            ${idx < events.length - 1 ? '<div class="timeline-line"></div>' : ''}
+            <div class="timeline-dot ${ev.done ? 'bg-emerald-400' : 'bg-slate-700'}"></div>
+            <div>
+              <strong class="text-xs ${ev.done ? 'text-[var(--s-text)]' : 'text-[var(--s-text-muted)]'} block">${ev.label}</strong>
+              <span class="text-[11px] text-[var(--s-text-muted)]">${ev.date}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      async function handleDispatch(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btn-dispatch-submit');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating Dispatch…';
+        const payload = {
+          courier: document.getElementById('ship-courier').value,
+          tracking_number: document.getElementById('ship-tracking').value.trim(),
+          estimated_delivery: document.getElementById('ship-est-date').value || null,
+          note: document.getElementById('ship-note').value.trim() || null
+        };
+        try {
+          await ApiClient.post('/shipping/orders/' + orderId + '/ship', payload);
+          UI.showToast('Dispatch information saved and buyer notified!', 'success');
+          loadOrder();
+        } catch (err) {
+          UI.showToast(err.message || 'Failed to dispatch order.', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-truck"></i> Confirm Dispatch &amp; Notify Buyer';
+        }
+      }
+
+      window.handleDispatch = handleDispatch;
+
+      document.addEventListener('DOMContentLoaded', loadOrder);
+    })();
+  </script>
+</body>
+
+</html>

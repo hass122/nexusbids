@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auction Details &amp; Control — Seller Studio | NexusBids</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --s-bg: #05070f;
+      --s-surface: #0d1220;
+      --s-surface-2: #121a2b;
+      --s-surface-3: #1a2336;
+      --s-border: #1e2a40;
+      --s-border-strong: #2c3a56;
+      --s-text: #eef2f9;
+      --s-text-muted: #9aa6bd;
+      --s-text-light: #66738d;
+    }
+
+    html:not(.dark) {
+      --s-bg: #f4f6fb;
+      --s-surface: #ffffff;
+      --s-surface-2: #f7f9fc;
+      --s-surface-3: #eceff6;
+      --s-border: #e3e8f0;
+      --s-border-strong: #cfd7e5;
+      --s-text: #0f172a;
+      --s-text-muted: #58627a;
+      --s-text-light: #8d97ab;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--s-bg);
+      color: var(--s-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .panel {
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--s-border);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .badge-active {
+      background: rgba(16, 185, 129, .12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, .3);
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, .12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, .3);
+    }
+
+    .badge-ended {
+      background: rgba(148, 163, 184, .12);
+      color: #94a3b8;
+      border: 1px solid rgba(148, 163, 184, .3);
+    }
+
+    .badge-sold {
+      background: rgba(16, 185, 129, .2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .4);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: .82rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 6px 16px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(99, 102, 241, .7);
+    }
+
+    .btn-ghost {
+      background: var(--s-surface-2);
+      border-color: var(--s-border);
+      color: var(--s-text);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--s-border-strong);
+      background: var(--s-surface-3);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, .12);
+      border-color: rgba(239, 68, 68, .3);
+      color: #f87171;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, .25);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+
+    .data-table th {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--s-text-muted);
+      border-bottom: 1px solid var(--s-border);
+    }
+
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--s-border);
+      color: var(--s-text);
+    }
+
+    .data-table tr:hover td {
+      background: var(--s-surface-2);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--s-surface);border-color:var(--s-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/seller/auctions.html"
+          class="text-sm font-semibold text-[var(--s-text-muted)] hover:text-[var(--s-text)]"><i
+            class="fa-solid fa-arrow-left mr-1"></i> My Auctions</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="seller-subnav"></div>
+
+    <nav class="flex items-center gap-2 text-xs text-[var(--s-text-muted)] mb-5">
+      <a href="/seller/dashboard.html" class="hover:text-[var(--s-text)]">Dashboard</a>
+      <i class="fa-solid fa-chevron-right text-[9px]"></i>
+      <a href="/seller/auctions.html" class="hover:text-[var(--s-text)]">My Auctions</a>
+      <i class="fa-solid fa-chevron-right text-[9px]"></i>
+      <span class="text-[var(--s-text)] font-bold" id="bc-auction-title">Lot Details</span>
+    </nav>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div class="flex items-center gap-3 flex-wrap">
+          <h1 class="text-2xl sm:text-3xl font-black text-[var(--s-text)]" id="auc-title">Auction Details</h1>
+          <span id="auc-status-badge" class="badge"></span>
+        </div>
+        <p class="text-xs sm:text-sm text-[var(--s-text-muted)] mt-1" id="auc-meta-subtitle">Lot #— • Category</p>
+      </div>
+      <div class="flex items-center gap-2 flex-wrap">
+        <a id="btn-edit" href="#" class="btn btn-primary text-xs"><i class="fa-solid fa-pen-to-square"></i> Edit
+          Listing</a>
+        <a id="btn-analytics" href="#" class="btn btn-ghost text-xs"><i
+            class="fa-solid fa-chart-line text-brand-400"></i> Analytics</a>
+        <a id="btn-bids" href="#" class="btn btn-ghost text-xs"><i class="fa-solid fa-list-check text-emerald-400"></i>
+          Bid Activity</a>
+        <a id="btn-public-preview" href="#" target="_blank" class="btn btn-ghost text-xs"><i
+            class="fa-solid fa-arrow-up-right-from-square"></i> Buyer View</a>
+        <button type="button" id="btn-cancel" onclick="cancelThisAuction()" class="btn btn-danger text-xs hidden"><i
+            class="fa-solid fa-ban"></i> Cancel Lot</button>
+      </div>
+    </div>
+
+    <div id="loading-state" class="panel p-16 text-center">
+      <i class="fa-solid fa-spinner fa-spin text-3xl text-brand-400 mb-3"></i>
+      <p class="text-sm font-bold text-[var(--s-text)]">Loading auction details…</p>
+    </div>
+
+    <div id="auc-content" class="hidden space-y-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="panel p-5">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-1">Current
+            Highest Bid</span>
+          <strong class="text-2xl font-black text-emerald-400" id="stat-high-bid">Rs. 0</strong>
+          <span class="text-[11px] text-[var(--s-text-muted)] block mt-1" id="stat-bid-count">0 bids recorded</span>
+        </div>
+        <div class="panel p-5">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-1">Starting
+            Price</span>
+          <strong class="text-xl font-extrabold text-[var(--s-text)]" id="stat-start-price">Rs. 0</strong>
+          <span class="text-[11px] text-[var(--s-text-muted)] block mt-1" id="stat-increment">+Rs. 500 increment</span>
+        </div>
+        <div class="panel p-5">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-1">Reserve
+            Status</span>
+          <strong class="text-xl font-extrabold text-brand-400" id="stat-reserve-val">Rs. 0</strong>
+          <span class="text-[11px] font-bold block mt-1" id="stat-reserve-status">Reserve Hidden</span>
+        </div>
+        <div class="panel p-5">
+          <span class="text-[10px] font-bold uppercase tracking-wider text-[var(--s-text-muted)] block mb-1">Time
+            Remaining</span>
+          <strong class="text-xl font-extrabold text-amber-400" id="stat-timer">—</strong>
+          <span class="text-[11px] text-[var(--s-text-muted)] block mt-1" id="stat-end-date">Ends on —</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="lg:col-span-2 space-y-6">
+          <div class="panel">
+            <div class="card-head"><i class="fa-solid fa-box text-brand-400"></i>
+              <h2 class="text-sm font-bold text-[var(--s-text)]">Listing Specifications</h2>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-6 mb-6">
+              <div
+                class="w-full sm:w-64 h-64 rounded-xl overflow-hidden bg-black/40 border border-[var(--s-border)] flex-shrink-0">
+                <img id="auc-image" src="" alt="Auction Item" class="w-full h-full object-cover">
+              </div>
+              <div class="flex-1 space-y-3 text-xs">
+                <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Item Title</span>
+                  <p class="text-sm font-extrabold text-[var(--s-text)] mt-0.5" id="spec-title">—</p>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                  <div><span
+                      class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Category</span><strong
+                      class="text-xs text-[var(--s-text)]" id="spec-category">—</strong></div>
+                  <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Buy Now
+                      Price</span><strong class="text-xs text-brand-400" id="spec-buynow">—</strong></div>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-2">
+                  <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Total
+                      Views</span><strong class="text-xs text-[var(--s-text)]" id="spec-views">0</strong></div>
+                  <div><span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block">Total
+                      Bids</span><strong class="text-xs text-[var(--s-text)]" id="spec-bids">0</strong></div>
+                </div>
+              </div>
+            </div>
+            <div class="border-t border-[var(--s-border)] pt-4">
+              <span class="text-[10px] font-bold uppercase text-[var(--s-text-muted)] block mb-2">Item
+                Description</span>
+              <div id="auc-desc"
+                class="text-xs text-[var(--s-text-muted)] leading-relaxed whitespace-pre-line bg-[var(--s-surface-2)] p-4 rounded-xl border border-[var(--s-border)]">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-6">
+          <div class="panel">
+            <div class="card-head justify-between">
+              <div class="flex items-center gap-2"><i class="fa-solid fa-gavel text-emerald-400"></i>
+                <h2 class="text-sm font-bold text-[var(--s-text)]">Recent Bids</h2>
+              </div>
+              <button onclick="loadAuctionDetails()" class="text-xs text-brand-400 hover:text-brand-300"><i
+                  class="fa-solid fa-rotate-right"></i></button>
+            </div>
+            <div id="bids-list" class="space-y-2.5 max-h-[500px] overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/seller-nav.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      // ✅ AUTH GUARD
+      var _t = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      var _u = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+      if (!_t || !['seller', 'admin'].includes(_u.role)) {
+        window.location.href = '/auth/login.html?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
+        return;
+      }
+
+      var urlParams = new URLSearchParams(window.location.search);
+      var auctionId = urlParams.get('id') || urlParams.get('auction_id');
+      if (!auctionId) { alert('No auction ID provided.'); window.location.href = '/seller/auctions.html'; return; }
+
+      var auctionData = null;
+
+      async function loadAuctionDetails() {
+        try {
+          var res = await ApiClient.get('/auctions/' + auctionId);
+          var a = (res && res.data) || res;
+          if (!a || !a.auction_id) throw new Error('Auction not found');
+          auctionData = a;
+          renderDetails(a);
+          loadBids();
+        } catch (err) {
+          document.getElementById('loading-state').innerHTML =
+            '<i class="fa-solid fa-circle-exclamation text-3xl text-rose-400 mb-3"></i>' +
+            '<p class="text-sm font-bold text-rose-400">Failed to load auction: ' + UI.escapeHtml(err.message) + '</p>' +
+            '<a href="/seller/auctions.html" class="btn btn-primary text-xs mt-4">Back to My Auctions</a>';
+        }
+      }
+
+      function renderDetails(a) {
+        document.getElementById('bc-auction-title').textContent = a.title;
+        document.getElementById('auc-title').textContent = a.title;
+        document.getElementById('auc-meta-subtitle').textContent = 'Lot #' + a.auction_id + ' • ' + (a.category_name || 'General');
+        var badge = document.getElementById('auc-status-badge');
+        badge.className = 'badge ' + (a.auction_status === 'active' ? 'badge-active' : a.auction_status === 'sold' ? 'badge-sold' : 'badge-pending');
+        badge.textContent = a.auction_status;
+
+        document.getElementById('btn-edit').href = '/seller/edit-auction.html?id=' + a.auction_id;
+        document.getElementById('btn-analytics').href = '/seller/analytics.html?auction_id=' + a.auction_id;
+        document.getElementById('btn-bids').href = '/seller/bids.html?auction_id=' + a.auction_id;
+        document.getElementById('btn-public-preview').href = '/auction-details.html?id=' + a.auction_id;
+
+        // ✅ FIX: parseInt bid_count
+        var bidCountNum = parseInt(a.bid_count, 10) || 0;
+        var canCancel = ['active', 'pending', 'draft'].includes(a.auction_status) && bidCountNum === 0;
+        if (canCancel) document.getElementById('btn-cancel').classList.remove('hidden');
+
+        var highBid = parseFloat(a.current_bid || a.starting_price || 0);
+        document.getElementById('stat-high-bid').textContent = UI.formatPKR(highBid);
+        document.getElementById('stat-bid-count').textContent = bidCountNum + ' total bids';
+        document.getElementById('stat-start-price').textContent = UI.formatPKR(parseFloat(a.starting_price || 0));
+        document.getElementById('stat-increment').textContent = '+' + UI.formatPKR(parseFloat(a.bid_increment || 500)) + ' increment';
+
+        if (a.reserve_price) {
+          document.getElementById('stat-reserve-val').textContent = UI.formatPKR(parseFloat(a.reserve_price));
+          var reserveMet = highBid >= parseFloat(a.reserve_price);
+          document.getElementById('stat-reserve-status').textContent = reserveMet ? 'Reserve Met ✓' : 'Reserve Unmet';
+          document.getElementById('stat-reserve-status').className = 'text-[11px] font-bold block mt-1 ' + (reserveMet ? 'text-emerald-400' : 'text-amber-400');
+        } else {
+          document.getElementById('stat-reserve-val').textContent = 'No Reserve';
+          document.getElementById('stat-reserve-status').textContent = 'Direct Sale';
+          document.getElementById('stat-reserve-status').className = 'text-[11px] font-bold block mt-1 text-[var(--s-text-muted)]';
+        }
+
+        var end = new Date(a.end_time);
+        document.getElementById('stat-end-date').textContent = 'Ends on ' + end.toLocaleDateString('en-PK', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+        // ✅ FIX: live countdown that updates every 30s and self-clears when ended
+        if (window._nbAucCountdownTimer) { clearInterval(window._nbAucCountdownTimer); window._nbAucCountdownTimer = null; }
+        updateCountdown(end);
+        if (end > new Date()) {
+          window._nbAucCountdownTimer = setInterval(function () {
+            updateCountdown(end);
+            if (end <= new Date()) { clearInterval(window._nbAucCountdownTimer); window._nbAucCountdownTimer = null; }
+          }, 30000);
+        }
+
+        document.getElementById('spec-title').textContent = a.title;
+        document.getElementById('spec-category').textContent = a.category_name || 'General';
+        document.getElementById('spec-buynow').textContent = a.buy_now_price ? UI.formatPKR(parseFloat(a.buy_now_price)) : 'Not Available';
+        document.getElementById('spec-views').textContent = a.view_count || 0;
+        document.getElementById('spec-bids').textContent = bidCountNum;
+        document.getElementById('auc-image').src = a.image || 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+        document.getElementById('auc-desc').textContent = a.description || 'No detailed description provided.';
+
+        document.getElementById('loading-state').classList.add('hidden');
+        document.getElementById('auc-content').classList.remove('hidden');
+      }
+
+      function updateCountdown(endDate) {
+        var timerEl = document.getElementById('stat-timer');
+        var now = new Date();
+        var diff = endDate - now;
+        if (diff <= 0) { timerEl.textContent = 'Ended'; timerEl.className = 'text-xl font-extrabold text-[var(--s-text-muted)]'; return; }
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        var mins = Math.floor((diff / 1000 / 60) % 60);
+        timerEl.textContent = days > 0 ? days + 'd ' + hours + 'h left' : hours + 'h ' + mins + 'm left';
+      }
+
+      async function loadBids() {
+        var container = document.getElementById('bids-list');
+        try {
+          var res = await ApiClient.get('/auctions/' + auctionId + '/bids');
+          var bids = (res && res.data) || res || [];
+          if (!bids.length) {
+            container.innerHTML = '<div class="p-6 text-center text-xs text-[var(--s-text-muted)]"><i class="fa-solid fa-gavel text-xl mb-2 opacity-30"></i><p>No bids placed yet.</p></div>';
+            return;
+          }
+          container.innerHTML = bids.slice(0, 15).map(function (b, idx) {
+            return '<div class="p-3 rounded-xl bg-[var(--s-surface-2)] border border-[var(--s-border)] flex items-center justify-between text-xs">' +
+              '<div class="flex items-center gap-2.5">' +
+              '<span class="w-5 h-5 rounded-full flex items-center justify-center font-bold text-[10px] ' + (idx === 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400') + '">' + (idx + 1) + '</span>' +
+              '<div>' +
+              '<strong class="text-[var(--s-text)] block font-bold">' + UI.escapeHtml(b.bidder_name || b.username || 'Bidder #' + (b.bidder_id || idx + 1)) + '</strong>' +
+              '<span class="text-[10px] text-[var(--s-text-muted)]">' + new Date(b.created_at || Date.now()).toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '</span>' +
+              '</div></div>' +
+              '<div class="text-right">' +
+              '<strong class="font-extrabold text-emerald-400">' + UI.formatPKR(parseFloat(b.bid_amount || b.amount)) + '</strong>' +
+              '<span class="text-[9px] uppercase font-bold tracking-wider block text-brand-400">' + (b.bid_type || (b.is_auto ? 'Auto' : 'Manual')) + '</span>' +
+              '</div></div>';
+          }).join('');
+        } catch (err) {
+          container.innerHTML = '<p class="text-xs text-rose-400 p-3">Could not load bids.</p>';
+        }
+      }
+
+      async function cancelThisAuction() {
+        if (!confirm('Are you sure you want to cancel this auction? This action cannot be undone.')) return;
+        try {
+          await ApiClient.post('/auctions/' + auctionId + '/cancel');
+          UI.showToast('Auction cancelled successfully.', 'success');
+          setTimeout(function () { window.location.href = '/seller/auctions.html'; }, 1000);
+        } catch (err) { UI.showToast(err.message || 'Failed to cancel auction.', 'error'); }
+      }
+      window.cancelThisAuction = cancelThisAuction;
+
+      document.addEventListener('DOMContentLoaded', loadAuctionDetails);
+    })();
+  </script>
+</body>
+
+</html>

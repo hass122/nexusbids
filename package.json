@@ -1,0 +1,45 @@
+{
+  "name": "nexusbids-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NexusBids - Modernized Pakistani Online Auction Marketplace",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "cd packages/shared && npx tsc && cd ../../apps/api && npx tsc -p tsconfig.json",
+    "build:api": "cd apps/api && npx tsc -p tsconfig.json",
+    "build:shared": "cd packages/shared && npx tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
+    "test:e2e:headed": "playwright test --headed",
+    "test:all": "npm run test && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
+    "@types/qrcode": "^1.5.6",
+    "@types/speakeasy": "^2.0.10",
+    "@types/supertest": "^7.2.1",
+    "metro": "^0.80.8",
+    "metro-cache": "^0.80.8",
+    "metro-config": "^0.80.8",
+    "metro-core": "^0.80.8",
+    "metro-resolver": "^0.80.8",
+    "metro-runtime": "^0.80.8",
+    "metro-source-map": "^0.80.8",
+    "metro-transform-plugins": "^0.80.8",
+    "metro-transform-worker": "^0.80.8",
+    "supertest": "^7.3.1",
+    "typescript": "^5.4.5",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "node-cron": "^3.0.3",
+    "qrcode": "^1.5.4",
+    "speakeasy": "^2.0.0"
+  }
+}

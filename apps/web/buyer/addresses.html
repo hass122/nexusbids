@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>Shipping Addresses — NexusBids</title>
+  <meta name="description" content="Save and manage your delivery addresses for faster checkout.">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('nexusbids_theme') || 'system';
+        var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches);
+        document.documentElement.classList.toggle('dark', d);
+        document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light');
+      } catch (e) { document.documentElement.classList.add('dark'); }
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+
+  <style>
+    /* ============================================================
+       Tokens
+       ============================================================ */
+    :root {
+      --a-bg: #f4f6fb;
+      --a-surface: #ffffff;
+      --a-surface-2: #f7f9fc;
+      --a-surface-3: #eceff6;
+      --a-border: #e3e8f0;
+      --a-border-strong: #cfd7e5;
+      --a-text: #0f172a;
+      --a-text-muted: #58627a;
+      --a-text-faint: #8d97ab;
+      --a-brand: #6366f1;
+      --a-brand-soft: rgba(99, 102, 241, .10);
+      --a-brand-ring: rgba(99, 102, 241, .22);
+      --a-blue: #3b82f6;
+      --a-blue-soft: rgba(59, 130, 246, .10);
+      --a-ok: #059669;
+      --a-ok-soft: rgba(16, 185, 129, .10);
+      --a-danger: #e11d48;
+      --a-danger-soft: rgba(244, 63, 94, .10);
+      --a-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .04);
+      --a-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .10), 0 2px 6px -2px rgba(15, 23, 42, .05);
+      --a-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .28);
+      --a-skel: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --a-t: .22s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    html.dark {
+      --a-bg: #05070f;
+      --a-surface: #0d1220;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #1a2336;
+      --a-border: #1e2a40;
+      --a-border-strong: #2c3a56;
+      --a-text: #eef2f9;
+      --a-text-muted: #9aa6bd;
+      --a-text-faint: #66738d;
+      --a-brand-soft: rgba(99, 102, 241, .14);
+      --a-brand-ring: rgba(99, 102, 241, .30);
+      --a-blue-soft: rgba(59, 130, 246, .14);
+      --a-ok: #34d399;
+      --a-ok-soft: rgba(16, 185, 129, .14);
+      --a-danger: #fb7185;
+      --a-danger-soft: rgba(244, 63, 94, .14);
+      --a-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --a-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --a-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .8);
+      --a-skel: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      transition: background var(--a-t), color var(--a-t);
+    }
+
+    /* ============================================================
+       Page wrapper
+       ============================================================ */
+    .page-main {
+      flex: 1;
+      width: 100%;
+      max-width: 72rem;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+      padding-left: max(16px, env(safe-area-inset-left));
+      padding-right: max(16px, env(safe-area-inset-right));
+    }
+
+    @media (min-width: 640px) {
+      .page-main {
+        padding: 28px 24px 48px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .page-main {
+        padding: 32px 32px 56px;
+      }
+    }
+
+    /* ============================================================
+       Header
+       ============================================================ */
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--a-brand);
+      background: var(--a-brand-soft);
+      border: 1px solid var(--a-brand-ring);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    .page-title {
+      font-size: clamp(1.4rem, 3.8vw, 1.9rem);
+      font-weight: 800;
+      letter-spacing: -.024em;
+      line-height: 1.15;
+      color: var(--a-text);
+      margin: 12px 0 6px;
+    }
+
+    .page-sub {
+      font-size: .85rem;
+      color: var(--a-text-muted);
+      line-height: 1.55;
+      max-width: 52ch;
+    }
+
+    /* ============================================================
+       Layout
+       ============================================================ */
+    .account-grid {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 20px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 767px) {
+      .account-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ============================================================
+       Sidebar
+       ============================================================ */
+    .sidebar-nav {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 18px;
+      overflow: hidden;
+      position: sticky;
+      top: 84px;
+      box-shadow: var(--a-shadow-sm);
+    }
+
+    @media (max-width: 767px) {
+      .sidebar-nav {
+        display: none;
+      }
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--a-text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--a-border);
+      transition: all var(--a-t);
+      position: relative;
+    }
+
+    .sidebar-link:last-child {
+      border-bottom: none;
+    }
+
+    .sidebar-link:hover {
+      background: var(--a-surface-2);
+      color: var(--a-text);
+    }
+
+    .sidebar-link.active {
+      background: var(--a-brand-soft);
+      color: var(--a-brand);
+      font-weight: 700;
+    }
+
+    .sidebar-link.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3px;
+      background: var(--a-brand);
+      border-radius: 0 3px 3px 0;
+    }
+
+    .sidebar-link i {
+      width: 16px;
+      text-align: center;
+      font-size: .82rem;
+    }
+
+    /* ============================================================
+       Cards
+       ============================================================ */
+    .card {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 18px;
+      box-shadow: var(--a-shadow-sm);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .card-head {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--a-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      flex-shrink: 0;
+    }
+
+    .card-title {
+      font-size: .92rem;
+      font-weight: 800;
+      color: var(--a-text);
+      letter-spacing: -.005em;
+    }
+
+    .card-hint {
+      font-size: .72rem;
+      color: var(--a-text-faint);
+      font-weight: 500;
+      margin-top: 1px;
+    }
+
+    .card-body {
+      padding: 18px;
+    }
+
+    /* ============================================================
+       Buttons
+       ============================================================ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 10px 15px;
+      border-radius: 11px;
+      font-family: inherit;
+      font-size: .8rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--a-t);
+      min-height: 40px;
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--a-brand);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 8px 20px -10px rgba(79, 70, 229, .7);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px -10px rgba(79, 70, 229, .85);
+    }
+
+    .btn-ghost {
+      background: var(--a-surface);
+      border-color: var(--a-border);
+      color: var(--a-text-muted);
+      box-shadow: var(--a-shadow-sm);
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      color: var(--a-text);
+      border-color: var(--a-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 10px;
+      background: transparent;
+      border: 1px solid var(--a-border);
+      color: var(--a-text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--a-t);
+      font-family: inherit;
+    }
+
+    .btn-icon:hover:not(:disabled) {
+      color: var(--a-text);
+      background: var(--a-surface-2);
+      border-color: var(--a-border-strong);
+    }
+
+    .btn-icon.is-danger:hover:not(:disabled) {
+      color: var(--a-danger);
+      background: var(--a-danger-soft);
+      border-color: transparent;
+    }
+
+    .btn-icon.is-star:hover:not(:disabled) {
+      color: #eab308;
+      background: rgba(234, 179, 8, .1);
+      border-color: transparent;
+    }
+
+    /* ============================================================
+       Address card
+       ============================================================ */
+    .addr-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .addr-card {
+      position: relative;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--a-surface-2);
+      border: 1px solid var(--a-border);
+      border-radius: 14px;
+      transition: all var(--a-t);
+      animation: fadeUp .3s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .addr-card:hover {
+      border-color: var(--a-border-strong);
+      box-shadow: var(--a-shadow-md);
+      background: var(--a-surface);
+    }
+
+    .addr-card.is-default {
+      border-color: var(--a-brand-ring);
+      background: linear-gradient(135deg, var(--a-brand-soft) 0%, transparent 65%);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .addr-pin {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: var(--a-blue-soft);
+      color: var(--a-blue);
+      display: grid;
+      place-items: center;
+      font-size: .85rem;
+    }
+
+    .addr-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .addr-name-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 5px;
+    }
+
+    .addr-name {
+      font-size: .9rem;
+      font-weight: 700;
+      color: var(--a-text);
+      letter-spacing: -.005em;
+    }
+
+    .default-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: .6rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      background: var(--a-brand-soft);
+      color: var(--a-brand);
+      border: 1px solid var(--a-brand-ring);
+    }
+
+    .default-pill i {
+      font-size: .5rem;
+    }
+
+    .addr-line {
+      font-size: .82rem;
+      color: var(--a-text-muted);
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .addr-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .75rem;
+      color: var(--a-text-faint);
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .addr-meta i {
+      font-size: .68rem;
+    }
+
+    .addr-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      align-self: flex-start;
+    }
+
+    @media (max-width: 520px) {
+      .addr-card {
+        flex-wrap: wrap;
+      }
+
+      .addr-actions {
+        flex: 1 1 100%;
+        justify-content: flex-end;
+        padding-top: 10px;
+        border-top: 1px dashed var(--a-border);
+        margin-top: 6px;
+      }
+    }
+
+    /* ============================================================
+       Form
+       ============================================================ */
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .78rem;
+      font-weight: 600;
+      color: var(--a-text);
+      letter-spacing: -.005em;
+    }
+
+    .field-label .req {
+      color: var(--a-danger);
+      font-size: .85rem;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .field-label .opt {
+      font-size: .72rem;
+      color: var(--a-text-faint);
+      font-weight: 500;
+      margin-left: 2px;
+    }
+
+    .nb-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 13px;
+      border-radius: 10px;
+      background: var(--a-surface-2);
+      border: 1px solid var(--a-border);
+      color: var(--a-text);
+      font-family: inherit;
+      font-size: .875rem;
+      font-weight: 500;
+      outline: none;
+      line-height: 1.4;
+      transition: border-color var(--a-t), box-shadow var(--a-t), background var(--a-t);
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .nb-input::placeholder {
+      color: var(--a-text-faint);
+      font-weight: 400;
+    }
+
+    .nb-input:hover {
+      border-color: var(--a-border-strong);
+    }
+
+    .nb-input:focus {
+      border-color: var(--a-brand);
+      background: var(--a-surface);
+      box-shadow: 0 0 0 3px var(--a-brand-ring);
+    }
+
+    /* Select custom caret */
+    select.nb-input {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 1.15em;
+      padding-right: 38px;
+    }
+
+    .field-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field-grid .full {
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 560px) {
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field-grid .full {
+        grid-column: auto;
+      }
+    }
+
+    /* Checkbox row */
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 11px 14px;
+      border-radius: 11px;
+      background: var(--a-surface-2);
+      border: 1px solid var(--a-border);
+      cursor: pointer;
+      user-select: none;
+      transition: all var(--a-t);
+      margin: 4px 0 16px;
+    }
+
+    .check-row:hover {
+      border-color: var(--a-border-strong);
+    }
+
+    .check-row input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--a-brand);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin: 0;
+    }
+
+    .check-row-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .check-row-title {
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--a-text);
+    }
+
+    .check-row-sub {
+      font-size: .7rem;
+      color: var(--a-text-faint);
+    }
+
+    /* ============================================================
+       Alert
+       ============================================================ */
+    .alert-error {
+      display: none;
+      align-items: flex-start;
+      gap: 9px;
+      padding: 11px 13px;
+      border-radius: 11px;
+      font-size: .8rem;
+      color: var(--a-danger);
+      background: var(--a-danger-soft);
+      border: 1px solid rgba(244, 63, 94, .22);
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+
+    .alert-error.is-visible {
+      display: flex;
+    }
+
+    .alert-error i {
+      margin-top: 2px;
+      flex-shrink: 0;
+      font-size: .85rem;
+    }
+
+    /* ============================================================
+       Empty state
+       ============================================================ */
+    .empty {
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeUp .35s ease both;
+    }
+
+    .empty-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: var(--a-surface-2);
+      border: 1px solid var(--a-border);
+      display: grid;
+      place-items: center;
+      font-size: 1.35rem;
+      color: var(--a-text-faint);
+      margin: 0 auto 14px;
+    }
+
+    .empty-title {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--a-text);
+      margin: 0 0 6px;
+    }
+
+    .empty-text {
+      font-size: .8rem;
+      color: var(--a-text-muted);
+      line-height: 1.55;
+      max-width: 26rem;
+      margin: 0 auto;
+    }
+
+    .empty .btn {
+      margin-top: 16px;
+    }
+
+    /* ============================================================
+       Skeleton + spinner
+       ============================================================ */
+    .skeleton {
+      background: var(--a-skel);
+      background-size: 400% 100%;
+      border-radius: 10px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    .spin {
+      animation: spin .9s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header id="nb-header"></header>
+
+  <main class="page-main">
+
+    <!-- ── Header ── -->
+    <div style="margin-bottom:24px">
+      <span class="eyebrow"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i> Account</span>
+      <h1 class="page-title">Shipping addresses</h1>
+      <p class="page-sub">
+        Save your delivery addresses once — they'll auto-fill at checkout next time.
+      </p>
+    </div>
+
+    <div class="account-grid">
+
+      <!-- ── Sidebar ── -->
+      <nav class="sidebar-nav" aria-label="Account navigation">
+        <a href="/buyer/profile.html" class="sidebar-link"><i class="fa-solid fa-user" aria-hidden="true"></i>
+          Profile</a>
+        <a href="/buyer/security.html" class="sidebar-link"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          Security</a>
+        <a href="/buyer/addresses.html" class="sidebar-link active"><i class="fa-solid fa-map-location-dot"
+            aria-hidden="true"></i> Addresses</a>
+        <a href="/buyer/payments.html" class="sidebar-link"><i class="fa-solid fa-wallet" aria-hidden="true"></i>
+          Payments</a>
+        <a href="/buyer/kyc.html" class="sidebar-link"><i class="fa-solid fa-id-card" aria-hidden="true"></i>
+          Verification</a>
+        <a href="/buyer/notifications.html" class="sidebar-link"><i class="fa-solid fa-bell" aria-hidden="true"></i>
+          Notifications</a>
+      </nav>
+
+      <div>
+
+        <!-- ── Address list ── -->
+        <section class="card">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:10px;min-width:0">
+              <div class="card-icon" style="background:var(--a-blue-soft);color:var(--a-blue)">
+                <i class="fa-solid fa-map-location-dot" aria-hidden="true"></i>
+              </div>
+              <div style="min-width:0">
+                <div class="card-title">Your addresses</div>
+                <div class="card-hint">Used at checkout for delivery</div>
+              </div>
+            </div>
+            <button id="show-add-btn" type="button" class="btn btn-primary">
+              <i class="fa-solid fa-plus text-[10px]" aria-hidden="true"></i> Add address
+            </button>
+          </div>
+
+          <div class="card-body" id="addr-list-area">
+            <div class="addr-list">
+              <div class="skeleton" style="height:92px;border-radius:14px"></div>
+              <div class="skeleton" style="height:92px;border-radius:14px"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Add address form ── -->
+        <section class="card" id="add-addr-form" style="display:none">
+          <div class="card-head">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div class="card-icon" style="background:var(--a-brand-soft);color:var(--a-brand)">
+                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+              </div>
+              <div>
+                <div class="card-title">New address</div>
+                <div class="card-hint">Add a delivery location</div>
+              </div>
+            </div>
+            <button type="button" class="btn-icon" id="close-addr-btn" aria-label="Close form">
+              <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="card-body">
+            <div class="alert-error" id="addr-err" role="alert">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+              <span id="addr-err-text"></span>
+            </div>
+
+            <form id="addr-form" novalidate autocomplete="on">
+              <div class="field-grid">
+
+                <div class="field">
+                  <label class="field-label" for="a-name">
+                    Recipient name <span class="req">*</span>
+                  </label>
+                  <input id="a-name" name="full_name" type="text" required autocomplete="name" class="nb-input"
+                    placeholder="e.g. Muhammad Ali" maxlength="80">
+                </div>
+
+                <div class="field">
+                  <label class="field-label" for="a-phone">
+                    Phone <span class="req">*</span>
+                  </label>
+                  <input id="a-phone" name="phone" type="tel" required autocomplete="tel" class="nb-input"
+                    placeholder="03001234567" inputmode="tel" maxlength="20">
+                </div>
+
+                <div class="field full">
+                  <label class="field-label" for="a-address">
+                    Street address <span class="req">*</span>
+                  </label>
+                  <input id="a-address" name="address" type="text" required autocomplete="street-address"
+                    class="nb-input" placeholder="House #, street, area" maxlength="200">
+                </div>
+
+                <div class="field">
+                  <label class="field-label" for="a-city">
+                    City <span class="req">*</span>
+                  </label>
+                  <input id="a-city" name="city" type="text" required autocomplete="address-level2" class="nb-input"
+                    placeholder="e.g. Karachi" maxlength="60">
+                </div>
+
+                <div class="field">
+                  <label class="field-label" for="a-province">
+                    Province <span class="opt">(optional)</span>
+                  </label>
+                  <select id="a-province" name="province" class="nb-input" autocomplete="address-level1">
+                    <option value="">Select province</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Sindh">Sindh</option>
+                    <option value="Khyber Pakhtunkhwa">Khyber Pakhtunkhwa</option>
+                    <option value="Balochistan">Balochistan</option>
+                    <option value="Gilgit-Baltistan">Gilgit-Baltistan</option>
+                    <option value="Azad Kashmir">Azad Kashmir</option>
+                    <option value="Islamabad Capital Territory">Islamabad Capital Territory</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label class="field-label" for="a-postal">
+                    Postal code <span class="opt">(optional)</span>
+                  </label>
+                  <input id="a-postal" name="postal_code" type="text" autocomplete="postal-code" class="nb-input"
+                    placeholder="e.g. 75500" inputmode="numeric" maxlength="10">
+                </div>
+
+              </div>
+
+              <label class="check-row" for="a-default">
+                <input type="checkbox" id="a-default" name="is_default">
+                <span class="check-row-text">
+                  <span class="check-row-title">Make this my default address</span>
+                  <span class="check-row-sub">Used automatically at checkout</span>
+                </span>
+              </label>
+
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button type="submit" class="btn btn-primary" id="save-addr-btn">
+                  <i class="fa-solid fa-check" aria-hidden="true"></i> Save address
+                </button>
+                <button type="button" class="btn btn-ghost" id="cancel-addr-btn">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      function $(id) { return document.getElementById(id); }
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function showToast(msg, type) {
+        try { if (window.UI && UI.showToast) UI.showToast(msg, type); else console.log(msg); }
+        catch (e) { console.error(e); }
+      }
+
+      /* ============================================================
+         Render address list
+         ============================================================ */
+      function renderAddresses(addrs) {
+        var area = $('addr-list-area');
+        if (!area) return;
+
+        if (!addrs.length) {
+          area.innerHTML =
+            '<div class="empty">' +
+            '<div class="empty-icon"><i class="fa-solid fa-map-location-dot" aria-hidden="true"></i></div>' +
+            '<p class="empty-title">No addresses saved yet</p>' +
+            '<p class="empty-text">Add one and it\'ll show up automatically at checkout — no more typing it in each time.</p>' +
+            '<button type="button" class="btn btn-primary" onclick="document.getElementById(\'show-add-btn\').click()">' +
+            '<i class="fa-solid fa-plus text-[10px]" aria-hidden="true"></i> Add your first address' +
+            '</button>' +
+            '</div>';
+          return;
+        }
+
+        area.innerHTML =
+          '<div class="addr-list">' +
+          addrs.map(function (a, i) {
+            var isDefault = !!a.is_default;
+            var cityLine = esc(a.city || '');
+            if (a.province) cityLine += ', ' + esc(a.province);
+            if (a.postal_code) cityLine += ' · ' + esc(a.postal_code);
+
+            return (
+              '<article class="addr-card' + (isDefault ? ' is-default' : '') + '" style="animation-delay:' + (i * 35) + 'ms">' +
+              '<div class="addr-pin">' +
+              '<i class="fa-solid fa-location-dot" aria-hidden="true"></i>' +
+              '</div>' +
+
+              '<div class="addr-main">' +
+              '<div class="addr-name-row">' +
+              '<span class="addr-name">' + esc(a.full_name || 'Recipient') + '</span>' +
+              (isDefault ? '<span class="default-pill"><i class="fa-solid fa-star" aria-hidden="true"></i> Default</span>' : '') +
+              '</div>' +
+              '<div class="addr-line">' + esc(a.address || '') + '</div>' +
+              '<div class="addr-line">' + cityLine + '</div>' +
+              '<div class="addr-meta">' +
+              '<i class="fa-solid fa-phone" aria-hidden="true"></i>' +
+              '<span>' + esc(a.phone || '—') + '</span>' +
+              '</div>' +
+              '</div>' +
+
+              '<div class="addr-actions">' +
+              (!isDefault
+                ? '<button type="button" class="btn-icon is-star" data-default="' + esc(a.address_id) + '" title="Make default" aria-label="Make default">' +
+                '<i class="fa-regular fa-star" aria-hidden="true"></i>' +
+                '</button>'
+                : '') +
+              '<button type="button" class="btn-icon is-danger" data-delete="' + esc(a.address_id) + '" title="Delete" aria-label="Delete address">' +
+              '<i class="fa-regular fa-trash-can" aria-hidden="true"></i>' +
+              '</button>' +
+              '</div>' +
+              '</article>'
+            );
+          }).join('') +
+          '</div>';
+
+        /* -- Make default -- */
+        area.querySelectorAll('[data-default]').forEach(function (btn) {
+          btn.addEventListener('click', async function () {
+            var id = btn.dataset.default;
+            var original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner spin" aria-hidden="true"></i>';
+            try {
+              await ApiClient.patch('/shipping/addresses/' + id + '/default');
+              showToast('Default address updated.', 'success', 2200);
+              loadAddresses();
+            } catch (e) {
+              showToast((e && e.message) || 'Couldn\'t update the default. Try again.', 'error');
+              btn.disabled = false;
+              btn.innerHTML = original;
+            }
+          });
+        });
+
+        /* -- Delete -- */
+        area.querySelectorAll('[data-delete]').forEach(function (btn) {
+          btn.addEventListener('click', async function () {
+            var id = btn.dataset.delete;
+
+            var ok = true;
+            if (window.UI && UI.confirm) {
+              ok = await UI.confirm({
+                title: 'Delete this address?',
+                message: 'It will no longer appear at checkout. You can add it back anytime.',
+                confirmText: 'Delete',
+                cancelText: 'Keep it',
+                type: 'danger'
+              });
+            }
+            if (!ok) return;
+
+            var original = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner spin" aria-hidden="true"></i>';
+            try {
+              await ApiClient.delete('/shipping/addresses/' + id);
+              showToast('Address removed.', 'success', 2200);
+              loadAddresses();
+            } catch (e) {
+              showToast((e && e.message) || 'Couldn\'t delete that address. Try again.', 'error');
+              btn.disabled = false;
+              btn.innerHTML = original;
+            }
+          });
+        });
+      }
+
+      /* ============================================================
+         Load
+         ============================================================ */
+      async function loadAddresses() {
+        var area = $('addr-list-area');
+        if (!area) return;
+
+        try {
+          var res = await ApiClient.get('/shipping/addresses');
+          var list = (res && Array.isArray(res.data)) ? res.data : [];
+          renderAddresses(list);
+        } catch (e) {
+          console.error('[Addresses] load failed:', e);
+          area.innerHTML =
+            '<div class="empty">' +
+            '<div class="empty-icon" style="color:var(--a-danger);background:var(--a-danger-soft);border-color:transparent">' +
+            '<i class="fa-solid fa-cloud-slash" aria-hidden="true"></i>' +
+            '</div>' +
+            '<p class="empty-title">Couldn\'t load your addresses</p>' +
+            '<p class="empty-text">Check your connection and try again.</p>' +
+            '<button type="button" class="btn btn-ghost" onclick="loadAddresses()">' +
+            '<i class="fa-solid fa-rotate-right" aria-hidden="true"></i> Retry' +
+            '</button>' +
+            '</div>';
+        }
+      }
+
+      /* ============================================================
+         Form helpers
+         ============================================================ */
+      function openForm() {
+        var form = $('add-addr-form');
+        if (!form) return;
+        form.style.display = 'block';
+        setTimeout(function () {
+          form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 60);
+      }
+
+      function closeForm() {
+        var form = $('add-addr-form');
+        var inner = $('addr-form');
+        if (!form) return;
+        form.style.display = 'none';
+        if (inner) inner.reset();
+        clearFormError();
+      }
+
+      function showFormError(msg) {
+        var wrap = $('addr-err');
+        var text = $('addr-err-text');
+        if (!wrap || !text) return;
+        text.textContent = msg;
+        wrap.classList.add('is-visible');
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function clearFormError() {
+        var wrap = $('addr-err');
+        if (wrap) wrap.classList.remove('is-visible');
+      }
+
+      /* ============================================================
+         Boot
+         ============================================================ */
+      document.addEventListener('DOMContentLoaded', function () {
+        if (typeof ApiClient === 'undefined' || !ApiClient.getAccessToken || !ApiClient.getAccessToken()) {
+          window.location.href = '/login.html?redirect=' + encodeURIComponent('/buyer/addresses.html');
+          return;
+        }
+
+        loadAddresses();
+
+        /* -- Open / close -- */
+        $('show-add-btn') && $('show-add-btn').addEventListener('click', openForm);
+        $('cancel-addr-btn') && $('cancel-addr-btn').addEventListener('click', closeForm);
+        $('close-addr-btn') && $('close-addr-btn').addEventListener('click', closeForm);
+
+        /* -- Live-clear error as user types -- */
+        ['a-name', 'a-phone', 'a-address', 'a-city'].forEach(function (id) {
+          var el = $(id);
+          if (el) el.addEventListener('input', clearFormError);
+        });
+
+        /* -- Submit -- */
+        $('addr-form') && $('addr-form').addEventListener('submit', async function (e) {
+          e.preventDefault();
+          clearFormError();
+
+          var full_name = $('a-name').value.trim();
+          var phone = $('a-phone').value.trim();
+          var address = $('a-address').value.trim();
+          var city = $('a-city').value.trim();
+          var province = $('a-province').value || undefined;
+          var postal_code = $('a-postal').value.trim() || undefined;
+          var is_default = $('a-default').checked;
+
+          // Friendly, specific validation
+          if (full_name.length < 3) {
+            $('a-name').focus();
+            showFormError('Enter the recipient\'s full name.');
+            return;
+          }
+          if (phone.replace(/\D/g, '').length < 7) {
+            $('a-phone').focus();
+            showFormError('Enter a valid phone number, like 03001234567.');
+            return;
+          }
+          if (address.length < 6) {
+            $('a-address').focus();
+            showFormError('Enter a complete street address.');
+            return;
+          }
+          if (city.length < 2) {
+            $('a-city').focus();
+            showFormError('Which city should we deliver to?');
+            return;
+          }
+
+          var btn = $('save-addr-btn');
+          var original = btn.innerHTML;
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner spin" aria-hidden="true"></i> Saving…';
+
+          try {
+            await ApiClient.post('/shipping/addresses', {
+              full_name: full_name,
+              phone: phone,
+              address: address,
+              city: city,
+              province: province,
+              postal_code: postal_code,
+              is_default: is_default
+            });
+
+            showToast('Address saved.', 'success', 2200);
+            closeForm();
+            loadAddresses();
+          } catch (err) {
+            showFormError((err && err.message) || 'Something went wrong on our end. Please try again.');
+          } finally {
+            btn.disabled = false;
+            btn.innerHTML = original;
+          }
+        });
+      });
+
+      /* Expose for inline retry handler */
+      window.loadAddresses = loadAddresses;
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

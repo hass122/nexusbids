@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Bid Monitoring — NexusBids Admin</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --a-bg: #f4f6fb;
+      --a-surface: #fff;
+      --a-surface-2: #f7f9fc;
+      --a-surface-3: #eceff6;
+      --a-border: #e3e8f0;
+      --a-text: #0f172a;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68
+    }
+
+    html.dark {
+      --a-bg: #05070f;
+      --a-surface: #0d1220;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #1a2336;
+      --a-border: #1e2a40;
+      --a-text: #eef2f9;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .panel {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15)
+    }
+
+    .panel.p-0 {
+      padding: 0
+    }
+
+    .panel.p-4 {
+      padding: 16px
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 11px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none;
+      font-family: inherit
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff
+    }
+
+    .btn-ghost {
+      background: var(--a-surface-2);
+      border-color: var(--a-border);
+      color: var(--a-text)
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--a-border-strong, #cfd7e5);
+      background: var(--a-surface-3)
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, .12);
+      border-color: rgba(239, 68, 68, .3);
+      color: #f87171
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, .25)
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem
+    }
+
+    .data-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--a-text-muted);
+      border-bottom: 1px solid var(--a-border)
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--a-border);
+      vertical-align: middle
+    }
+
+    .data-table tr:hover td {
+      background: var(--a-surface-2)
+    }
+
+    .brand-500 {
+      border-color: #6366f1 !important;
+      outline: none
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-brand-400 bg-brand-500/10 border border-brand-500/20 mb-2">
+          <i class="fa-solid fa-hand-holding-dollar"></i> Real-time Ledger
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black text-[var(--a-text)]">Live Bids Stream</h1>
+        <p class="text-xs sm:text-sm text-[var(--a-text-muted)] mt-1">Audit high-frequency bidding, proxy limits and
+          retract fraudulent bids.</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="loadBids()" class="btn btn-primary text-xs"><i class="fa-solid fa-rotate-right"></i>
+          Refresh</button>
+      </div>
+    </div>
+
+    <div class="panel p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <input type="number" id="auction-id-filter" placeholder="Filter by Lot ID…"
+          class="px-3.5 py-2 rounded-xl bg-[var(--a-surface-2)] border border-[var(--a-border)] text-xs text-[var(--a-text)] w-44 outline-none focus:border-brand-500">
+        <button onclick="loadBids()" class="btn btn-ghost text-xs">Filter</button>
+      </div>
+      <div class="text-xs text-[var(--a-text-muted)]">Recent <strong id="bid-count"
+          class="text-[var(--a-text)]">0</strong> bids</div>
+    </div>
+
+    <div class="panel p-0 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Bid ID</th>
+              <th>Auction Lot</th>
+              <th>Bidder</th>
+              <th>Bid Amount</th>
+              <th>Type</th>
+              <th>Origin IP</th>
+              <th>Timestamp</th>
+              <th class="text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody id="bids-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script>
+    function bidsEsc(s) {
+      if (window.UI && UI.escapeHtml) return UI.escapeHtml(s);
+      return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    }
+    function bidsFormatPKR(v) {
+      if (window.UI && UI.formatPKR) return UI.formatPKR(v);
+      return 'PKR ' + Number(v || 0).toLocaleString('en-PK');
+    }
+    function bidsToast(msg, type) {
+      if (window.UI && UI.showToast) UI.showToast(msg, type);
+      else console.log(type, msg);
+    }
+
+    async function loadBids() {
+      const tbody = document.getElementById('bids-table-body');
+      const auctionId = document.getElementById('auction-id-filter').value.trim();
+      tbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-[var(--a-text-muted)]"><i class="fa-solid fa-spinner fa-spin text-xl mb-2"></i><br>Loading bids…</td></tr>';
+
+      try {
+        const res = await ApiClient.get('/admin/bids', auctionId ? { auction_id: auctionId } : {});
+        const bids = (res && res.data) || [];
+        document.getElementById('bid-count').textContent = bids.length;
+
+        if (!bids.length) {
+          tbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-[var(--a-text-muted)]">No bids recorded.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = bids.map(b => {
+          const bidAmount = parseFloat(b.bid_amount);
+          const safeAmount = isFinite(bidAmount) ? bidAmount : 0;
+          const bidTime = new Date(b.bid_time);
+          const timeStr = isNaN(bidTime.getTime()) ? '—' : bidTime.toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          const isAuto = b.is_auto_bid === 1 || b.is_auto_bid === true || b.is_auto_bid === '1';
+
+          return `
+            <tr>
+              <td class="font-mono text-xs text-brand-400 font-bold">#${bidsEsc(b.bid_id)}</td>
+              <td><div class="text-xs"><a href="/admin/auctions.html" class="font-bold text-[var(--a-text)] hover:underline block" style="display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${bidsEsc(b.auction_title)}</a><span class="text-[11px] text-[var(--a-text-muted)]">Lot #${bidsEsc(b.auction_id)}</span></div></td>
+              <td><div class="text-xs"><strong class="text-[var(--a-text)] block font-bold">${bidsEsc(b.bidder_name)}</strong><span class="text-[11px] text-[var(--a-text-muted)]">${bidsEsc(b.bidder_email)}</span></div></td>
+              <td><strong class="text-xs font-black text-emerald-400">${bidsFormatPKR(safeAmount)}</strong></td>
+              <td><span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${isAuto ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-slate-700/30 text-slate-300'}">${isAuto ? 'Auto / Proxy' : 'Manual'}</span></td>
+              <td><span class="font-mono text-xs text-[var(--a-text-muted)]">${bidsEsc(b.ip_address || '127.0.0.1')}</span></td>
+              <td><span class="text-xs text-[var(--a-text-muted)]">${timeStr}</span></td>
+              <td class="text-right">
+                <button onclick="retractBid(${Number(b.bid_id)})" class="btn btn-danger text-[11px] py-1 px-2.5" title="Retract Bid"><i class="fa-solid fa-trash"></i> Retract</button>
+              </td>
+            </tr>`;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-12 text-rose-400">' + bidsEsc(err.message || 'Error loading bids.') + '</td></tr>';
+      }
+    }
+
+    async function retractBid(id) {
+      if (!confirm('Retract and delete this bid? Current highest bids will be recalculated.')) return;
+      try {
+        await ApiClient.delete('/admin/bids/' + encodeURIComponent(id));
+        bidsToast('Bid retracted', 'success');
+        loadBids();
+      } catch (err) {
+        bidsToast(err.message || 'Retraction failed.', 'error');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = ApiClient.getUserRole && ApiClient.getUserRole();
+      if (!ApiClient.isAuthenticated() || role !== 'admin') {
+        window.location.href = '/login.html?redirect=/admin/bids.html';
+        return;
+      }
+      loadBids();
+    });
+  </script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

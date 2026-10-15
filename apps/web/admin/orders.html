@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders Supervision â€” NexusBids Admin</title>
+  <meta name="description" content="Supervise marketplace orders, buyer payments, logistics couriers and order states.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  </noscript>
+  <link id="gf-preload" rel="preload"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  </noscript>
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --a-bg: #f4f6fb;
+      --a-surface: #ffffff;
+      --a-surface-2: #f7f9fc;
+      --a-surface-3: #eceff6;
+      --a-border: #e3e8f0;
+      --a-border-strong: #cfd7e5;
+      --a-text: #0f172a;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68;
+    }
+
+    html.dark {
+      --a-bg: #05070f;
+      --a-surface: #0d1220;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #1a2336;
+      --a-border: #1e2a40;
+      --a-border-strong: #2c3a56;
+      --a-text: #eef2f9;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .panel {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15)
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 16px;
+      border-radius: 11px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      text-decoration: none
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff
+    }
+
+    .btn-ghost {
+      background: var(--a-surface-2);
+      border-color: var(--a-border);
+      color: var(--a-text)
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: .65rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase
+    }
+
+    .badge-paid {
+      background: rgba(16, 185, 129, .15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, .3)
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, .15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, .3)
+    }
+
+    .badge-shipped {
+      background: rgba(59, 130, 246, .15);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, .3)
+    }
+
+    .badge-completed {
+      background: rgba(16, 185, 129, .2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .4)
+    }
+
+    .badge-refunded {
+      background: rgba(239, 68, 68, .15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, .3)
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem
+    }
+
+    .data-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--a-text-muted);
+      border-bottom: 1px solid var(--a-border)
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--a-border);
+      color: var(--a-text);
+      vertical-align: middle
+    }
+
+    .data-table tr:hover td {
+      background: var(--a-surface-2)
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-brand-400 bg-brand-500/10 border border-brand-500/20 mb-2">
+          <i class="fa-solid fa-box-open"></i> Fulfillment Center
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black text-[var(--a-text)]">Orders Supervision</h1>
+        <p class="text-xs sm:text-sm text-[var(--a-text-muted)] mt-1">Audit order fulfillment statuses, courier dispatch
+          tracking, escrow status and commission deductions.</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <a href="/admin/escrow.html" class="btn btn-ghost text-xs">
+          <i class="fa-solid fa-shield-halved text-brand-400"></i> Escrow Holds
+        </a>
+        <button onclick="loadOrders()" class="btn btn-primary text-xs">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="panel p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <input type="text" id="order-search" placeholder="Search order # or titleâ€¦"
+          class="px-3.5 py-2 rounded-xl bg-[var(--a-surface-2)] border border-[var(--a-border)] text-xs text-[var(--a-text)] w-60 outline-none focus:border-brand-500"
+          onkeyup="if(event.key==='Enter') loadOrders()">
+        <select id="filter-payment"
+          class="px-3 py-2 rounded-xl bg-[var(--a-surface-2)] border border-[var(--a-border)] text-xs text-[var(--a-text)] outline-none"
+          onchange="loadOrders()">
+          <option value="">All Payments</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+          <option value="refunded">Refunded</option>
+        </select>
+        <button onclick="loadOrders()" class="btn btn-ghost text-xs">Filter</button>
+      </div>
+      <div class="text-xs text-[var(--a-text-muted)]">
+        Showing <strong id="order-count" class="text-[var(--a-text)]">0</strong> orders
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="panel p-0 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Auction Item</th>
+              <th>Buyer</th>
+              <th>Seller</th>
+              <th>Total Amount</th>
+              <th>Commission (5%)</th>
+              <th>Payment</th>
+              <th>Fulfillment</th>
+              <th class="text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orders-table-body">
+            <!-- Rendered by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script>
+    (async function () {
+      // admin guard below in DOMContentLoaded
+    })();
+
+    async function loadOrders() {
+      const tbody = document.getElementById('orders-table-body');
+      const search = document.getElementById('order-search').value.trim();
+      const paymentStatus = document.getElementById('filter-payment').value;
+      const esc = window.UI && UI.escapeHtml ? UI.escapeHtml : (s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
+      const fmt = window.UI && UI.formatPKR ? UI.formatPKR : (v => 'PKR ' + Number(v || 0).toLocaleString());
+
+      tbody.innerHTML = '<tr><td colspan="9" class="text-center py-12 text-[var(--a-text-muted)]"><i class="fa-solid fa-spinner fa-spin text-xl mb-2"></i><br>Loading orders…</td></tr>';
+
+      try {
+        const res = await ApiClient.get('/admin/orders', { search: search || undefined, payment_status: paymentStatus || undefined });
+        const orders = (res && res.data) || [];
+        document.getElementById('order-count').textContent = orders.length;
+
+        if (!orders.length) {
+          tbody.innerHTML = '<tr><td colspan="9" class="text-center py-12 text-[var(--a-text-muted)]">No orders found.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = orders.map(o => {
+          const isPaid = (o.payment_status || '').toLowerCase() === 'paid';
+          const orderStatus = (o.order_status || 'pending').toLowerCase();
+
+          // ✅ FIXED: correct badge classes per status
+          let badgeClass = 'badge-pending';
+          if (orderStatus === 'completed' || orderStatus === 'delivered') badgeClass = 'badge-completed';
+          else if (orderStatus === 'shipped') badgeClass = 'badge-shipped';
+          else if (orderStatus === 'refunded') badgeClass = 'badge-refunded';
+
+          return `
+          <tr>
+            <td>
+              <span class="font-mono text-xs font-bold text-brand-400 block">${esc(o.order_number || ('#' + o.order_id))}</span>
+              <span class="text-[10px] text-[var(--a-text-muted)]">${new Date(o.created_at).toLocaleDateString('en-PK')}</span>
+            </td>
+            <td>
+              <div class="text-xs">
+                <strong class="text-[var(--a-text)] block" style="display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${esc(o.auction_title)}</strong>
+                <span class="text-[11px] text-[var(--a-text-muted)]">Lot #${esc(o.auction_id)}</span>
+              </div>
+            </td>
+            <td><div class="text-xs"><strong class="block font-bold">${esc(o.buyer_name)}</strong><span class="text-[11px] text-[var(--a-text-muted)]">${esc(o.buyer_email)}</span></div></td>
+            <td><div class="text-xs"><strong class="block font-bold">${esc(o.seller_name)}</strong><span class="text-[11px] text-[var(--a-text-muted)]">${esc(o.seller_email)}</span></div></td>
+            <td><strong class="text-xs font-black text-emerald-400">${esc(fmt(parseFloat(o.total_amount || 0)))}</strong></td>
+            <td><span class="text-xs font-bold text-brand-400">${esc(fmt(parseFloat(o.platform_fee || o.total_amount * 0.05 || 0)))}</span></td>
+            <td><span class="badge ${isPaid ? 'badge-paid' : 'badge-pending'}">${esc(o.payment_status || 'unpaid')}</span></td>
+            <td><div class="text-xs"><span class="badge ${badgeClass}">${esc(orderStatus)}</span>
+              ${o.tracking_number ? `<span class="block text-[10px] text-[var(--a-text-muted)] font-mono mt-0.5">${esc(o.courier || 'TRK')}: ${esc(o.tracking_number)}</span>` : ''}
+            </div></td>
+            <td class="text-right">
+              <a href="/invoice.html?order_id=${encodeURIComponent(o.order_id)}&role=admin" target="_blank" class="btn btn-ghost text-[11px] py-1 px-2.5" title="View Invoice">
+                <i class="fa-solid fa-file-invoice"></i>
+              </a>
+            </td>
+          </tr>`;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center py-12 text-rose-400">' + esc(err.message || 'Error loading orders.') + '</td></tr>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = ApiClient.getUserRole && ApiClient.getUserRole();
+      if (!ApiClient.isAuthenticated() || role !== 'admin') {
+        window.location.href = '/login.html?redirect=/admin/orders.html';
+        return;
+      }
+      loadOrders();
+    });
+  </script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 — Page Not Found | NexusBids Pakistan</title>
+  <meta name="description" content="The page you were looking for doesn't exist. Return to NexusBids and continue browsing live auctions.">
+  <script>(function(){var t=localStorage.getItem('nexusbids_theme')||'system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.setAttribute('data-theme',d?'dark':'light');})();</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif']},colors:{brand:{400:'#818cf8',500:'#6366f1',600:'#4f46e5'}}}}};</script>
+  <style>
+    body{overflow-x:hidden;min-height:100vh;display:flex;flex-direction:column}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+    .float{animation:float 4s ease-in-out infinite}
+    @keyframes glow{0%,100%{opacity:.5}50%{opacity:1}}
+    .glow-ring{animation:glow 3s ease-in-out infinite}
+    @media(prefers-reduced-motion:reduce){.float,.glow-ring{animation:none}}
+  </style>
+</head>
+<body class="font-sans">
+  <header id="nb-header"></header>
+
+  <main class="flex-1 flex flex-col items-center justify-center text-center px-4 py-16 relative">
+    <!-- Background glow -->
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);width:min(600px,90vw);height:400px;background:radial-gradient(closest-side,rgba(99,102,241,.12),transparent);pointer-events:none"></div>
+
+    <!-- 404 illustration -->
+    <div class="float" style="position:relative;margin-bottom:2rem">
+      <div class="glow-ring" style="position:absolute;inset:-20px;border-radius:50%;background:radial-gradient(rgba(99,102,241,.12),transparent 70%);z-index:0"></div>
+      <div style="position:relative;z-index:1;width:120px;height:120px;border-radius:2rem;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(168,85,247,.1));border:1px solid rgba(99,102,241,.25);display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 20px 60px rgba(99,102,241,.2)">
+        <i class="fa-solid fa-magnifying-glass" style="font-size:3rem;color:var(--brand-500);opacity:.8"></i>
+      </div>
+    </div>
+
+    <!-- Error code -->
+    <div style="font-size:clamp(4rem,18vw,8rem);font-weight:800;letter-spacing:-.05em;line-height:1;background:linear-gradient(135deg,var(--brand-500),#a855f7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.5rem">404</div>
+
+    <h1 style="font-size:clamp(1.25rem,4vw,1.875rem);font-weight:800;color:var(--text);margin-bottom:.75rem;letter-spacing:-.025em">Page Not Found</h1>
+    <p style="font-size:1rem;color:var(--text-muted);max-width:28rem;line-height:1.65;margin:0 auto 2rem">
+      The page you're looking for doesn't exist or has been moved. Let's get you back to the action.
+    </p>
+
+    <!-- Quick links -->
+    <div style="display:flex;gap:.875rem;flex-wrap:wrap;justify-content:center;margin-bottom:2.5rem">
+      <a href="/" class="nb-btn nb-btn-primary" style="font-size:.875rem">
+        <i class="fa-solid fa-house"></i> Go Home
+      </a>
+      <a href="/auctions.html" class="nb-btn nb-btn-secondary" style="font-size:.875rem">
+        <i class="fa-solid fa-gavel"></i> Live Auctions
+      </a>
+      <a href="/contact.html" class="nb-btn nb-btn-ghost" style="font-size:.875rem">
+        <i class="fa-solid fa-headset"></i> Get Help
+      </a>
+    </div>
+
+    <!-- Search suggestion -->
+    <div style="max-width:400px;width:100%">
+      <div style="position:relative">
+        <i class="fa-solid fa-magnifying-glass" style="position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:.875rem"></i>
+        <input id="search-input" type="search" placeholder="Search for auctions…"
+          style="background:var(--card-bg);border:1px solid var(--card-border);color:var(--text);border-radius:.875rem;padding:.875rem 1rem .875rem 2.75rem;font-size:.875rem;width:100%;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit"
+          onfocus="this.style.borderColor='var(--brand-500)';this.style.boxShadow='0 0 0 3px rgba(99,102,241,.12)'"
+          onblur="this.style.borderColor='';this.style.boxShadow=''"
+          onkeydown="if(event.key==='Enter'&&this.value.trim())window.location.href='/auctions.html?search='+encodeURIComponent(this.value.trim())"
+          aria-label="Search auctions">
+      </div>
+      <p style="font-size:.72rem;color:var(--text-light);margin-top:.625rem">Press Enter to search auctions</p>
+    </div>
+
+    <!-- Popular pages -->
+    <div style="margin-top:3rem;display:flex;flex-wrap:wrap;gap:.625rem;justify-content:center">
+      <span style="font-size:.75rem;color:var(--text-light);align-self:center">Popular:</span>
+      <a href="/categories.html" class="nb-btn nb-btn-ghost" style="font-size:.72rem;padding:.35rem .75rem"><i class="fa-solid fa-grid-2"></i> Categories</a>
+      <a href="/about.html" class="nb-btn nb-btn-ghost" style="font-size:.72rem;padding:.35rem .75rem"><i class="fa-solid fa-circle-info"></i> About</a>
+      <a href="/how-it-works.html" class="nb-btn nb-btn-ghost" style="font-size:.72rem;padding:.35rem .75rem"><i class="fa-solid fa-book-open"></i> How It Works</a>
+      <a href="/faq.html" class="nb-btn nb-btn-ghost" style="font-size:.72rem;padding:.35rem .75rem"><i class="fa-solid fa-circle-question"></i> FAQ</a>
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+</html>

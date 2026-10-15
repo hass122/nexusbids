@@ -1,0 +1,1786 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="color-scheme" content="dark light">
+  <title>My Orders & Escrow Tracking — NexusBids</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --o-bg: #f4f6fb;
+      --o-surface: #ffffff;
+      --o-surface-2: #f7f9fc;
+      --o-surface-3: #eceff6;
+      --o-border: #e3e8f0;
+      --o-border-strong: #cfd7e5;
+      --o-text: #0f172a;
+      --o-text-muted: #58627a;
+      --o-text-light: #8d97ab;
+      --o-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --o-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --o-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .30);
+      --o-glow: rgba(99, 102, 241, .13);
+      --o-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --o-modal-bg: rgba(15, 23, 42, .42);
+    }
+
+    html.dark {
+      --o-bg: #05070f;
+      --o-surface: #0d1220;
+      --o-surface-2: #121a2b;
+      --o-surface-3: #1a2336;
+      --o-border: #1e2a40;
+      --o-border-strong: #2c3a56;
+      --o-text: #eef2f9;
+      --o-text-muted: #9aa6bd;
+      --o-text-light: #66738d;
+      --o-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --o-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --o-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .85);
+      --o-glow: rgba(99, 102, 241, .20);
+      --o-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+      --o-modal-bg: rgba(0, 0, 0, .68);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--o-bg);
+      color: var(--o-text);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+      overflow-x: hidden;
+    }
+
+    .page-shell {
+      position: relative;
+    }
+
+    .page-shell::before {
+      content: "";
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1100px, 100vw);
+      height: 460px;
+      background: radial-gradient(closest-side, var(--o-glow), transparent 78%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-shell>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .28);
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.4vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.13;
+      color: var(--o-text);
+    }
+
+    .page-sub {
+      font-size: .85rem;
+      color: var(--o-text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 640px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform .22s cubic-bezier(.2, .8, .2, 1), box-shadow .22s, border-color .22s, background-color .22s, color .22s;
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(.975);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+
+    .btn-ghost {
+      background: var(--o-surface);
+      border-color: var(--o-border);
+      color: var(--o-text-muted);
+      box-shadow: var(--o-shadow-sm);
+    }
+
+    .btn-ghost:hover {
+      color: var(--o-text);
+      border-color: var(--o-border-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--o-shadow-md);
+    }
+
+    .btn-secondary {
+      background: var(--o-surface-3);
+      border-color: var(--o-border);
+      color: var(--o-text);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--o-border-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--o-shadow-md);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(79, 70, 229, .85);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(79, 70, 229, .95);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(16, 185, 129, .85);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(16, 185, 129, .95);
+    }
+
+    .btn-warn {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(245, 158, 11, .85);
+    }
+
+    .btn-warn:hover {
+      transform: translateY(-1px);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--o-surface);
+      border: 1px solid var(--o-border);
+      border-radius: 14px;
+      box-shadow: var(--o-shadow-sm);
+      overflow-x: auto;
+      max-width: 100%;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 13px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: .74rem;
+      font-weight: 700;
+      color: var(--o-text-muted);
+      transition: background-color .2s, color .2s, box-shadow .2s;
+      white-space: nowrap;
+    }
+
+    .tab:hover {
+      color: var(--o-text);
+    }
+
+    .tab:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 1px;
+    }
+
+    .tab.is-active {
+      background: var(--o-surface-3);
+      color: var(--o-text);
+      box-shadow: var(--o-shadow-sm);
+    }
+
+    .tab .count {
+      font-size: .63rem;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: var(--o-surface-3);
+      color: var(--o-text-light);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tab.is-active .count {
+      background: rgba(99, 102, 241, .18);
+      color: #6366f1;
+    }
+
+    html.dark .tab.is-active .count {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .25);
+    }
+
+    .orders-count {
+      font-size: .74rem;
+      color: var(--o-text-light);
+      font-weight: 600;
+    }
+
+    .order-card {
+      position: relative;
+      border-radius: 24px;
+      background: var(--o-surface);
+      border: 1px solid var(--o-border);
+      box-shadow: var(--o-shadow-sm);
+      overflow: hidden;
+      transition: border-color .3s, box-shadow .3s, transform .3s cubic-bezier(.2, .8, .2, 1);
+      animation: cardIn .4s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .order-card:hover {
+      border-color: var(--o-border-strong);
+      box-shadow: var(--o-shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .order-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--accent, #6366f1);
+      opacity: .85;
+      transition: opacity .3s;
+    }
+
+    .order-card:hover::before {
+      opacity: 1;
+    }
+
+    .order-card.status-pending_payment {
+      --accent: #f59e0b;
+    }
+
+    .order-card.status-verifying_payment {
+      --accent: #3b82f6;
+    }
+
+    .order-card.status-payment_rejected {
+      --accent: #e11d48;
+    }
+
+    .order-card.status-paid {
+      --accent: #6366f1;
+    }
+
+    .order-card.status-shipped {
+      --accent: #8b5cf6;
+    }
+
+    .order-card.status-in_transit {
+      --accent: #8b5cf6;
+    }
+
+    .order-card.status-delivered {
+      --accent: #10b981;
+    }
+
+    .order-card.status-completed {
+      --accent: #10b981;
+    }
+
+    .order-card.status-payment_failed {
+      --accent: #e11d48;
+    }
+
+    .order-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    @media (min-width: 640px) {
+      .order-body {
+        padding: 24px 26px;
+      }
+    }
+
+    .order-head {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--o-border);
+    }
+
+    .order-thumb {
+      flex: 0 0 auto;
+      width: 68px;
+      height: 68px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--o-surface-3);
+      border: 1px solid var(--o-border);
+      display: block;
+      position: relative;
+    }
+
+    .order-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    .order-card:hover .order-thumb img {
+      transform: scale(1.07);
+    }
+
+    .order-info {
+      flex: 1 1 200px;
+      min-width: 0;
+    }
+
+    .order-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .68rem;
+      color: var(--o-text-light);
+      background: var(--o-surface-2);
+      padding: 3px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--o-border);
+    }
+
+    .order-number i {
+      font-size: .62rem;
+    }
+
+    .order-title {
+      font-size: 1.02rem;
+      font-weight: 800;
+      color: var(--o-text);
+      margin-top: 8px;
+      letter-spacing: -.01em;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .order-seller {
+      font-size: .76rem;
+      color: var(--o-text-muted);
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .order-seller strong {
+      color: var(--o-text);
+      font-weight: 700;
+    }
+
+    .order-seller .verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: .62rem;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, .10);
+      color: #6366f1;
+    }
+
+    html.dark .order-seller .verified {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .18);
+    }
+
+    .order-price-block {
+      flex: 0 0 auto;
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .price-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--o-text-light);
+    }
+
+    .price-value {
+      font-size: 1.32rem;
+      font-weight: 800;
+      color: var(--o-text);
+      letter-spacing: -.02em;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+
+    .price-value.accent-emerald {
+      color: #059669;
+    }
+
+    html.dark .price-value.accent-emerald {
+      color: #34d399;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .pill i {
+      font-size: .62rem;
+    }
+
+    .pill.pending_payment {
+      background: rgba(245, 158, 11, .12);
+      color: #b45309;
+      border-color: rgba(245, 158, 11, .28);
+    }
+
+    .pill.verifying_payment {
+      background: rgba(59, 130, 246, .12);
+      color: #2563eb;
+      border-color: rgba(59, 130, 246, .28);
+    }
+
+    .pill.payment_rejected {
+      background: rgba(244, 63, 94, .12);
+      color: #e11d48;
+      border-color: rgba(244, 63, 94, .28);
+    }
+
+    .pill.paid {
+      background: rgba(99, 102, 241, .12);
+      color: #4f46e5;
+      border-color: rgba(99, 102, 241, .28);
+    }
+
+    .pill.shipped,
+    .pill.in_transit {
+      background: rgba(139, 92, 246, .12);
+      color: #7c3aed;
+      border-color: rgba(139, 92, 246, .28);
+    }
+
+    .pill.delivered,
+    .pill.completed {
+      background: rgba(16, 185, 129, .13);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .30);
+    }
+
+    .pill.default {
+      background: var(--o-surface-3);
+      color: var(--o-text-muted);
+      border-color: var(--o-border);
+    }
+
+    html.dark .pill.pending_payment {
+      background: rgba(245, 158, 11, .16);
+      color: #fbbf24;
+    }
+
+    html.dark .pill.verifying_payment {
+      background: rgba(59, 130, 246, .18);
+      color: #60a5fa;
+    }
+
+    html.dark .pill.payment_rejected {
+      background: rgba(244, 63, 94, .18);
+      color: #fb7185;
+    }
+
+    html.dark .pill.paid {
+      background: rgba(99, 102, 241, .18);
+      color: #a5b4fc;
+    }
+
+    html.dark .pill.shipped,
+    html.dark .pill.in_transit {
+      background: rgba(139, 92, 246, .18);
+      color: #c4b5fd;
+    }
+
+    html.dark .pill.delivered,
+    html.dark .pill.completed {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399;
+    }
+
+    .stepper-wrap {
+      padding: 4px 0;
+    }
+
+    .stepper {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .step {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      z-index: 1;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 19px;
+      left: calc(50% + 20px);
+      right: calc(-50% + 20px);
+      height: 2px;
+      background: var(--o-border);
+      border-radius: 2px;
+      z-index: -1;
+      transition: background-color .4s ease;
+    }
+
+    .step.is-done:not(:last-child)::after {
+      background: linear-gradient(90deg, #10b981, rgba(16, 185, 129, .55));
+    }
+
+    .step.is-active:not(:last-child)::after {
+      background: linear-gradient(90deg, #6366f1, var(--o-border));
+    }
+
+    .step-dot {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: .9rem;
+      background: var(--o-surface-3);
+      color: var(--o-text-light);
+      border: 2px solid var(--o-border);
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1), background-color .3s, border-color .3s, color .3s, box-shadow .3s;
+    }
+
+    .step.is-done .step-dot {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 6px 16px -6px rgba(16, 185, 129, .7);
+    }
+
+    .step.is-active .step-dot {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 0 0 5px rgba(99, 102, 241, .18), 0 8px 18px -8px rgba(79, 70, 229, .7);
+      animation: pulseActive 2s ease-in-out infinite;
+    }
+
+    .step.is-pending-verify .step-dot {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 0 0 5px rgba(59, 130, 246, .18), 0 8px 18px -8px rgba(37, 99, 235, .7);
+      animation: pulseActive 2s ease-in-out infinite;
+    }
+
+    @keyframes pulseActive {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 5px rgba(99, 102, 241, .18), 0 8px 18px -8px rgba(79, 70, 229, .7);
+      }
+
+      50% {
+        box-shadow: 0 0 0 9px rgba(99, 102, 241, .08), 0 8px 18px -8px rgba(79, 70, 229, .7);
+      }
+    }
+
+    .step.is-done .step-dot:hover,
+    .step.is-active .step-dot:hover {
+      transform: scale(1.08);
+    }
+
+    .step-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .005em;
+      color: var(--o-text-light);
+      line-height: 1.25;
+      transition: color .3s;
+    }
+
+    .step.is-done .step-label,
+    .step.is-active .step-label,
+    .step.is-pending-verify .step-label {
+      color: var(--o-text);
+    }
+
+    .step-caption {
+      font-size: .62rem;
+      color: var(--o-text-light);
+      margin-top: 1px;
+      line-height: 1.35;
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .step-caption {
+        display: block;
+      }
+    }
+
+    .order-info-strip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--o-surface-2);
+      border: 1px solid var(--o-border);
+      font-size: .74rem;
+      color: var(--o-text-muted);
+      line-height: 1.5;
+    }
+
+    .order-info-strip i {
+      font-size: .85rem;
+      flex: 0 0 auto;
+    }
+
+    .order-info-strip.escrow i {
+      color: #10b981;
+    }
+
+    .order-info-strip.courier i {
+      color: #6366f1;
+    }
+
+    .order-info-strip.verify i {
+      color: #3b82f6;
+    }
+
+    .order-info-strip.rejected i {
+      color: #e11d48;
+    }
+
+    html.dark .order-info-strip.courier i {
+      color: #a5b4fc;
+    }
+
+    html.dark .order-info-strip.verify i {
+      color: #60a5fa;
+    }
+
+    html.dark .order-info-strip.rejected i {
+      color: #fb7185;
+    }
+
+    .order-info-strip strong {
+      color: var(--o-text);
+      font-weight: 700;
+    }
+
+    .order-info-strip .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 700;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      padding: 1px 7px;
+      border-radius: 6px;
+      font-size: .72rem;
+    }
+
+    html.dark .order-info-strip .mono {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .20);
+    }
+
+    .order-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-top: 18px;
+      border-top: 1px solid var(--o-border);
+    }
+
+    @media (max-width: 520px) {
+      .order-actions {
+        justify-content: stretch;
+      }
+
+      .order-actions .btn {
+        flex: 1 1 calc(50% - 5px);
+      }
+
+      .order-actions .btn.full {
+        flex: 1 1 100%;
+      }
+    }
+
+    .skeleton {
+      background: var(--o-skeleton);
+      background-size: 400% 100%;
+      border-radius: 10px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0 50%;
+      }
+    }
+
+    .loading-shell {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 60px 24px;
+      animation: cardIn .4s ease both;
+    }
+
+    .empty-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      font-size: 1.7rem;
+      background: var(--o-surface-2);
+      border: 1px solid var(--o-border);
+      color: var(--o-text-light);
+      margin-bottom: 18px;
+    }
+
+    .empty-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--o-text);
+    }
+
+    .empty-text {
+      font-size: .82rem;
+      color: var(--o-text-muted);
+      margin-top: 8px;
+      max-width: 380px;
+      line-height: 1.6;
+    }
+
+    .empty .btn {
+      margin-top: 22px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: var(--o-modal-bg);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .modal-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-backdrop.hidden {
+      display: none;
+    }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 520px;
+      background: var(--o-surface);
+      border: 1px solid var(--o-border);
+      border-radius: 24px;
+      box-shadow: var(--o-shadow-lg);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      transform: translateY(18px) scale(.97);
+      opacity: 0;
+      transition: transform .32s cubic-bezier(.2, .8, .2, 1), opacity .32s ease;
+    }
+
+    .modal-backdrop.is-open .modal-panel {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .modal-head {
+      position: sticky;
+      top: 0;
+      background: var(--o-surface);
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--o-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--o-text);
+      letter-spacing: -.01em;
+    }
+
+    .modal-title-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: rgba(99, 102, 241, .12);
+      color: #6366f1;
+      font-size: .85rem;
+    }
+
+    html.dark .modal-title-icon {
+      background: rgba(99, 102, 241, .20);
+      color: #a5b4fc;
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--o-border);
+      background: var(--o-surface-2);
+      color: var(--o-text-muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: .85rem;
+      transition: color .2s, border-color .2s, background-color .2s, transform .2s;
+    }
+
+    .modal-close:hover {
+      color: var(--o-text);
+      border-color: var(--o-border-strong);
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tracking-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--o-surface-2);
+      border: 1px solid var(--o-border);
+    }
+
+    @media (min-width: 480px) {
+      .tracking-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .tracking-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .tracking-item-label {
+      font-size: .64rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--o-text-light);
+    }
+
+    .tracking-item-value {
+      font-size: .84rem;
+      font-weight: 700;
+      color: var(--o-text);
+      word-break: break-word;
+    }
+
+    .tracking-item-value.mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: #6366f1;
+    }
+
+    html.dark .tracking-item-value.mono {
+      color: #a5b4fc;
+    }
+
+    .tracking-item-value .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: .68rem;
+      font-weight: 800;
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+      text-transform: capitalize;
+    }
+
+    html.dark .tracking-item-value .status-chip {
+      background: rgba(16, 185, 129, .20);
+      color: #34d399;
+    }
+
+    .milestones-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--o-text-light);
+      margin-top: 4px;
+    }
+
+    .milestone {
+      display: flex;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--o-surface-2);
+      border: 1px solid var(--o-border);
+      align-items: flex-start;
+    }
+
+    .milestone-dot {
+      flex: 0 0 auto;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: .68rem;
+      background: rgba(16, 185, 129, .14);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, .32);
+    }
+
+    html.dark .milestone-dot {
+      background: rgba(16, 185, 129, .20);
+      color: #34d399;
+    }
+
+    .milestone-title {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--o-text);
+    }
+
+    .milestone-time {
+      font-size: .68rem;
+      color: var(--o-text-light);
+      margin-top: 2px;
+    }
+
+    .modal-loading,
+    .modal-error {
+      padding: 40px 20px;
+      text-align: center;
+      font-size: .82rem;
+      color: var(--o-text-muted);
+    }
+
+    .modal-error {
+      color: #e11d48;
+    }
+
+    html.dark .modal-error {
+      color: #fb7185;
+    }
+
+    .spin {
+      animation: spin .85s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .order-head {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+      }
+
+      .order-thumb {
+        width: 60px;
+        height: 60px;
+      }
+
+      .order-price-block {
+        align-items: flex-start;
+        text-align: left;
+        flex-direction: row;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        width: 100%;
+        padding-top: 14px;
+        border-top: 1px dashed var(--o-border);
+        gap: 10px;
+      }
+
+      .price-value {
+        font-size: 1.15rem;
+      }
+
+      .step-dot {
+        width: 34px;
+        height: 34px;
+        font-size: .78rem;
+      }
+
+      .step:not(:last-child)::after {
+        top: 16px;
+        left: calc(50% + 17px);
+        right: calc(-50% + 17px);
+      }
+
+      .step-label {
+        font-size: .66rem;
+      }
+
+      .order-body {
+        padding: 18px;
+        gap: 18px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .step-label {
+        font-size: .62rem;
+      }
+
+      .step-dot {
+        width: 30px;
+        height: 30px;
+        font-size: .72rem;
+        border-width: 1.5px;
+      }
+
+      .step:not(:last-child)::after {
+        top: 14px;
+        left: calc(50% + 15px);
+        right: calc(-50% + 15px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+
+  <header id="nb-header"></header>
+
+  <main class="page-shell flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7">
+      <div>
+        <span class="eyebrow"><i class="fa-solid fa-shield-halved"></i> Escrow Protected</span>
+        <h1 class="page-title mt-3">My Orders &amp; Escrow Tracking</h1>
+        <p class="page-sub">Track payments, courier milestones, and release escrow once you have verified your item has
+          arrived safely.</p>
+      </div>
+      <a href="/buyer/dashboard.html" class="btn btn-ghost self-start"><i class="fa-solid fa-arrow-left"></i> Back to
+        Dashboard</a>
+    </div>
+
+    <div class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Filter orders">
+        <button class="tab is-active" data-filter="all" role="tab" aria-selected="true" type="button"><i
+            class="fa-solid fa-layer-group" style="font-size:.7rem"></i> All <span class="count"
+            id="count-all">0</span></button>
+        <button class="tab" data-filter="pending" role="tab" aria-selected="false" type="button"><i
+            class="fa-solid fa-hourglass-half" style="font-size:.7rem"></i> Pending <span class="count"
+            id="count-pending">0</span></button>
+        <button class="tab" data-filter="shipped" role="tab" aria-selected="false" type="button"><i
+            class="fa-solid fa-truck-fast" style="font-size:.7rem"></i> In Transit <span class="count"
+            id="count-shipped">0</span></button>
+        <button class="tab" data-filter="delivered" role="tab" aria-selected="false" type="button"><i
+            class="fa-solid fa-circle-check" style="font-size:.7rem"></i> Delivered <span class="count"
+            id="count-delivered">0</span></button>
+      </div>
+      <p class="orders-count" id="orders-count">Loading…</p>
+    </div>
+
+    <div id="orders-container" class="space-y-5" aria-live="polite"></div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <div id="tracking-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true"
+    aria-labelledby="tracking-modal-title">
+    <div class="modal-panel" id="tracking-panel">
+      <div class="modal-head">
+        <h3 id="tracking-modal-title" class="modal-title">
+          <span class="modal-title-icon"><i class="fa-solid fa-truck-fast"></i></span>
+          Shipment Tracking
+        </h3>
+        <button type="button" class="modal-close" onclick="closeTrackingModal()" aria-label="Close tracking modal"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="tracking-content" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var state = { orders: [], filter: 'all' };
+      var FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&auto=format&fit=crop&q=70';
+
+      function $(id) { return document.getElementById(id); }
+      function esc(str) {
+        return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+      function fmtPKR(v) {
+        try { if (window.UI && UI.formatPKR) return UI.formatPKR(v); } catch (e) { }
+        var n = Number(v || 0);
+        return 'PKR ' + n.toLocaleString('en-PK');
+      }
+      function showToast(msg, type) {
+        try { if (window.UI && UI.showToast) UI.showToast(msg, type); else console.log(msg); }
+        catch (e) { console.error(e); }
+      }
+
+      /* ============================================================
+         ★ CRITICAL FIX — effectiveStatus now considers admin_review_status
+         ============================================================
+         Priority:
+           1. Admin rejected → payment_rejected
+           2. Admin approved OR payment_status = paid → paid
+           3. Proof uploaded + review pending → verifying_payment
+           4. Payment failed/refunded → payment_failed/refunded
+           5. Otherwise use order_status
+      */
+      function effectiveStatus(o) {
+        var s = String(o.order_status || '').toLowerCase();
+        var p = String(o.payment_status || '').toLowerCase();
+        var admin = String(o.admin_review_status || '').toLowerCase();
+        var proofUploaded = !!(o.buyer_proof_uploaded_at);
+
+        var isCompleted = ['delivered', 'completed'].indexOf(s) !== -1;
+        var isShipped = ['shipped', 'in_transit'].indexOf(s) !== -1;
+        var isCancelled = ['cancelled', 'canceled'].indexOf(s) !== -1;
+
+        // 1. Admin rejected → show re-upload option
+        if (admin === 'rejected') return 'payment_rejected';
+
+        // 2. Admin approved OR backend marked paid → treat as paid
+        if (admin === 'approved' || p === 'paid') {
+          // preserve later stages if order has moved forward
+          if (isCompleted) return s;
+          if (isShipped) return s;
+          if (isCancelled) return s;
+          return 'paid';
+        }
+
+        // 3. Proof uploaded + awaiting admin
+        if (proofUploaded && (admin === 'pending' || admin === 'reviewing' || admin === '')) {
+          if (!isCompleted && !isShipped) return 'verifying_payment';
+        }
+
+        // 4. Payment failed
+        if (p === 'failed') return 'payment_failed';
+        if (p === 'refunded') return 'refunded';
+
+        // 5. Order status was updated directly
+        if (s) return s;
+
+        // 6. Fallback
+        if (p === 'paid') return 'paid';
+        return 'pending_payment';
+      }
+
+      /* ============================================================
+         Status helpers
+         ============================================================ */
+      function statusClass(effStatus) {
+        var safe = [
+          'pending_payment', 'verifying_payment', 'payment_rejected', 'payment_failed',
+          'paid', 'shipped', 'in_transit', 'delivered', 'completed'
+        ];
+        return 'status-' + (safe.indexOf(effStatus) !== -1 ? effStatus : 'paid');
+      }
+
+      function pillClass(effStatus) {
+        var known = [
+          'pending_payment', 'verifying_payment', 'payment_rejected', 'payment_failed',
+          'paid', 'shipped', 'in_transit', 'delivered', 'completed'
+        ];
+        if (known.indexOf(effStatus) !== -1) return effStatus;
+        if (effStatus === 'refunded') return 'default';
+        return 'default';
+      }
+
+      function statusIcon(effStatus) {
+        var map = {
+          pending_payment: 'fa-hourglass-half',
+          verifying_payment: 'fa-clock-rotate-left',
+          payment_rejected: 'fa-circle-xmark',
+          payment_failed: 'fa-circle-xmark',
+          paid: 'fa-lock',
+          shipped: 'fa-box',
+          in_transit: 'fa-truck-fast',
+          delivered: 'fa-circle-check',
+          completed: 'fa-circle-check',
+          refunded: 'fa-rotate-left'
+        };
+        return map[effStatus] || 'fa-circle-info';
+      }
+
+      function statusLabel(effStatus) {
+        var labels = {
+          pending_payment: 'Pending Payment',
+          verifying_payment: 'Verifying Payment',
+          payment_rejected: 'Payment Rejected',
+          payment_failed: 'Payment Failed',
+          paid: 'Paid · In Escrow',
+          shipped: 'Shipped',
+          in_transit: 'In Transit',
+          delivered: 'Delivered',
+          completed: 'Completed',
+          refunded: 'Refunded'
+        };
+        return labels[effStatus] || (effStatus || 'pending').replace(/_/g, ' ');
+      }
+
+      /* ============================================================
+         Stepper
+         ============================================================ */
+      function stepperState(o) {
+        var s = effectiveStatus(o);
+        var p = String(o.payment_status || '').toLowerCase();
+        var admin = String(o.admin_review_status || '').toLowerCase();
+
+        var paymentHeld = admin === 'approved' || p === 'paid' ||
+          ['paid', 'shipped', 'in_transit', 'delivered', 'completed'].indexOf(s) !== -1;
+
+        var verifying = s === 'verifying_payment';
+        var rejected = s === 'payment_rejected' || s === 'payment_failed';
+
+        var packed = ['shipped', 'in_transit', 'delivered', 'completed'].indexOf(s) !== -1;
+        var shipped = ['shipped', 'in_transit', 'delivered', 'completed'].indexOf(s) !== -1;
+        var delivered = ['delivered', 'completed'].indexOf(s) !== -1;
+
+        var doneArr = [paymentHeld, packed, shipped, delivered];
+        var activeIdx = doneArr.indexOf(false);
+
+        return doneArr.map(function (done, i) {
+          if (done) return 'is-done';
+          if (verifying && i === 0) return 'is-pending-verify';
+          if (rejected && i === 0) return '';
+          if (i === activeIdx) return 'is-active';
+          return '';
+        });
+      }
+
+      /* ============================================================
+         Render order card
+         ============================================================ */
+      function renderOrderCard(o) {
+        var total = parseFloat(o.total_amount || o.winning_bid || 0);
+        var effStatus = effectiveStatus(o);
+        var steps = stepperState(o);
+
+        var isDelivered = ['delivered', 'completed'].indexOf(effStatus) !== -1;
+        var canConfirm = ['shipped', 'in_transit'].indexOf(effStatus) !== -1 && !isDelivered;
+        var needsPayment = effStatus === 'pending_payment' || effStatus === 'payment_failed';
+        var needsReupload = effStatus === 'payment_rejected';
+
+        var img = o.auction_image || FALLBACK_IMG;
+        var orderNo = o.order_number || o.order_id;
+
+        // Info strip varies by state
+        var infoStrip;
+        if (o.tracking_number) {
+          infoStrip =
+            '<div class="order-info-strip courier">' +
+            '<i class="fa-solid fa-truck-fast"></i>' +
+            '<span>Courier: <strong>' + esc(o.courier || 'TCS Express') + '</strong> &bull; ' +
+            'Tracking: <span class="mono">' + esc(o.tracking_number) + '</span></span>' +
+            '</div>';
+        } else if (effStatus === 'verifying_payment') {
+          infoStrip =
+            '<div class="order-info-strip verify">' +
+            '<i class="fa-solid fa-clock-rotate-left"></i>' +
+            '<span>We received your payment proof. <strong>Verification takes a few minutes</strong> during business hours.</span>' +
+            '</div>';
+        } else if (effStatus === 'payment_rejected') {
+          infoStrip =
+            '<div class="order-info-strip rejected">' +
+            '<i class="fa-solid fa-circle-exclamation"></i>' +
+            '<span>Your previous proof was rejected. <strong>Please upload a clearer screenshot.</strong></span>' +
+            '</div>';
+        } else {
+          infoStrip =
+            '<div class="order-info-strip escrow">' +
+            '<i class="fa-solid fa-shield-halved"></i>' +
+            '<span>Protected by <strong>100% Escrow</strong> &bull; Funds release only after you confirm delivery.</span>' +
+            '</div>';
+        }
+
+        // Action buttons
+        var actions = '';
+        if (needsPayment) {
+          actions += '<a href="/checkout.html?order_id=' + esc(o.order_id) + '" class="btn btn-primary">' +
+            '<i class="fa-solid fa-credit-card"></i> Pay Now (' + esc(fmtPKR(total)) + ')</a>';
+        }
+        if (needsReupload) {
+          actions += '<a href="/checkout.html?order_id=' + esc(o.order_id) + '" class="btn btn-warn">' +
+            '<i class="fa-solid fa-cloud-arrow-up"></i> Re-upload Proof</a>';
+        }
+        if (o.tracking_number) {
+          actions += '<button type="button" class="btn btn-secondary" onclick="viewTracking(' + esc(o.order_id) + ')">' +
+            '<i class="fa-solid fa-location-dot"></i> Track Courier</button>';
+        }
+        if (canConfirm) {
+          actions += '<button type="button" class="btn btn-success" onclick="confirmDelivery(' + esc(o.order_id) + ')">' +
+            '<i class="fa-solid fa-check-double"></i> Confirm Item Received</button>';
+        }
+        actions += '<a href="/buyer/order-details.html?id=' + esc(o.order_id) + '" class="btn btn-secondary">' +
+          '<i class="fa-solid fa-circle-info"></i> Details</a>';
+        actions += '<a href="/invoice.html?order_id=' + esc(o.order_id) + '&role=buyer" class="btn btn-ghost">' +
+          '<i class="fa-solid fa-file-invoice" style="color:#6366f1"></i> Invoice</a>';
+
+        return (
+          '<article class="order-card ' + statusClass(effStatus) + '">' +
+          '<div class="order-body">' +
+
+          '<div class="order-head">' +
+          '<a class="order-thumb" href="/auction-details.html?id=' + esc(o.auction_id || '') + '" tabindex="-1" aria-hidden="true">' +
+          '<img src="' + esc(img) + '" alt="" loading="lazy" ' +
+          'onerror="this.onerror=null;this.src=\'' + FALLBACK_IMG + '\'">' +
+          '</a>' +
+          '<div class="order-info">' +
+          '<span class="order-number"><i class="fa-solid fa-hashtag"></i>' + esc(orderNo) + '</span>' +
+          '<h3 class="order-title">' + esc(o.auction_title || 'Auction Item') + '</h3>' +
+          '<p class="order-seller">' +
+          '<i class="fa-solid fa-store" style="font-size:.7rem;opacity:.7"></i>' +
+          'Seller: <strong>' + esc(o.counterparty_name || 'Verified Seller') + '</strong>' +
+          '<span class="verified"><i class="fa-solid fa-shield-halved" style="font-size:.55rem"></i> Verified</span>' +
+          '</p>' +
+          '</div>' +
+          '<div class="order-price-block">' +
+          '<div>' +
+          '<span class="price-label">Total Escrow</span>' +
+          '<p class="price-value accent-emerald">' + esc(fmtPKR(total)) + '</p>' +
+          '</div>' +
+          '<span class="pill ' + pillClass(effStatus) + '">' +
+          '<i class="fa-solid ' + statusIcon(effStatus) + '"></i>' +
+          esc(statusLabel(effStatus)) +
+          '</span>' +
+          '</div>' +
+          '</div>' +
+
+          '<div class="stepper-wrap"><div class="stepper">' +
+          '<div class="step ' + steps[0] + '"><div class="step-dot"><i class="fa-solid fa-receipt"></i></div><div><div class="step-label">Payment Held</div><div class="step-caption">In escrow</div></div></div>' +
+          '<div class="step ' + steps[1] + '"><div class="step-dot"><i class="fa-solid fa-box"></i></div><div><div class="step-label">Item Packed</div><div class="step-caption">Ready to dispatch</div></div></div>' +
+          '<div class="step ' + steps[2] + '"><div class="step-dot"><i class="fa-solid fa-truck-fast"></i></div><div><div class="step-label">Dispatched</div><div class="step-caption">With courier</div></div></div>' +
+          '<div class="step ' + steps[3] + '"><div class="step-dot"><i class="fa-solid fa-shield-halved"></i></div><div><div class="step-label">Delivered</div><div class="step-caption">Escrow released</div></div></div>' +
+          '</div></div>' +
+
+          infoStrip +
+          '<div class="order-actions">' + actions + '</div>' +
+          '</div></article>'
+        );
+      }
+
+      /* ============================================================
+         Filtering
+         ============================================================ */
+      function inFilter(o, filter) {
+        var s = effectiveStatus(o);
+        if (filter === 'all') return true;
+        if (filter === 'pending') return ['pending_payment', 'verifying_payment', 'payment_rejected', 'payment_failed', 'paid'].indexOf(s) !== -1;
+        if (filter === 'shipped') return ['shipped', 'in_transit'].indexOf(s) !== -1;
+        if (filter === 'delivered') return ['delivered', 'completed'].indexOf(s) !== -1;
+        return true;
+      }
+
+      function applyFilter() {
+        return state.orders.filter(function (o) { return inFilter(o, state.filter); });
+      }
+
+      function updateCounts() {
+        var counts = { all: 0, pending: 0, shipped: 0, delivered: 0 };
+        state.orders.forEach(function (o) {
+          var s = effectiveStatus(o);
+          counts.all++;
+          if (['pending_payment', 'verifying_payment', 'payment_rejected', 'payment_failed', 'paid'].indexOf(s) !== -1) counts.pending++;
+          else if (['shipped', 'in_transit'].indexOf(s) !== -1) counts.shipped++;
+          else if (['delivered', 'completed'].indexOf(s) !== -1) counts.delivered++;
+        });
+        var map = { 'count-all': counts.all, 'count-pending': counts.pending, 'count-shipped': counts.shipped, 'count-delivered': counts.delivered };
+        Object.keys(map).forEach(function (id) {
+          var el = $(id);
+          if (el) el.textContent = map[id];
+        });
+      }
+
+      /* ============================================================
+         Render list
+         ============================================================ */
+      function renderList() {
+        var container = $('orders-container');
+        var list = applyFilter();
+
+        var countEl = $('orders-count');
+        if (countEl) {
+          var label = state.filter === 'all' ? 'total orders'
+            : state.filter === 'pending' ? 'pending'
+              : state.filter === 'shipped' ? 'in transit'
+                : 'delivered';
+          countEl.textContent = list.length + ' ' + label;
+        }
+
+        if (!state.orders.length) {
+          container.innerHTML =
+            '<div class="order-card" style="--accent:transparent"><div class="empty">' +
+            '<div class="empty-icon"><i class="fa-solid fa-box-open"></i></div>' +
+            '<p class="empty-title">No Orders Yet</p>' +
+            '<p class="empty-text">When you win an auction or complete a buy-now purchase, your escrow orders will appear here.</p>' +
+            '<a href="/auctions.html" class="btn btn-primary">Explore Auctions <i class="fa-solid fa-arrow-right" style="font-size:.65rem"></i></a>' +
+            '</div></div>';
+          return;
+        }
+
+        if (!list.length) {
+          container.innerHTML =
+            '<div class="order-card" style="--accent:transparent"><div class="empty">' +
+            '<div class="empty-icon"><i class="fa-solid fa-filter"></i></div>' +
+            '<p class="empty-title">Nothing here</p>' +
+            '<p class="empty-text">No orders match this filter right now. Try another tab.</p>' +
+            '</div></div>';
+          return;
+        }
+
+        container.innerHTML = list.map(renderOrderCard).join('');
+      }
+
+      function renderSkeletons(n) {
+        var out = '';
+        for (var i = 0; i < n; i++) {
+          out +=
+            '<div class="order-card" style="--accent:transparent;pointer-events:none"><div class="loading-shell">' +
+            '<div style="display:flex;gap:16px;align-items:center">' +
+            '<div class="skeleton" style="width:68px;height:68px;border-radius:16px"></div>' +
+            '<div style="flex:1;min-width:0">' +
+            '<div class="skeleton" style="height:12px;width:100px"></div>' +
+            '<div class="skeleton" style="height:16px;width:60%;margin-top:10px"></div>' +
+            '<div class="skeleton" style="height:11px;width:35%;margin-top:9px"></div>' +
+            '</div>' +
+            '<div style="text-align:right">' +
+            '<div class="skeleton" style="height:10px;width:66px;margin-left:auto"></div>' +
+            '<div class="skeleton" style="height:20px;width:110px;margin-top:8px;margin-left:auto"></div>' +
+            '</div></div>' +
+            '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px">' +
+            '<div class="skeleton" style="height:40px;border-radius:50%"></div>'.repeat(4) +
+            '</div></div></div>';
+        }
+        return out;
+      }
+
+      function renderError(msg) {
+        $('orders-container').innerHTML =
+          '<div class="order-card" style="--accent:#e11d48"><div class="empty">' +
+          '<div class="empty-icon" style="color:#e11d48;background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.24)"><i class="fa-solid fa-triangle-exclamation"></i></div>' +
+          '<p class="empty-title">Failed to load orders</p>' +
+          '<p class="empty-text">' + esc(msg || 'Please try again in a moment.') + '</p>' +
+          '<button type="button" class="btn btn-primary" onclick="loadOrders()"><i class="fa-solid fa-rotate-right"></i> Retry</button>' +
+          '</div></div>';
+      }
+
+      async function loadOrders() {
+        var container = $('orders-container');
+        var countEl = $('orders-count');
+        if (countEl) countEl.textContent = 'Loading…';
+        container.innerHTML = renderSkeletons(2);
+
+        try {
+          var res = await ApiClient.get('/orders/buyer');
+          state.orders = (res && res.data) || [];
+          updateCounts();
+          renderList();
+        } catch (err) {
+          console.error(err);
+          state.orders = [];
+          updateCounts();
+          renderError(err && err.message);
+        }
+      }
+
+      async function confirmDelivery(orderId) {
+        var ok = true;
+        if (window.UI && UI.confirm) {
+          ok = await UI.confirm({
+            title: 'Confirm Item Receipt & Release Escrow',
+            message: 'Have you received and thoroughly inspected your item? Confirming delivery will permanently release the escrow funds to the seller.',
+            confirmText: 'Yes, Release Escrow',
+            type: 'primary'
+          });
+        }
+        if (!ok) return;
+        try {
+          await ApiClient.post('/shipping/orders/' + orderId + '/confirm-delivery');
+          showToast('Delivery confirmed and escrow released to seller!', 'success');
+          loadOrders();
+        } catch (err) {
+          showToast((err && err.message) || 'Could not confirm delivery', 'error');
+        }
+      }
+
+      function openModal() {
+        var modal = $('tracking-modal');
+        modal.classList.remove('hidden');
+        requestAnimationFrame(function () { modal.classList.add('is-open'); });
+        document.body.style.overflow = 'hidden';
+      }
+      function closeTrackingModal() {
+        var modal = $('tracking-modal');
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+        setTimeout(function () { modal.classList.add('hidden'); }, 250);
+      }
+      async function viewTracking(orderId) {
+        var content = $('tracking-content');
+        openModal();
+        content.innerHTML = '<div class="modal-loading"><i class="fa-solid fa-spinner spin" style="font-size:1.4rem;color:#6366f1"></i><p style="margin-top:12px">Fetching courier data…</p></div>';
+        try {
+          var res = await ApiClient.get('/shipping/orders/' + orderId + '/tracking');
+          var t = (res && res.data) || {};
+          var created = new Date(t.created_at || Date.now());
+          var createdLabel = isNaN(created.getTime()) ? '—' : created.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+          content.innerHTML =
+            '<div class="tracking-grid">' +
+            '<div class="tracking-item"><span class="tracking-item-label">Courier Company</span><span class="tracking-item-value">' + esc(t.courier_name || 'TCS Express') + '</span></div>' +
+            '<div class="tracking-item"><span class="tracking-item-label">Tracking Number</span><span class="tracking-item-value mono">' + esc(t.tracking_number || '—') + '</span></div>' +
+            '<div class="tracking-item" style="grid-column:1/-1"><span class="tracking-item-label">Current Status</span><span class="tracking-item-value"><span class="status-chip"><i class="fa-solid fa-circle" style="font-size:.45rem"></i>' + esc(t.status || 'In Transit') + '</span></span></div>' +
+            '</div>' +
+            '<div><p class="milestones-title"><i class="fa-solid fa-route"></i> Milestones</p>' +
+            '<div class="milestone"><div class="milestone-dot"><i class="fa-solid fa-check"></i></div><div><p class="milestone-title">Item Dispatched</p><p class="milestone-time">' + esc(createdLabel) + '</p></div></div>' +
+            '</div>' +
+            '<button type="button" class="btn btn-ghost full" style="width:100%" onclick="closeTrackingModal()">Close</button>';
+        } catch (err) {
+          content.innerHTML = '<div class="modal-error"><i class="fa-solid fa-triangle-exclamation" style="font-size:1.4rem"></i><p style="margin-top:10px">' + esc((err && err.message) || 'Could not load tracking information.') + '</p></div>';
+        }
+      }
+
+      function initTabs() {
+        var tabs = document.querySelectorAll('.tab[data-filter]');
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var filter = tab.getAttribute('data-filter');
+            if (filter === state.filter) return;
+            state.filter = filter;
+            tabs.forEach(function (t) {
+              var active = t === tab;
+              t.classList.toggle('is-active', active);
+              t.setAttribute('aria-selected', active ? 'true' : 'false');
+            });
+            renderList();
+          });
+        });
+      }
+      function initModal() {
+        var modal = $('tracking-modal');
+        if (!modal) return;
+        modal.addEventListener('click', function (e) { if (e.target === modal) closeTrackingModal(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('is-open')) closeTrackingModal(); });
+      }
+
+      window.loadOrders = loadOrders;
+      window.confirmDelivery = confirmDelivery;
+      window.viewTracking = viewTracking;
+      window.closeTrackingModal = closeTrackingModal;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        if (!ApiClient.getAccessToken()) {
+          window.location.href = '/login.html?redirect=' + encodeURIComponent('/buyer/orders.html');
+          return;
+        }
+        initTabs();
+        initModal();
+        loadOrders();
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

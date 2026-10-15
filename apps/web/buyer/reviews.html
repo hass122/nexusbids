@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Reviews — NexusBids Pakistan</title>
+  <meta name="description" content="View and submit reviews for sellers on NexusBids Pakistan.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5' } } } } };</script>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --s: #fff;
+      --s2: #f7f9fc;
+      --s3: #eceff6;
+      --bd: #e3e8f0;
+      --bdg: #cfd7e5;
+      --tx: #0f172a;
+      --txm: #58627a;
+      --txl: #8d97ab;
+      --sh: 0 1px 2px rgba(15, 23, 42, .05);
+      --shm: 0 6px 16px -6px rgba(15, 23, 42, .1)
+    }
+
+    html.dark {
+      --bg: #05070f;
+      --s: #0d1220;
+      --s2: #121a2b;
+      --s3: #1a2336;
+      --bd: #1e2a40;
+      --bdg: #2c3a56;
+      --tx: #eef2f9;
+      --txm: #9aa6bd;
+      --txl: #66738d;
+      --sh: 0 1px 2px rgba(0, 0, 0, .45);
+      --shm: 0 8px 22px -8px rgba(0, 0, 0, .65)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--tx);
+      -webkit-font-smoothing: antialiased;
+      transition: background .3s, color .3s;
+      overflow-x: hidden
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .14);
+      border-color: rgba(99, 102, 241, .25)
+    }
+
+    .page-title {
+      font-size: clamp(1.45rem, 3.8vw, 2rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      color: var(--tx)
+    }
+
+    .card {
+      background: var(--s);
+      border: 1px solid var(--bd);
+      border-radius: 20px;
+      box-shadow: var(--sh);
+      overflow: hidden;
+      margin-bottom: 16px
+    }
+
+    .card-head {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--bd);
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      flex-shrink: 0
+    }
+
+    .card-title {
+      font-size: .9rem;
+      font-weight: 800;
+      color: var(--tx)
+    }
+
+    .card-body {
+      padding: 20px
+    }
+
+    .nb-input {
+      background: var(--s2);
+      border: 1px solid var(--bd);
+      color: var(--tx);
+      border-radius: 11px;
+      padding: 10px 13px;
+      font-size: .875rem;
+      width: 100%;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      font-family: inherit
+    }
+
+    .nb-input::placeholder {
+      color: var(--txl)
+    }
+
+    .nb-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .12)
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 9px 14px;
+      border-radius: 11px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all .22s;
+      white-space: nowrap;
+      font-family: inherit
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 6px 16px -6px rgba(79, 70, 229, .7)
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px)
+    }
+
+    .btn-ghost {
+      background: var(--s);
+      border-color: var(--bd);
+      color: var(--txm);
+      box-shadow: var(--sh)
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      color: var(--tx);
+      border-color: var(--bdg)
+    }
+
+    .star-rating {
+      display: flex;
+      gap: 4px;
+      align-items: center
+    }
+
+    .star {
+      font-size: 1.4rem;
+      cursor: pointer;
+      color: var(--bd);
+      transition: color .15s, transform .15s
+    }
+
+    .star.active,
+    .star:hover,
+    .star.hovered {
+      color: #f59e0b;
+      transform: scale(1.12)
+    }
+
+    .review-card {
+      background: var(--s2);
+      border: 1px solid var(--bd);
+      border-radius: 16px;
+      padding: 14px 16px;
+      animation: fadeUp .3s both
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(6px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .review-stars {
+      display: flex;
+      gap: 2px;
+      align-items: center
+    }
+
+    .review-star {
+      font-size: .85rem;
+      color: #f59e0b
+    }
+
+    .review-star.empty {
+      color: var(--bd)
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+      border-radius: 8px
+    }
+
+    html.dark .skeleton {
+      background: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+      background-size: 400% 100%
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0 50%
+      }
+    }
+
+    .spin {
+      animation: spin .9s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    @media(prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+  <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-8 w-full">
+
+    <div class="mb-7">
+      <span class="eyebrow"><i class="fa-solid fa-star"></i> Account</span>
+      <h1 class="page-title mt-3">My Reviews</h1>
+      <p style="font-size:.84rem;color:var(--txm);margin-top:7px">Review sellers after you receive your orders. Honest
+        feedback helps the community.</p>
+    </div>
+
+    <!-- Write a review -->
+    <div class="card" id="review-form-card" style="display:none">
+      <div class="card-head">
+        <div class="card-icon" style="background:rgba(245,158,11,.1)"><i class="fa-solid fa-star"
+            style="color:#f59e0b"></i></div>
+        <div>
+          <div class="card-title">Write a Review</div>
+          <div id="review-auction-title" style="font-size:.76rem;color:var(--txm)">—</div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div id="rev-err"
+          style="display:none;padding:10px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:10px;font-size:.8rem;color:#ef4444;margin-bottom:14px">
+        </div>
+        <div style="margin-bottom:16px">
+          <div
+            style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txl);margin-bottom:8px">
+            Rating *</div>
+          <div class="star-rating" id="star-rating" role="radiogroup" aria-label="Rating">
+            <span class="star" data-value="1" role="radio" aria-label="1 star" tabindex="0">★</span>
+            <span class="star" data-value="2" role="radio" aria-label="2 stars" tabindex="0">★</span>
+            <span class="star" data-value="3" role="radio" aria-label="3 stars" tabindex="0">★</span>
+            <span class="star" data-value="4" role="radio" aria-label="4 stars" tabindex="0">★</span>
+            <span class="star" data-value="5" role="radio" aria-label="5 stars" tabindex="0">★</span>
+          </div>
+          <input type="hidden" id="review-rating" value="0">
+        </div>
+        <div style="margin-bottom:14px">
+          <label for="review-comment"
+            style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--txl);display:block;margin-bottom:5px">Review
+            *</label>
+          <textarea id="review-comment" class="nb-input" rows="4" placeholder="Share your experience with this seller…"
+            style="resize:vertical;min-height:90px"></textarea>
+        </div>
+        <input type="hidden" id="review-order-id">
+        <input type="hidden" id="review-seller-id">
+        <input type="hidden" id="review-auction-id">
+        <div style="display:flex;gap:10px">
+          <button id="submit-review-btn" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Submit
+            Review</button>
+          <button id="cancel-review-btn" class="btn btn-ghost">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending reviews -->
+    <div class="card" id="pending-card">
+      <div class="card-head">
+        <div class="card-icon" style="background:rgba(245,158,11,.1)"><i class="fa-solid fa-clock-rotate-left"
+            style="color:#f59e0b"></i></div>
+        <span class="card-title">Awaiting Review</span>
+      </div>
+      <div class="card-body" id="pending-area">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="skeleton" style="height:72px;border-radius:16px"></div>
+          <div class="skeleton" style="height:72px;border-radius:16px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Past reviews -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon" style="background:rgba(16,185,129,.1)"><i class="fa-solid fa-star"
+            style="color:#10b981"></i></div>
+        <span class="card-title">Your Reviews</span>
+      </div>
+      <div class="card-body" id="reviews-area">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="skeleton" style="height:72px;border-radius:16px"></div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      let selectedRating = 0;
+      function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+      function fmtDate(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-PK', { day: 'numeric', month: 'short', year: 'numeric' }); }
+
+      // Star rating
+      const stars = document.querySelectorAll('.star');
+      stars.forEach(star => {
+        star.addEventListener('mouseenter', () => {
+          const v = parseInt(star.dataset.value);
+          stars.forEach(s => s.classList.toggle('hovered', parseInt(s.dataset.value) <= v));
+        });
+        star.addEventListener('mouseleave', () => stars.forEach(s => s.classList.remove('hovered')));
+        star.addEventListener('click', () => {
+          selectedRating = parseInt(star.dataset.value);
+          document.getElementById('review-rating').value = selectedRating;
+          stars.forEach(s => s.classList.toggle('active', parseInt(s.dataset.value) <= selectedRating));
+        });
+        star.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { star.click(); } });
+      });
+
+      function openReviewForm(order) {
+        document.getElementById('review-form-card').style.display = 'block';
+        document.getElementById('review-auction-title').textContent = order.auction_title || 'Order #' + order.order_id;
+        document.getElementById('review-order-id').value = order.order_id;
+        document.getElementById('review-seller-id').value = order.seller_id;
+        document.getElementById('review-auction-id').value = order.auction_id;
+        selectedRating = 0;
+        document.getElementById('review-rating').value = 0;
+        stars.forEach(s => s.classList.remove('active'));
+        document.getElementById('review-comment').value = '';
+        document.getElementById('rev-err').style.display = 'none';
+        document.getElementById('review-form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      async function loadOrders() {
+        const area = document.getElementById('pending-area');
+        try {
+          const res = await ApiClient.get('/orders/buyer');
+          const orders = Array.isArray(res?.data) ? res.data : [];
+          // Show delivered/completed orders that don't have a review yet
+          const pending = orders.filter(o => {
+            const isDelivered = (o.delivery_status === 'delivered' || o.order_status === 'delivered' || o.order_status === 'completed');
+            return isDelivered && !o.has_review;
+          });
+          if (!pending.length) {
+            area.innerHTML = `<div style="text-align:center;padding:24px;color:var(--txm);font-size:.82rem">No orders awaiting review.</div>`;
+            return;
+          }
+          area.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px">${pending.map(o => `
+          <div class="review-card" style="display:flex;align-items:center;gap:14px">
+            <div style="flex:1;min-width:0">
+              <div style="font-size:.85rem;font-weight:700;color:var(--tx);display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${esc(o.auction_title || 'Order #' + o.order_id)}</div>
+              <div style="font-size:.74rem;color:var(--txm);margin-top:3px">Seller: ${esc(o.seller_name || '—')} · Delivered ${esc(fmtDate(o.delivered_at))}</div>
+            </div>
+            <button class="btn btn-primary" style="font-size:.74rem;flex-shrink:0" data-order='${esc(JSON.stringify({ order_id: o.order_id, auction_id: o.auction_id, seller_id: o.seller_id, auction_title: o.auction_title }))}'>
+              <i class="fa-solid fa-star"></i> Review
+            </button>
+          </div>`).join('')}</div>`;
+          area.querySelectorAll('[data-order]').forEach(btn => {
+            btn.addEventListener('click', () => openReviewForm(JSON.parse(btn.dataset.order)));
+          });
+        } catch (e) {
+          area.innerHTML = '<p style="font-size:.82rem;color:var(--txm)">Could not load pending reviews.</p>';
+        }
+      }
+
+      async function loadReviews() {
+        const area = document.getElementById('reviews-area');
+        area.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px"><div class="skeleton" style="height:72px;border-radius:16px"></div></div>`;
+        try {
+          // Reviews written by current user
+          const res = await ApiClient.get('/reviews/my').catch(() => ({ data: [] }));
+          const reviews = Array.isArray(res?.data) ? res.data : [];
+          if (!reviews.length) {
+            area.innerHTML = `<div style="text-align:center;padding:24px;color:var(--txm);font-size:.82rem">You haven't written any reviews yet.</div>`;
+            return;
+          }
+          area.innerHTML = `<div style="display:flex;flex-direction:column;gap:10px">${reviews.map(r => `
+          <div class="review-card">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+              <div>
+                <div style="font-size:.85rem;font-weight:700;color:var(--tx)">${esc(r.auction_title || '—')}</div>
+                <div style="font-size:.74rem;color:var(--txm);margin-top:2px">Seller: ${esc(r.seller_name || '—')}</div>
+              </div>
+              <div class="review-stars">${Array(5).fill(0).map((_, i) => `<i class="fa-solid fa-star review-star${i < r.rating ? '' : ' empty'}"></i>`).join('')}</div>
+            </div>
+            ${r.comment ? `<p style="font-size:.8rem;color:var(--txm);margin:8px 0 0;line-height:1.5">${esc(r.comment)}</p>` : ''}
+            <div style="font-size:.68rem;color:var(--txl);margin-top:6px">${esc(fmtDate(r.created_at))}</div>
+          </div>`).join('')}</div>`;
+        } catch (e) {
+          area.innerHTML = '<p style="font-size:.82rem;color:var(--txm)">Could not load reviews.</p>';
+        }
+      }
+
+      document.getElementById('cancel-review-btn')?.addEventListener('click', () => {
+        document.getElementById('review-form-card').style.display = 'none';
+      });
+
+      document.getElementById('submit-review-btn')?.addEventListener('click', async () => {
+        const errEl = document.getElementById('rev-err');
+        errEl.style.display = 'none';
+        const rating = parseInt(document.getElementById('review-rating').value);
+        const comment = document.getElementById('review-comment').value.trim();
+        const orderId = document.getElementById('review-order-id').value;
+        const sellerId = document.getElementById('review-seller-id').value;
+        const auctionId = document.getElementById('review-auction-id').value;
+        if (!rating) { errEl.textContent = 'Please select a star rating.'; errEl.style.display = 'block'; return; }
+        if (!comment) { errEl.textContent = 'Please write a review comment.'; errEl.style.display = 'block'; return; }
+        const btn = document.getElementById('submit-review-btn');
+        btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Submitting…';
+        try {
+          await ApiClient.post('/reviews', { order_id: parseInt(orderId), seller_id: parseInt(sellerId), auction_id: parseInt(auctionId), rating, comment });
+          UI.showToast('Review submitted! Thank you.', 'success');
+          document.getElementById('review-form-card').style.display = 'none';
+          loadOrders(); loadReviews();
+        } catch (err) {
+          errEl.textContent = err.message || 'Failed to submit review.'; errEl.style.display = 'block';
+        } finally {
+          btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Review';
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        if (!ApiClient.getAccessToken()) { window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.href); return; }
+        await Promise.all([loadOrders(), loadReviews()]);
+
+        const params = new URLSearchParams(window.location.search);
+        const targetOrderId = params.get('order') || params.get('order_id');
+        if (targetOrderId) {
+          try {
+            const res = await ApiClient.get('/orders/' + targetOrderId);
+            const o = res?.data || res;
+            if (o && (o.order_id || o.id)) {
+              openReviewForm({
+                order_id: o.order_id || o.id,
+                auction_id: o.auction_id,
+                seller_id: o.seller_id,
+                auction_title: o.auction_title || o.title || 'Order #' + targetOrderId
+              });
+            }
+          } catch (err) {
+            console.warn('Could not auto-open review for order', targetOrderId, err);
+          }
+        }
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

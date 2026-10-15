@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reviews — Seller Studio | NexusBids Pakistan</title>
+  <meta name="description" content="View and respond to buyer reviews for your NexusBids auctions.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --r-bg: #f4f6fb;
+      --r-surface: #ffffff;
+      --r-surface-2: #f7f9fc;
+      --r-surface-3: #eceff6;
+      --r-border: #e3e8f0;
+      --r-text: #0f172a;
+      --r-text-muted: #58627a;
+      --r-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12);
+      --r-row-hover: #f4f7fd;
+    }
+
+    html.dark {
+      --r-bg: #05070f;
+      --r-surface: #0d1220;
+      --r-surface-2: #121a2b;
+      --r-surface-3: #1a2336;
+      --r-border: #1e2a40;
+      --r-text: #eef2f9;
+      --r-text-muted: #9aa6bd;
+      --r-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --r-row-hover: #141d31;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--r-bg);
+      color: var(--r-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--r-surface);
+      border: 1px solid var(--r-border);
+      border-radius: 16px;
+      box-shadow: var(--r-shadow-md);
+    }
+
+    .review-card {
+      background: var(--r-surface);
+      border: 1px solid var(--r-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--r-shadow-md);
+      transition: border-color .2s;
+    }
+
+    .review-card:hover {
+      border-color: rgba(99, 102, 241, .35);
+    }
+
+    .stars {
+      color: #fbbf24;
+      letter-spacing: 1px;
+      font-size: .95rem;
+    }
+
+    .stars .empty {
+      color: var(--r-surface-3);
+    }
+
+    .rating-bar-wrap {
+      flex: 1;
+      max-width: 180px;
+      height: 7px;
+      background: var(--r-surface-3);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .rating-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #f59e0b, #fbbf24);
+      transition: width .6s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .btn-reply {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-weight: 700;
+      font-size: .78rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .2s;
+    }
+
+    .btn-reply:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: var(--r-surface-2);
+      color: var(--r-text-muted);
+      font-weight: 700;
+      font-size: .78rem;
+      border: 1px solid var(--r-border);
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-box {
+      background: var(--r-surface);
+      border: 1px solid var(--r-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 520px;
+      padding: 32px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .8);
+    }
+
+    .form-label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--r-text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--r-surface-2);
+      border: 1.5px solid var(--r-border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: .88rem;
+      color: var(--r-text);
+      font-family: inherit;
+      resize: vertical;
+      transition: border-color .2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .12);
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-select {
+      background: var(--r-surface);
+      border: 1px solid var(--r-border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-size: .82rem;
+      color: var(--r-text);
+      font-family: inherit;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 180px;
+      max-width: 280px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--r-text-muted);
+      font-size: .8rem;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--r-surface);
+      border: 1px solid var(--r-border);
+      border-radius: 10px;
+      padding: 8px 14px 8px 38px;
+      font-size: .82rem;
+      color: var(--r-text);
+      font-family: inherit;
+    }
+
+    .seller-reply {
+      background: rgba(99, 102, 241, .08);
+      border: 1px solid rgba(99, 102, 241, .2);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-top: 12px;
+      font-size: .82rem;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--r-text-muted);
+    }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(110%);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, .9);
+      color: #fff;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, .9);
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--r-surface);border-color:var(--r-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <a href="/index.html" class="text-sm font-semibold" style="color:var(--r-text-muted);"><i
+          class="fa-solid fa-store mr-1"></i>View Store</a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="seller-subnav"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl font-extrabold mb-1">Reviews &amp; Ratings</h1>
+        <p style="color:var(--r-text-muted);font-size:.85rem;">Buyer feedback on your auctions and transactions</p>
+      </div>
+    </div>
+
+    <!-- Rating Overview -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+      <div class="card p-6 col-span-1 flex flex-col items-center justify-center text-center" style="min-height:160px;">
+        <div class="text-5xl font-black mb-2" id="avg-rating"
+          style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+          —</div>
+        <div id="avg-stars" class="stars mb-2" style="font-size:1.2rem;">☆☆☆☆☆</div>
+        <div class="text-sm font-semibold" style="color:var(--r-text-muted);" id="total-reviews-label">— reviews</div>
+      </div>
+      <div class="card p-6 col-span-1 sm:col-span-2">
+        <div class="font-bold text-sm mb-4">Rating Breakdown</div>
+        <div id="rating-bars" class="space-y-2.5">
+          <!-- Dynamically rendered -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="card p-4 mb-6">
+      <div class="filter-bar">
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-input" class="search-input" placeholder="Search buyer or auction…">
+        </div>
+        <select id="filter-rating" class="filter-select">
+          <option value="">All Ratings</option>
+          <option value="5">5 Stars</option>
+          <option value="4">4 Stars</option>
+          <option value="3">3 Stars</option>
+          <option value="2">2 Stars</option>
+          <option value="1">1 Star</option>
+        </select>
+        <select id="filter-replied" class="filter-select">
+          <option value="">All Reviews</option>
+          <option value="unreplied">Not Replied</option>
+          <option value="replied">Replied</option>
+        </select>
+        <span id="review-count-label" class="text-xs font-semibold ml-auto"
+          style="color:var(--r-text-muted);">Loading…</span>
+      </div>
+    </div>
+
+    <!-- Reviews List -->
+    <div id="reviews-list">
+      <div class="text-center py-16" style="color:var(--r-text-muted);"><i
+          class="fa-solid fa-spinner fa-spin text-2xl mb-3"></i>
+        <p class="mt-2">Loading reviews…</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reply Modal -->
+  <div id="reply-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="text-lg font-extrabold">Reply to Review</h2>
+        <button id="btn-close-modal"
+          style="background:var(--r-surface-3);border:none;border-radius:9px;width:32px;height:32px;cursor:pointer;color:var(--r-text-muted);display:flex;align-items:center;justify-content:center;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="modal-review-preview" class="mb-5 p-4 rounded-12px"
+        style="background:var(--r-surface-2);border:1px solid var(--r-border);border-radius:12px;"></div>
+      <form id="reply-form">
+        <div class="mb-4">
+          <label class="form-label">Your Reply</label>
+          <textarea id="reply-text" class="form-control" rows="4"
+            placeholder="Thank the buyer for their feedback, or professionally address any concerns…"
+            required></textarea>
+        </div>
+        <div id="reply-error" class="text-sm text-red-400 mb-3" style="display:none;"></div>
+        <div class="flex gap-3">
+          <button type="button" id="btn-cancel-modal" class="btn-secondary flex-1">Cancel</button>
+          <button type="submit" id="btn-submit-reply" class="btn-reply flex-1">
+            <i class="fa-solid fa-paper-plane"></i> Post Reply
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/seller-nav.js"></script>
+  <script src="/assets/js/api-client.js"></script>
+  <script>
+    const API = window.ApiClient || {
+      get: (u) => fetch('/api' + u, { credentials: 'include' }).then(r => r.json()),
+      post: (u, d) => fetch('/api' + u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }).then(r => r.json())
+    };
+    const fmtDate = ts => ts ? new Date(ts).toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    let allReviews = [];
+    let activeReviewId = null;
+
+    function showToast(msg, type = 'success') {
+      const t = document.createElement('div');
+      t.className = `toast toast-${type}`;
+      t.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'triangle-exclamation'}"></i>${msg}`;
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 4500);
+    }
+
+    function starsHtml(rating) {
+      const n = Math.round(parseFloat(rating) || 0);
+      return Array.from({ length: 5 }, (_, i) => `<span class="${i < n ? '' : 'empty'}">★</span>`).join('');
+    }
+
+    async function loadReviews() {
+      try {
+        const r = await API.get('/seller/reviews');
+        const d = r.data || r;
+        allReviews = Array.isArray(d.reviews) ? d.reviews : (Array.isArray(d) ? d : []);
+        const avg = parseFloat(d.average_rating || 0);
+        const total = parseInt(d.total_reviews || allReviews.length, 10);
+        document.getElementById('avg-rating').textContent = avg.toFixed(1);
+        document.getElementById('avg-stars').innerHTML = starsHtml(avg);
+        document.getElementById('total-reviews-label').textContent = `${total} review${total !== 1 ? 's' : ''}`;
+        renderRatingBars();
+        renderList();
+      } catch (e) {
+        document.getElementById('reviews-list').innerHTML = `<div class="text-center py-12" style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation text-2xl mb-2"></i><p class="mt-2">Failed to load reviews</p></div>`;
+      }
+    }
+
+    function renderRatingBars() {
+      const counts = [5, 4, 3, 2, 1].map(star => ({
+        star,
+        count: allReviews.filter(r => Math.round(parseFloat(r.rating)) === star).length
+      }));
+      const max = Math.max(...counts.map(c => c.count), 1);
+      document.getElementById('rating-bars').innerHTML = counts.map(c => `
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-bold w-6 text-right" style="color:var(--r-text-muted);">${c.star}</span>
+          <i class="fa-solid fa-star text-xs" style="color:#fbbf24;"></i>
+          <div class="rating-bar-wrap"><div class="rating-bar-fill" style="width:${Math.round((c.count / max) * 100)}%;"></div></div>
+          <span class="text-xs font-bold w-6" style="color:var(--r-text-muted);">${c.count}</span>
+        </div>`).join('');
+    }
+
+    function filteredReviews() {
+      const q = (document.getElementById('search-input').value || '').toLowerCase();
+      const rating = document.getElementById('filter-rating').value;
+      const replied = document.getElementById('filter-replied').value;
+      return allReviews.filter(r => {
+        const match = !q || (r.buyer_name || '').toLowerCase().includes(q) || (r.auction_title || '').toLowerCase().includes(q) || (r.comment || '').toLowerCase().includes(q);
+        const ratingMatch = !rating || Math.round(parseFloat(r.rating)) === parseInt(rating, 10);
+        const repliedMatch = !replied || (replied === 'replied' ? r.seller_reply : !r.seller_reply);
+        return match && ratingMatch && repliedMatch;
+      });
+    }
+
+    function renderList() {
+      const reviews = filteredReviews();
+      document.getElementById('review-count-label').textContent = `${reviews.length} review${reviews.length !== 1 ? 's' : ''}`;
+      const container = document.getElementById('reviews-list');
+      if (!reviews.length) {
+        container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-star text-4xl mb-4 opacity-20"></i><p class="text-lg font-bold mb-2">No reviews found</p><p class="text-sm">Complete sales to receive reviews from buyers.</p></div>`;
+        return;
+      }
+      container.innerHTML = reviews.map(r => {
+        const initials = (r.buyer_name || 'U').charAt(0).toUpperCase();
+        const rating = Math.round(parseFloat(r.rating) || 0);
+        return `
+          <div class="review-card mb-4">
+            <div class="flex items-start gap-4 mb-3">
+              <div class="avatar">${initials}</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                  <div>
+                                        <span class="font-bold text-sm">${esc(r.buyer_name || 'Anonymous')}</span>
+                    <span class="text-xs ml-2" style="color:var(--r-text-muted);">${fmtDate(r.created_at)}</span>
+                  </div>
+                  <div class="stars">${starsHtml(rating)}</div>
+                </div>
+                <div class="text-xs mt-1" style="color:var(--r-text-muted);">
+                  <i class="fa-solid fa-gavel mr-1"></i>${esc(r.auction_title || '—')} &middot;
+                  Order <strong style="color:var(--r-text);">${esc(r.order_number || ('#' + r.order_id))}</strong>
+                </div>
+              </div>
+            </div>
+            ${r.comment ? `<p class="text-sm leading-relaxed mb-3" style="color:var(--r-text);">${esc(r.comment)}</p>` : ''}
+            ${r.seller_reply ? `
+              <div class="seller-reply">
+                <div class="text-xs font-bold mb-1.5" style="color:#818cf8;"><i class="fa-solid fa-store mr-1.5"></i>Your Reply · ${fmtDate(r.replied_at)}</div>
+                <p class="text-sm" style="color:var(--r-text-muted);">${esc(r.seller_reply)}</p>
+              </div>` : `
+              <button class="btn-reply mt-2" onclick="openReply(${r.review_id})">
+                <i class="fa-solid fa-reply"></i> Reply to Review
+              </button>`}
+          </div>`;
+      }).join('');
+    }
+
+    function openReply(id) {
+      const review = allReviews.find(r => r.review_id === id);
+      if (!review) return;
+      activeReviewId = id;
+      document.getElementById('modal-review-preview').innerHTML = `
+        <div class="flex items-center gap-2 mb-2">
+          <div class="stars" style="font-size:.9rem;">${starsHtml(review.rating)}</div>
+          <span class="text-xs font-semibold" style="color:var(--r-text-muted);">by ${esc(review.buyer_name || 'Buyer')}</span>
+        </div>
+        <p class="text-sm" style="color:var(--r-text-muted);">${esc(review.comment || 'No comment.')}</p>`;
+      document.getElementById('reply-text').value = '';
+      document.getElementById('reply-error').style.display = 'none';
+      document.getElementById('reply-modal').style.display = 'flex';
+    }
+
+    document.getElementById('btn-close-modal').addEventListener('click', () => { document.getElementById('reply-modal').style.display = 'none'; });
+    document.getElementById('btn-cancel-modal').addEventListener('click', () => { document.getElementById('reply-modal').style.display = 'none'; });
+    document.getElementById('reply-modal').addEventListener('click', e => { if (e.target === e.currentTarget) document.getElementById('reply-modal').style.display = 'none'; });
+
+    document.getElementById('reply-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('reply-error');
+      errEl.style.display = 'none';
+      const replyText = document.getElementById('reply-text').value.trim();
+      if (!replyText) {
+        errEl.textContent = 'Reply cannot be empty.';
+        errEl.style.display = 'block';
+        return;
+      }
+      const btn = document.getElementById('btn-submit-reply');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Posting…';
+      try {
+        const r = await API.post(`/seller/reviews/${activeReviewId}/reply`, { reply: replyText });
+        if (r.success || r.data) {
+          document.getElementById('reply-modal').style.display = 'none';
+          showToast('Reply posted successfully!', 'success');
+          await loadReviews();
+        } else {
+          errEl.textContent = r.message || r.error || 'Failed to post reply.';
+          errEl.style.display = 'block';
+        }
+      } catch (err) {
+        errEl.textContent = 'Network error. Please try again.';
+        errEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Post Reply';
+      }
+    });
+
+    document.getElementById('search-input').addEventListener('input', renderList);
+    document.getElementById('filter-rating').addEventListener('change', renderList);
+    document.getElementById('filter-replied').addEventListener('change', renderList);
+
+    const token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+    const user = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
+    if (!token || !['seller', 'admin'].includes(user.role)) {
+      window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/reviews.html'));
+    } else {
+      loadReviews();
+    }
+  </script>
+</body>
+
+</html>

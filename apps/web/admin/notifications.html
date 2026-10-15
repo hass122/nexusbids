@@ -1,0 +1,773 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements — NexusBids Admin</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --a-bg: #f6f6f4;
+      --a-surface: #fff;
+      --a-surface-2: #fbfbf9;
+      --a-surface-3: #f1f1ee;
+      --a-border: #e8e8e3;
+      --a-border-strong: #d6d6cf;
+      --a-text: #1a1a1a;
+      --a-text-muted: #565650;
+      --a-text-light: #6e6e68
+    }
+
+    html.dark {
+      --a-bg: #111110;
+      --a-surface: #191917;
+      --a-surface-2: #1f1f1d;
+      --a-surface-3: #262623;
+      --a-border: #2a2a27;
+      --a-border-strong: #3a3a35;
+      --a-text: #f2f2ef;
+      --a-text-muted: #b8b8b0;
+      --a-text-light: #8f8f88
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      background: var(--a-bg);
+      color: var(--a-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .page-head {
+      margin-bottom: 28px
+    }
+
+    .page-head h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -.02em;
+      line-height: 1.15
+    }
+
+    .page-head .sub {
+      font-size: .82rem;
+      color: var(--a-text-muted);
+      margin-top: 6px
+    }
+
+    .page-head .meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 14px;
+      font-size: .72rem;
+      color: var(--a-text-muted);
+      flex-wrap: wrap
+    }
+
+    .page-head .meta .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: liveblip 2.4s ease-in-out infinite
+    }
+
+    @keyframes liveblip {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .35
+      }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 9px;
+      font-size: .76rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .15s;
+      text-decoration: none;
+      font-family: inherit;
+      line-height: 1
+    }
+
+    .btn-solid {
+      background: #4f46e5;
+      color: #fff
+    }
+
+    .btn-solid:hover {
+      background: #4338ca
+    }
+
+    html.dark .btn-solid {
+      background: #6366f1
+    }
+
+    html.dark .btn-solid:hover {
+      background: #818cf8;
+      color: #1a1a1a
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border-color: var(--a-border);
+      color: var(--a-text-muted)
+    }
+
+    .btn-ghost:hover {
+      color: var(--a-text);
+      border-color: var(--a-border-strong);
+      background: var(--a-surface-2)
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed
+    }
+
+    .composer {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 14px;
+      overflow: hidden
+    }
+
+    .composer-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--a-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--a-surface-2)
+    }
+
+    .composer-head .title {
+      font-size: .8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0
+    }
+
+    .composer-head .title i {
+      color: #4f46e5;
+      font-size: .8rem
+    }
+
+    html.dark .composer-head .title i {
+      color: #818cf8
+    }
+
+    .composer-body {
+      padding: 18px
+    }
+
+    .field {
+      margin-bottom: 16px
+    }
+
+    .field:last-child {
+      margin-bottom: 0
+    }
+
+    .field label {
+      display: block;
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--a-text-muted);
+      margin-bottom: 6px
+    }
+
+    .input,
+    .textarea {
+      width: 100%;
+      padding: 9px 12px;
+      font-size: .82rem;
+      font-family: inherit;
+      background: var(--a-surface-2);
+      border: 1px solid var(--a-border);
+      border-radius: 9px;
+      color: var(--a-text);
+      outline: none;
+      line-height: 1.5
+    }
+
+    .input:focus,
+    .textarea:focus {
+      border-color: #6366f1;
+      background: var(--a-surface)
+    }
+
+    .input::placeholder,
+    .textarea::placeholder {
+      color: var(--a-text-light)
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 100px
+    }
+
+    .input-hint {
+      font-size: .66rem;
+      color: var(--a-text-muted);
+      margin-top: 5px
+    }
+
+    .char-count {
+      font-size: .66rem;
+      color: var(--a-text-muted);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums
+    }
+
+    .char-count.warn {
+      color: #d97706
+    }
+
+    .char-count.over {
+      color: #e11d48
+    }
+
+    .audience-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px
+    }
+
+    .audience-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 11px;
+      border-radius: 8px;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--a-text-muted);
+      background: var(--a-surface-2);
+      border: 1px solid var(--a-border);
+      cursor: pointer;
+      transition: all .15s;
+      font-family: inherit
+    }
+
+    .audience-pill:hover {
+      color: var(--a-text);
+      border-color: var(--a-border-strong)
+    }
+
+    .audience-pill.on {
+      color: #fff;
+      background: #4f46e5;
+      border-color: #4f46e5
+    }
+
+    html.dark .audience-pill.on {
+      background: #6366f1
+    }
+
+    .audience-pill i {
+      font-size: .68rem
+    }
+
+    .composer-foot {
+      padding: 14px 18px;
+      border-top: 1px solid var(--a-border);
+      background: var(--a-surface-2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap
+    }
+
+    .composer-foot .info {
+      font-size: .7rem;
+      color: var(--a-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .feed-wrap {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 620px
+    }
+
+    .feed-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--a-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--a-surface-2);
+      flex-shrink: 0
+    }
+
+    .feed-head .title {
+      font-size: .8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0
+    }
+
+    .feed-head .title i {
+      color: #d97706;
+      font-size: .8rem
+    }
+
+    html.dark .feed-head .title i {
+      color: #fbbf24
+    }
+
+    .feed-head .count {
+      font-size: .68rem;
+      color: var(--a-text-muted);
+      font-weight: 600
+    }
+
+    .feed-list {
+      overflow-y: auto;
+      flex: 1;
+      padding: 6px
+    }
+
+    .dispatch {
+      padding: 14px 16px;
+      border-radius: 10px;
+      transition: background-color .15s
+    }
+
+    .dispatch:hover {
+      background: var(--a-surface-2)
+    }
+
+    .dispatch+.dispatch {
+      border-top: 1px solid var(--a-border)
+    }
+
+    .dispatch-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px
+    }
+
+    .dispatch-title {
+      font-size: .82rem;
+      font-weight: 700;
+      line-height: 1.35
+    }
+
+    .dispatch-title.unread::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #6366f1;
+      margin-right: 7px;
+      vertical-align: 1px
+    }
+
+    .dispatch-body {
+      font-size: .78rem;
+      color: var(--a-text-muted);
+      line-height: 1.55;
+      margin-bottom: 10px;
+      word-wrap: break-word
+    }
+
+    .dispatch-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      font-size: .68rem;
+      color: var(--a-text-light)
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: .62rem;
+      border: 1px solid
+    }
+
+    .tag.broadcast {
+      color: #4338ca;
+      background: #eef0fe;
+      border-color: #dbe0ff
+    }
+
+    .tag.direct {
+      color: #047857;
+      background: #ecfdf5;
+      border-color: #a7f3d0
+    }
+
+    .tag.read {
+      color: var(--a-text-muted);
+      background: var(--a-surface-3);
+      border-color: var(--a-border)
+    }
+
+    .tag.unread {
+      color: #b45309;
+      background: #fffbeb;
+      border-color: #fde68a
+    }
+
+    html.dark .tag.broadcast {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .12);
+      border-color: rgba(99, 102, 241, .25)
+    }
+
+    html.dark .tag.direct {
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, .12);
+      border-color: rgba(16, 185, 129, .25)
+    }
+
+    html.dark .tag.unread {
+      color: #fcd34d;
+      background: rgba(245, 158, 11, .12);
+      border-color: rgba(245, 158, 11, .25)
+    }
+
+    .empty {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--a-text-light);
+      font-size: .82rem
+    }
+
+    .empty i {
+      display: block;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      opacity: .55
+    }
+
+    .empty strong {
+      display: block;
+      color: var(--a-text);
+      font-weight: 700;
+      font-size: .85rem;
+      margin-bottom: 3px
+    }
+
+    .skel {
+      display: block;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--a-surface-3) 20%, var(--a-surface-2) 45%, var(--a-surface-3) 70%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s ease-in-out infinite
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: -100% 50%
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="page-head">
+      <h1>Announcements</h1>
+      <p class="sub">Platform-wide broadcasts and urgent alerts — from here.</p>
+      <div class="meta"><span class="dot"></span><span id="feed-status">connected</span><span>·</span><span>Last
+          dispatch: <strong id="last-dispatch" style="color:var(--a-text-muted)">—</strong></span></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-3.5">
+      <div class="lg:col-span-3">
+        <div class="composer">
+          <div class="composer-head">
+            <h2 class="title"><i class="fa-solid fa-bullhorn"></i><span>New broadcast</span></h2><span
+              class="char-count" id="composeStatus" style="color:var(--a-text-muted)">draft</span>
+          </div>
+          <form id="broadcastForm" onsubmit="handleSendBroadcast(event)">
+            <div class="composer-body">
+              <fieldset class="field" style="border:none;margin:0;padding:0">
+                <legend
+                  style="display:block;font-size:.7rem;font-weight:700;color:var(--a-text-muted);margin-bottom:6px">
+                  Target audience</legend>
+                <div class="audience-pills" id="audiencePills" role="group">
+                  <button type="button" class="audience-pill on" data-role="all"><i class="fa-solid fa-globe"></i>
+                    Everyone</button>
+                  <button type="button" class="audience-pill" data-role="seller"><i class="fa-solid fa-store"></i>
+                    Sellers</button>
+                  <button type="button" class="audience-pill" data-role="buyer"><i class="fa-solid fa-user"></i>
+                    Buyers</button>
+                  <button type="button" class="audience-pill" data-role="admin"><i class="fa-solid fa-user-shield"></i>
+                    Admin only</button>
+                </div>
+                <input type="hidden" id="targetRole" value="all">
+              </fieldset>
+              <div class="field">
+                <label for="notifTitle">Headline</label>
+                <input type="text" id="notifTitle" class="input" maxlength="80" placeholder="e.g. Scheduled maintenance"
+                  required>
+                <div class="input-hint">80 characters max.</div>
+              </div>
+              <div class="field">
+                <label for="notifMessage">Message</label>
+                <textarea id="notifMessage" class="textarea" maxlength="600" rows="5" placeholder="Full details…"
+                  required></textarea>
+                <div class="flex justify-between items-center mt-1.5">
+                  <span class="input-hint" style="margin-top:0">Emoji and line breaks allowed.</span>
+                  <span class="char-count" id="msgCount">0 / 600</span>
+                </div>
+              </div>
+            </div>
+            <div class="composer-foot">
+              <div class="info"><i class="fa-solid fa-circle-info"></i><span id="audienceInfo">Everyone gets email +
+                  in-app notification</span></div>
+              <div class="flex items-center gap-2">
+                <button type="button" class="btn btn-ghost" onclick="resetComposer()">Clear</button>
+                <button type="submit" class="btn btn-solid" id="sendBtn"><i class="fa-solid fa-paper-plane"
+                    style="font-size:.7rem"></i><span>Send broadcast</span></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2">
+        <div class="feed-wrap">
+          <div class="feed-head">
+            <h2 class="title"><i class="fa-solid fa-bell"></i><span>Recent dispatches</span></h2>
+            <div class="flex items-center gap-2">
+              <span class="count" id="feedCount">—</span>
+              <button class="btn btn-ghost" style="padding:5px 9px;font-size:.68rem" onclick="markAllRead()"
+                title="Mark all as read"><i class="fa-solid fa-check-double" style="font-size:.65rem"></i></button>
+            </div>
+          </div>
+          <div class="feed-list" id="notificationsFeed"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script>
+    const $ = id => document.getElementById(id);
+
+    const ROLE_LABEL = { all: 'Everyone', seller: 'Sellers only', buyer: 'Buyers only', admin: 'Admin staff' };
+    const ROLE_INFO = { all: 'Everyone gets email + in-app notification', seller: 'Only verified sellers', buyer: 'Only buyers', admin: 'Only admin staff' };
+
+    document.querySelectorAll('.audience-pill').forEach(p => {
+      p.addEventListener('click', () => {
+        document.querySelectorAll('.audience-pill').forEach(x => x.classList.remove('on'));
+        p.classList.add('on');
+        const role = p.dataset.role;
+        $('targetRole').value = role;
+        $('audienceInfo').textContent = ROLE_INFO[role];
+      });
+    });
+
+    $('notifMessage').addEventListener('input', (e) => {
+      const len = e.target.value.length;
+      const el = $('msgCount');
+      el.textContent = len + ' / 600';
+      el.classList.remove('warn', 'over');
+      if (len > 550) el.classList.add('warn');
+      if (len > 600) el.classList.add('over');
+    });
+
+    ['notifTitle', 'notifMessage'].forEach(id => {
+      $(id).addEventListener('input', () => {
+        const t = $('notifTitle').value.trim();
+        const m = $('notifMessage').value.trim();
+        const s = $('composeStatus');
+        if (!t && !m) { s.textContent = 'draft'; s.style.color = 'var(--a-text-muted)'; }
+        else if (t && m) { s.textContent = 'ready'; s.style.color = '#059669'; }
+        else { s.textContent = 'incomplete'; s.style.color = '#d97706'; }
+      });
+    });
+
+    function resetComposer() {
+      $('broadcastForm').reset();
+      $('targetRole').value = 'all';
+      document.querySelectorAll('.audience-pill').forEach((x, i) => x.classList.toggle('on', i === 0));
+      $('audienceInfo').textContent = ROLE_INFO.all;
+      $('msgCount').textContent = '0 / 600';
+      $('composeStatus').textContent = 'draft';
+      $('composeStatus').style.color = 'var(--a-text-muted)';
+    }
+
+    async function loadNotifications() {
+      const feed = $('notificationsFeed');
+      feed.innerHTML = '<div style="padding:8px">' + Array(4).fill(0).map(() => '<div style="padding:14px 16px"><div class="skel" style="width:60%;height:12px;margin-bottom:8px"></div><div class="skel" style="width:100%;height:10px;margin-bottom:5px"></div><div class="skel" style="width:80%;height:10px"></div></div>').join('') + '</div>';
+
+      try {
+        const res = await ApiClient.get('/admin/notifications');
+        const notifs = (res && res.data) || [];
+
+        $('feedCount').textContent = notifs.length + ' total';
+        if (notifs[0]) {
+          const t = new Date(notifs[0].created_at || Date.now());
+          const diff = Math.floor((Date.now() - t.getTime()) / 60000);
+          $('last-dispatch').textContent = diff < 1 ? 'just now' : diff < 60 ? diff + 'm ago' : diff < 1440 ? Math.floor(diff / 60) + 'h ago' : t.toLocaleDateString('en-PK');
+        }
+
+        if (!notifs.length) {
+          feed.innerHTML = '<div class="empty"><i class="fa-regular fa-bell-slash"></i><strong>No dispatches yet</strong>No announcements have been sent.</div>';
+          return;
+        }
+
+        feed.innerHTML = notifs.map(n => {
+          const isBroadcast = !n.user_id;
+          // ✅ FIXED: coerce string/boolean/number is_read correctly
+          const rawRead = n.is_read;
+          const isRead = rawRead === true || rawRead === 1 || rawRead === '1';
+          const created = new Date(n.created_at || Date.now());
+          const timeStr = isNaN(created.getTime()) ? '' : created.toLocaleTimeString('en-PK', { hour: '2-digit', minute: '2-digit' });
+
+          return `<div class="dispatch">
+            <div class="dispatch-head">
+              <div class="dispatch-title ${isRead ? '' : 'unread'}">${escHtml(n.title || 'Platform notice')}</div>
+              <span class="tag ${isRead ? 'read' : 'unread'}">${isRead ? 'read' : 'new'}</span>
+            </div>
+            <div class="dispatch-body"><p>${escHtml(n.message || '')}</p></div>
+            <div class="dispatch-foot">
+              <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap">
+                <span class="tag ${isBroadcast ? 'broadcast' : 'direct'}"><i class="fa-solid ${isBroadcast ? 'fa-globe' : 'fa-user'}" style="font-size:.55rem"></i>${isBroadcast ? 'broadcast' : 'direct'}</span>
+                <span>${timeAgo(created)}</span>
+              </div>
+              <span>${timeStr}</span>
+            </div>
+          </div>`;
+        }).join('');
+      } catch (err) {
+        console.error('[notifications]', err);
+        $('feed-status').textContent = 'offline';
+        $('feed-status').style.color = '#e11d48';
+        feed.innerHTML = '<div class="empty" style="color:#e11d48"><i class="fa-solid fa-triangle-exclamation"></i><strong style="color:#e11d48">Feed unavailable</strong>' + escHtml(err.message || 'try refresh') + '</div>';
+      }
+    }
+
+    async function handleSendBroadcast(e) {
+      e.preventDefault();
+      const btn = $('sendBtn');
+      const title = $('notifTitle').value.trim();
+      const message = $('notifMessage').value.trim();
+      const target_role = $('targetRole').value;
+      if (!title || !message) return;
+
+      if (!confirm('Send broadcast to ' + ROLE_LABEL[target_role] + '?')) return;
+
+      btn.disabled = true;
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" style="font-size:.7rem"></i><span>Sending…</span>';
+
+      try {
+        await ApiClient.post('/admin/notifications/broadcast', { title, message, target_role });
+        if (window.UI && UI.showToast) UI.showToast('Broadcast sent to ' + ROLE_LABEL[target_role], 'success');
+        resetComposer();
+        loadNotifications();
+      } catch (err) {
+        console.error('[broadcast]', err);
+        if (window.UI && UI.showToast) UI.showToast(err.message || 'Broadcast failed.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+      }
+    }
+
+    async function markAllRead() {
+      try {
+        await ApiClient.patch('/admin/notifications/read-all', {});
+        if (window.UI && UI.showToast) UI.showToast('All marked as read.', 'info', 2000);
+        loadNotifications();
+      } catch (err) {
+        if (window.UI && UI.showToast) UI.showToast('Mark failed.', 'error');
+      }
+    }
+
+    function escHtml(s) {
+      return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+    function timeAgo(d) {
+      const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+      if (diff < 60) return 'just now';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      if (diff < 604800) return Math.floor(diff / 86400) + 'd ago';
+      return d.toLocaleDateString('en-PK');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const role = ApiClient.getUserRole && ApiClient.getUserRole();
+      if (!ApiClient.isAuthenticated() || role !== 'admin') {
+        window.location.href = '/login.html?redirect=/admin/notifications.html';
+        return;
+      }
+      loadNotifications();
+    });
+  </script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

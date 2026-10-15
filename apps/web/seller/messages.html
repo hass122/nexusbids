@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages — Seller Studio | NexusBids Pakistan</title>
+  <meta name="description" content="Message buyers and contacts from your NexusBids seller account.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --m-bg: #f4f6fb;
+      --m-surface: #ffffff;
+      --m-surface-2: #f7f9fc;
+      --m-surface-3: #eceff6;
+      --m-border: #e3e8f0;
+      --m-text: #0f172a;
+      --m-text-muted: #58627a;
+      --m-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12);
+    }
+
+    html.dark {
+      --m-bg: #05070f;
+      --m-surface: #0d1220;
+      --m-surface-2: #121a2b;
+      --m-surface-3: #1a2336;
+      --m-border: #1e2a40;
+      --m-text: #eef2f9;
+      --m-text-muted: #9aa6bd;
+      --m-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--m-bg);
+      color: var(--m-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      height: calc(100vh - 60px);
+      max-width: 1200px;
+      margin: 0 auto;
+      gap: 0;
+      background: var(--m-surface);
+      border: 1px solid var(--m-border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--m-shadow-md);
+    }
+
+    @media(max-width:768px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-panel {
+        display: none;
+      }
+
+      .chat-panel.active {
+        display: flex;
+      }
+    }
+
+    .thread-list {
+      border-right: 1px solid var(--m-border);
+      overflow-y: auto;
+    }
+
+    .thread-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--m-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .thread-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--m-border);
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .thread-item:hover {
+      background: var(--m-surface-2);
+    }
+
+    .thread-item.active {
+      background: rgba(99, 102, 241, .1);
+    }
+
+    .thread-item.unread .thread-name {
+      font-weight: 800;
+      color: var(--m-text);
+    }
+
+    .thread-item.unread .thread-preview {
+      color: var(--m-text);
+    }
+
+    .thread-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #fff;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .thread-name {
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--m-text);
+      margin-bottom: 3px;
+    }
+
+    .thread-preview {
+      font-size: .78rem;
+      color: var(--m-text-muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 200px;
+    }
+
+    .thread-time {
+      font-size: .7rem;
+      color: var(--m-text-muted);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .unread-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6366f1;
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+
+    .chat-panel {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--m-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ✅ NEW: mobile back button (only visible under 768px) */
+    .chat-back-btn {
+      display: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      border: none;
+      background: var(--m-surface-3);
+      color: var(--m-text-muted);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all .2s;
+      font-size: .85rem;
+    }
+
+    .chat-back-btn:hover {
+      background: var(--m-border);
+      color: var(--m-text);
+    }
+
+    @media(max-width:768px) {
+      .chat-back-btn {
+        display: flex;
+      }
+    }
+
+    .chat-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .msg-bubble {
+      max-width: 72%;
+      padding: 12px 16px;
+      border-radius: 16px;
+      font-size: .85rem;
+      line-height: 1.55;
+      word-break: break-word;
+    }
+
+    .msg-bubble.mine {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      border-radius: 16px 16px 4px 16px;
+      align-self: flex-end;
+    }
+
+    .msg-bubble.theirs {
+      background: var(--m-surface-2);
+      color: var(--m-text);
+      border: 1px solid var(--m-border);
+      border-radius: 16px 16px 16px 4px;
+      align-self: flex-start;
+    }
+
+    .msg-time {
+      font-size: .68rem;
+      color: var(--m-text-muted);
+      margin-top: 4px;
+    }
+
+    .msg-group.mine {
+      align-items: flex-end;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .msg-group.theirs {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-input-row {
+      padding: 16px 20px;
+      border-top: 1px solid var(--m-border);
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .msg-textarea {
+      flex: 1;
+      background: var(--m-surface-2);
+      border: 1.5px solid var(--m-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: .88rem;
+      color: var(--m-text);
+      font-family: inherit;
+      resize: none;
+      max-height: 120px;
+      transition: border-color .2s;
+    }
+
+    .msg-textarea:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .12);
+    }
+
+    .btn-send {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+
+    .btn-send:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-send:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .empty-chat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      color: var(--m-text-muted);
+      text-align: center;
+    }
+
+    .compose-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-weight: 700;
+      font-size: .78rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--m-surface-2);
+      border: 1px solid var(--m-border);
+      border-radius: 10px;
+      padding: 9px 14px 9px 36px;
+      font-size: .82rem;
+      color: var(--m-text);
+      font-family: inherit;
+    }
+
+    .search-wrap {
+      position: relative;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--m-border);
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 26px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--m-text-muted);
+      font-size: .8rem;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .7);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(6px);
+    }
+
+    .modal-box {
+      background: var(--m-surface);
+      border: 1px solid var(--m-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 440px;
+      padding: 28px;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, .8);
+    }
+
+    .form-label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--m-text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--m-surface-2);
+      border: 1.5px solid var(--m-border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: .88rem;
+      color: var(--m-text);
+      font-family: inherit;
+      transition: border-color .2s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .12);
+    }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(110%);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, .9);
+      color: #fff;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, .9);
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--m-surface);border-color:var(--m-border);height:60px;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-full">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div id="seller-subnav-top" class="hidden sm:block"></div>
+        <a href="/index.html" class="text-sm font-semibold" style="color:var(--m-text-muted);"><i
+            class="fa-solid fa-store mr-1"></i>View Store</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="p-4 sm:p-6">
+    <div id="seller-subnav"></div>
+    <div class="shell" style="max-width:1100px;margin:0 auto;">
+      <!-- Thread List -->
+      <div class="thread-list">
+        <div class="thread-header">
+          <span class="font-extrabold text-sm">Messages</span>
+          <button id="btn-compose" class="compose-btn">
+            <i class="fa-solid fa-pen-to-square"></i> New
+          </button>
+        </div>
+        <div class="search-wrap">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-contacts" class="search-input" placeholder="Search contacts…">
+        </div>
+        <div id="thread-list">
+          <div class="py-10 text-center" style="color:var(--m-text-muted);"><i class="fa-solid fa-spinner fa-spin"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Panel -->
+      <div class="chat-panel" id="chat-panel">
+        <div class="empty-chat" id="chat-empty">
+          <i class="fa-solid fa-comments text-5xl mb-4 opacity-20"></i>
+          <p class="font-bold text-lg mb-2">Your Messages</p>
+          <p class="text-sm">Select a conversation or start a new one</p>
+        </div>
+        <div id="chat-active" style="display:none;flex:1;flex-direction:column;">
+          <div class="chat-header">
+            <!-- ✅ NEW: back button for mobile -->
+            <button type="button" class="chat-back-btn" onclick="closeMobileChat()" aria-label="Back to conversations">
+              <i class="fa-solid fa-arrow-left"></i>
+            </button>
+            <div class="thread-avatar" id="chat-avatar">?</div>
+            <div>
+              <div class="font-bold text-sm" id="chat-name">—</div>
+              <div class="text-xs" style="color:var(--m-text-muted);" id="chat-sub">—</div>
+            </div>
+          </div>
+          <div class="chat-body" id="chat-body"></div>
+          <div class="chat-input-row">
+            <textarea id="msg-input" class="msg-textarea" rows="1"
+              placeholder="Type a message… (Enter to send)"></textarea>
+            <button id="btn-send" class="btn-send"><i class="fa-solid fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compose Modal -->
+  <div id="compose-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <div class="flex items-center justify-between mb-5">
+        <h2 class="font-extrabold text-lg">New Message</h2>
+        <button id="btn-close-compose"
+          style="background:var(--m-surface-3);border:none;border-radius:9px;width:32px;height:32px;cursor:pointer;color:var(--m-text-muted);display:flex;align-items:center;justify-content:center;"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="compose-form">
+        <div class="mb-4">
+          <label class="form-label">Recipient User ID</label>
+          <input type="number" id="compose-receiver" class="form-control" placeholder="Enter buyer's user ID" required>
+          <div class="text-xs mt-1" style="color:var(--m-text-muted);">You can find the buyer's ID in your order
+            details.</div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label">Message</label>
+          <textarea id="compose-msg" class="form-control" rows="4" placeholder="Write your message here…"
+            required></textarea>
+        </div>
+        <div id="compose-error" class="text-sm text-red-400 mb-3" style="display:none;"></div>
+        <button type="submit" id="btn-send-compose" class="compose-btn w-full justify-center" style="padding:12px;">
+          <i class="fa-solid fa-paper-plane"></i> Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/seller-nav.js"></script>
+  <script src="/assets/js/api-client.js"></script>
+  <script>
+    /* ✅ FIX: auth guard wrapped in IIFE so `return` actually stops execution */
+    (function () {
+      'use strict';
+
+      const token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      let currentUser = {};
+      try { currentUser = JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { currentUser = {}; }
+
+      if (!token || !['seller', 'admin'].includes(currentUser.role)) {
+        window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/messages.html'));
+        return;
+      }
+
+      const API = window.ApiClient || {
+        get: (u) => fetch('/api' + u, { credentials: 'include' }).then(r => r.json()),
+        post: (u, d) => fetch('/api' + u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }).then(r => r.json())
+      };
+      const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      const timeAgo = ts => {
+        if (!ts) return '';
+        const d = Date.now() - new Date(ts).getTime();
+        const m = Math.floor(d / 60000);
+        if (m < 1) return 'now';
+        if (m < 60) return `${m}m`;
+        const h = Math.floor(m / 60);
+        if (h < 24) return `${h}h`;
+        return new Date(ts).toLocaleDateString('en-PK', { month: 'short', day: 'numeric' });
+      };
+
+      let allMessages = [];
+      let activeContact = null;
+      const myId = currentUser?.userId || currentUser?.user_id;
+
+      function showToast(msg, type = 'success') {
+        const t = document.createElement('div');
+        t.className = `toast toast-${type}`;
+        t.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'triangle-exclamation'}"></i>${msg}`;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 4000);
+      }
+      window.showToast = showToast;
+
+      function getThreads() {
+        const contacts = new Map();
+        allMessages.forEach(m => {
+          const contactId = m.sender_id === myId ? m.receiver_id : m.sender_id;
+          const contactName = m.sender_id === myId ? (m.receiver_name || m.contact_name) : (m.sender_name || m.contact_name);
+          if (!contacts.has(contactId) || new Date(m.created_at) > new Date(contacts.get(contactId).created_at)) {
+            contacts.set(contactId, { ...m, contactId, contactName: contactName || `User #${contactId}` });
+          }
+        });
+        return [...contacts.values()].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      }
+
+      async function loadMessages() {
+        try {
+          const r = await API.get('/seller/messages');
+          allMessages = Array.isArray(r.data) ? r.data : (Array.isArray(r) ? r : []);
+          renderThreads();
+          if (activeContact) renderChat(activeContact);
+        } catch (e) { /* silent */ }
+      }
+      window.loadMessages = loadMessages;
+
+      function renderThreads() {
+        const q = (document.getElementById('search-contacts').value || '').toLowerCase();
+        const threads = getThreads().filter(t => !q || t.contactName.toLowerCase().includes(q));
+        const list = document.getElementById('thread-list');
+        if (!threads.length) {
+          list.innerHTML = `<div class="py-10 text-center text-sm" style="color:var(--m-text-muted);">No conversations yet</div>`;
+          return;
+        }
+        list.innerHTML = threads.map(t => {
+          // ✅ FIX: safe initials (alphanumeric only) + escaped display strings
+          const initials = ((t.contactName || 'U').charAt(0) || 'U').toUpperCase().replace(/[^A-Z0-9]/g, '') || 'U';
+          const isActive = activeContact === t.contactId;
+          const preview = (t.message || '').substring(0, 40);
+          const isMine = t.sender_id === myId;
+          return `
+            <div class="thread-item ${isActive ? 'active' : ''}" onclick="selectContact(${t.contactId})">
+              <div class="thread-avatar">${initials}</div>
+              <div class="flex-1 min-w-0">
+                <div class="thread-name">${esc(t.contactName)}</div>
+                <div class="thread-preview">${isMine ? 'You: ' : ''}${esc(preview)}${preview.length >= 40 ? '…' : ''}</div>
+              </div>
+              <div class="flex flex-col items-end gap-1.5">
+                <span class="thread-time">${timeAgo(t.created_at)}</span>
+                ${!t.is_read && !isMine ? '<div class="unread-dot"></div>' : ''}
+              </div>
+            </div>`;
+        }).join('');
+      }
+
+      function selectContact(contactId) {
+        activeContact = contactId;
+        // ✅ FIX: look up name internally instead of trusting onclick argument
+        const thread = getThreads().find(t => String(t.contactId) === String(contactId));
+        const contactName = (thread && thread.contactName) || ('User #' + contactId);
+
+        // ✅ FIX: reveal chat panel on mobile too
+        const panel = document.getElementById('chat-panel');
+        if (panel) panel.classList.add('active');
+
+        document.getElementById('chat-empty').style.display = 'none';
+        const active = document.getElementById('chat-active');
+        active.style.display = 'flex';
+        active.style.flexDirection = 'column';
+        active.style.flex = '1';
+        document.getElementById('chat-avatar').textContent = (contactName || 'U').charAt(0).toUpperCase();
+        document.getElementById('chat-name').textContent = contactName;
+        document.getElementById('chat-sub').textContent = `User #${contactId}`;
+        renderThreads();
+        renderChat(contactId);
+      }
+      window.selectContact = selectContact;
+
+      // ✅ NEW: hide chat on mobile and show thread list again
+      function closeMobileChat() {
+        const panel = document.getElementById('chat-panel');
+        if (panel) panel.classList.remove('active');
+        activeContact = null;
+        document.getElementById('chat-empty').style.display = 'flex';
+        document.getElementById('chat-active').style.display = 'none';
+        document.querySelectorAll('.thread-item').forEach(t => t.classList.remove('active'));
+      }
+      window.closeMobileChat = closeMobileChat;
+
+      function renderChat(contactId) {
+        const msgs = allMessages.filter(m => m.sender_id === contactId || m.receiver_id === contactId)
+          .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        const body = document.getElementById('chat-body');
+        body.innerHTML = msgs.map(m => {
+          const mine = m.sender_id === myId;
+          return `
+            <div class="msg-group ${mine ? 'mine' : 'theirs'}">
+              <div class="msg-bubble ${mine ? 'mine' : 'theirs'}">${esc(m.message || '')}</div>
+              <div class="msg-time">${timeAgo(m.created_at)}</div>
+            </div>`;
+        }).join('') || `<div class="text-center text-sm py-8" style="color:var(--m-text-muted);">Start the conversation!</div>`;
+        body.scrollTop = body.scrollHeight;
+      }
+
+      async function sendMessage() {
+        const input = document.getElementById('msg-input');
+        const text = (input.value || '').trim();
+        if (!text || !activeContact) return;
+        const btn = document.getElementById('btn-send');
+        btn.disabled = true;
+        try {
+          const r = await API.post('/seller/messages', { receiver_id: activeContact, message: text });
+          if (r.success || r.data) {
+            input.value = '';
+            await loadMessages();
+          } else {
+            showToast(r.message || 'Failed to send.', 'error');
+          }
+        } catch {
+          showToast('Network error.', 'error');
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      document.getElementById('btn-send').addEventListener('click', sendMessage);
+      document.getElementById('msg-input').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+      });
+
+      document.getElementById('search-contacts').addEventListener('input', renderThreads);
+
+      document.getElementById('btn-compose').addEventListener('click', () => {
+        document.getElementById('compose-modal').style.display = 'flex';
+      });
+      document.getElementById('btn-close-compose').addEventListener('click', () => {
+        document.getElementById('compose-modal').style.display = 'none';
+      });
+      document.getElementById('compose-modal').addEventListener('click', e => {
+        if (e.target === e.currentTarget) document.getElementById('compose-modal').style.display = 'none';
+      });
+
+      document.getElementById('compose-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const errEl = document.getElementById('compose-error');
+        errEl.style.display = 'none';
+        const btn = document.getElementById('btn-send-compose');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending…';
+        try {
+          const r = await API.post('/seller/messages', {
+            receiver_id: parseInt(document.getElementById('compose-receiver').value, 10),
+            message: document.getElementById('compose-msg').value.trim()
+          });
+          if (r.success || r.data) {
+            document.getElementById('compose-modal').style.display = 'none';
+            document.getElementById('compose-form').reset();
+            showToast('Message sent!', 'success');
+            await loadMessages();
+          } else {
+            errEl.textContent = r.message || r.error || 'Failed to send.';
+            errEl.style.display = 'block';
+          }
+        } catch {
+          errEl.textContent = 'Network error. Please try again.';
+          errEl.style.display = 'block';
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+        }
+      });
+
+      loadMessages();
+      setInterval(loadMessages, 15000);
+    })();
+  </script>
+</body>
+
+</html>

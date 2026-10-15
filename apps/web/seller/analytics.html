@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics — Seller Studio | NexusBids Pakistan</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --a-bg: #f4f6fb;
+      --a-surface: #ffffff;
+      --a-surface-2: #f7f9fc;
+      --a-surface-3: #eceff6;
+      --a-border: #e3e8f0;
+      --a-text: #0f172a;
+      --a-text-muted: #58627a;
+      --a-text-light: #8d97ab;
+      --a-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --a-glow: rgba(99, 102, 241, .13);
+      --a-row-hover: #f4f7fd;
+    }
+
+    html.dark {
+      --a-bg: #05070f;
+      --a-surface: #0d1220;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #1a2336;
+      --a-border: #1e2a40;
+      --a-text: #eef2f9;
+      --a-text-muted: #9aa6bd;
+      --a-text-light: #66738d;
+      --a-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --a-glow: rgba(99, 102, 241, .20);
+      --a-row-hover: #141d31;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--a-bg);
+      color: var(--a-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 16px;
+      box-shadow: var(--a-shadow-md);
+    }
+
+    .stat-card {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      box-shadow: var(--a-shadow-md);
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -8px rgba(99, 102, 241, .25);
+    }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .stat-val {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--a-text);
+      line-height: 1.1;
+      margin-top: 4px;
+    }
+
+    .stat-lbl {
+      font-size: .71rem;
+      font-weight: 700;
+      color: var(--a-text-muted);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      margin-top: 5px;
+    }
+
+    .chart-card {
+      background: var(--a-surface);
+      border: 1px solid var(--a-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--a-shadow-md);
+      position: relative;
+    }
+
+    /* ✅ FIX: Chart canvas needs fixed height */
+    .chart-card .chart-canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: 220px;
+    }
+
+    .chart-card canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    .chart-title {
+      font-size: .85rem;
+      font-weight: 700;
+      color: var(--a-text);
+      margin-bottom: 4px;
+    }
+
+    .chart-sub {
+      font-size: .75rem;
+      color: var(--a-text-muted);
+    }
+
+    .tab-btn {
+      padding: 7px 16px;
+      border-radius: 8px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+    }
+
+    .tab-btn.active {
+      background: rgba(99, 102, 241, .2);
+      color: #818cf8;
+      border-color: rgba(99, 102, 241, .4);
+    }
+
+    .tab-btn:not(.active) {
+      background: transparent;
+      color: var(--a-text-muted);
+    }
+
+    .tab-btn:not(.active):hover {
+      background: var(--a-surface-2);
+      color: var(--a-text);
+    }
+
+    .perf-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--a-border);
+    }
+
+    .perf-row:last-child {
+      border-bottom: none;
+    }
+
+    .perf-bar-wrap {
+      flex: 1;
+      max-width: 160px;
+      height: 6px;
+      background: var(--a-surface-3);
+      border-radius: 99px;
+      overflow: hidden;
+      margin: 0 16px;
+    }
+
+    .perf-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, #6366f1, #818cf8);
+      transition: width .6s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--a-surface-2) 25%, var(--a-surface-3) 37%, var(--a-surface-2) 63%);
+      background-size: 400px 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 8px;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -400px 0
+      }
+
+      100% {
+        background-position: 400px 0
+      }
+    }
+
+    .auction-scope-banner {
+      margin-bottom: 16px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: rgba(99, 102, 241, .12);
+      border: 1px solid rgba(99, 102, 241, .3);
+      font-size: .8rem;
+      font-weight: 600;
+      color: #818cf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--a-surface);border-color:var(--a-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <a href="/index.html" class="text-sm font-semibold" style="color:var(--a-text-muted);"><i
+          class="fa-solid fa-store mr-1"></i>View Store</a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="seller-subnav"></div>
+    <div id="auction-scope-banner-wrap"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl font-extrabold mb-1">Analytics</h1>
+        <p style="color:var(--a-text-muted);font-size:.85rem;">Comprehensive performance overview of your seller account
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-semibold" style="color:var(--a-text-muted);">Period:</span>
+        <div class="flex gap-1.5" id="period-tabs">
+          <button class="tab-btn active" data-days="7">7D</button>
+          <button class="tab-btn" data-days="14">14D</button>
+          <button class="tab-btn" data-days="30">30D</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(99,102,241,.15);color:#818cf8;"><i class="fa-solid fa-eye"></i>
+        </div>
+        <div class="stat-val" id="kpi-views">—</div>
+        <div class="stat-lbl">Total Views</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(16,185,129,.15);color:#34d399;"><i class="fa-solid fa-gavel"></i>
+        </div>
+        <div class="stat-val" id="kpi-bids">—</div>
+        <div class="stat-lbl">Total Bids</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(245,158,11,.15);color:#fbbf24;"><i
+            class="fa-solid fa-percent"></i></div>
+        <div class="stat-val" id="kpi-conversion">—</div>
+        <div class="stat-lbl">Conversion Rate</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(52,211,153,.15);color:#34d399;"><i class="fa-solid fa-coins"></i>
+        </div>
+        <div class="stat-val" id="kpi-revenue">—</div>
+        <div class="stat-lbl">Revenue (PKR)</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(139,92,246,.15);color:#a78bfa;"><i
+            class="fa-solid fa-bookmark"></i></div>
+        <div class="stat-val" id="kpi-watchlist">—</div>
+        <div class="stat-lbl">Watchlists</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(59,130,246,.15);color:#60a5fa;"><i class="fa-solid fa-trophy"></i>
+        </div>
+        <div class="stat-val" id="kpi-sold">—</div>
+        <div class="stat-lbl">Items Sold</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(249,115,22,.15);color:#fb923c;"><i class="fa-solid fa-fire"></i>
+        </div>
+        <div class="stat-val" id="kpi-active">—</div>
+        <div class="stat-lbl">Active Auctions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(239,68,68,.15);color:#f87171;"><i
+            class="fa-solid fa-arrow-up-right-dots"></i></div>
+        <div class="stat-val" id="kpi-highest-bid">—</div>
+        <div class="stat-lbl">Highest Bid</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div class="chart-card">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="chart-title">Bids Over Time</div>
+            <div class="chart-sub">Daily bid count for selected period</div>
+          </div>
+          <div class="stat-icon" style="background:rgba(99,102,241,.15);color:#818cf8;"><i
+              class="fa-solid fa-chart-line"></i></div>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-bids"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="chart-title">Revenue Over Time</div>
+            <div class="chart-sub">Daily revenue from paid orders</div>
+          </div>
+          <div class="stat-icon" style="background:rgba(16,185,129,.15);color:#34d399;"><i
+              class="fa-solid fa-chart-area"></i></div>
+        </div>
+        <div class="chart-canvas-wrap"><canvas id="chart-revenue"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="chart-card">
+        <div class="chart-title mb-1">Finance Overview</div>
+        <div class="chart-sub mb-5">Your current wallet and earnings status</div>
+        <div id="finance-rows">
+          <div class="perf-row skeleton" style="height:44px;border-bottom:none;"></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title mb-1">Auction Status Distribution</div>
+        <div class="chart-sub mb-4">Breakdown of your auctions by status</div>
+        <div class="chart-canvas-wrap" style="height:240px;"><canvas id="chart-donut"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/api-client.js"></script> <!-- ✅ FIRST -->
+  <script src="/assets/js/ui.js"></script> <!-- ✅ SECOND (agar hai) -->
+  <script src="/assets/js/seller-nav.js"></script> <!-- ✅ LAST -->
+  <script src="/assets/js/ai-chat.js"></script> <!-- ✅ Aakhri mein -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ✅ AUTH GUARD with return
+      var token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      var user = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+      if (!token || !['seller', 'admin'].includes(user.role)) {
+        window.location.href = '/auth/login.html?redirect=/seller/analytics.html';
+        return;
+      }
+
+      var API = window.ApiClient || { get: function (u) { return fetch('/api' + u, { credentials: 'include' }).then(function (r) { return r.json(); }); } };
+      var fmtPKR = function (v) { return 'PKR ' + Number(v || 0).toLocaleString('en-PK'); };
+      var fmtK = function (v) { var n = Number(v || 0); return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : String(n); };
+
+      var bidChart = null, revenueChart = null, donutChart = null;
+      var activeDays = 7;
+      var URL_AUCTION_ID = new URLSearchParams(window.location.search).get('auction_id');
+      var isDark = document.documentElement.classList.contains('dark');
+
+      // ✅ Themed tooltip
+      var chartDefaults = {
+        animation: { duration: 700, easing: 'easeInOutQuart' },
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: isDark ? '#0d1220' : '#ffffff',
+            titleColor: isDark ? '#eef2f9' : '#0f172a',
+            bodyColor: isDark ? '#9aa6bd' : '#58627a',
+            borderColor: isDark ? '#1e2a40' : '#e3e8f0',
+            borderWidth: 1, padding: 12, cornerRadius: 10
+          }
+        }
+      };
+
+      function buildGradient(ctx, color) {
+        var g = ctx.createLinearGradient(0, 0, 0, 220);
+        g.addColorStop(0, color + '55');
+        g.addColorStop(1, color + '08');
+        return g;
+      }
+
+      async function loadAnalytics() {
+        try {
+          var qs = 'days=' + activeDays;
+          if (URL_AUCTION_ID) qs += '&auction_id=' + URL_AUCTION_ID;
+
+          var r = await API.get('/seller/analytics?' + qs);
+          var d = r.data || r;
+
+          if (URL_AUCTION_ID) {
+            document.getElementById('auction-scope-banner-wrap').innerHTML =
+              '<div class="auction-scope-banner"><i class="fa-solid fa-filter"></i> Showing analytics for Auction #' + URL_AUCTION_ID +
+              '<a href="/seller/analytics.html" style="margin-left:auto;color:#a5b4fc;text-decoration:underline;">Clear filter</a></div>';
+          }
+
+          document.getElementById('kpi-views').textContent = fmtK(d.views);
+          document.getElementById('kpi-bids').textContent = fmtK(d.bids);
+          // ✅ FIX: if backend sends decimal (0-1), convert to percentage; if already % (0-100), keep
+          var conv = Number(d.conversion_rate || 0);
+          var convPct = (conv > 0 && conv <= 1) ? (conv * 100) : conv;
+          var convStr = (Math.round(convPct * 10) / 10).toString();
+          document.getElementById('kpi-conversion').textContent = convStr + '%';
+          document.getElementById('kpi-revenue').textContent = fmtK(d.revenue);
+          document.getElementById('kpi-watchlist').textContent = fmtK(d.watchlist_count);
+          document.getElementById('kpi-sold').textContent = fmtK(d.sold_auctions);
+          document.getElementById('kpi-active').textContent = fmtK(d.active_auctions);
+          document.getElementById('kpi-highest-bid').textContent = fmtK(d.highest_bid);
+
+          var revNum = Number(d.revenue || 0);
+          var financeData = [
+            { label: 'Total Revenue', value: fmtPKR(d.revenue), icon: 'fa-coins', color: '#34d399', pct: 100 },
+            { label: 'In Escrow', value: fmtPKR(d.escrow_held), icon: 'fa-vault', color: '#fbbf24', pct: revNum > 0 ? Math.min(100, (Number(d.escrow_held || 0) / revNum) * 100) : 0 },
+            { label: 'Pending Payouts', value: fmtPKR(d.pending_payouts), icon: 'fa-clock', color: '#f87171', pct: revNum > 0 ? Math.min(100, (Number(d.pending_payouts || 0) / revNum) * 100) : 0 }
+          ];
+          document.getElementById('finance-rows').innerHTML = financeData.map(function (f) {
+            return '<div class="perf-row">' +
+              '<div class="flex items-center gap-3">' +
+              '<div style="width:32px;height:32px;border-radius:9px;background:' + f.color + '22;color:' + f.color + ';display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;"><i class="fa-solid ' + f.icon + '"></i></div>' +
+              '<span class="text-sm font-semibold">' + f.label + '</span>' +
+              '</div>' +
+              '<div class="perf-bar-wrap"><div class="perf-bar-fill" style="width:' + Math.round(f.pct) + '%;background:linear-gradient(90deg,' + f.color + 'aa,' + f.color + ');"></div></div>' +
+              '<span class="text-sm font-bold" style="color:' + f.color + ';white-space:nowrap;">' + f.value + '</span>' +
+              '</div>';
+          }).join('');
+
+          var bidLabels = (d.daily_bids || []).map(function (r) { var dt = new Date(r.date); return dt.toLocaleDateString('en-PK', { month: 'short', day: 'numeric' }); });
+          var bidData = (d.daily_bids || []).map(function (r) { return parseInt(r.bid_count, 10) || 0; });
+          if (bidChart) bidChart.destroy();
+          var bidCtx = document.getElementById('chart-bids').getContext('2d');
+          bidChart = new Chart(bidCtx, {
+            type: 'line',
+            data: { labels: bidLabels, datasets: [{ label: 'Bids', data: bidData, borderColor: '#6366f1', backgroundColor: buildGradient(bidCtx, '#6366f1'), fill: true, tension: 0.4, borderWidth: 2.5, pointRadius: 4, pointBackgroundColor: '#6366f1' }] },
+            options: Object.assign({}, chartDefaults, {
+              scales: {
+                x: { grid: { color: 'rgba(99,102,241,.06)' }, ticks: { color: '#9aa6bd', font: { size: 11 } } },
+                y: { grid: { color: 'rgba(99,102,241,.06)' }, ticks: { color: '#9aa6bd', font: { size: 11 } }, beginAtZero: true }
+              }
+            })
+          });
+
+          var revLabels = (d.daily_revenue || []).map(function (r) { var dt = new Date(r.date); return dt.toLocaleDateString('en-PK', { month: 'short', day: 'numeric' }); });
+          var revData = (d.daily_revenue || []).map(function (r) { return parseFloat(r.revenue) || 0; });
+          if (revenueChart) revenueChart.destroy();
+          var revCtx = document.getElementById('chart-revenue').getContext('2d');
+          revenueChart = new Chart(revCtx, {
+            type: 'bar',
+            data: { labels: revLabels, datasets: [{ label: 'Revenue (PKR)', data: revData, backgroundColor: 'rgba(16,185,129,.55)', borderColor: '#10b981', borderWidth: 1.5, borderRadius: 6 }] },
+            options: Object.assign({}, chartDefaults, {
+              scales: {
+                x: { grid: { color: 'rgba(16,185,129,.05)' }, ticks: { color: '#9aa6bd', font: { size: 11 } } },
+                y: { grid: { color: 'rgba(16,185,129,.05)' }, ticks: { color: '#9aa6bd', font: { size: 11 } }, beginAtZero: true }
+              }
+            })
+          });
+
+          var donutCtx = document.getElementById('chart-donut').getContext('2d');
+          if (donutChart) donutChart.destroy();
+          var active = parseInt(d.active_auctions || 0, 10);
+          var sold = parseInt(d.sold_auctions || 0, 10);
+          var total = parseInt(d.total_auctions || 0, 10);
+          donutChart = new Chart(donutCtx, {
+            type: 'doughnut',
+            data: { labels: ['Active', 'Sold', 'Other'], datasets: [{ data: [active, sold, Math.max(0, total - active - sold)], backgroundColor: ['rgba(99,102,241,.8)', 'rgba(16,185,129,.8)', 'rgba(148,163,184,.35)'], borderColor: ['#6366f1', '#10b981', '#64748b'], borderWidth: 2 }] },
+            options: Object.assign({}, chartDefaults, {
+              plugins: Object.assign({}, chartDefaults.plugins, {
+                legend: { display: true, position: 'bottom', labels: { color: '#9aa6bd', font: { size: 12 }, padding: 16 } }
+              }),
+              cutout: '62%'
+            })
+          });
+        } catch (e) { console.error('Analytics load error:', e); }
+      }
+
+      document.querySelectorAll('#period-tabs .tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('#period-tabs .tab-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+          activeDays = parseInt(btn.dataset.days, 10);
+          loadAnalytics();
+        });
+      });
+
+      loadAnalytics();
+    })();
+  </script>
+</body>
+
+</html>

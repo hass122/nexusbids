@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payouts — Seller Studio | NexusBids Pakistan</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --p-bg: #f4f6fb;
+      --p-surface: #ffffff;
+      --p-surface-2: #f7f9fc;
+      --p-surface-3: #eceff6;
+      --p-border: #e3e8f0;
+      --p-text: #0f172a;
+      --p-text-muted: #58627a;
+      --p-text-light: #8d97ab;
+      --p-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --p-row-hover: #f4f7fd;
+    }
+
+    html.dark {
+      --p-bg: #05070f;
+      --p-surface: #0d1220;
+      --p-surface-2: #121a2b;
+      --p-surface-3: #1a2336;
+      --p-border: #1e2a40;
+      --p-text: #eef2f9;
+      --p-text-muted: #9aa6bd;
+      --p-text-light: #66738d;
+      --p-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --p-row-hover: #141d31;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--p-bg);
+      color: var(--p-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: var(--p-surface);
+      border: 1px solid var(--p-border);
+      border-radius: 16px;
+      box-shadow: var(--p-shadow-md);
+    }
+
+    .wallet-card {
+      background: linear-gradient(135deg, #1a2036, #0f1527);
+      border: 1px solid rgba(99, 102, 241, .25);
+      border-radius: 20px;
+      padding: 28px 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 48px -16px rgba(0, 0, 0, .8);
+    }
+
+    html:not(.dark) .wallet-card {
+      background: linear-gradient(135deg, #f0f1ff, #e8eafe);
+      border-color: rgba(99, 102, 241, .2);
+    }
+
+    .wallet-card::before {
+      content: '';
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 220px;
+      height: 220px;
+      background: radial-gradient(closest-side, rgba(99, 102, 241, .2), transparent);
+      pointer-events: none;
+    }
+
+    .balance-amount {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: #eef2f9;
+      letter-spacing: -.02em;
+    }
+
+    html:not(.dark) .balance-amount {
+      color: #0f172a;
+    }
+
+    .balance-label {
+      font-size: .75rem;
+      font-weight: 700;
+      color: rgba(238, 242, 249, .55);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 6px;
+    }
+
+    html:not(.dark) .balance-label {
+      color: rgba(15, 23, 42, .45);
+    }
+
+    .mini-bal {
+      background: rgba(255, 255, 255, .06);
+      border-radius: 12px;
+      padding: 14px 16px;
+      flex: 1;
+    }
+
+    html:not(.dark) .mini-bal {
+      background: rgba(255, 255, 255, .5);
+    }
+
+    .mini-bal-val {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #eef2f9;
+    }
+
+    html:not(.dark) .mini-bal-val {
+      color: #0f172a;
+    }
+
+    .mini-bal-lbl {
+      font-size: .68rem;
+      font-weight: 600;
+      color: rgba(238, 242, 249, .45);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    html:not(.dark) .mini-bal-lbl {
+      color: rgba(15, 23, 42, .4);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .85rem;
+    }
+
+    .data-table th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--p-text-muted);
+      border-bottom: 1px solid var(--p-border);
+      white-space: nowrap;
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--p-border);
+      color: var(--p-text);
+      vertical-align: middle;
+    }
+
+    .data-table tbody tr:hover {
+      background: var(--p-row-hover);
+    }
+
+    .data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, .12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, .3);
+    }
+
+    .badge-processing {
+      background: rgba(99, 102, 241, .12);
+      color: #818cf8;
+      border: 1px solid rgba(99, 102, 241, .3);
+    }
+
+    .badge-completed {
+      background: rgba(16, 185, 129, .12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, .3);
+    }
+
+    .badge-rejected {
+      background: rgba(239, 68, 68, .12);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, .3);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--p-text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .form-control {
+      width: 100%;
+      background-color: var(--p-surface-2) !important;
+      border: 1.5px solid var(--p-border) !important;
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: .88rem;
+      color: var(--p-text) !important;
+      font-family: inherit;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .form-control::placeholder {
+      color: var(--p-text-light) !important;
+      opacity: 1;
+    }
+
+    .form-control:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .15) !important;
+      background-color: var(--p-surface-2) !important;
+    }
+
+    select.form-control {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 14px !important;
+      padding-right: 36px !important;
+      cursor: pointer;
+    }
+
+    select.form-control option {
+      background-color: var(--p-surface-2);
+      color: var(--p-text);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      font-weight: 800;
+      font-size: .88rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-primary:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .65);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-box {
+      background: var(--p-surface);
+      border: 1px solid var(--p-border);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 480px;
+      padding: 32px;
+      box-shadow: 0 32px 80px -20px rgba(0, 0, 0, .8);
+    }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 9999;
+      padding: 14px 20px;
+      border-radius: 14px;
+      font-size: .85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(12px);
+      animation: toastIn .35s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(110%);
+        opacity: 0
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1
+      }
+    }
+
+    .toast-success {
+      background: rgba(16, 185, 129, .9);
+      color: #fff;
+    }
+
+    .toast-error {
+      background: rgba(239, 68, 68, .9);
+      color: #fff;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--p-text-muted);
+    }
+  </style>
+</head>
+
+<body class="page font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--p-surface);border-color:var(--p-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <a href="/index.html" class="text-sm font-semibold" style="color:var(--p-text-muted);"><i
+          class="fa-solid fa-store mr-1"></i>View Store</a>
+    </div>
+  </nav>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div id="seller-subnav"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <h1 class="text-2xl font-extrabold mb-1">Payouts</h1>
+        <p style="color:var(--p-text-muted);font-size:.85rem;">Withdraw your earnings to your bank account or mobile
+          wallet</p>
+      </div>
+      <button id="btn-request-payout" class="btn-primary"><i class="fa-solid fa-money-bill-transfer"></i> Request
+        Payout</button>
+    </div>
+
+    <div class="wallet-card mb-8">
+      <div class="balance-label">Available Balance</div>
+      <div class="balance-amount mb-5" id="wallet-available">Loading…</div>
+      <div class="flex flex-col sm:flex-row gap-3">
+        <div class="mini-bal">
+          <div class="mini-bal-lbl">Pending</div>
+          <div class="mini-bal-val" id="wallet-pending">—</div>
+        </div>
+        <div class="mini-bal">
+          <div class="mini-bal-lbl">Total Earned</div>
+          <div class="mini-bal-val" id="wallet-earned">—</div>
+        </div>
+        <div class="mini-bal">
+          <div class="mini-bal-lbl">Total Withdrawn</div>
+          <div class="mini-bal-val" id="wallet-withdrawn">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-start gap-3 p-4 rounded-14px mb-6"
+      style="background:rgba(99,102,241,.08);border:1px solid rgba(99,102,241,.2);border-radius:14px;">
+      <i class="fa-solid fa-circle-info mt-0.5" style="color:#818cf8;flex-shrink:0;"></i>
+      <div class="text-sm" style="color:var(--p-text-muted);">
+        <strong style="color:var(--p-text);">Payout Policy:</strong> Minimum payout is <strong>PKR 1,000</strong>.
+        Processing takes 1–3 business days. Funds must clear the 3-day escrow window before becoming available. For
+        Easypaisa/JazzCash, transfers are typically instant after approval.
+      </div>
+    </div>
+
+    <div class="card overflow-hidden">
+      <div class="flex items-center justify-between px-6 py-4" style="border-bottom:1px solid var(--p-border);">
+        <h2 class="font-bold text-sm">Payout History</h2>
+        <span id="payout-count" class="text-xs font-semibold" style="color:var(--p-text-muted);">—</span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Requested</th>
+              <th>Processed</th>
+            </tr>
+          </thead>
+          <tbody id="payouts-tbody">
+            <tr>
+              <td colspan="6" class="py-10 text-center" style="color:var(--p-text-muted);"><i
+                  class="fa-solid fa-spinner fa-spin mr-2"></i>Loading payouts…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="payout-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-extrabold">Request Payout</h2>
+        <button id="btn-close-modal"
+          style="background:var(--p-surface-3);border:none;border-radius:9px;width:32px;height:32px;cursor:pointer;color:var(--p-text-muted);font-size:.9rem;display:flex;align-items:center;justify-content:center;"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <p class="text-sm mb-5" style="color:var(--p-text-muted);">Available: <strong id="modal-available"
+          style="color:var(--p-text);"></strong></p>
+      <form id="payout-form">
+        <div class="form-group">
+          <label class="form-label">Payout Amount (PKR)</label>
+          <input type="number" id="po-amount" class="form-control" placeholder="e.g. 5000" min="1000" required>
+          <div class="text-xs mt-1" style="color:var(--p-text-muted);">Minimum: PKR 1,000</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Payment Method</label>
+          <select id="po-method" class="form-control" required>
+            <option value="">Select method…</option>
+            <option value="bank_transfer">Bank Transfer</option>
+            <option value="easypaisa">Easypaisa</option>
+            <option value="jazzcash">JazzCash</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Account Title</label><input type="text" id="po-title"
+            class="form-control" placeholder="e.g. Muhammad Ali" required></div>
+        <div class="form-group"><label class="form-label">Account Number / IBAN</label><input type="text"
+            id="po-account" class="form-control" placeholder="e.g. PK00HABB0000000000000000" required></div>
+        <div class="form-group"><label class="form-label">Notes (Optional)</label><input type="text" id="po-notes"
+            class="form-control" placeholder="Any additional info…"></div>
+        <div id="payout-form-error" class="text-sm text-red-400 mb-4" style="display:none;"></div>
+        <button type="submit" id="btn-submit-payout" class="btn-primary w-full"><i class="fa-solid fa-paper-plane"></i>
+          Submit Payout Request</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/api-client.js"></script> <!-- ✅ FIRST -->
+  <script src="/assets/js/ui.js"></script> <!-- ✅ SECOND (agar hai) -->
+  <script src="/assets/js/seller-nav.js"></script> <!-- ✅ LAST -->
+  <script src="/assets/js/ai-chat.js"></script> <!-- ✅ Aakhri mein -->
+  <script>
+    (function () {
+      'use strict';
+
+      // ✅ AUTH GUARD
+      var token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      var user = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+      if (!token || !['seller', 'admin'].includes(user.role)) {
+        window.location.href = '/auth/login.html?redirect=/seller/payouts.html';
+        return;
+      }
+
+      var API = window.ApiClient || {
+        get: function (u) { return fetch('/api' + u, { credentials: 'include' }).then(function (r) { return r.json(); }); },
+        post: function (u, d) { return fetch('/api' + u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }).then(function (r) { return r.json(); }); }
+      };
+      var fmtPKR = function (v) { return 'PKR ' + Number(v || 0).toLocaleString('en-PK', { minimumFractionDigits: 2 }); };
+      var fmtDate = function (ts) { return ts ? new Date(ts).toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'; };
+
+      var availableBalance = 0;
+
+      function showToast(msg, type) {
+        type = type || 'success';
+        var t = document.createElement('div');
+        t.className = 'toast toast-' + type;
+        t.innerHTML = '<i class="fa-solid fa-' + (type === 'success' ? 'check-circle' : 'triangle-exclamation') + '"></i>' + msg;
+        document.body.appendChild(t);
+        setTimeout(function () { t.remove(); }, 4000);
+      }
+
+      function statusBadge(s) {
+        var map = { pending: 'badge-pending', processing: 'badge-processing', completed: 'badge-completed', rejected: 'badge-rejected' };
+        var icons = { pending: 'fa-clock', processing: 'fa-spinner fa-spin', completed: 'fa-check-circle', rejected: 'fa-xmark-circle' };
+        var cls = map[s] || 'badge-pending';
+        var ic = icons[s] || 'fa-circle';
+        return '<span class="badge ' + cls + '"><i class="fa-solid ' + ic + '"></i>' + (s || '').replace(/_/g, ' ') + '</span>';
+      }
+
+      async function loadPayouts() {
+        try {
+          var r = await API.get('/seller/payouts');
+          var d = r.data || r;
+          availableBalance = parseFloat(d.available_balance || 0);
+          document.getElementById('wallet-available').textContent = fmtPKR(d.available_balance);
+          document.getElementById('wallet-pending').textContent = fmtPKR(d.pending_balance);
+          document.getElementById('wallet-earned').textContent = fmtPKR(d.total_earned);
+          document.getElementById('wallet-withdrawn').textContent = fmtPKR(d.total_withdrawn);
+
+          var payouts = d.payouts || [];
+          document.getElementById('payout-count').textContent = payouts.length + ' request' + (payouts.length !== 1 ? 's' : '');
+          var tbody = document.getElementById('payouts-tbody');
+          if (!payouts.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="py-12 text-center"><div class="empty-state"><i class="fa-solid fa-money-bill-transfer text-3xl mb-3 opacity-30"></i><p class="font-semibold">No payouts yet</p><p class="text-sm mt-1">Request your first payout above</p></div></td></tr>';
+            return;
+          }
+          tbody.innerHTML = payouts.map(function (p) {
+            return '<tr>' +
+              '<td><span class="font-mono text-xs" style="color:#818cf8;">' + (p.reference || '#' + p.payout_id) + '</span></td>' +
+              '<td><span class="font-black" style="color:#34d399;">' + fmtPKR(p.amount) + '</span></td>' +
+              '<td><span class="text-sm font-semibold">' + (p.method || '').replace(/_/g, ' ') + '</span></td>' +
+              '<td>' + statusBadge(p.status) + '</td>' +
+              '<td class="text-xs" style="color:var(--p-text-muted);">' + fmtDate(p.requested_at) + '</td>' +
+              '<td class="text-xs" style="color:var(--p-text-muted);">' + fmtDate(p.processed_at) + '</td>' +
+              '</tr>';
+          }).join('');
+        } catch (e) {
+          document.getElementById('payouts-tbody').innerHTML = '<tr><td colspan="6" class="py-8 text-center" style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Failed to load payouts</td></tr>';
+        }
+      }
+
+      document.getElementById('btn-request-payout').addEventListener('click', function () {
+        document.getElementById('modal-available').textContent = fmtPKR(availableBalance);
+        document.getElementById('payout-modal').style.display = 'flex';
+      });
+      document.getElementById('btn-close-modal').addEventListener('click', function () {
+        document.getElementById('payout-modal').style.display = 'none';
+      });
+      document.getElementById('payout-modal').addEventListener('click', function (e) {
+        if (e.target === e.currentTarget) document.getElementById('payout-modal').style.display = 'none';
+      });
+
+      document.getElementById('payout-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var errEl = document.getElementById('payout-form-error');
+        errEl.style.display = 'none';
+
+        // ✅ FIX: Client-side validation
+        var amount = parseFloat(document.getElementById('po-amount').value) || 0;
+        if (amount < 1000) {
+          errEl.textContent = 'Minimum payout amount is PKR 1,000.';
+          errEl.style.display = 'block';
+          return;
+        }
+        if (amount > availableBalance) {
+          errEl.textContent = 'Amount exceeds available balance of ' + fmtPKR(availableBalance) + '.';
+          errEl.style.display = 'block';
+          return;
+        }
+
+        var btn = document.getElementById('btn-submit-payout');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting…';
+
+        try {
+          var r = await API.post('/seller/payout-request', {
+            amount: amount,
+            method: document.getElementById('po-method').value,
+            account_title: document.getElementById('po-title').value,
+            account_number: document.getElementById('po-account').value,
+            notes: document.getElementById('po-notes').value
+          });
+          if (r.success || r.data) {
+            document.getElementById('payout-modal').style.display = 'none';
+            document.getElementById('payout-form').reset();
+            showToast('Payout request submitted! Processing in 1–3 business days.', 'success');
+            await loadPayouts();
+          } else {
+            errEl.textContent = r.message || r.error || 'Failed to submit payout request.';
+            errEl.style.display = 'block';
+          }
+        } catch (err) {
+          errEl.textContent = 'Network error. Please try again.';
+          errEl.style.display = 'block';
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit Payout Request';
+        }
+      });
+
+      loadPayouts();
+    })();
+  </script>
+</body>
+
+</html>

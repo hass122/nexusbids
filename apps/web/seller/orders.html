@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Orders — Seller Studio</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --so-bg: #f4f6fb;
+      --so-surface: #ffffff;
+      --so-surface-2: #f7f9fc;
+      --so-surface-3: #eceff6;
+      --so-border: #e3e8f0;
+      --so-border-strong: #cfd7e5;
+      --so-text: #0f172a;
+      --so-text-muted: #58627a;
+      --so-text-light: #8d97ab;
+      --so-field-bg: #ffffff;
+      --so-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --so-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --so-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .30);
+      --so-glow: rgba(99, 102, 241, .13);
+      --so-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%);
+      --so-modal-bg: rgba(15, 23, 42, .42);
+    }
+
+    html.dark {
+      --so-bg: #05070f;
+      --so-surface: #0d1220;
+      --so-surface-2: #121a2b;
+      --so-surface-3: #1a2336;
+      --so-border: #1e2a40;
+      --so-border-strong: #2c3a56;
+      --so-text: #eef2f9;
+      --so-text-muted: #9aa6bd;
+      --so-text-light: #66738d;
+      --so-field-bg: #0a0f1c;
+      --so-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --so-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --so-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .85);
+      --so-glow: rgba(99, 102, 241, .20);
+      --so-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%);
+      --so-modal-bg: rgba(0, 0, 0, .68);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--so-bg);
+      color: var(--so-text);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+      overflow-x: hidden;
+    }
+
+    .page-shell {
+      position: relative;
+    }
+
+    .page-shell::before {
+      content: "";
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1100px, 100vw);
+      height: 460px;
+      background: radial-gradient(closest-side, var(--so-glow), transparent 78%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-shell>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .28);
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.4vw, 2.15rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.13;
+      color: var(--so-text);
+    }
+
+    .page-sub {
+      font-size: .85rem;
+      color: var(--so-text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 620px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--so-text-light);
+      margin-bottom: 14px;
+    }
+
+    .section-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--so-border);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      text-decoration: none;
+      white-space: nowrap;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all .22s;
+    }
+
+    .btn:active {
+      transform: translateY(0) scale(.975);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+
+    .btn-ghost {
+      background: var(--so-surface);
+      border-color: var(--so-border);
+      color: var(--so-text-muted);
+      box-shadow: var(--so-shadow-sm);
+    }
+
+    .btn-ghost:hover {
+      color: var(--so-text);
+      border-color: var(--so-border-strong);
+      transform: translateY(-1px);
+      box-shadow: var(--so-shadow-md);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      box-shadow: 0 10px 22px -10px rgba(79, 70, 229, .85);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px -10px rgba(79, 70, 229, .95);
+    }
+
+    .btn-secondary {
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .3);
+      color: #818cf8;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(99, 102, 241, .25);
+      transform: translateY(-1px);
+    }
+
+    .metric {
+      position: relative;
+      padding: 16px;
+      border-radius: 18px;
+      background: var(--so-surface);
+      border: 1px solid var(--so-border);
+      box-shadow: var(--so-shadow-sm);
+      overflow: hidden;
+      transition: all .3s;
+    }
+
+    .metric::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(180px 110px at 100% 0%, var(--accent-glow), transparent 72%);
+      pointer-events: none;
+      opacity: .9;
+    }
+
+    .metric:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--so-shadow-lg);
+      border-color: var(--accent);
+    }
+
+    .metric-top {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .metric-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      font-size: .85rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .metric-label {
+      position: relative;
+      font-size: .64rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--so-text-light);
+    }
+
+    .metric-value {
+      position: relative;
+      font-size: clamp(1.35rem, 4.5vw, 1.7rem);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--accent-text);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.02em;
+    }
+
+    .metric-brand {
+      --accent: #6366f1;
+      --accent-text: #4f46e5;
+      --accent-soft: rgba(99, 102, 241, .10);
+      --accent-glow: rgba(99, 102, 241, .16);
+    }
+
+    .metric-amber {
+      --accent: #f59e0b;
+      --accent-text: #d97706;
+      --accent-soft: rgba(245, 158, 11, .12);
+      --accent-glow: rgba(245, 158, 11, .18);
+    }
+
+    .metric-indigo {
+      --accent: #8b5cf6;
+      --accent-text: #7c3aed;
+      --accent-soft: rgba(139, 92, 246, .11);
+      --accent-glow: rgba(139, 92, 246, .17);
+    }
+
+    .metric-emerald {
+      --accent: #10b981;
+      --accent-text: #059669;
+      --accent-soft: rgba(16, 185, 129, .10);
+      --accent-glow: rgba(16, 185, 129, .16);
+    }
+
+    html.dark .metric-brand {
+      --accent: #818cf8;
+      --accent-text: #a5b4fc;
+      --accent-soft: rgba(99, 102, 241, .16);
+      --accent-glow: rgba(99, 102, 241, .24);
+    }
+
+    html.dark .metric-amber {
+      --accent: #fbbf24;
+      --accent-text: #fcd34d;
+      --accent-soft: rgba(245, 158, 11, .16);
+      --accent-glow: rgba(245, 158, 11, .22);
+    }
+
+    html.dark .metric-indigo {
+      --accent: #c4b5fd;
+      --accent-text: #ddd6fe;
+      --accent-soft: rgba(139, 92, 246, .18);
+      --accent-glow: rgba(139, 92, 246, .24);
+    }
+
+    html.dark .metric-emerald {
+      --accent: #34d399;
+      --accent-text: #6ee7b7;
+      --accent-soft: rgba(16, 185, 129, .16);
+      --accent-glow: rgba(16, 185, 129, .22);
+    }
+
+    .filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--so-surface);
+      border: 1px solid var(--so-border);
+      border-radius: 13px;
+      box-shadow: var(--so-shadow-sm);
+      overflow-x: auto;
+      max-width: 100%;
+      scrollbar-width: none;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 9px;
+      font-family: inherit;
+      font-size: .74rem;
+      font-weight: 700;
+      color: var(--so-text-muted);
+      transition: background-color .2s, color .2s, box-shadow .2s;
+      white-space: nowrap;
+    }
+
+    .tab i {
+      font-size: .65rem;
+      opacity: .85;
+    }
+
+    .tab:hover {
+      color: var(--so-text);
+    }
+
+    .tab:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 1px;
+    }
+
+    .tab.is-active {
+      background: var(--so-surface-3);
+      color: var(--so-text);
+      box-shadow: var(--so-shadow-sm);
+    }
+
+    .tab .count {
+      font-size: .62rem;
+      font-weight: 800;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: var(--so-surface-3);
+      color: var(--so-text-light);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .tab.is-active .count {
+      background: rgba(99, 102, 241, .18);
+      color: #6366f1;
+    }
+
+    html.dark .tab.is-active .count {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .25);
+    }
+
+    .result-count {
+      font-size: .74rem;
+      color: var(--so-text-light);
+      font-weight: 600;
+    }
+
+    .result-count strong {
+      color: var(--so-text);
+      font-weight: 800;
+    }
+
+    .order-card {
+      position: relative;
+      border-radius: 22px;
+      background: var(--so-surface);
+      border: 1px solid var(--so-border);
+      box-shadow: var(--so-shadow-sm);
+      overflow: hidden;
+      transition: all .3s;
+      animation: cardIn .4s ease both;
+    }
+
+    .order-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--accent, #6366f1);
+      opacity: .9;
+    }
+
+    .order-card:hover {
+      border-color: var(--so-border-strong);
+      box-shadow: var(--so-shadow-lg);
+      transform: translateY(-2px);
+    }
+
+    .order-card.status-shipped {
+      --accent: #8b5cf6;
+    }
+
+    .order-card.status-pending {
+      --accent: #f59e0b;
+    }
+
+    .order-card.status-delivered {
+      --accent: #10b981;
+    }
+
+    .order-card.status-default {
+      --accent: #6366f1;
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .order-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    @media (min-width:780px) {
+      .order-body {
+        flex-direction: row;
+        align-items: center;
+        gap: 24px;
+        padding: 22px 24px;
+      }
+    }
+
+    .order-main {
+      flex: 1 1 auto;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .order-thumb {
+      flex: 0 0 auto;
+      width: 76px;
+      height: 76px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: var(--so-surface-3);
+      border: 1px solid var(--so-border);
+      display: block;
+      position: relative;
+    }
+
+    .order-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .45s ease;
+    }
+
+    .order-card:hover .order-thumb img {
+      transform: scale(1.07);
+    }
+
+    .order-info {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .order-number {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: monospace;
+      font-size: .68rem;
+      color: var(--so-text-light);
+      background: var(--so-surface-2);
+      padding: 3px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--so-border);
+    }
+
+    .order-number i {
+      font-size: .6rem;
+    }
+
+    .order-title {
+      font-size: .98rem;
+      font-weight: 800;
+      color: var(--so-text);
+      margin-top: 8px;
+      letter-spacing: -.01em;
+      line-height: 1.3;
+      word-break: break-word;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .order-buyer {
+      font-size: .76rem;
+      color: var(--so-text-muted);
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .order-buyer i {
+      font-size: .7rem;
+      opacity: .7;
+    }
+
+    .order-buyer strong {
+      color: var(--so-text);
+      font-weight: 700;
+    }
+
+    .order-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border: 1px solid transparent;
+    }
+
+    .badge i {
+      font-size: .56rem;
+    }
+
+    .badge-paid {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .28);
+    }
+
+    .badge-unpaid {
+      background: rgba(245, 158, 11, .13);
+      color: #b45309;
+      border-color: rgba(245, 158, 11, .30);
+    }
+
+    .badge-refunded {
+      background: rgba(99, 102, 241, .11);
+      color: #4f46e5;
+      border-color: rgba(99, 102, 241, .26);
+    }
+
+    .badge-shipped {
+      background: rgba(139, 92, 246, .12);
+      color: #7c3aed;
+      border-color: rgba(139, 92, 246, .28);
+    }
+
+    .badge-pending {
+      background: rgba(245, 158, 11, .13);
+      color: #b45309;
+      border-color: rgba(245, 158, 11, .30);
+    }
+
+    .badge-delivered {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .28);
+    }
+
+    .badge-default {
+      background: var(--so-surface-3);
+      color: var(--so-text-muted);
+      border-color: var(--so-border);
+    }
+
+    html.dark .badge-paid {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399;
+    }
+
+    html.dark .badge-unpaid {
+      background: rgba(245, 158, 11, .18);
+      color: #fbbf24;
+    }
+
+    html.dark .badge-refunded {
+      background: rgba(99, 102, 241, .18);
+      color: #a5b4fc;
+    }
+
+    html.dark .badge-shipped {
+      background: rgba(139, 92, 246, .18);
+      color: #c4b5fd;
+    }
+
+    html.dark .badge-pending {
+      background: rgba(245, 158, 11, .18);
+      color: #fbbf24;
+    }
+
+    html.dark .badge-delivered {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399;
+    }
+
+    .order-side {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+      padding-top: 16px;
+      border-top: 1px dashed var(--so-border);
+    }
+
+    @media (min-width:780px) {
+      .order-side {
+        align-items: flex-end;
+        text-align: right;
+        padding-top: 0;
+        padding-left: 24px;
+        border-top: 0;
+        border-left: 1px dashed var(--so-border);
+        min-width: 240px;
+      }
+    }
+
+    .payout-label {
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--so-text-light);
+    }
+
+    .payout-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #059669;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -.02em;
+      line-height: 1.1;
+      margin-top: 3px;
+    }
+
+    html.dark .payout-value {
+      color: #34d399;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    @media (min-width:780px) {
+      .order-actions {
+        justify-content: flex-end;
+      }
+    }
+
+    .ship-status-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .74rem;
+      font-weight: 700;
+      color: #7c3aed;
+      background: rgba(139, 92, 246, .10);
+      border: 1px solid rgba(139, 92, 246, .24);
+      padding: 8px 13px;
+      border-radius: 10px;
+    }
+
+    html.dark .ship-status-inline {
+      color: #c4b5fd;
+      background: rgba(139, 92, 246, .16);
+    }
+
+    .ship-status-inline i {
+      font-size: .7rem;
+    }
+
+    .skeleton {
+      background: var(--so-skeleton);
+      background-size: 400% 100%;
+      border-radius: 8px;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0 50%;
+      }
+    }
+
+    .empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 56px 24px;
+      background: var(--so-surface);
+      border: 1px solid var(--so-border);
+      border-radius: 22px;
+      box-shadow: var(--so-shadow-sm);
+      animation: cardIn .4s ease both;
+    }
+
+    .empty-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      font-size: 1.7rem;
+      background: var(--so-surface-2);
+      border: 1px solid var(--so-border);
+      color: var(--so-text-light);
+      margin-bottom: 18px;
+    }
+
+    .empty-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--so-text);
+    }
+
+    .empty-text {
+      font-size: .82rem;
+      color: var(--so-text-muted);
+      margin-top: 8px;
+      max-width: 400px;
+      line-height: 1.6;
+    }
+
+    .empty .btn {
+      margin-top: 22px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: var(--so-modal-bg);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .modal-backdrop.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-backdrop.hidden {
+      display: none;
+    }
+
+    .modal-panel {
+      width: 100%;
+      max-width: 520px;
+      background: var(--so-surface);
+      border: 1px solid var(--so-border);
+      border-radius: 22px;
+      box-shadow: var(--so-shadow-lg);
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      transform: translateY(18px) scale(.97);
+      opacity: 0;
+      transition: transform .32s ease, opacity .32s ease;
+    }
+
+    .modal-backdrop.is-open .modal-panel {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .modal-head {
+      position: sticky;
+      top: 0;
+      background: var(--so-surface);
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--so-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      z-index: 2;
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--so-text);
+      letter-spacing: -.01em;
+    }
+
+    .modal-title-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      background: rgba(99, 102, 241, .12);
+      color: #6366f1;
+      font-size: .88rem;
+    }
+
+    html.dark .modal-title-icon {
+      background: rgba(99, 102, 241, .20);
+      color: #a5b4fc;
+    }
+
+    .modal-close {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid var(--so-border);
+      background: var(--so-surface-2);
+      color: var(--so-text-muted);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: .85rem;
+      transition: all .2s;
+    }
+
+    .modal-close:hover {
+      color: var(--so-text);
+      border-color: var(--so-border-strong);
+      transform: rotate(90deg);
+    }
+
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .modal-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--so-text-muted);
+    }
+
+    .modal-label i {
+      font-size: .68rem;
+      opacity: .7;
+    }
+
+    .modal-label .req {
+      color: #e11d48;
+      font-size: .8rem;
+      line-height: 1;
+    }
+
+    html.dark .modal-label .req {
+      color: #fb7185;
+    }
+
+    /* ✅ FIXED: MODAL INPUTS FOR DARK MODE */
+    input.modal-input,
+    select.modal-select {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      background-color: var(--so-field-bg) !important;
+      border: 1px solid var(--so-border) !important;
+      color: var(--so-text) !important;
+      border-radius: 12px !important;
+      padding: 11px 14px !important;
+      font-size: .84rem !important;
+      font-weight: 500 !important;
+      line-height: 1.5 !important;
+      width: 100% !important;
+      outline: none !important;
+      font-family: inherit !important;
+      box-shadow: none !important;
+      color-scheme: dark;
+    }
+
+    html:not(.dark) input.modal-input,
+    html:not(.dark) select.modal-select {
+      color-scheme: light;
+    }
+
+    input.modal-input:hover,
+    select.modal-select:hover {
+      border-color: var(--so-border-strong) !important;
+    }
+
+    input.modal-input:focus,
+    select.modal-select:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16) !important;
+      background-color: var(--so-field-bg) !important;
+      color: var(--so-text) !important;
+    }
+
+    input.modal-input::placeholder {
+      color: var(--so-text-light) !important;
+      opacity: 1 !important;
+      font-weight: 400 !important;
+    }
+
+    select.modal-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 14px !important;
+      padding-right: 36px !important;
+      cursor: pointer !important;
+    }
+
+    select.modal-select option {
+      background-color: var(--so-surface-2);
+      color: var(--so-text);
+      padding: 8px;
+    }
+
+    input[type="date"].modal-input::-webkit-calendar-picker-indicator {
+      filter: invert(.75) brightness(1.3) !important;
+      cursor: pointer !important;
+    }
+
+    html:not(.dark) input[type="date"].modal-input::-webkit-calendar-picker-indicator {
+      filter: none !important;
+      opacity: 0.55 !important;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    .btn-modal-cancel {
+      background: var(--so-surface-2);
+      border-color: var(--so-border);
+      color: var(--so-text-muted);
+    }
+
+    .btn-modal-cancel:hover {
+      color: var(--so-text);
+      border-color: var(--so-border-strong);
+      transform: translateY(-1px);
+    }
+
+    .spin {
+      animation: spin .85s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width:520px) {
+      .order-body {
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .order-thumb {
+        width: 64px;
+        height: 64px;
+      }
+
+      .order-title {
+        font-size: .9rem;
+      }
+
+      .payout-value {
+        font-size: 1.2rem;
+      }
+
+      .metric {
+        padding: 14px;
+        border-radius: 16px;
+      }
+
+      .metric-icon {
+        width: 32px;
+        height: 32px;
+        font-size: .78rem;
+      }
+
+      .modal-panel {
+        border-radius: 18px;
+      }
+
+      .modal-body {
+        padding: 16px;
+      }
+
+      .order-actions .btn {
+        flex: 1 1 calc(50% - 4px);
+      }
+
+      .order-actions .btn.full {
+        flex: 1 1 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+  <main class="page-shell flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7">
+      <div>
+        <span class="eyebrow"><i class="fa-solid fa-box"></i> Seller Studio</span>
+        <h1 class="page-title mt-3">Manage Sold Orders</h1>
+        <p class="page-sub">Dispatch parcels, upload tracking numbers, and track verified payments for all your
+          completed sales.</p>
+      </div>
+      <a href="/seller/dashboard.html" class="btn btn-ghost self-start"><i class="fa-solid fa-arrow-left"></i> Back to
+        Dashboard</a>
+    </div>
+
+    <p class="section-label">Fulfillment Overview</p>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-5 mb-8">
+      <div class="metric metric-brand">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-receipt"></i></div>
+        </div>
+        <p class="metric-label">Total Orders</p>
+        <p id="so-stat-total" class="metric-value">—</p>
+      </div>
+      <div class="metric metric-amber">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+        </div>
+        <p class="metric-label">Awaiting Dispatch</p>
+        <p id="so-stat-pending" class="metric-value">—</p>
+      </div>
+      <div class="metric metric-indigo">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-truck-fast"></i></div>
+        </div>
+        <p class="metric-label">In Transit</p>
+        <p id="so-stat-shipped" class="metric-value">—</p>
+      </div>
+      <div class="metric metric-emerald">
+        <div class="metric-top">
+          <div class="metric-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+        </div>
+        <p class="metric-label">Total Payouts</p>
+        <p id="so-stat-payout" class="metric-value">Rs. 0</p>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <div class="tabs" role="tablist" aria-label="Filter orders">
+        <button type="button" class="tab is-active" data-filter="all" role="tab" aria-selected="true"><i
+            class="fa-solid fa-layer-group"></i> All</button>
+        <button type="button" class="tab" data-filter="pending" role="tab" aria-selected="false"><i
+            class="fa-solid fa-hourglass-half"></i> Awaiting Dispatch</button>
+        <button type="button" class="tab" data-filter="shipped" role="tab" aria-selected="false"><i
+            class="fa-solid fa-truck-fast"></i> In Transit</button>
+        <button type="button" class="tab" data-filter="delivered" role="tab" aria-selected="false"><i
+            class="fa-solid fa-circle-check"></i> Delivered</button>
+      </div>
+      <p class="result-count" id="so-result-count">Loading…</p>
+    </div>
+
+    <div id="orders-container" class="space-y-4" aria-live="polite"></div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <div id="ship-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="ship-modal-title">
+    <div class="modal-panel">
+      <div class="modal-head">
+        <h3 id="ship-modal-title" class="modal-title"><span class="modal-title-icon"><i
+              class="fa-solid fa-truck-fast"></i></span> Dispatch Shipment</h3>
+        <button type="button" class="modal-close" onclick="closeShipModal()" aria-label="Close"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="ship-form" class="modal-body" onsubmit="submitShipment(event)">
+        <input type="hidden" id="ship-order-id">
+        <div class="modal-field">
+          <label class="modal-label" for="courier"><i class="fa-solid fa-truck"></i> Courier Service <span
+              class="req">*</span></label>
+          <select id="courier" required class="modal-select">
+            <option value="TCS">TCS Express</option>
+            <option value="Leopards">Leopards Courier</option>
+            <option value="Trax">Trax Logistics</option>
+            <option value="PostEx">PostEx</option>
+            <option value="M&P">M&P Express Logistics</option>
+            <option value="CallCourier">Call Courier</option>
+            <option value="PakistanPost">Pakistan Post</option>
+            <option value="BlueEX">BlueEX</option>
+            <option value="Daewoo">Daewoo Express</option>
+            <option value="Self">Self / Local Courier</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="tracking_number"><i class="fa-solid fa-barcode"></i> Tracking / CN Number
+            <span class="req">*</span></label>
+          <input type="text" id="tracking_number" required placeholder="e.g. 7748291034" class="modal-input"
+            autocomplete="off">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="estimated_delivery"><i class="fa-regular fa-calendar-check"></i> Estimated
+            Delivery Date</label>
+          <input type="date" id="estimated_delivery" class="modal-input">
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="note"><i class="fa-regular fa-comment-dots"></i> Dispatch Note <span
+              style="color:var(--so-text-light);font-weight:500">(optional)</span></label>
+          <input type="text" id="note" placeholder="e.g. Dispatched via express air cargo" class="modal-input"
+            autocomplete="off">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-modal-cancel" onclick="closeShipModal()">Cancel</button>
+          <button type="submit" id="btn-ship-submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i>
+            Confirm Dispatch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var _t = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      var _u = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+      if (!_t || !['seller', 'admin'].includes(_u.role)) {
+        window.location.href = '/auth/login.html?redirect=/seller/orders.html';
+        return;
+      }
+
+      var FALLBACK_IMG = 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200';
+      function $(id) { return document.getElementById(id); }
+      function esc(str) { return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+      var state = { orders: [], filter: 'all' };
+
+      function paymentBadgeClass(s) { s = (s || '').toLowerCase(); if (s === 'paid') return 'badge-paid'; if (s === 'unpaid' || s === 'pending') return 'badge-unpaid'; if (s === 'refunded') return 'badge-refunded'; return 'badge-default'; }
+      function paymentIcon(s) { s = (s || '').toLowerCase(); if (s === 'paid') return 'fa-circle-check'; if (s === 'unpaid' || s === 'pending') return 'fa-hourglass-half'; if (s === 'refunded') return 'fa-rotate-left'; return 'fa-circle-info'; }
+      function shipmentBadgeClass(s) { s = (s || '').toLowerCase(); if (s === 'shipped') return 'badge-shipped'; if (s === 'pending') return 'badge-pending'; if (s === 'delivered') return 'badge-delivered'; return 'badge-default'; }
+      function shipmentIcon(s) { s = (s || '').toLowerCase(); if (s === 'shipped') return 'fa-truck-fast'; if (s === 'pending') return 'fa-hourglass-half'; if (s === 'delivered') return 'fa-circle-check'; return 'fa-circle-info'; }
+      function cardStatusClass(s) { s = (s || '').toLowerCase(); if (s === 'shipped') return 'status-shipped'; if (s === 'pending') return 'status-pending'; if (s === 'delivered') return 'status-delivered'; return 'status-default'; }
+
+      function renderSkeletons(n) {
+        var out = '';
+        for (var i = 0; i < n; i++) out += '<div class="order-card" style="--accent:transparent;pointer-events:none"><div class="order-body"><div class="order-main"><div class="skeleton order-thumb" style="border:0"></div><div style="flex:1;min-width:0"><div class="skeleton" style="height:12px;width:100px"></div><div class="skeleton" style="height:15px;width:65%;margin-top:9px"></div><div class="skeleton" style="height:11px;width:45%;margin-top:9px"></div><div class="skeleton" style="height:20px;width:180px;margin-top:11px;border-radius:999px"></div></div></div><div class="order-side"><div style="width:100%;text-align:right"><div class="skeleton" style="height:9px;width:80px;margin-left:auto"></div><div class="skeleton" style="height:18px;width:120px;margin-top:7px;margin-left:auto"></div></div><div class="skeleton" style="height:34px;width:140px;border-radius:12px;margin-left:auto"></div></div></div></div>';
+        return out;
+      }
+
+      function renderOrderCard(o) {
+        var paymentStatus = (o.payment_status || 'unpaid').toLowerCase();
+        var shippingStatus = (o.shipping_status || 'pending').toLowerCase();
+        var isShipped = shippingStatus === 'shipped' || shippingStatus === 'delivered';
+
+        // ✅ FRONTEND IMAGE FALLBACK LOGIC
+        var img = o.auction_image || o.image || '';
+        if (img && !img.startsWith('http') && !img.startsWith('data:') && !img.startsWith('/')) {
+          img = '/uploads/' + img; // Backup if backend misses it
+        }
+        if (!img) img = FALLBACK_IMG;
+
+        var payout = o.seller_amount || o.total_amount || 0;
+        var courierName = o.courier || o.carrier || 'Courier';
+        return '<article class="order-card ' + cardStatusClass(shippingStatus) + '">' +
+          '<div class="order-body">' +
+          '<div class="order-main">' +
+          '<a class="order-thumb" href="/seller/auction-details.html?id=' + esc(o.auction_id || '') + '" tabindex="-1" aria-hidden="true"><img src="' + esc(img) + '" alt="" loading="lazy" onerror="this.onerror=null;this.src=\'' + FALLBACK_IMG + '\'"></a>' +
+          '<div class="order-info">' +
+          '<span class="order-number"><i class="fa-solid fa-hashtag"></i>' + esc(o.order_number || '—') + '</span>' +
+          '<h3 class="order-title">' + esc(o.auction_title || 'Auction Item') + '</h3>' +
+          '<p class="order-buyer"><i class="fa-solid fa-user"></i>Buyer: <strong>' + esc(o.counterparty_name || 'Buyer') + '</strong></p>' +
+          '<div class="order-badges">' +
+          '<span class="badge ' + paymentBadgeClass(paymentStatus) + '"><i class="fa-solid ' + paymentIcon(paymentStatus) + '"></i>Payment: ' + esc(paymentStatus) + '</span>' +
+          '<span class="badge ' + shipmentBadgeClass(shippingStatus) + '"><i class="fa-solid ' + shipmentIcon(shippingStatus) + '"></i>Shipment: ' + esc(shippingStatus) + '</span>' +
+          '</div></div></div>' +
+          '<div class="order-side">' +
+          '<div><span class="payout-label">Payout Amount</span><p class="payout-value">' + esc(UI.formatPKR(payout)) + '</p></div>' +
+          '<div class="order-actions">' +
+          '<a href="/seller/order-details.html?id=' + esc(o.order_id) + '" class="btn btn-secondary"><i class="fa-solid fa-circle-info"></i> Details</a>' +
+          (isShipped
+            ? '<span class="ship-status-inline"><i class="fa-solid fa-truck"></i> Dispatched via ' + esc(courierName) + '</span>'
+            : '<button type="button" class="btn btn-primary" onclick="openShipModal(' + esc(o.order_id) + ')"><i class="fa-solid fa-truck-fast"></i> Ship Order</button>'
+          ) +
+          '<a href="/invoice.html?order_id=' + esc(o.order_id) + '&role=seller" class="btn btn-ghost"><i class="fa-solid fa-file-invoice" style="color:#6366f1"></i> Invoice</a>' +
+          '</div></div></div></article>';
+      }
+
+      function applyFilter() {
+        return state.orders.filter(function (o) {
+          var s = (o.shipping_status || 'pending').toLowerCase();
+          if (state.filter === 'pending') return s === 'pending';
+          if (state.filter === 'shipped') return s === 'shipped';
+          if (state.filter === 'delivered') return s === 'delivered';
+          return true;
+        });
+      }
+
+      function updateCounts() {
+        var total = state.orders.length;
+        var pending = state.orders.filter(function (o) { return (o.shipping_status || '').toLowerCase() === 'pending'; }).length;
+        var shipped = state.orders.filter(function (o) { return (o.shipping_status || '').toLowerCase() === 'shipped'; }).length;
+        var delivered = state.orders.filter(function (o) { return (o.shipping_status || '').toLowerCase() === 'delivered'; }).length;
+        document.querySelectorAll('.tab[data-filter]').forEach(function (tab) {
+          var filter = tab.getAttribute('data-filter');
+          var map = { all: total, pending: pending, shipped: shipped, delivered: delivered };
+          var c = tab.querySelector('.count');
+          if (c) c.textContent = map[filter] || 0;
+        });
+        var statTotal = $('so-stat-total'); var statPending = $('so-stat-pending'); var statShipped = $('so-stat-shipped'); var statPayout = $('so-stat-payout');
+        if (statTotal) statTotal.textContent = total;
+        if (statPending) statPending.textContent = pending;
+        if (statShipped) statShipped.textContent = shipped;
+        if (statPayout) statPayout.textContent = UI.formatPKR(state.orders.reduce(function (sum, o) { return sum + Number(o.seller_amount || o.total_amount || 0); }, 0));
+      }
+
+      function renderList() {
+        var container = $('orders-container');
+        var countEl = $('so-result-count');
+        if (!container) return;
+        var list = applyFilter();
+        if (countEl) countEl.innerHTML = '<strong>' + list.length + '</strong> ' + (list.length === 1 ? 'order' : 'orders');
+        if (!state.orders.length) {
+          container.innerHTML = '<div class="empty"><div class="empty-icon"><i class="fa-solid fa-box-archive"></i></div><p class="empty-title">No sold orders yet</p><p class="empty-text">When buyers win your auctions, their orders will appear here for fulfillment.</p><a href="/seller/dashboard.html" class="btn btn-primary"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a></div>';
+          return;
+        }
+        if (!list.length) {
+          container.innerHTML = '<div class="empty"><div class="empty-icon"><i class="fa-solid fa-filter"></i></div><p class="empty-title">Nothing to show</p><p class="empty-text">No orders match this filter right now. Try selecting a different tab.</p></div>';
+          return;
+        }
+        container.innerHTML = list.map(renderOrderCard).join('');
+      }
+
+      async function loadSellerOrders() {
+        var container = $('orders-container');
+        if (!container) return;
+        var countEl = $('so-result-count');
+        if (countEl) countEl.innerHTML = 'Loading…';
+        container.innerHTML = renderSkeletons(3);
+        try {
+          var res = await ApiClient.get('/orders/seller');
+          state.orders = (res && res.data) || [];
+          updateCounts();
+          renderList();
+        } catch (err) {
+          console.error(err);
+          state.orders = [];
+          updateCounts();
+          container.innerHTML = '<div class="empty"><div class="empty-icon" style="color:#e11d48;background:rgba(244,63,94,.10);border-color:rgba(244,63,94,.24)"><i class="fa-solid fa-triangle-exclamation"></i></div><p class="empty-title">Failed to load orders</p><p class="empty-text">' + esc((err && err.message) || 'Please try again in a moment.') + '</p><button type="button" class="btn btn-primary" onclick="loadSellerOrders()"><i class="fa-solid fa-rotate-right"></i> Retry</button></div>';
+        }
+      }
+      window.loadSellerOrders = loadSellerOrders;
+
+      function openShipModal(orderId) {
+        var idField = $('ship-order-id'); var modal = $('ship-modal');
+        if (idField) idField.value = orderId;
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        requestAnimationFrame(function () { modal.classList.add('is-open'); });
+        document.body.style.overflow = 'hidden';
+        var form = $('ship-form'); if (form) form.reset();
+        if (idField) idField.value = orderId;
+
+        // ✅ FIX: pre-fill fields for "Update Dispatch" flow
+        var o = (state.orders || []).find(function (x) { return String(x.order_id) === String(orderId); });
+        if (o) {
+          var courier = o.courier || o.carrier || '';
+          var trk = o.tracking_number || '';
+          var est = '';
+          if (o.estimated_delivery) {
+            var d = new Date(o.estimated_delivery);
+            if (!isNaN(d.getTime())) est = d.toISOString().split('T')[0];
+          }
+          if (courier) {
+            var cSel = $('courier');
+            if (cSel) {
+              var cl = courier.toLowerCase();
+              // ✅ Match both directions: "TCS Express" -> "TCS" (legacy) and "TCS" -> "TCS Express"
+              var match = Array.from(cSel.options).find(function (opt) { return opt.value === courier; })
+                || Array.from(cSel.options).find(function (opt) { return opt.value.toLowerCase() === cl; })
+                || Array.from(cSel.options).find(function (opt) {
+                  var ol = opt.value.toLowerCase();
+                  return ol.indexOf(cl) === 0 || cl.indexOf(ol) === 0;
+                });
+              if (match) cSel.value = match.value;
+            }
+          }
+          if (trk && $('tracking_number')) $('tracking_number').value = trk;
+          if (est && $('estimated_delivery')) $('estimated_delivery').value = est;
+          if (o.note && $('note')) $('note').value = o.note;
+        }
+
+        setTimeout(function () { var tn = $('tracking_number'); if (tn) try { tn.focus(); } catch (e) { } }, 300);
+      }
+      window.openShipModal = openShipModal;
+
+      function closeShipModal() {
+        var modal = $('ship-modal');
+        if (!modal) return;
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+        setTimeout(function () { modal.classList.add('hidden'); }, 250);
+      }
+      window.closeShipModal = closeShipModal;
+
+      async function submitShipment(e) {
+        e.preventDefault();
+        var orderId = $('ship-order-id').value;
+        var btn = $('btn-ship-submit');
+        var original = btn ? btn.innerHTML : '';
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Dispatching…'; }
+        var payload = {
+          courier: $('courier').value,
+          tracking_number: $('tracking_number').value.trim(),
+          estimated_delivery: $('estimated_delivery').value || null,
+          note: $('note').value.trim() || null
+        };
+        try {
+          await ApiClient.post('/shipping/orders/' + orderId + '/ship', payload);
+          UI.showToast('Shipment details added and order marked as shipped!', 'success');
+          closeShipModal();
+          loadSellerOrders();
+        } catch (err) {
+          UI.showToast((err && err.message) || 'Could not dispatch order', 'error');
+          if (btn) { btn.disabled = false; btn.innerHTML = original || 'Confirm Dispatch'; }
+        }
+      }
+      window.submitShipment = submitShipment;
+
+      function initTabs() {
+        var tabs = document.querySelectorAll('.tab[data-filter]');
+        tabs.forEach(function (tab) {
+          tab.addEventListener('click', function () {
+            var filter = tab.getAttribute('data-filter');
+            if (filter === state.filter) return;
+            state.filter = filter;
+            tabs.forEach(function (t) { var active = t === tab; t.classList.toggle('is-active', active); t.setAttribute('aria-selected', active ? 'true' : 'false'); });
+            renderList();
+          });
+        });
+      }
+      function initModal() {
+        var modal = $('ship-modal');
+        if (!modal) return;
+        modal.addEventListener('click', function (e) { if (e.target === modal) closeShipModal(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && modal.classList.contains('is-open')) closeShipModal(); });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        initTabs();
+        initModal();
+        loadSellerOrders();
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

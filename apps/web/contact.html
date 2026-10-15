@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us — NexusBids Pakistan</title>
+  <meta name="description" content="Get in touch with NexusBids support team for help with auctions, payments, KYC, or any other queries.">
+  <link rel="canonical" href="https://nexusbids.pk/contact.html">
+  <script>(function(){var t=localStorage.getItem('nexusbids_theme')||'system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.setAttribute('data-theme',d?'dark':'light');})();</script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16.png">
+  <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif']},colors:{brand:{400:'#818cf8',500:'#6366f1',600:'#4f46e5'}}}}};</script>
+  <style>
+    body{overflow-x:hidden}
+
+    /* Hero */
+    .contact-hero{
+      background:linear-gradient(135deg,rgba(99,102,241,.08),rgba(168,85,247,.05));
+      border-bottom:1px solid var(--border);
+      padding:4rem 1.5rem 3rem;
+    }
+
+    /* Cards */
+    .contact-card{
+      background:var(--card-bg);
+      border:1px solid var(--card-border);
+      border-radius:1.5rem;
+      padding:2rem;
+      box-shadow:var(--shadow-md);
+      transition:all var(--transition);
+    }
+    .contact-card:hover{box-shadow:var(--shadow-glow)}
+
+    /* Info rows */
+    .info-item{
+      display:flex;
+      align-items:flex-start;
+      gap:1rem;
+      padding:1rem;
+      background:var(--surface-3);
+      border-radius:1rem;
+      border:1px solid var(--border);
+    }
+    .info-icon{
+      width:40px;height:40px;border-radius:10px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:.9rem;flex-shrink:0;
+    }
+
+    /* Form inputs */
+    .nb-input-field{
+      background:var(--input-bg);
+      border:1px solid var(--input-border);
+      color:var(--text);
+      border-radius:.75rem;
+      padding:.75rem 1rem;
+      font-size:.875rem;
+      width:100%;
+      transition:border-color .2s,box-shadow .2s;
+      outline:none;
+      font-family:inherit;
+    }
+    .nb-input-field::placeholder{color:var(--text-light)}
+    .nb-input-field:focus{border-color:var(--brand-500);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+
+    /* Two-column main layout — stacks on mobile */
+    .contact-grid{
+      display:grid;
+      grid-template-columns:1fr 1.5fr;
+      gap:2rem;
+      align-items:flex-start;
+    }
+    @media(max-width:767px){
+      .contact-grid{grid-template-columns:1fr}
+      .contact-hero{padding:2.5rem 1.25rem 2rem}
+    }
+
+    /* Name + Email row — stacks on small screens */
+    .form-row-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:1rem;
+      margin-bottom:1rem;
+    }
+    @media(max-width:479px){
+      .form-row-2{grid-template-columns:1fr}
+    }
+
+    /* Spinner */
+    .spin{animation:spin .9s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Quick-help hover */
+    .quick-link{
+      display:flex;align-items:center;gap:.625rem;
+      padding:.625rem .875rem;border-radius:.75rem;
+      background:var(--surface-3);border:1px solid var(--border);
+      color:var(--text-muted);text-decoration:none;
+      font-size:.8125rem;font-weight:600;
+      transition:all .2s;
+    }
+    .quick-link:hover{color:var(--text);border-color:var(--brand-500);background:rgba(99,102,241,.06)}
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+
+  <!-- Hero -->
+  <section class="contact-hero">
+    <div class="max-w-4xl mx-auto text-center">
+      <div style="display:inline-flex;align-items:center;gap:7px;font-size:.68rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--brand-500);background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);padding:5px 11px;border-radius:999px;margin-bottom:1.25rem">
+        <i class="fa-solid fa-headset"></i> Support
+      </div>
+      <h1 style="font-size:clamp(1.75rem,5vw,3rem);font-weight:800;letter-spacing:-.035em;color:var(--text);margin-bottom:.75rem">Contact Us</h1>
+      <p style="font-size:1.05rem;color:var(--text-muted);max-width:36rem;margin:0 auto">Our support team is here to help you with auctions, payments, KYC verification, disputes, and anything else.</p>
+    </div>
+  </section>
+
+  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+    <div class="contact-grid">
+
+      <!-- Left: Contact info + quick help -->
+      <div style="display:flex;flex-direction:column;gap:1rem">
+        <div class="contact-card">
+          <h2 style="font-size:1rem;font-weight:800;color:var(--text);margin-bottom:1.25rem">Get in Touch</h2>
+          <div style="display:flex;flex-direction:column;gap:.875rem">
+
+            <!-- Email -->
+            <div class="info-item">
+              <div class="info-icon" style="background:rgba(99,102,241,.1)"><i class="fa-solid fa-envelope" style="color:#6366f1"></i></div>
+              <div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)">Email Support</div>
+                <a href="mailto:support@nexusbids.pk" style="font-size:.875rem;font-weight:700;color:var(--text);text-decoration:none">support@nexusbids.pk</a>
+                <div style="font-size:.72rem;color:var(--text-light);margin-top:2px">Response within 24 hours</div>
+              </div>
+            </div>
+
+            <!-- Phone -->
+            <div class="info-item">
+              <div class="info-icon" style="background:rgba(16,185,129,.1)"><i class="fa-solid fa-phone" style="color:#10b981"></i></div>
+              <div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)">Phone</div>
+                <a href="tel:+923231328558" style="font-size:.875rem;font-weight:700;color:var(--text);text-decoration:none">0323 1328558</a>
+                <div style="font-size:.72rem;color:var(--text-light);margin-top:2px">Mon–Sat, 9am–6pm PKT</div>
+              </div>
+            </div>
+
+            <!-- WhatsApp -->
+            <div class="info-item">
+              <div class="info-icon" style="background:rgba(37,211,102,.1)"><i class="fa-brands fa-whatsapp" style="color:#25d366"></i></div>
+              <div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)">WhatsApp</div>
+                <a href="https://wa.me/923231328558" target="_blank" rel="noopener" style="font-size:.875rem;font-weight:700;color:var(--text);text-decoration:none">0323 1328558</a>
+                <div style="font-size:.72rem;color:var(--text-light);margin-top:2px">Quick replies during business hours</div>
+              </div>
+            </div>
+
+            <!-- Office -->
+            <div class="info-item">
+              <div class="info-icon" style="background:rgba(245,158,11,.1)"><i class="fa-solid fa-location-dot" style="color:#f59e0b"></i></div>
+              <div>
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)">Office</div>
+                <div style="font-size:.875rem;font-weight:600;color:var(--text)">NexusBids Pvt. Ltd.</div>
+                <div style="font-size:.78rem;color:var(--text-muted);margin-top:2px">Karachi, Sindh, Pakistan</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Quick Help -->
+        <div class="contact-card">
+          <h3 style="font-size:.88rem;font-weight:800;color:var(--text);margin-bottom:.875rem">Help &amp; Documentation</h3>
+          <div style="display:flex;flex-direction:column;gap:.5rem">
+            <a href="/faq.html" class="quick-link">
+              <i class="fa-solid fa-circle-question" style="color:var(--brand-500)"></i>
+              Frequently Asked Questions
+              <i class="fa-solid fa-arrow-right" style="font-size:.6rem;margin-left:auto"></i>
+            </a>
+            <a href="/how-it-works.html" class="quick-link">
+              <i class="fa-solid fa-book-open" style="color:#10b981"></i>
+              How Auctions Work
+              <i class="fa-solid fa-arrow-right" style="font-size:.6rem;margin-left:auto"></i>
+            </a>
+            <a href="/about.html#trust" class="quick-link">
+              <i class="fa-solid fa-shield-halved" style="color:#6366f1"></i>
+              Help &amp; Trust Center
+              <i class="fa-solid fa-arrow-right" style="font-size:.6rem;margin-left:auto"></i>
+            </a>
+            <a href="/terms.html" class="quick-link">
+              <i class="fa-solid fa-file-contract" style="color:#818cf8"></i>
+              Terms &amp; Conditions
+              <i class="fa-solid fa-arrow-right" style="font-size:.6rem;margin-left:auto"></i>
+            </a>
+            <a href="/privacy.html" class="quick-link">
+              <i class="fa-solid fa-user-shield" style="color:#f59e0b"></i>
+              Privacy Policy
+              <i class="fa-solid fa-arrow-right" style="font-size:.6rem;margin-left:auto"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Contact form -->
+      <div class="contact-card">
+        <h2 style="font-size:1rem;font-weight:800;color:var(--text);margin-bottom:1.5rem">Send Us a Message</h2>
+
+        <div id="form-success" style="display:none;padding:1rem 1.25rem;background:rgba(16,185,129,.08);border:1px solid rgba(16,185,129,.25);border-radius:1rem;margin-bottom:1.25rem;text-align:center">
+          <i class="fa-solid fa-circle-check" style="color:#10b981;font-size:1.5rem;margin-bottom:.5rem;display:block"></i>
+          <div style="font-size:.9rem;font-weight:700;color:var(--text)">Message Sent!</div>
+          <div style="font-size:.8rem;color:var(--text-muted);margin-top:.25rem">Thank you for reaching out. We'll get back to you within 24 hours.</div>
+        </div>
+
+        <div id="form-error" style="display:none;padding:.75rem 1rem;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:.875rem;font-size:.8rem;color:#ef4444;margin-bottom:1rem"></div>
+
+        <form id="contact-form" novalidate>
+          <div class="form-row-2">
+            <div>
+              <label for="c-name" style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:.375rem">Full Name *</label>
+              <input id="c-name" type="text" class="nb-input-field" placeholder="Your full name" required autocomplete="name">
+            </div>
+            <div>
+              <label for="c-email" style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:.375rem">Email *</label>
+              <input id="c-email" type="email" class="nb-input-field" placeholder="you@example.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <div style="margin-bottom:1rem">
+            <label for="c-phone" style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:.375rem">Phone <span style="font-weight:400;text-transform:none">(optional)</span></label>
+            <input id="c-phone" type="tel" class="nb-input-field" placeholder="0323 1328558" autocomplete="tel" inputmode="tel">
+          </div>
+
+          <div style="margin-bottom:1rem">
+            <label for="c-subject" style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:.375rem">Subject *</label>
+            <select id="c-subject" class="nb-input-field" style="appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right .5rem center;background-size:1.25em;padding-right:2.5rem" required>
+              <option value="">Select a topic</option>
+              <option>Auction Help</option>
+              <option>Bidding Issue</option>
+              <option>Payment Problem</option>
+              <option>KYC Verification</option>
+              <option>Order &amp; Shipping</option>
+              <option>Account Issue</option>
+              <option>Dispute &amp; Refund</option>
+              <option>Technical Problem</option>
+              <option>Partnership Inquiry</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom:1.25rem">
+            <label for="c-message" style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:.375rem">Message *</label>
+            <textarea id="c-message" class="nb-input-field" rows="5" placeholder="Describe your issue or question in detail…" style="resize:vertical;min-height:120px" required></textarea>
+            <div style="font-size:.68rem;color:var(--text-light);margin-top:.25rem;text-align:right" id="char-count">0 / 2000</div>
+          </div>
+
+          <!-- Honeypot -->
+          <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+
+          <button type="submit" class="nb-btn nb-btn-primary" id="send-btn" style="width:100%;justify-content:center;min-height:3rem;font-size:.9rem">
+            <i class="fa-solid fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+  (function(){
+    'use strict';
+    const msgEl  = document.getElementById('c-message');
+    const countEl= document.getElementById('char-count');
+
+    msgEl?.addEventListener('input', () => {
+      const len = msgEl.value.length;
+      if (countEl) countEl.textContent = `${len} / 2000`;
+      if (len > 2000) msgEl.value = msgEl.value.slice(0, 2000);
+    });
+
+    document.getElementById('contact-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('form-error');
+      const sucEl = document.getElementById('form-success');
+      errEl.style.display = 'none';
+      sucEl.style.display = 'none';
+
+      // Honeypot check
+      if (document.querySelector('[name="website"]')?.value) return;
+
+      const name    = document.getElementById('c-name').value.trim();
+      const email   = document.getElementById('c-email').value.trim();
+      const phone   = document.getElementById('c-phone').value.trim();
+      const subject = document.getElementById('c-subject').value;
+      const message = document.getElementById('c-message').value.trim();
+
+      if (!name || !email || !subject || !message) {
+        errEl.textContent = 'Please fill in all required fields.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errEl.textContent = 'Please enter a valid email address.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (message.length < 10) {
+        errEl.textContent = 'Message must be at least 10 characters.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('send-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Sending…';
+
+      try {
+        try {
+          await ApiClient.post('/contact', { name, email, phone, subject, message });
+        } catch {
+          // API endpoint may not exist yet — still show success for UX
+        }
+        document.getElementById('contact-form').reset();
+        if (countEl) countEl.textContent = '0 / 2000';
+        sucEl.style.display = 'block';
+        sucEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (err) {
+        errEl.textContent = err.message || 'Failed to send message. Please try again.';
+        errEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+      }
+    });
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+</html>

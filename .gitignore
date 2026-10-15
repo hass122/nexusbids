@@ -1,0 +1,32 @@
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Node dependencies
+node_modules/
+
+# Build artifacts
+dist/
+build/
+.next/
+out/
+
+# Uploads and temporary files
+uploads/
+scratch/
+temp/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+.vercel
+.expo/
+test-results/
+apps/api/src/scripts/
+apps/api/check-db.ts
+apps/api/debug-email.mjs
+apps/api/force-reset.ts
+

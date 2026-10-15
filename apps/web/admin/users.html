@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management — NexusBids Admin</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <style>
+    :root {
+      --u-bg: #f4f6fb;
+      --u-surface: #fff;
+      --u-surface-2: #f7f9fc;
+      --u-surface-3: #eceff6;
+      --u-border: #e3e8f0;
+      --u-border-strong: #cfd7e5;
+      --u-text: #0f172a;
+      --u-text-muted: #565650;
+      --u-text-light: #6e6e68;
+      --u-field-bg: #fff;
+      --u-row-hover: #f4f7fd;
+      --u-skeleton: linear-gradient(90deg, #eef1f7 25%, #e3e8f2 37%, #eef1f7 63%)
+    }
+
+    html.dark {
+      --u-bg: #05070f;
+      --u-surface: #0d1220;
+      --u-surface-2: #121a2b;
+      --u-surface-3: #1a2336;
+      --u-border: #1e2a40;
+      --u-border-strong: #2c3a56;
+      --u-text: #eef2f9;
+      --u-text-muted: #b8b8b0;
+      --u-text-light: #8f8f88;
+      --u-field-bg: #0a0f1c;
+      --u-row-hover: #141d31;
+      --u-skeleton: linear-gradient(90deg, #121a2b 25%, #1b2437 37%, #121a2b 63%)
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box
+    }
+
+    body.page {
+      background: var(--u-bg);
+      color: var(--u-text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden
+    }
+
+    .search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 240px;
+      flex: 1 1 240px;
+      max-width: 380px
+    }
+
+    .search-wrap .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .82rem;
+      color: var(--u-text-light);
+      pointer-events: none;
+      z-index: 2
+    }
+
+    #filter-user-search {
+      width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 11px 40px 11px 40px !important;
+      margin: 0 !important;
+      border-radius: 12px !important;
+      background: var(--u-field-bg) !important;
+      border: 1px solid var(--u-border) !important;
+      color: var(--u-text) !important;
+      font-size: .82rem !important;
+      font-family: inherit !important;
+      font-weight: 500 !important;
+      outline: none !important;
+      -webkit-appearance: none;
+      appearance: none
+    }
+
+    #filter-user-search::placeholder {
+      color: var(--u-text-light) !important
+    }
+
+    #filter-user-search:focus {
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16) !important
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      border: 0;
+      background: transparent;
+      color: var(--u-text-light);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: .72rem;
+      z-index: 2
+    }
+
+    .search-clear:hover {
+      color: var(--u-text);
+      background: var(--u-surface-3)
+    }
+
+    .search-wrap.has-value .search-clear {
+      display: inline-flex
+    }
+
+    .panel {
+      background: var(--u-surface);
+      border: 1px solid var(--u-border);
+      border-radius: 22px;
+      overflow: hidden
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--u-border)
+    }
+
+    .panel-head-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .82rem;
+      font-weight: 800
+    }
+
+    .panel-head-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981
+    }
+
+    .panel-count {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--u-text-light);
+      background: var(--u-surface-2);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--u-border)
+    }
+
+    .table-scroll {
+      overflow-x: auto
+    }
+
+    table.users {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem
+    }
+
+    table.users thead {
+      background: var(--u-surface-2);
+      border-bottom: 1px solid var(--u-border)
+    }
+
+    table.users thead th {
+      text-align: left;
+      padding: 13px 18px;
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--u-text-light);
+      white-space: nowrap
+    }
+
+    table.users thead th.right {
+      text-align: right
+    }
+
+    table.users tbody tr {
+      border-bottom: 1px solid var(--u-border);
+      transition: background-color .2s
+    }
+
+    table.users tbody tr:last-child {
+      border-bottom: 0
+    }
+
+    table.users tbody tr:hover {
+      background: var(--u-row-hover)
+    }
+
+    table.users tbody td {
+      padding: 14px 18px;
+      vertical-align: middle
+    }
+
+    table.users tbody td.right {
+      text-align: right
+    }
+
+    .user-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .avatar {
+      flex: 0 0 auto;
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      display: grid;
+      place-items: center;
+      font-size: .78rem;
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6)
+    }
+
+    .avatar.role-admin {
+      background: linear-gradient(135deg, #f43f5e, #e11d48)
+    }
+
+    .avatar.role-seller {
+      background: linear-gradient(135deg, #6366f1, #4f46e5)
+    }
+
+    .avatar.role-buyer,
+    .avatar.role-user {
+      background: linear-gradient(135deg, #06b6d4, #0891b2)
+    }
+
+    .user-name {
+      font-size: .84rem;
+      font-weight: 700;
+      line-height: 1.25;
+      word-break: break-word
+    }
+
+    .user-id {
+      font-size: .66rem;
+      color: var(--u-text-light);
+      margin-top: 2px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace
+    }
+
+    .contact-email {
+      font-size: .8rem;
+      word-break: break-all;
+      line-height: 1.35
+    }
+
+    .contact-phone {
+      font-size: .7rem;
+      color: var(--u-text-light);
+      margin-top: 3px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .date-cell {
+      font-size: .78rem;
+      color: var(--u-text-muted);
+      white-space: nowrap
+    }
+
+    .date-cell .time {
+      display: block;
+      font-size: .66rem;
+      color: var(--u-text-light);
+      margin-top: 2px
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border: 1px solid transparent
+    }
+
+    .pill i {
+      font-size: .58rem
+    }
+
+    .pill-role-admin {
+      background: rgba(244, 63, 94, .10);
+      color: #e11d48;
+      border-color: rgba(244, 63, 94, .24)
+    }
+
+    .pill-role-seller {
+      background: rgba(99, 102, 241, .11);
+      color: #4f46e5;
+      border-color: rgba(99, 102, 241, .26)
+    }
+
+    .pill-role-buyer,
+    .pill-role-user {
+      background: rgba(6, 182, 212, .11);
+      color: #0891b2;
+      border-color: rgba(6, 182, 212, .26)
+    }
+
+    .pill-role-default {
+      background: var(--u-surface-3);
+      color: var(--u-text-muted);
+      border-color: var(--u-border)
+    }
+
+    html.dark .pill-role-admin {
+      background: rgba(244, 63, 94, .16);
+      color: #fb7185
+    }
+
+    html.dark .pill-role-seller {
+      background: rgba(99, 102, 241, .18);
+      color: #a5b4fc
+    }
+
+    html.dark .pill-role-buyer,
+    html.dark .pill-role-user {
+      background: rgba(6, 182, 212, .18);
+      color: #67e8f9
+    }
+
+    .pill-kyc-approved {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .28)
+    }
+
+    .pill-kyc-pending {
+      background: rgba(245, 158, 11, .13);
+      color: #b45309;
+      border-color: rgba(245, 158, 11, .30)
+    }
+
+    .pill-kyc-rejected {
+      background: rgba(244, 63, 94, .11);
+      color: #e11d48;
+      border-color: rgba(244, 63, 94, .26)
+    }
+
+    .pill-kyc-unverified {
+      background: var(--u-surface-3);
+      color: var(--u-text-muted);
+      border-color: var(--u-border)
+    }
+
+    html.dark .pill-kyc-approved {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399
+    }
+
+    html.dark .pill-kyc-pending {
+      background: rgba(245, 158, 11, .18);
+      color: #fbbf24
+    }
+
+    html.dark .pill-kyc-rejected {
+      background: rgba(244, 63, 94, .16);
+      color: #fb7185
+    }
+
+    .pill-status-active {
+      background: rgba(16, 185, 129, .12);
+      color: #059669;
+      border-color: rgba(16, 185, 129, .28)
+    }
+
+    .pill-status-inactive {
+      background: rgba(245, 158, 11, .13);
+      color: #b45309;
+      border-color: rgba(245, 158, 11, .30)
+    }
+
+    .pill-status-blocked {
+      background: rgba(244, 63, 94, .11);
+      color: #e11d48;
+      border-color: rgba(244, 63, 94, .26)
+    }
+
+    html.dark .pill-status-active {
+      background: rgba(16, 185, 129, .18);
+      color: #34d399
+    }
+
+    html.dark .pill-status-inactive {
+      background: rgba(245, 158, 11, .18);
+      color: #fbbf24
+    }
+
+    html.dark .pill-status-blocked {
+      background: rgba(244, 63, 94, .16);
+      color: #fb7185
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border-radius: 10px;
+      font-size: .72rem;
+      font-weight: 700;
+      line-height: 1;
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: all .2s
+    }
+
+    .btn:active {
+      transform: scale(.97)
+    }
+
+    .btn-block {
+      background: var(--u-surface-2);
+      border-color: var(--u-border);
+      color: #e11d48
+    }
+
+    .btn-block:hover {
+      background: rgba(244, 63, 94, .10);
+      transform: translateY(-1px)
+    }
+
+    html.dark .btn-block {
+      color: #fb7185
+    }
+
+    html.dark .btn-block:hover {
+      background: rgba(244, 63, 94, .16)
+    }
+
+    .btn-unblock {
+      background: var(--u-surface-2);
+      border-color: var(--u-border);
+      color: #059669
+    }
+
+    .btn-unblock:hover {
+      background: rgba(16, 185, 129, .10);
+      transform: translateY(-1px)
+    }
+
+    html.dark .btn-unblock {
+      color: #34d399
+    }
+
+    html.dark .btn-unblock:hover {
+      background: rgba(16, 185, 129, .16)
+    }
+
+    .skeleton {
+      background: var(--u-skeleton);
+      background-size: 400% 100%;
+      border-radius: 8px;
+      animation: shimmer 1.4s ease-in-out infinite
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0 50%
+      }
+    }
+
+    .state-cell {
+      padding: 0 !important
+    }
+
+    .state {
+      padding: 56px 24px;
+      text-align: center
+    }
+
+    .state-icon {
+      width: 66px;
+      height: 66px;
+      border-radius: 20px;
+      display: inline-grid;
+      place-items: center;
+      font-size: 1.5rem;
+      background: var(--u-surface-2);
+      border: 1px solid var(--u-border);
+      color: var(--u-text-light);
+      margin-bottom: 16px
+    }
+
+    .state-icon.err {
+      background: rgba(244, 63, 94, .10);
+      border-color: rgba(244, 63, 94, .24);
+      color: #e11d48
+    }
+
+    .state-title {
+      font-size: .95rem;
+      font-weight: 800
+    }
+
+    .state-text {
+      font-size: .78rem;
+      color: var(--u-text-muted);
+      margin-top: 6px;
+      max-width: 380px;
+      margin-left: auto;
+      margin-right: auto
+    }
+
+    .state .btn {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #fff;
+      border: 0
+    }
+
+    @media (max-width:900px) {
+      table.users thead {
+        display: none
+      }
+
+      table.users tbody tr {
+        display: block;
+        padding: 16px;
+        border-bottom: 1px solid var(--u-border)
+      }
+
+      table.users tbody td {
+        display: block;
+        padding: 0;
+        text-align: left !important
+      }
+
+      table.users tbody td[data-label="User"] {
+        padding-bottom: 12px;
+        border-bottom: 1px dashed var(--u-border);
+        margin-bottom: 12px
+      }
+
+      table.users tbody td[data-label="Role"],
+      table.users tbody td[data-label="KYC"],
+      table.users tbody td[data-label="Status"] {
+        display: inline-block;
+        margin-right: 6px;
+        margin-bottom: 10px;
+        width: auto
+      }
+
+      table.users tbody td[data-label="Actions"] {
+        padding-top: 12px;
+        border-top: 1px dashed var(--u-border);
+        margin-top: 4px
+      }
+
+      table.users tbody td[data-label="Actions"] .btn {
+        width: 100%
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+  <header id="nb-header" style="min-height:64px;contain:layout"></header>
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+    <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
+
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-5 mb-7">
+      <div>
+        <span
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-indigo-500 bg-indigo-500/10 border border-indigo-500/20 mb-3">
+          <i class="fa-solid fa-users-gear"></i> Admin · Trust & Safety
+        </span>
+        <h1 class="text-2xl sm:text-3xl font-black" style="letter-spacing:-.025em">User Management</h1>
+        <p class="text-xs sm:text-sm text-[var(--u-text-muted)] mt-2 max-w-lg">Directory of registered buyers, sellers
+          and admins. Search, review and moderate.</p>
+      </div>
+      <div class="search-wrap" id="search-wrap">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="filter-user-search" placeholder="Search name or email…" oninput="debounceUserSearch()"
+          autocomplete="off">
+        <button type="button" class="search-clear" id="search-clear" aria-label="Clear"><i
+            class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-head-title"><span class="dot"></span>Registered Users</div>
+        <span class="panel-count" id="users-count">Loading…</span>
+      </div>
+      <div class="table-scroll">
+        <table class="users">
+          <thead>
+            <tr>
+              <th>User</th>
+              <th>Email / Phone</th>
+              <th>Role</th>
+              <th>KYC Status</th>
+              <th>Account Status</th>
+              <th>Joined</th>
+              <th class="right">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var searchTimeout = null;
+      function $(id) { return document.getElementById(id); }
+      function esc(str) { return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+      // Normalize backend role 'user' -> frontend label 'buyer' for display consistency
+      function displayRole(role) {
+        var r = (role || '').toLowerCase();
+        if (r === 'user' || r === 'buyer') return 'buyer';
+        return r || 'buyer';
+      }
+      // Map frontend display -> backend value
+      function backendRole(display) {
+        var r = (display || '').toLowerCase();
+        if (r === 'buyer' || r === 'user') return 'user';
+        return r;
+      }
+
+      function initSearchClear() {
+        var input = $('filter-user-search');
+        var wrap = $('search-wrap');
+        var clearBtn = $('search-clear');
+        if (!input || !wrap) return;
+        function sync() { wrap.classList.toggle('has-value', !!input.value.trim()); }
+        input.addEventListener('input', sync);
+        sync();
+        if (clearBtn) {
+          clearBtn.addEventListener('click', () => {
+            input.value = '';
+            sync();
+            input.focus();
+            loadUsers();
+          });
+        }
+      }
+
+      function debounceUserSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(loadUsers, 300);
+      }
+      window.debounceUserSearch = debounceUserSearch;
+
+      function initials(u) {
+        var name = (u.full_name || u.email || '?').trim();
+        var parts = name.split(/\s+/).filter(Boolean);
+        if (!parts.length) return '?';
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+      }
+
+      function roleClass(role) {
+        var r = displayRole(role);
+        if (r === 'admin') return 'role-admin';
+        if (r === 'seller') return 'role-seller';
+        return 'role-buyer';
+      }
+      function rolePillClass(role) {
+        var r = displayRole(role);
+        if (r === 'admin') return 'pill-role-admin';
+        if (r === 'seller') return 'pill-role-seller';
+        return 'pill-role-buyer';
+      }
+      function roleIcon(role) {
+        var r = displayRole(role);
+        if (r === 'admin') return 'fa-user-shield';
+        if (r === 'seller') return 'fa-store';
+        return 'fa-user';
+      }
+      function kycPillClass(status) {
+        var s = (status || 'unverified').toLowerCase();
+        if (s === 'approved') return 'pill-kyc-approved';
+        if (s === 'pending') return 'pill-kyc-pending';
+        if (s === 'rejected') return 'pill-kyc-rejected';
+        return 'pill-kyc-unverified';
+      }
+      function kycIcon(status) {
+        var s = (status || 'unverified').toLowerCase();
+        if (s === 'approved') return 'fa-circle-check';
+        if (s === 'pending') return 'fa-hourglass-half';
+        if (s === 'rejected') return 'fa-circle-xmark';
+        return 'fa-circle-question';
+      }
+      function statusPillClass(status) {
+        var s = (status || 'active').toLowerCase();
+        if (s === 'blocked' || s === 'suspended') return 'pill-status-blocked';
+        if (s === 'inactive') return 'pill-status-inactive';
+        return 'pill-status-active';
+      }
+      function statusIcon(status) {
+        var s = (status || 'active').toLowerCase();
+        if (s === 'blocked' || s === 'suspended') return 'fa-ban';
+        if (s === 'inactive') return 'fa-circle-pause';
+        return 'fa-circle-check';
+      }
+      function formatDate(value) {
+        if (!value) return { date: '—', time: '' };
+        var d = new Date(value);
+        if (isNaN(d.getTime())) return { date: '—', time: '' };
+        return {
+          date: d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+          time: d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+      }
+
+      function renderRow(u) {
+        var dt = formatDate(u.created_at);
+        var displayName = u.full_name || u.email || 'Unnamed user';
+        var status = (u.status || u.account_status || 'active').toLowerCase();
+        var isBlocked = status === 'blocked' || status === 'suspended';
+        var kyc = u.kyc_status || u.seller_kyc_status || 'unverified';
+        var role = displayRole(u.role);
+        var uid = String(u.user_id);
+
+        return '<tr>' +
+          '<td data-label="User"><div class="user-cell">' +
+          '<div class="avatar ' + roleClass(u.role) + '">' + esc(initials(u)) + '</div>' +
+          '<div style="min-width:0"><p class="user-name">' + esc(displayName) + '</p><p class="user-id">ID #' + esc(u.user_id) + '</p></div>' +
+          '</div></td>' +
+          '<td data-label="Contact">' +
+          '<p class="contact-email">' + esc(u.email || '—') + '</p>' +
+          '<span class="contact-phone"><i class="fa-solid fa-phone"></i>' + esc(u.phone || 'No phone') + '</span>' +
+          '</td>' +
+          '<td data-label="Role"><span class="pill ' + rolePillClass(u.role) + '"><i class="fa-solid ' + roleIcon(u.role) + '"></i>' + esc(role) + '</span></td>' +
+          '<td data-label="KYC"><span class="pill ' + kycPillClass(kyc) + '"><i class="fa-solid ' + kycIcon(kyc) + '"></i>' + esc(kyc) + '</span></td>' +
+          '<td data-label="Status"><span class="pill ' + statusPillClass(status) + '"><i class="fa-solid ' + statusIcon(status) + '"></i>' + esc(status) + '</span></td>' +
+          '<td data-label="Joined"><div class="date-cell">' + esc(dt.date) + (dt.time ? '<span class="time">' + esc(dt.time) + '</span>' : '') + '</div></td>' +
+          '<td data-label="Actions" class="right">' +
+          '<div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end">' +
+          (isBlocked
+            ? '<button type="button" class="btn btn-unblock" onclick="toggleBan(\'' + esc(uid) + '\', false)"><i class="fa-solid fa-unlock"></i> Unblock</button>'
+            : '<button type="button" class="btn btn-block" onclick="toggleBan(\'' + esc(uid) + '\', true)"><i class="fa-solid fa-ban"></i> Block</button>') +
+          '<select class="btn" style="padding:6px 10px;font-size:0.72rem;cursor:pointer" onchange="changeUserRole(\'' + esc(uid) + '\', this.value)">' +
+          '<option value="user"' + (role === 'buyer' ? ' selected' : '') + '>Buyer</option>' +
+          '<option value="seller"' + (role === 'seller' ? ' selected' : '') + '>Seller</option>' +
+          '<option value="admin"' + (role === 'admin' ? ' selected' : '') + '>Admin</option>' +
+          '</select>' +
+          (kyc !== 'approved'
+            ? '<button type="button" class="btn btn-unblock" title="Approve KYC" onclick="manuallyVerifyUser(\'' + esc(uid) + '\')"><i class="fa-solid fa-check"></i> Verify</button>'
+            : '') +
+          '</div>' +
+          '</td>' +
+          '</tr>';
+      }
+
+      function renderSkeletons(n) {
+        var out = '';
+        for (var i = 0; i < n; i++) {
+          out += '<tr>' +
+            '<td data-label="User"><div class="user-cell"><div class="skeleton" style="width:38px;height:38px;border-radius:11px"></div><div style="flex:1;min-width:0"><div class="skeleton" style="height:12px;width:130px"></div><div class="skeleton" style="height:10px;width:70px;margin-top:7px"></div></div></div></td>' +
+            '<td data-label="Contact"><div class="skeleton" style="height:11px;width:160px"></div><div class="skeleton" style="height:9px;width:100px;margin-top:7px"></div></td>' +
+            '<td data-label="Role"><div class="skeleton" style="height:20px;width:66px;border-radius:999px"></div></td>' +
+            '<td data-label="KYC"><div class="skeleton" style="height:20px;width:88px;border-radius:999px"></div></td>' +
+            '<td data-label="Status"><div class="skeleton" style="height:20px;width:72px;border-radius:999px"></div></td>' +
+            '<td data-label="Joined"><div class="skeleton" style="height:11px;width:84px"></div></td>' +
+            '<td data-label="Actions" class="right"><div class="skeleton" style="height:30px;width:110px;border-radius:10px;margin-left:auto"></div></td>' +
+            '</tr>';
+        }
+        return out;
+      }
+
+      function renderEmpty(hasQuery) {
+        var tbody = $('users-table-body');
+        var count = $('users-count');
+        if (count) count.textContent = '0 users';
+        tbody.innerHTML = '<tr><td colspan="7" class="state-cell"><div class="state"><div class="state-icon"><i class="fa-solid ' + (hasQuery ? 'fa-magnifying-glass' : 'fa-users') + '"></i></div><p class="state-title">' + (hasQuery ? 'No matching users' : 'No users yet') + '</p><p class="state-text">' + (hasQuery ? 'Try a different search.' : 'Users will appear here once registered.') + '</p></div></td></tr>';
+      }
+
+      function renderError(msg) {
+        var tbody = $('users-table-body');
+        var count = $('users-count');
+        if (count) count.textContent = 'Error';
+        tbody.innerHTML = '<tr><td colspan="7" class="state-cell"><div class="state"><div class="state-icon err"><i class="fa-solid fa-triangle-exclamation"></i></div><p class="state-title">Failed to load users</p><p class="state-text">' + esc(msg || 'Something went wrong.') + '</p><button type="button" class="btn" onclick="loadUsers()"><i class="fa-solid fa-rotate-right"></i> Retry</button></div></td></tr>';
+      }
+
+      async function loadUsers() {
+        var tbody = $('users-table-body');
+        var count = $('users-count');
+        var q = ($('filter-user-search') && $('filter-user-search').value.trim()) || '';
+        var params = q ? { search: q } : {};
+        if (count) count.textContent = 'Loading…';
+        tbody.innerHTML = renderSkeletons(4);
+
+        try {
+          var res = await ApiClient.get('/admin/users', params);
+          // Backend uses sendPaginated → { data: rows, pagination: {...} }
+          var users = (res && res.data) || (Array.isArray(res) ? res : []);
+          if (count) count.textContent = users.length + (users.length === 1 ? ' user' : ' users');
+          if (!users.length) { renderEmpty(!!q); return; }
+          tbody.innerHTML = users.map(renderRow).join('');
+        } catch (err) {
+          console.error(err);
+          renderError(err && err.message);
+        }
+      }
+      window.loadUsers = loadUsers;
+
+      // ✅ FIXED: uses /ban with { is_banned } — backend now respects this
+      async function toggleBan(userId, ban) {
+        var ok = true;
+        if (window.UI && UI.confirm) {
+          ok = await UI.confirm({
+            title: ban ? 'Block User' : 'Unblock User',
+            message: ban ? 'Block user #' + userId + '?' : 'Restore access for user #' + userId + '?',
+            confirmText: ban ? 'Block' : 'Unblock',
+            type: ban ? 'danger' : 'success'
+          });
+        }
+        if (!ok) return;
+        try {
+          await ApiClient.patch('/admin/users/' + userId + '/ban', { is_banned: ban });
+          if (window.UI && UI.showToast) UI.showToast('User ' + (ban ? 'blocked' : 'unblocked'), 'success');
+          loadUsers();
+        } catch (err) {
+          if (window.UI && UI.showToast) UI.showToast((err && err.message) || 'Action failed', 'error');
+        }
+      }
+      window.toggleBan = toggleBan;
+
+      async function changeUserRole(userId, newDisplayRole) {
+        // Map frontend value -> backend value ('user' stays 'user', 'buyer' would also map to 'user')
+        var newRole = backendRole(newDisplayRole);
+        try {
+          await ApiClient.patch('/admin/users/' + userId + '/role', { role: newRole });
+          if (window.UI && UI.showToast) UI.showToast('Role updated to ' + newRole, 'success');
+          loadUsers();
+        } catch (err) {
+          if (window.UI && UI.showToast) UI.showToast((err && err.message) || 'Role update failed', 'error');
+        }
+      }
+      window.changeUserRole = changeUserRole;
+
+      async function manuallyVerifyUser(userId) {
+        try {
+          await ApiClient.patch('/admin/users/' + userId + '/verify');
+          if (window.UI && UI.showToast) UI.showToast('User verified', 'success');
+          loadUsers();
+        } catch (err) {
+          if (window.UI && UI.showToast) UI.showToast((err && err.message) || 'Verification failed', 'error');
+        }
+      }
+      window.manuallyVerifyUser = manuallyVerifyUser;
+
+      document.addEventListener('DOMContentLoaded', function () {
+        initSearchClear();
+
+        const role = ApiClient.getUserRole && ApiClient.getUserRole();
+        if (!ApiClient.isAuthenticated() || role !== 'admin') {
+          window.location.href = '/login.html?redirect=/admin/users.html';
+          return;
+        }
+        loadUsers();
+      });
+    })();
+  </script>
+  <script src="/assets/js/admin-nav.js" defer></script>
+  <script src="/assets/js/ai-chat.js" defer></script>
+</body>
+
+</html>

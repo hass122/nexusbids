@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create New Auction — NexusBids Pakistan</title>
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root {
+      --c-bg: #f4f6fb;
+      --c-surface: #ffffff;
+      --c-surface-2: #f7f9fc;
+      --c-surface-3: #eceff6;
+      --c-border: #e3e8f0;
+      --c-border-strong: #cfd7e5;
+      --c-text: #0f172a;
+      --c-text-muted: #58627a;
+      --c-text-light: #8d97ab;
+      --c-field-bg: #ffffff;
+      --c-field-bg-hover: #fbfcfe;
+      --c-shadow-sm: 0 1px 2px rgba(15, 23, 42, .05), 0 1px 3px rgba(15, 23, 42, .05);
+      --c-shadow-md: 0 6px 16px -6px rgba(15, 23, 42, .12), 0 2px 6px -2px rgba(15, 23, 42, .06);
+      --c-shadow-lg: 0 24px 52px -26px rgba(15, 23, 42, .30);
+      --c-glow: rgba(99, 102, 241, .13);
+      --c-ai-bg: rgba(99, 102, 241, .05);
+      --c-ai-border: rgba(99, 102, 241, .25);
+      --c-ai-glow: rgba(99, 102, 241, .14);
+    }
+
+    html.dark {
+      --c-bg: #05070f;
+      --c-surface: #0d1220;
+      --c-surface-2: #121a2b;
+      --c-surface-3: #1a2336;
+      --c-border: #1e2a40;
+      --c-border-strong: #2c3a56;
+      --c-text: #eef2f9;
+      --c-text-muted: #9aa6bd;
+      --c-text-light: #66738d;
+      --c-field-bg: #0a0f1c;
+      --c-field-bg-hover: #0f1626;
+      --c-shadow-sm: 0 1px 2px rgba(0, 0, 0, .45);
+      --c-shadow-md: 0 8px 22px -8px rgba(0, 0, 0, .65);
+      --c-shadow-lg: 0 26px 60px -26px rgba(0, 0, 0, .85);
+      --c-glow: rgba(99, 102, 241, .20);
+      --c-ai-bg: rgba(99, 102, 241, .08);
+      --c-ai-border: rgba(99, 102, 241, .35);
+      --c-ai-glow: rgba(99, 102, 241, .24);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body.page {
+      background: var(--c-bg);
+      color: var(--c-text);
+      -webkit-font-smoothing: antialiased;
+      transition: background-color .3s ease, color .3s ease;
+      overflow-x: hidden;
+    }
+
+    .page-shell {
+      position: relative;
+    }
+
+    .page-shell::before {
+      content: "";
+      position: absolute;
+      top: -220px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(960px, 100vw);
+      height: 460px;
+      background: radial-gradient(closest-side, var(--c-glow), transparent 78%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-shell>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: #6366f1;
+      background: rgba(99, 102, 241, .10);
+      border: 1px solid rgba(99, 102, 241, .20);
+      padding: 5px 11px;
+      border-radius: 999px;
+    }
+
+    html.dark .eyebrow {
+      color: #a5b4fc;
+      background: rgba(99, 102, 241, .15);
+      border-color: rgba(99, 102, 241, .28);
+    }
+
+    .page-title {
+      font-size: clamp(1.55rem, 4.4vw, 2.1rem);
+      font-weight: 800;
+      letter-spacing: -.025em;
+      line-height: 1.13;
+      color: var(--c-text);
+    }
+
+    .page-sub {
+      font-size: .84rem;
+      color: var(--c-text-muted);
+      margin-top: 8px;
+      line-height: 1.6;
+      max-width: 640px;
+    }
+
+    .form-wrap {
+      padding: 22px;
+      border-radius: 24px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      box-shadow: var(--c-shadow-md);
+      animation: fadeUp .4s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    @media (min-width:640px) {
+      .form-wrap {
+        padding: 30px;
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .section {
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px dashed var(--c-border);
+    }
+
+    .section:last-of-type {
+      border-bottom: 0;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-num {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      font-size: .72rem;
+      font-weight: 800;
+      background: rgba(99, 102, 241, .12);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, .22);
+    }
+
+    html.dark .section-num {
+      background: rgba(99, 102, 241, .18);
+      color: #a5b4fc;
+    }
+
+    .section-title {
+      font-size: .88rem;
+      font-weight: 800;
+      color: var(--c-text);
+      letter-spacing: -.005em;
+    }
+
+    .section-desc {
+      font-size: .72rem;
+      color: var(--c-text-light);
+      margin-top: 2px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .field-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--c-text-muted);
+      letter-spacing: .01em;
+    }
+
+    .field-label .label-left {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-label i.label-icon {
+      font-size: .68rem;
+      opacity: .65;
+    }
+
+    .field-label .req {
+      color: #e11d48;
+      font-size: .8rem;
+      line-height: 1;
+      margin-left: 2px;
+    }
+
+    html.dark .field-label .req {
+      color: #fb7185;
+    }
+
+    .field-label .counter {
+      font-size: .64rem;
+      font-weight: 600;
+      color: var(--c-text-light);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 0;
+    }
+
+    .field-label .counter.warn {
+      color: #d97706;
+    }
+
+    .field-label .counter.over {
+      color: #e11d48;
+    }
+
+    html.dark .field-label .counter.warn {
+      color: #fbbf24;
+    }
+
+    html.dark .field-label .counter.over {
+      color: #fb7185;
+    }
+
+    .field-input,
+    .field-select,
+    .field-textarea {
+      width: 100% !important;
+      padding: 11px 14px !important;
+      border-radius: 12px !important;
+      background-color: var(--c-field-bg) !important;
+      background-image: none;
+      border: 1px solid var(--c-border) !important;
+      color: var(--c-text) !important;
+      font-size: .84rem !important;
+      font-family: inherit !important;
+      font-weight: 500 !important;
+      outline: none !important;
+      transition: border-color .2s, box-shadow .2s, background-color .2s;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      line-height: 1.5 !important;
+      box-shadow: none;
+    }
+
+    .field-textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .field-input::placeholder,
+    .field-textarea::placeholder {
+      color: var(--c-text-light) !important;
+      font-weight: 400 !important;
+      opacity: 1 !important;
+    }
+
+    .field-input:hover,
+    .field-select:hover,
+    .field-textarea:hover {
+      background-color: var(--c-field-bg-hover) !important;
+      border-color: var(--c-border-strong) !important;
+    }
+
+    .field-input:focus,
+    .field-select:focus,
+    .field-textarea:focus {
+      background-color: var(--c-field-bg) !important;
+      border-color: #6366f1 !important;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .16) !important;
+    }
+
+    .field-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 12px center !important;
+      background-size: 14px !important;
+      padding-right: 36px !important;
+      cursor: pointer;
+    }
+
+    html.dark .field-input[type="date"]::-webkit-calendar-picker-indicator,
+    html.dark .field-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+      filter: invert(.75) brightness(1.3);
+      cursor: pointer;
+    }
+
+    .field-input[type="number"]::-webkit-outer-spin-button,
+    .field-input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .field-input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    .field-input:-webkit-autofill,
+    .field-input:-webkit-autofill:hover,
+    .field-input:-webkit-autofill:focus {
+      -webkit-text-fill-color: var(--c-text) !important;
+      -webkit-box-shadow: 0 0 0 1000px var(--c-field-bg) inset !important;
+      box-shadow: 0 0 0 1000px var(--c-field-bg) inset !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    .field-hint {
+      font-size: .68rem;
+      color: var(--c-text-light);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      line-height: 1.5;
+    }
+
+    .field-hint i {
+      font-size: .62rem;
+      opacity: .8;
+    }
+
+    .field-hint.err {
+      color: #e11d48;
+    }
+
+    .field-hint.ok {
+      color: #059669;
+    }
+
+    html.dark .field-hint.err {
+      color: #fb7185;
+    }
+
+    html.dark .field-hint.ok {
+      color: #34d399;
+    }
+
+    .field.is-invalid .field-input,
+    .field.is-invalid .field-select,
+    .field.is-invalid .field-textarea {
+      border-color: #e11d48 !important;
+      box-shadow: 0 0 0 3px rgba(244, 63, 94, .14) !important;
+    }
+
+    html.dark .field.is-invalid .field-input,
+    html.dark .field.is-invalid .field-select,
+    html.dark .field.is-invalid .field-textarea {
+      border-color: #fb7185 !important;
+    }
+
+    .grid-title-category {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width:700px) {
+      .grid-title-category {
+        grid-template-columns: 1fr 260px;
+      }
+    }
+
+    .grid-pricing {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width:560px) {
+      .grid-pricing {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (min-width:900px) {
+      .grid-pricing {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .grid-dates {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width:640px) {
+      .grid-dates {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .upload-zone {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      aspect-ratio: 16/9;
+      max-height: 260px;
+      padding: 24px;
+      border-radius: 16px;
+      border: 2px dashed var(--c-border-strong);
+      background: var(--c-surface-2);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .2s, background-color .2s, transform .2s;
+      overflow: hidden;
+    }
+
+    .upload-zone:hover {
+      border-color: #6366f1;
+      background: var(--c-field-bg-hover);
+    }
+
+    .upload-zone:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 3px;
+    }
+
+    .upload-zone.is-dragover {
+      border-color: #6366f1;
+      background: rgba(99, 102, 241, .08);
+      transform: scale(1.005);
+    }
+
+    .upload-zone.has-image {
+      border-style: solid;
+      border-color: rgba(16, 185, 129, .45);
+      padding: 0;
+      background: var(--c-surface-3);
+    }
+
+    .upload-zone .upload-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      font-size: 1.3rem;
+      background: rgba(99, 102, 241, .12);
+      color: #6366f1;
+      transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+    }
+
+    html.dark .upload-zone .upload-icon {
+      background: rgba(99, 102, 241, .20);
+      color: #a5b4fc;
+    }
+
+    .upload-zone:hover .upload-icon {
+      transform: scale(1.08) rotate(-4deg);
+    }
+
+    .upload-zone .upload-title {
+      font-size: .88rem;
+      font-weight: 800;
+      color: var(--c-text);
+    }
+
+    .upload-zone .upload-sub {
+      font-size: .72rem;
+      color: var(--c-text-light);
+      max-width: 320px;
+      line-height: 1.5;
+    }
+
+    .upload-zone .upload-browse {
+      color: #6366f1;
+      font-weight: 700;
+      text-decoration: underline;
+      text-decoration-color: rgba(99, 102, 241, .4);
+      text-underline-offset: 2px;
+    }
+
+    html.dark .upload-zone .upload-browse {
+      color: #a5b4fc;
+    }
+
+    .upload-zone .upload-meta {
+      font-size: .64rem;
+      color: var(--c-text-light);
+      letter-spacing: .02em;
+    }
+
+    .upload-zone .preview-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .upload-zone .preview-overlay {
+      position: absolute;
+      inset: auto 0 0 0;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: linear-gradient(to top, rgba(0, 0, 0, .72), rgba(0, 0, 0, 0));
+      color: #fff;
+    }
+
+    .upload-zone .file-name {
+      font-size: .68rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 65%;
+      opacity: .94;
+    }
+
+    .upload-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
+      border: 0;
+      display: grid;
+      place-items: center;
+      font-size: .7rem;
+      cursor: pointer;
+      background: rgba(255, 255, 255, .2);
+      color: #fff;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      transition: background-color .2s, transform .2s;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, .34);
+      transform: scale(1.06);
+    }
+
+    .icon-btn.danger:hover {
+      background: rgba(244, 63, 94, .85);
+    }
+
+    .upload-success-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: none;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: .64rem;
+      font-weight: 800;
+      background: rgba(16, 185, 129, .92);
+      color: #fff;
+      box-shadow: 0 6px 14px -6px rgba(16, 185, 129, .85);
+      backdrop-filter: blur(4px);
+      animation: popIn .3s cubic-bezier(.2, .8, .2, 1) both;
+    }
+
+    .upload-zone.has-image .upload-success-badge {
+      display: inline-flex;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(.5)
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1)
+      }
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .ai-card {
+      position: relative;
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--c-ai-bg);
+      border: 1px solid var(--c-ai-border);
+      overflow: hidden;
+      transition: box-shadow .3s, border-color .3s;
+    }
+
+    .ai-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(240px 130px at 0% 0%, var(--c-ai-glow), transparent 70%);
+      pointer-events: none;
+    }
+
+    .ai-card:hover {
+      border-color: rgba(99, 102, 241, .5);
+      box-shadow: 0 8px 22px -10px rgba(99, 102, 241, .4);
+    }
+
+    .ai-head {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .ai-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .74rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #6366f1;
+    }
+
+    html.dark .ai-title {
+      color: #a5b4fc;
+    }
+
+    .ai-title-icon {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font-size: .75rem;
+      background: rgba(99, 102, 241, .15);
+      color: #6366f1;
+    }
+
+    html.dark .ai-title-icon {
+      background: rgba(99, 102, 241, .22);
+      color: #a5b4fc;
+    }
+
+    .ai-desc {
+      position: relative;
+      font-size: .78rem;
+      color: var(--c-text-muted);
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .btn-ai {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 11px;
+      font-family: inherit;
+      font-size: .76rem;
+      font-weight: 800;
+      color: #fff;
+      border: 0;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      box-shadow: 0 8px 18px -8px rgba(79, 70, 229, .85);
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+    }
+
+    .btn-ai:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px -8px rgba(79, 70, 229, .95);
+    }
+
+    .btn-ai:active:not(:disabled) {
+      transform: translateY(0) scale(.98);
+    }
+
+    .btn-ai:disabled {
+      opacity: .7;
+      cursor: not-allowed;
+    }
+
+    .btn-ai:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 2px;
+    }
+
+    .ai-chips {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .ai-chip {
+      font-size: .66rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--c-surface);
+      border: 1px solid var(--c-border);
+      color: var(--c-text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .ai-chip i {
+      font-size: .58rem;
+      opacity: .75;
+    }
+
+    .btn-submit {
+      position: relative;
+      width: 100%;
+      padding: 15px 20px;
+      border: 0;
+      border-radius: 14px;
+      font-family: inherit;
+      font-size: .88rem;
+      font-weight: 800;
+      letter-spacing: .01em;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      box-shadow: 0 14px 30px -12px rgba(79, 70, 229, .9);
+      transition: transform .22s, box-shadow .22s, opacity .22s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      overflow: hidden;
+    }
+
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 36px -12px rgba(79, 70, 229, .95);
+    }
+
+    .btn-submit:active:not(:disabled) {
+      transform: translateY(0) scale(.99);
+    }
+
+    .btn-submit:disabled {
+      opacity: .75;
+      cursor: not-allowed;
+    }
+
+    .btn-submit:focus-visible {
+      outline: 2px solid #6366f1;
+      outline-offset: 3px;
+    }
+
+    .spin {
+      animation: spin .85s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .form-footnote {
+      margin-top: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: .7rem;
+      color: var(--c-text-light);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .form-footnote i {
+      color: #10b981;
+      font-size: .75rem;
+    }
+
+    @media (max-width:520px) {
+      .form-wrap {
+        padding: 18px;
+        border-radius: 20px;
+      }
+
+      .section {
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+      }
+
+      .section-num {
+        width: 26px;
+        height: 26px;
+        font-size: .68rem;
+      }
+
+      .section-title {
+        font-size: .84rem;
+      }
+
+      .upload-zone {
+        aspect-ratio: 4/3;
+        max-height: none;
+        padding: 20px;
+      }
+
+      .upload-zone .upload-icon {
+        width: 46px;
+        height: 46px;
+        font-size: 1.15rem;
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="page min-h-screen flex flex-col font-sans">
+  <header id="nb-header"></header>
+
+  <main class="page-shell flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 w-full">
+    <div class="mb-7">
+      <span class="eyebrow"><i class="fa-solid fa-plus-circle"></i> Seller Studio</span>
+      <h1 class="page-title mt-3">Create New Auction Listing</h1>
+      <p class="page-sub">Fill in the item specs, set your reserve and starting prices, or use AI to write a polished
+        description in seconds.</p>
+    </div>
+
+    <form id="create-form" class="form-wrap" onsubmit="submitAuction(event)" novalidate>
+      <!-- Section 1 -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num">1</div>
+          <div>
+            <p class="section-title">Item Basics</p>
+            <p class="section-desc">Give your listing a clear title and category</p>
+          </div>
+        </div>
+        <div class="grid-title-category">
+          <div class="field" id="field-title">
+            <label class="field-label" for="title">
+              <span class="label-left"><i class="fa-solid fa-tag label-icon"></i> Auction Title <span
+                  class="req">*</span></span>
+              <span class="counter" id="title-counter">0 / 120</span>
+            </label>
+            <input type="text" id="title" required maxlength="120"
+              placeholder="e.g. Apple iPhone 15 Pro Max 256GB Natural Titanium (PTA Approved)" class="field-input"
+              oninput="updateTitleCounter(this.value)">
+            <span class="field-hint"><i class="fa-regular fa-lightbulb"></i> Include brand, model and key specs for
+              better search visibility</span>
+          </div>
+          <div class="field" id="field-category">
+            <label class="field-label" for="category_id">
+              <span class="label-left"><i class="fa-solid fa-layer-group label-icon"></i> Category <span
+                  class="req">*</span></span>
+            </label>
+            <select id="category_id" required class="field-select">
+              <option value="">Select Category</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="section">
+        <div class="section-head flex items-center justify-between flex-wrap gap-2">
+          <div class="flex items-center gap-3">
+            <div class="section-num">2</div>
+            <div>
+              <p class="section-title">Pricing &amp; Bidding Rules</p>
+              <p class="section-desc">All amounts in Pakistani Rupees (PKR)</p>
+            </div>
+          </div>
+          <button type="button" onclick="suggestAiPrice()" id="btn-suggest-price"
+            class="nb-btn nb-btn-secondary text-xs py-1.5 px-3 flex items-center gap-1.5 border border-indigo-500/40 bg-indigo-950/40 hover:bg-indigo-900/50 text-indigo-300">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Suggest Price with AI
+          </button>
+        </div>
+
+        <div id="ai-price-box"
+          class="hidden mb-6 p-4 rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-950/40 via-purple-950/20 to-slate-900/60 backdrop-blur-sm">
+          <div class="flex items-start justify-between gap-3 mb-3 flex-wrap">
+            <div class="flex items-center gap-2">
+              <span
+                class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-indigo-500/20 text-indigo-400"><i
+                  class="fa-solid fa-calculator text-sm"></i></span>
+              <div>
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                  Market Valuation Guidance
+                  <span id="ai-price-confidence"
+                    class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 uppercase">Medium
+                    Confidence</span>
+                </h4>
+                <p id="ai-price-reasoning" class="text-xs text-slate-400 mt-0.5">Estimated based on historical sales.
+                </p>
+              </div>
+            </div>
+            <span
+              class="text-[10px] font-medium text-slate-400 bg-slate-800/80 px-2 py-1 rounded border border-slate-700/60">AI
+              suggestion, not guaranteed</span>
+          </div>
+          <div
+            class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 rounded-lg bg-slate-900/80 border border-slate-800 text-center mb-3">
+            <div><span class="text-[11px] text-slate-400 block">Suggested Start</span><strong id="ai-val-start"
+                class="text-base font-extrabold text-indigo-300">PKR 0</strong></div>
+            <div><span class="text-[11px] text-slate-400 block">Suggested Reserve</span><strong id="ai-val-reserve"
+                class="text-base font-extrabold text-amber-300">Optional</strong></div>
+            <div><span class="text-[11px] text-slate-400 block">Expected Range</span><strong id="ai-val-range"
+                class="text-base font-extrabold text-emerald-400">PKR 0 - 0</strong></div>
+          </div>
+          <div class="flex items-center justify-between gap-3 pt-1 flex-wrap">
+            <span id="ai-val-comps" class="text-[11px] text-slate-400"><i
+                class="fa-solid fa-chart-simple text-indigo-400 mr-1"></i> Based on <strong
+                class="text-slate-200">0</strong> comparable sales</span>
+            <button type="button" onclick="applyAiPrice()"
+              class="nb-btn nb-btn-primary text-xs py-1.5 px-4 font-semibold"><i class="fa-solid fa-check mr-1.5"></i>
+              Apply to Form</button>
+          </div>
+        </div>
+
+        <div class="grid-pricing">
+          <div class="field">
+            <label class="field-label" for="starting_price"><span class="label-left"><i
+                  class="fa-solid fa-play label-icon"></i> Starting Price <span class="req">*</span></span></label>
+            <input type="number" id="starting_price" required min="100" placeholder="5000" class="field-input">
+            <span class="field-hint">Minimum: PKR 100</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="reserve_price"><span class="label-left"><i
+                  class="fa-solid fa-shield-halved label-icon"></i> Reserve Price</span></label>
+            <input type="number" id="reserve_price" min="0" placeholder="Optional" class="field-input">
+            <span class="field-hint">Listing won't sell below this</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="buy_now_price"><span class="label-left"><i
+                  class="fa-solid fa-bolt label-icon"></i> Buy-Now Price</span></label>
+            <input type="number" id="buy_now_price" min="0" placeholder="Optional" class="field-input">
+            <span class="field-hint">Instant purchase option</span>
+          </div>
+          <div class="field">
+            <label class="field-label" for="bid_increment"><span class="label-left"><i
+                  class="fa-solid fa-arrow-up-right-dots label-icon"></i> Min Increment</span></label>
+            <input type="number" id="bid_increment" value="500" min="50" step="50" class="field-input">
+            <span class="field-hint">Each bid must raise at least this</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num">3</div>
+          <div>
+            <p class="section-title">Schedule</p>
+            <p class="section-desc">When the auction opens and closes</p>
+          </div>
+        </div>
+        <div class="grid-dates">
+          <div class="field">
+            <label class="field-label" for="start_time"><span class="label-left"><i
+                  class="fa-regular fa-calendar-plus label-icon"></i> Start Date &amp; Time <span
+                  class="req">*</span></span></label>
+            <input type="datetime-local" id="start_time" required class="field-input">
+          </div>
+          <div class="field">
+            <label class="field-label" for="end_time"><span class="label-left"><i
+                  class="fa-regular fa-calendar-check label-icon"></i> End Date &amp; Time <span
+                  class="req">*</span></span></label>
+            <input type="datetime-local" id="end_time" required class="field-input">
+            <span class="field-hint"><i class="fa-regular fa-clock"></i> Recommended: 3–7 days for best results</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="section">
+        <div class="section-head">
+          <div class="section-num">4</div>
+          <div>
+            <p class="section-title">Media &amp; Description</p>
+            <p class="section-desc">Upload a cover image and describe the item in detail</p>
+          </div>
+        </div>
+
+        <div class="field" id="field-image" style="margin-bottom: 20px">
+          <label class="field-label">
+            <span class="label-left"><i class="fa-regular fa-image label-icon"></i> Cover Image <span
+                class="req">*</span></span>
+          </label>
+
+          <div id="upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="Upload cover image">
+            <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <p class="upload-title">Upload Cover Image</p>
+            <p class="upload-sub">Drag &amp; drop or <span class="upload-browse">browse</span> to select a photo</p>
+            <p class="upload-meta">PNG · JPG · WEBP · Max 5MB</p>
+
+            <img class="preview-img" alt="" style="display:none" id="upload-preview-img">
+            <span class="upload-success-badge" id="upload-success-badge"><i class="fa-solid fa-check"></i>
+              Uploaded</span>
+
+            <div class="preview-overlay" style="display:none" id="upload-overlay">
+              <span class="file-name" id="upload-filename"></span>
+              <div class="upload-actions">
+                <button type="button" class="icon-btn" id="upload-change-btn" aria-label="Change image"><i
+                    class="fa-solid fa-arrows-rotate"></i></button>
+                <button type="button" class="icon-btn danger" id="upload-remove-btn" aria-label="Remove image"><i
+                    class="fa-solid fa-xmark"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <input type="file" id="upload-file-input" class="file-input"
+            accept="image/png,image/jpeg,image/webp,image/jpg">
+          <input type="hidden" id="image" name="image">
+
+          <span class="field-hint" style="margin-top:8px"><i class="fa-solid fa-circle-info"></i> Recommended:
+            1200×900px or larger, well-lit photo on neutral background</span>
+        </div>
+
+        <div class="ai-card" style="margin-bottom: 20px">
+          <div class="ai-head">
+            <div class="ai-title">
+              <span class="ai-title-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+              AI Description Assistant
+            </div>
+            <button type="button" onclick="generateAiDescription()" id="btn-generate-ai" class="btn-ai">
+              <i class="fa-solid fa-sparkles"></i> Generate Description
+            </button>
+          </div>
+          <p class="ai-desc">Our AI will craft a polished, bidder-focused description using your title and category. You
+            can edit the result before publishing.</p>
+          <div class="ai-chips">
+            <span class="ai-chip"><i class="fa-solid fa-check"></i> Includes key specs</span>
+            <span class="ai-chip"><i class="fa-solid fa-check"></i> Shipping details</span>
+            <span class="ai-chip"><i class="fa-solid fa-check"></i> Condition summary</span>
+          </div>
+        </div>
+
+        <div class="field" id="field-description">
+          <label class="field-label" for="description">
+            <span class="label-left"><i class="fa-solid fa-align-left label-icon"></i> Listing Description <span
+                class="req">*</span></span>
+            <span class="counter" id="desc-counter">0 chars</span>
+          </label>
+          <textarea id="description" rows="6" required
+            placeholder="Describe the item's condition, included accessories, warranty, and shipping details. Clear descriptions attract serious bidders."
+            class="field-textarea" oninput="updateDescCounter(this.value)"></textarea>
+          <span class="field-hint"><i class="fa-regular fa-circle-check"></i> Mention any flaws honestly — it builds
+            buyer trust</span>
+        </div>
+      </div>
+
+      <button type="submit" id="btn-submit" class="btn-submit">
+        <i class="fa-solid fa-rocket"></i>
+        <span id="btn-submit-text">Publish Auction Listing</span>
+      </button>
+
+      <p class="form-footnote"><i class="fa-solid fa-shield-halved"></i> Your listing will be reviewed by our team
+        before going live</p>
+    </form>
+  </main>
+
+  <footer id="nb-footer"></footer>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+      function $(id) { return document.getElementById(id); }
+      function esc(str) {
+        return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+        });
+      }
+
+      function initImageUpload() {
+        var zone = $('upload-zone');
+        var fileInput = $('upload-file-input');
+        var hidden = $('image');
+        var preview = $('upload-preview-img');
+        var overlay = $('upload-overlay');
+        var filename = $('upload-filename');
+        if (!zone || !fileInput || !hidden) return;
+
+        function showEmptyState() {
+          zone.classList.remove('has-image');
+          preview.style.display = 'none';
+          preview.removeAttribute('src');
+          overlay.style.display = 'none';
+          if (filename) filename.textContent = '';
+          hidden.value = '';
+          var emptyChildren = zone.querySelectorAll('.upload-icon, .upload-title, .upload-sub, .upload-meta');
+          emptyChildren.forEach(function (el) { el.style.display = ''; });
+        }
+
+        function showFilledState(dataUrl, name) {
+          zone.classList.add('has-image');
+          preview.src = dataUrl;
+          preview.style.display = 'block';
+          overlay.style.display = 'flex';
+          if (filename) filename.textContent = name || 'image';
+          hidden.value = dataUrl;
+          var emptyChildren = zone.querySelectorAll('.upload-icon, .upload-title, .upload-sub, .upload-meta');
+          emptyChildren.forEach(function (el) { el.style.display = 'none'; });
+        }
+
+        async function applyFile(file) {
+          if (!file) return;
+          if (!file.type.startsWith('image/')) { UI.showToast('Please select an image file (PNG, JPG or WEBP).', 'error'); return; }
+          if (file.size > MAX_FILE_SIZE) { UI.showToast('Image is larger than 5MB. Please choose a smaller file.', 'error'); return; }
+
+          var reader = new FileReader();
+          reader.onload = async function (ev) {
+            try {
+              // Show loading state
+              if (filename) filename.textContent = 'Uploading...';
+              zone.style.pointerEvents = 'none';
+
+              // ✅ Upload to Cloudinary
+              var res = await ApiClient.post('/upload/base64', {
+                image: ev.target.result,
+                folder: 'nexusbids/auctions'
+              });
+
+              var imageUrl = (res.data && res.data.url) ? res.data.url : res.url;
+              showFilledState(imageUrl, file.name);
+              UI.showToast('Cover image uploaded successfully!', 'success');
+            } catch (err) {
+              UI.showToast('Failed to upload image. Please try again.', 'error');
+              if (filename) filename.textContent = '';
+            } finally {
+              zone.style.pointerEvents = 'auto';
+            }
+          };
+          reader.onerror = function () { UI.showToast('Could not read the selected image.', 'error'); };
+          reader.readAsDataURL(file);
+        }
+
+        zone.addEventListener('click', function (e) {
+          if (e.target.closest('#upload-change-btn') || e.target.closest('#upload-remove-btn')) return;
+          fileInput.click();
+        });
+        zone.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
+        });
+
+        var changeBtn = $('upload-change-btn');
+        if (changeBtn) changeBtn.addEventListener('click', function (e) { e.stopPropagation(); fileInput.click(); });
+
+        var removeBtn = $('upload-remove-btn');
+        if (removeBtn) removeBtn.addEventListener('click', function (e) { e.stopPropagation(); fileInput.value = ''; showEmptyState(); });
+
+        fileInput.addEventListener('change', function () {
+          if (fileInput.files && fileInput.files[0]) applyFile(fileInput.files[0]);
+        });
+
+        ['dragenter', 'dragover'].forEach(function (evt) {
+          zone.addEventListener(evt, function (e) { e.preventDefault(); e.stopPropagation(); zone.classList.add('is-dragover'); });
+        });
+        ['dragleave', 'drop'].forEach(function (evt) {
+          zone.addEventListener(evt, function (e) {
+            e.preventDefault(); e.stopPropagation();
+            if (evt === 'dragleave' && zone.contains(e.relatedTarget)) return;
+            zone.classList.remove('is-dragover');
+          });
+        });
+        zone.addEventListener('drop', function (e) {
+          var file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+          if (file) {
+            try { var dt = new DataTransfer(); dt.items.add(file); fileInput.files = dt.files; } catch (err) { }
+            applyFile(file);
+          }
+        });
+      }
+
+      function previewImage(url) {
+        var hidden = $('image');
+        if (!hidden) return;
+        hidden.value = url || '';
+      }
+      window.previewImage = previewImage;
+
+      function updateTitleCounter(value) {
+        var counter = $('title-counter');
+        if (!counter) return;
+        var len = (value || '').length;
+        counter.textContent = len + ' / 120';
+        counter.className = 'counter' + (len > 100 ? (len >= 120 ? ' over' : ' warn') : '');
+      }
+      window.updateTitleCounter = updateTitleCounter;
+
+      function updateDescCounter(value) {
+        var counter = $('desc-counter');
+        if (!counter) return;
+        var len = (value || '').length;
+        counter.textContent = len + ' chars';
+      }
+      window.updateDescCounter = updateDescCounter;
+
+      async function loadCategories() {
+        try {
+          var res = await ApiClient.get('/categories');
+          var sel = $('category_id');
+          if (!sel) return;
+          (res.data || []).forEach(function (c) {
+            var opt = document.createElement('option');
+            opt.value = c.category_id;
+            opt.textContent = c.category_name || c.name || ('Category #' + c.category_id);
+            sel.appendChild(opt);
+          });
+          var now = new Date();
+          var future = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+          var startEl = $('start_time');
+          var endEl = $('end_time');
+          if (startEl) startEl.value = toLocalISO(now);
+          if (endEl) endEl.value = toLocalISO(future);
+        } catch (e) { /* silent */ }
+      }
+      window.loadCategories = loadCategories;
+
+      function toLocalISO(date) {
+        var pad = function (n) { return String(n).padStart(2, '0'); };
+        return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate())
+          + 'T' + pad(date.getHours()) + ':' + pad(date.getMinutes());
+      }
+
+      async function generateAiDescription() {
+        var title = ($('title') && $('title').value.trim()) || '';
+        if (!title) { UI.showToast('Please enter an auction title first', 'error'); return; }
+        var btn = $('btn-generate-ai');
+        var original = btn ? btn.innerHTML : '';
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Generating…'; }
+        try {
+          var catSelect = $('category_id');
+          var catName = '';
+          if (catSelect && catSelect.selectedIndex >= 0) catName = catSelect.options[catSelect.selectedIndex]?.text || '';
+          var res = await ApiClient.post('/ai/generate-description', {
+            title: title, category: catName,
+            condition: 'Like New / Verified',
+            features: 'Complete original box and accessories included. Tested and working perfectly.'
+          });
+          if (res && res.data && res.data.description) {
+            var descEl = $('description');
+            if (descEl) { descEl.value = res.data.description; updateDescCounter(res.data.description); }
+            UI.showToast('AI description generated successfully!', 'success');
+          }
+        } catch (err) { UI.showToast((err && err.message) || 'Could not generate description', 'error'); }
+        finally {
+          if (btn) { btn.disabled = false; btn.innerHTML = original || '<i class="fa-solid fa-sparkles"></i> Generate Description'; }
+        }
+      }
+      window.generateAiDescription = generateAiDescription;
+
+      var currentAiValuation = null;
+
+      async function suggestAiPrice() {
+        var title = ($('title') ? $('title').value : '').trim();
+        if (!title) { UI.showToast('Please enter an item title first to get price valuation.', 'error'); if ($('title')) $('title').focus(); return; }
+        var btn = $('btn-suggest-price');
+        var originalText = btn ? btn.innerHTML : '';
+        if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Calculating Valuation…'; }
+        try {
+          var catSelect = $('category_id');
+          var catId = catSelect ? catSelect.value : 0;
+          var catName = catSelect && catSelect.selectedIndex >= 0 ? catSelect.options[catSelect.selectedIndex]?.text : '';
+          var desc = ($('description') ? $('description').value : '').trim();
+          var res = await ApiClient.post('/ai/suggest-price', { title: title, category_id: catId, category: catName, description: desc });
+          if (res && res.data) {
+            currentAiValuation = res.data;
+            var box = $('ai-price-box');
+            if (box) box.classList.remove('hidden');
+            if ($('ai-val-start')) $('ai-val-start').textContent = 'PKR ' + Number(res.data.suggested_start_price || 0).toLocaleString();
+            if ($('ai-val-reserve')) $('ai-val-reserve').textContent = res.data.suggested_reserve_price ? 'PKR ' + Number(res.data.suggested_reserve_price).toLocaleString() : 'None (Optional)';
+            if ($('ai-val-range')) {
+              var low = Number(res.data.expected_price_range?.low || 0).toLocaleString();
+              var high = Number(res.data.expected_price_range?.high || 0).toLocaleString();
+              $('ai-val-range').textContent = 'PKR ' + low + ' - ' + high;
+            }
+            if ($('ai-price-reasoning')) $('ai-price-reasoning').textContent = res.data.reasoning || 'Evaluated based on marketplace signals.';
+            if ($('ai-val-comps')) $('ai-val-comps').innerHTML = '<i class="fa-solid fa-chart-simple text-indigo-400 mr-1"></i> Based on <strong class="text-slate-200">' + (res.data.comparable_count || 0) + '</strong> comparable sales';
+            if ($('ai-price-confidence')) {
+              var conf = (res.data.confidence || 'low').toLowerCase();
+              var confColor = conf === 'high' ? 'bg-emerald-500/20 text-emerald-300' : conf === 'medium' ? 'bg-amber-500/20 text-amber-300' : 'bg-rose-500/20 text-rose-300';
+              $('ai-price-confidence').className = 'px-2 py-0.5 rounded text-[10px] font-semibold uppercase ' + confColor;
+              $('ai-price-confidence').textContent = conf + ' confidence';
+            }
+            UI.showToast('AI price valuation calculated!', 'success');
+          }
+        } catch (err) { UI.showToast((err && err.message) || 'Failed to calculate price suggestion.', 'error'); }
+        finally {
+          if (btn) { btn.disabled = false; btn.innerHTML = originalText || '<i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i> Suggest Price with AI'; }
+        }
+      }
+      window.suggestAiPrice = suggestAiPrice;
+
+      function applyAiPrice() {
+        if (!currentAiValuation) return;
+        if ($('starting_price') && currentAiValuation.suggested_start_price) $('starting_price').value = currentAiValuation.suggested_start_price;
+        if ($('reserve_price') && currentAiValuation.suggested_reserve_price) $('reserve_price').value = currentAiValuation.suggested_reserve_price;
+        UI.showToast('Suggested prices applied to form fields!', 'info');
+      }
+      window.applyAiPrice = applyAiPrice;
+
+      async function submitAuction(e) {
+        e.preventDefault();
+        var btn = $('btn-submit');
+        var btnText = $('btn-submit-text');
+        var original = btnText ? btnText.textContent : 'Publish Auction Listing';
+
+        var missing = [];
+        if (!$('title').value.trim()) missing.push('Auction Title');
+        if (!$('category_id').value) missing.push('Category');
+        if (!$('starting_price').value) missing.push('Starting Price');
+        if (!$('start_time').value) missing.push('Start Date & Time');
+        if (!$('end_time').value) missing.push('End Date & Time');
+        if (!$('image').value) missing.push('Cover Image');
+        if (!$('description').value.trim()) missing.push('Description');
+
+        if (missing.length) {
+          UI.showToast('Please complete: ' + missing.join(', '), 'error');
+          var firstId = !$('title').value.trim() ? 'title'
+            : !$('category_id').value ? 'category_id'
+              : !$('starting_price').value ? 'starting_price'
+                : !$('start_time').value ? 'start_time'
+                  : !$('end_time').value ? 'end_time'
+                    : !$('image').value ? 'upload-zone'
+                      : 'description';
+          var target = $(firstId);
+          if (target) { target.scrollIntoView({ behavior: 'smooth', block: 'center' }); try { target.focus({ preventScroll: true }); } catch (e2) { } }
+          return;
+        }
+
+        if (btn) {
+          btn.disabled = true;
+          if (btnText) btnText.textContent = 'Publishing…';
+          var icon = btn.querySelector('i');
+          if (icon) icon.className = 'fa-solid fa-spinner spin';
+        }
+
+        var payload = {
+          title: $('title').value.trim(),
+          category_id: parseInt($('category_id').value, 10),
+          starting_price: parseFloat($('starting_price').value),
+          reserve_price: $('reserve_price').value ? parseFloat($('reserve_price').value) : null,
+          buy_now_price: $('buy_now_price').value ? parseFloat($('buy_now_price').value) : null,
+          bid_increment: parseFloat($('bid_increment').value) || 500,
+          start_time: $('start_time').value,
+          end_time: $('end_time').value,
+          image: $('image').value,
+          description: $('description').value.trim()
+        };
+
+        try {
+          var res = await ApiClient.post('/auctions', payload);
+          UI.showToast('Auction submitted successfully!', 'success');
+
+          // ✅ FIX: null-safe redirect to seller (not public) page
+          setTimeout(function () {
+            var newId = res && res.data && res.data.auction_id;
+            if (newId) {
+              window.location.href = '/seller/auction-details.html?id=' + encodeURIComponent(newId);
+            } else {
+              window.location.href = '/seller/auctions.html';
+            }
+          }, 800);
+        } catch (err) {
+          UI.showToast((err && err.message) || 'Could not publish listing', 'error');
+          if (btn) {
+            btn.disabled = false;
+            if (btnText) btnText.textContent = original;
+            var icon2 = btn.querySelector('i');
+            if (icon2) icon2.className = 'fa-solid fa-rocket';
+          }
+        }
+      }
+      window.submitAuction = submitAuction;
+
+      /* ✅ FIX: proper auth guard at DOMContentLoaded with `return` */
+      document.addEventListener('DOMContentLoaded', function () {
+        var token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+        var user = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+        if (!token || !['seller', 'admin'].includes(user.role)) {
+          window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/create-auction.html'));
+          return;
+        }
+        initImageUpload();
+        loadCategories();
+      });
+    })();
+  </script>
+  <script src="/assets/js/ai-chat.js"></script>
+</body>
+
+</html>

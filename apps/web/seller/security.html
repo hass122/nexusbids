@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security &amp; 2FA — Seller Studio | NexusBids Pakistan</title>
+  <meta name="description"
+    content="Manage password, two-factor authentication, and active seller sessions on NexusBids.">
+  <script>(function () { var t = localStorage.getItem('nexusbids_theme') || 'system'; var d = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme:dark)').matches); document.documentElement.classList.toggle('dark', d); document.documentElement.setAttribute('data-theme', d ? 'dark' : 'light'); })();</script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/design-system.css">
+  <script>tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] }, colors: { brand: { 400: '#818cf8', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca' } } } } };</script>
+  <style>
+    :root {
+      --s-bg: #05070f;
+      --s-surface: #0d1220;
+      --s-surface-2: #121a2b;
+      --s-surface-3: #1a2336;
+      --s-border: #1e2a40;
+      --s-border-strong: #2c3a56;
+      --s-text: #eef2f9;
+      --s-text-muted: #9aa6bd;
+      --s-text-light: #66738d;
+    }
+
+    html:not(.dark) {
+      --s-bg: #f4f6fb;
+      --s-surface: #ffffff;
+      --s-surface-2: #f7f9fc;
+      --s-surface-3: #eceff6;
+      --s-border: #e3e8f0;
+      --s-border-strong: #cfd7e5;
+      --s-text: #0f172a;
+      --s-text-muted: #58627a;
+      --s-text-light: #8d97ab;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--s-bg);
+      color: var(--s-text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    .panel {
+      background: var(--s-surface);
+      border: 1px solid var(--s-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .15);
+    }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--s-border);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--s-text-muted);
+    }
+
+    .nb-input {
+      background: var(--s-surface-2);
+      border: 1px solid var(--s-border);
+      color: var(--s-text);
+      border-radius: 12px;
+      padding: 11px 14px;
+      font-size: .875rem;
+      width: 100%;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .nb-input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, .15);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: .82rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: inherit;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      box-shadow: 0 6px 16px -4px rgba(99, 102, 241, .5);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(99, 102, 241, .7);
+    }
+
+    .btn-ghost {
+      background: var(--s-surface-2);
+      border-color: var(--s-border);
+      color: var(--s-text);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--s-border-strong);
+      background: var(--s-surface-3);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, .12);
+      border-color: rgba(239, 68, 68, .3);
+      color: #f87171;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, .25);
+    }
+
+    .strength-bar {
+      height: 5px;
+      border-radius: 99px;
+      background: var(--s-surface-3);
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .strength-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width .3s, background .3s;
+      width: 0;
+    }
+
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--s-border);
+    }
+
+    .toggle-wrap:last-child {
+      border-bottom: none;
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: var(--s-border);
+      border-radius: 24px;
+      transition: all .25s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background: #fff;
+      border-radius: 50%;
+      transition: all .25s;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .2);
+    }
+
+    .toggle input:checked+.toggle-slider {
+      background: #6366f1;
+    }
+
+    .toggle input:checked+.toggle-slider::before {
+      transform: translateX(20px);
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans">
+  <nav class="sticky top-0 z-50 border-b" style="background:var(--s-surface);border-color:var(--s-border);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+      <div class="flex items-center gap-3">
+        <a href="/" class="flex items-center gap-2 text-brand-400 font-black text-lg"><i
+            class="fa-solid fa-gavel"></i><span>NexusBids</span></a>
+        <span class="text-xs px-2.5 py-1 rounded-full font-bold"
+          style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/seller/dashboard.html"
+          class="text-sm font-semibold text-[var(--s-text-muted)] hover:text-[var(--s-text)]"><i
+            class="fa-solid fa-arrow-left mr-1"></i> Dashboard</a>
+        <a href="/index.html" class="text-sm font-semibold text-[var(--s-text-muted)] hover:text-[var(--s-text)]"><i
+            class="fa-solid fa-store mr-1"></i> View Store</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <div id="seller-subnav"></div>
+
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+      <div>
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold text-brand-400 bg-brand-500/10 border border-brand-500/20 mb-2">
+          <i class="fa-solid fa-shield-halved"></i> Seller Security
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-black text-[var(--s-text)]">Security &amp; Two-Factor Auth</h1>
+        <p class="text-xs sm:text-sm text-[var(--s-text-muted)] mt-1">Protect your store credentials, payout
+          destinations, and live auctions.</p>
+      </div>
+      <a href="/seller/kyc.html" class="btn btn-ghost text-xs"><i class="fa-solid fa-id-card text-emerald-400"></i> View
+        KYC Status</a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="panel">
+        <div class="card-head">
+          <div class="card-icon" style="background:rgba(99,102,241,.15);color:#818cf8;"><i class="fa-solid fa-key"></i>
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-[var(--s-text)]">Change Password</h2>
+            <p class="text-xs text-[var(--s-text-muted)]">Ensure your seller account uses a strong passphrase</p>
+          </div>
+        </div>
+        <form id="change-password-form" class="space-y-4">
+          <div class="field">
+            <label for="current-password">Current Password *</label>
+            <div class="relative">
+              <input type="password" id="current-password" required class="nb-input pr-10" placeholder="••••••••••••">
+              <button type="button" onclick="togglePass('current-password')"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--s-text-muted)]"><i
+                  class="fa-regular fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="field">
+            <label for="new-password">New Password *</label>
+            <div class="relative">
+              <input type="password" id="new-password" required minlength="8" class="nb-input pr-10"
+                placeholder="Minimum 8 characters">
+              <button type="button" onclick="togglePass('new-password')"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--s-text-muted)]"><i
+                  class="fa-regular fa-eye"></i></button>
+            </div>
+            <div class="strength-bar">
+              <div id="strength-fill" class="strength-fill"></div>
+            </div>
+            <span id="strength-label" class="text-[10px] text-[var(--s-text-muted)] mt-1">Enter a strong password</span>
+          </div>
+          <div class="field">
+            <label for="confirm-password">Confirm New Password *</label>
+            <div class="relative">
+              <input type="password" id="confirm-password" required minlength="8" class="nb-input pr-10"
+                placeholder="Re-enter new password">
+              <button type="button" onclick="togglePass('confirm-password')"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--s-text-muted)]"><i
+                  class="fa-regular fa-eye"></i></button>
+            </div>
+          </div>
+          <div class="pt-2">
+            <button type="submit" id="btn-submit-password" class="btn btn-primary w-full"><i
+                class="fa-solid fa-lock"></i> Update Password</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel flex flex-col justify-between">
+        <div>
+          <div class="card-head">
+            <div class="card-icon" style="background:rgba(16,185,129,.15);color:#34d399;"><i
+                class="fa-solid fa-shield-halved"></i></div>
+            <div>
+              <h2 class="text-base font-bold text-[var(--s-text)]">Two-Factor Authentication (2FA)</h2>
+              <p class="text-xs text-[var(--s-text-muted)]">Add TOTP protection (Google Authenticator, Authy)</p>
+            </div>
+          </div>
+          <div id="2fa-status-box" class="p-4 rounded-xl mb-5 flex items-center justify-between"
+            style="background:var(--s-surface-2);border:1px solid var(--s-border);">
+            <div class="flex items-center gap-3">
+              <div id="2fa-badge-icon"
+                class="w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 text-slate-400"><i
+                  class="fa-solid fa-shield"></i></div>
+              <div>
+                <span id="2fa-status-title" class="text-xs font-bold block text-[var(--s-text)]">2FA is Not
+                  Enabled</span>
+                <span id="2fa-status-desc" class="text-[11px] text-[var(--s-text-muted)]">High risk: Accounts without
+                  2FA cannot modify payout IBANs</span>
+              </div>
+            </div>
+            <span id="2fa-tag"
+              class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-rose-500/10 text-rose-400 border border-rose-500/20">Disabled</span>
+          </div>
+          <div id="2fa-setup-card"
+            class="hidden p-4 rounded-xl mb-4 bg-[var(--s-surface-2)] border border-brand-500/30">
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-brand-400 mb-2">Step 1: Scan Authenticator
+              QR</h3>
+            <div class="flex flex-col sm:flex-row items-center gap-4 mb-4">
+              <div id="qr-wrapper" class="w-32 h-32 bg-white p-2 rounded-xl flex items-center justify-center"><img
+                  id="qr-image" src="" alt="2FA QR Code" class="w-full h-full object-contain"></div>
+              <div class="flex-1 text-xs">
+                <p class="text-[var(--s-text-muted)] mb-2">Can't scan? Enter setup key manually:</p>
+                <div class="flex items-center gap-2">
+                  <code id="secret-key"
+                    class="bg-[var(--s-surface-3)] px-2 py-1 rounded text-[11px] font-mono text-brand-300 select-all font-bold"></code>
+                  <button type="button" onclick="copySecret()"
+                    class="text-xs text-[var(--s-text-muted)] hover:text-brand-400"><i
+                      class="fa-solid fa-copy"></i></button>
+                </div>
+              </div>
+            </div>
+            <h3 class="text-xs font-extrabold uppercase tracking-wider text-brand-400 mb-2">Step 2: Enter 6-Digit Code
+            </h3>
+            <div class="flex gap-2">
+              <input type="text" id="totp-code" maxlength="6" pattern="[0-9]{6}" placeholder="000000"
+                class="nb-input text-center text-lg font-mono tracking-widest font-extrabold">
+              <button type="button" onclick="confirm2Fa()" class="btn btn-primary">Verify</button>
+            </div>
+          </div>
+        </div>
+        <div class="pt-4 border-t border-[var(--s-border)] flex items-center justify-between">
+          <span class="text-xs text-[var(--s-text-muted)]">Requires mobile authenticator app</span>
+          <div id="2fa-actions">
+            <button type="button" id="btn-setup-2fa" onclick="start2FaSetup()" class="btn btn-primary text-xs"><i
+                class="fa-solid fa-qrcode"></i> Setup 2FA Now</button>
+            <button type="button" id="btn-disable-2fa" onclick="disable2Fa()" class="hidden btn btn-danger text-xs"><i
+                class="fa-solid fa-power-off"></i> Disable 2FA</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="card-head">
+          <div class="card-icon" style="background:rgba(245,158,11,.15);color:#fbbf24;"><i
+              class="fa-solid fa-laptop-code"></i></div>
+          <div>
+            <h2 class="text-base font-bold text-[var(--s-text)]">Active Sessions &amp; Devices</h2>
+            <p class="text-xs text-[var(--s-text-muted)]">Manage devices that currently have access to your seller store
+            </p>
+          </div>
+        </div>
+        <div class="space-y-3 mb-6">
+          <div
+            class="p-3.5 rounded-xl bg-[var(--s-surface-2)] border border-[var(--s-border)] flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <i class="fa-solid fa-display text-emerald-400 text-lg"></i>
+              <div>
+                <strong class="text-xs text-[var(--s-text)] block">Current Web Session</strong>
+                <span class="text-[11px] text-[var(--s-text-muted)]" id="current-session-info">NexusBids Web • Active
+                  Now</span>
+              </div>
+            </div>
+            <span
+              class="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Current</span>
+          </div>
+        </div>
+        <div class="pt-2">
+          <button type="button" onclick="logoutAllDevices()" class="btn btn-danger w-full text-xs"><i
+              class="fa-solid fa-arrow-right-from-bracket"></i> Log Out From All Other Devices</button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="card-head">
+          <div class="card-icon" style="background:rgba(99,102,241,.15);color:#818cf8;"><i
+              class="fa-solid fa-bell-slash"></i></div>
+          <div>
+            <h2 class="text-base font-bold text-[var(--s-text)]">Security Alerts &amp; Notifications</h2>
+            <p class="text-xs text-[var(--s-text-muted)]">Configure real-time safety notifications</p>
+          </div>
+        </div>
+        <div class="space-y-1">
+          <div class="toggle-wrap">
+            <div><strong class="text-xs text-[var(--s-text)] block">Login Alerts</strong><span
+                class="text-[11px] text-[var(--s-text-muted)]">Notify me on unrecognized IP or browser sign-in</span>
+            </div>
+            <label class="toggle"><input type="checkbox" id="alert-login" checked
+                onchange="savePref('alert_login', this.checked)"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-wrap">
+            <div><strong class="text-xs text-[var(--s-text)] block">Instant Payout PIN Confirmation</strong><span
+                class="text-[11px] text-[var(--s-text-muted)]">Require email verification code before triggering manual
+                payouts</span></div>
+            <label class="toggle"><input type="checkbox" id="alert-payout" checked
+                onchange="savePref('alert_payout', this.checked)"><span class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-wrap">
+            <div><strong class="text-xs text-[var(--s-text)] block">Reserve Bid Reached Alerts</strong><span
+                class="text-[11px] text-[var(--s-text-muted)]">Receive immediate SMS &amp; email when reserve price is
+                unlocked</span></div>
+            <label class="toggle"><input type="checkbox" id="alert-reserve" checked
+                onchange="savePref('alert_reserve', this.checked)"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/js/api-client.js"></script>
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/seller-nav.js"></script>
+  <script>
+    /* ✅ AUTH GUARD */
+    (function () {
+      const _t = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+      const _u = (function () { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch (e) { return {}; } })();
+      if (!_t || !['seller', 'admin'].includes(_u.role)) {
+        window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/security.html'));
+        return;
+      }
+    })();
+
+    function togglePass(id) { const el = document.getElementById(id); if (el) el.type = el.type === 'password' ? 'text' : 'password'; }
+
+    function checkPasswordStrength(pw) {
+      let score = 0;
+      if (pw.length >= 8) score++;
+      if (/[A-Z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+      const fill = document.getElementById('strength-fill');
+      const label = document.getElementById('strength-label');
+      if (!fill || !label) return;
+      if (!pw) { fill.style.width = '0%'; label.textContent = 'Enter a strong password'; return; }
+      if (score <= 1) { fill.style.width = '25%'; fill.style.background = '#ef4444'; label.textContent = 'Weak password'; label.style.color = '#ef4444'; }
+      else if (score === 2) { fill.style.width = '50%'; fill.style.background = '#f59e0b'; label.textContent = 'Moderate password'; label.style.color = '#f59e0b'; }
+      else if (score === 3) { fill.style.width = '75%'; fill.style.background = '#3b82f6'; label.textContent = 'Good password'; label.style.color = '#3b82f6'; }
+      else { fill.style.width = '100%'; fill.style.background = '#10b981'; label.textContent = 'Strong password!'; label.style.color = '#10b981'; }
+    }
+
+    document.getElementById('new-password')?.addEventListener('input', (e) => { checkPasswordStrength(e.target.value); });
+
+    document.getElementById('change-password-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const currentPassword = document.getElementById('current-password').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      if (newPassword !== confirmPassword) { UI.showToast('New passwords do not match.', 'error'); return; }
+      const btn = document.getElementById('btn-submit-password');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Updating…';
+      try {
+        const res = await ApiClient.post('/auth/change-password', { currentPassword, newPassword });
+        if (res && (res.success || res.message)) {
+          UI.showToast('Password changed successfully!', 'success');
+          e.target.reset();
+          checkPasswordStrength('');
+        } else { UI.showToast((res && res.message) || 'Failed to update password.', 'error'); }
+      } catch (err) { UI.showToast(err.message || 'Error updating password.', 'error'); }
+      finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-lock"></i> Update Password'; }
+    });
+
+    let currentSecret = '';
+
+    async function loadSecurityState() {
+      try {
+        const res = await ApiClient.get('/auth/me');
+        const user = (res && res.data) || res.user || res;
+        const is2Fa = !!user.two_factor_enabled;
+        const badgeIcon = document.getElementById('2fa-badge-icon');
+        const statusTitle = document.getElementById('2fa-status-title');
+        const statusDesc = document.getElementById('2fa-status-desc');
+        const tag = document.getElementById('2fa-tag');
+        const btnSetup = document.getElementById('btn-setup-2fa');
+        const btnDisable = document.getElementById('btn-disable-2fa');
+        if (is2Fa) {
+          badgeIcon.className = 'w-8 h-8 rounded-lg flex items-center justify-center bg-emerald-500/20 text-emerald-400';
+          statusTitle.textContent = '2FA is Active';
+          statusDesc.textContent = 'Account protected with Authenticator app';
+          tag.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+          tag.textContent = 'Enabled';
+          btnSetup.classList.add('hidden');
+          btnDisable.classList.remove('hidden');
+        } else {
+          badgeIcon.className = 'w-8 h-8 rounded-lg flex items-center justify-center bg-slate-800 text-slate-400';
+          statusTitle.textContent = '2FA is Not Enabled';
+          statusDesc.textContent = 'High risk: Accounts without 2FA cannot modify payout IBANs';
+          tag.className = 'px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-rose-500/10 text-rose-400 border border-rose-500/20';
+          tag.textContent = 'Disabled';
+          btnSetup.classList.remove('hidden');
+          btnDisable.classList.add('hidden');
+        }
+      } catch (err) { console.error('Failed to load user security details', err); }
+    }
+
+    async function start2FaSetup() {
+      try {
+        const res = await ApiClient.post('/auth/2fa/setup');
+        const d = (res && res.data) || res;
+        const setupCard = document.getElementById('2fa-setup-card');
+        const qrImage = document.getElementById('qr-image');
+        const secretKey = document.getElementById('secret-key');
+        if (d && (d.qrCode || d.qr_code || d.secret)) {
+          qrImage.src = d.qrCode || d.qr_code || `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(d.otpauth_url || d.secret)}`;
+          currentSecret = d.secret || '';
+          secretKey.textContent = currentSecret;
+          setupCard.classList.remove('hidden');
+        } else { UI.showToast('Could not initiate 2FA setup.', 'error'); }
+      } catch (err) { UI.showToast(err.message || 'Error generating 2FA QR code.', 'error'); }
+    }
+
+    async function confirm2Fa() {
+      const code = document.getElementById('totp-code').value.trim();
+      if (!code || code.length < 6) { UI.showToast('Please enter the 6-digit authenticator code.', 'error'); return; }
+      try {
+        const res = await ApiClient.post('/auth/2fa/confirm', { token: code, secret: currentSecret });
+        if (res && (res.success || res.verified)) {
+          UI.showToast('2FA successfully enabled!', 'success');
+          document.getElementById('2fa-setup-card').classList.add('hidden');
+          loadSecurityState();
+        } else { UI.showToast((res && res.message) || 'Invalid authentication code.', 'error'); }
+      } catch (err) { UI.showToast(err.message || 'Failed to verify 2FA code.', 'error'); }
+    }
+
+    async function disable2Fa() {
+      if (!confirm('Are you sure you want to disable 2FA? This will decrease your store security.')) return;
+      try {
+        const res = await ApiClient.post('/auth/2fa/disable');
+        if (res && (res.success || !res.error)) { UI.showToast('2FA has been disabled.', 'success'); loadSecurityState(); }
+        else { UI.showToast((res && res.message) || 'Failed to disable 2FA.', 'error'); }
+      } catch (err) { UI.showToast(err.message || 'Error disabling 2FA.', 'error'); }
+    }
+
+    function copySecret() {
+      if (currentSecret) { navigator.clipboard.writeText(currentSecret); UI.showToast('Secret key copied to clipboard!', 'success'); }
+    }
+
+    async function logoutAllDevices() {
+      if (!confirm('This will invalidate all current session tokens on other devices. Continue?')) return;
+      try { await ApiClient.post('/auth/logout-all'); UI.showToast('All other sessions terminated.', 'success'); }
+      catch (err) { UI.showToast(err.message || 'Error logging out other devices.', 'error'); }
+    }
+
+    function savePref(key, val) { localStorage.setItem('nb_sec_' + key, String(val)); UI.showToast('Preference saved.', 'success'); }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // ✅ FIX: restore saved toggle preferences from localStorage
+      ['alert_login', 'alert_payout', 'alert_reserve'].forEach(k => {
+        const saved = localStorage.getItem('nb_sec_' + k);
+        if (saved !== null) {
+          const el = document.getElementById(k.replace(/_/g, '-'));
+          if (el) el.checked = (saved === 'true');
+        }
+      });
+      loadSecurityState();
+    });
+  </script>
+</body>
+
+</html>

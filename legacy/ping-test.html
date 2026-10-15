@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ping Test</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; background: #4f46e5; color: white; border: 0; border-radius: 8px; }
+        pre { background: #fff; padding: 20px; margin-top: 20px; border-radius: 8px; border: 1px solid #ddd; white-space: pre-wrap; word-break: break-all; }
+        .ok { color: green; }
+        .err { color: red; }
+    </style>
+</head>
+<body>
+    <h2>AI Chat API Test</h2>
+    <button onclick="testPing()">Click to Test</button>
+    <pre id="output">Click the button to test...</pre>
+
+    <script>
+    function testPing() {
+        const out = document.getElementById('output');
+        out.textContent = 'Testing...';
+        out.className = '';
+
+        fetch('ai-chat-api.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=ping'
+        })
+        .then(r => r.text())
+        .then(text => {
+            try {
+                const d = JSON.parse(text);
+                out.textContent = JSON.stringify(d, null, 2);
+                out.className = d.success ? 'ok' : 'err';
+            } catch (e) {
+                out.textContent = 'RAW RESPONSE:\n' + text;
+                out.className = 'err';
+            }
+        })
+        .catch(e => {
+            out.textContent = 'ERROR: ' + e.message;
+            out.className = 'err';
+        });
+    }
+    </script>
+</body>
+</html>
