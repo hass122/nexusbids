@@ -469,14 +469,15 @@ router.get('/orders', async (req: Request, res: Response) => {
     const rows = await query<any[]>(
       `SELECT o.order_id, o.order_number, o.winning_bid, o.platform_fee, o.seller_amount,
               o.total_amount, o.order_status, o.payment_status, o.shipping_status,
+              o.admin_review_status, o.buyer_proof_uploaded_at,
               o.courier, o.tracking_number, o.created_at,
-              b.full_name as buyer_name, b.email as buyer_email,
-              s.full_name as seller_name, s.email as seller_email,
-              a.title as auction_title, a.auction_id
+              COALESCE(b.full_name, 'Unknown Buyer') as buyer_name, b.email as buyer_email,
+              COALESCE(s.full_name, 'Platform / Unknown') as seller_name, s.email as seller_email,
+              COALESCE(a.title, CONCAT('Order #', o.order_id)) as auction_title, a.auction_id
        FROM orders o
-       JOIN users b ON b.user_id = o.buyer_id
-       JOIN users s ON s.user_id = o.seller_id
-       JOIN auctions a ON a.auction_id = o.auction_id
+       LEFT JOIN users b ON b.user_id = o.buyer_id
+       LEFT JOIN users s ON s.user_id = o.seller_id
+       LEFT JOIN auctions a ON a.auction_id = o.auction_id
        ${where} ORDER BY o.created_at DESC LIMIT ? OFFSET ?`,
       [...params, limit, offset]
     );

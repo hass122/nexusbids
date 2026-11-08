@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
@@ -266,7 +266,7 @@
 
       try {
         const res = await ApiClient.get('/admin/orders', { search: search || undefined, payment_status: paymentStatus || undefined });
-        const orders = (res && res.data) || [];
+        const orders = Array.isArray(res) ? res : (Array.isArray(res?.data) ? res.data : (res?.data?.items || []));
         document.getElementById('order-count').textContent = orders.length;
 
         if (!orders.length) {
@@ -277,12 +277,19 @@
         tbody.innerHTML = orders.map(o => {
           const isPaid = (o.payment_status || '').toLowerCase() === 'paid';
           const orderStatus = (o.order_status || 'pending').toLowerCase();
+          const reviewStatus = (o.admin_review_status || '').toLowerCase();
+          const hasProof = !!o.buyer_proof_uploaded_at;
 
           // ✅ FIXED: correct badge classes per status
           let badgeClass = 'badge-pending';
           if (orderStatus === 'completed' || orderStatus === 'delivered') badgeClass = 'badge-completed';
           else if (orderStatus === 'shipped') badgeClass = 'badge-shipped';
           else if (orderStatus === 'refunded') badgeClass = 'badge-refunded';
+
+          let paymentBadge = `<span class="badge ${isPaid ? 'badge-paid' : 'badge-pending'}">${esc(o.payment_status || 'unpaid')}</span>`;
+          if (!isPaid && hasProof) {
+            paymentBadge += `<span class="block mt-1 badge" style="background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);font-size:9px"><i class="fa-solid fa-clock-rotate-left mr-1"></i>Receipt Uploaded</span>`;
+          }
 
           return `
           <tr>
@@ -293,21 +300,26 @@
             <td>
               <div class="text-xs">
                 <strong class="text-[var(--a-text)] block" style="display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden">${esc(o.auction_title)}</strong>
-                <span class="text-[11px] text-[var(--a-text-muted)]">Lot #${esc(o.auction_id)}</span>
+                <span class="text-[11px] text-[var(--a-text-muted)]">Lot #${esc(o.auction_id || o.order_id)}</span>
               </div>
             </td>
-            <td><div class="text-xs"><strong class="block font-bold">${esc(o.buyer_name)}</strong><span class="text-[11px] text-[var(--a-text-muted)]">${esc(o.buyer_email)}</span></div></td>
-            <td><div class="text-xs"><strong class="block font-bold">${esc(o.seller_name)}</strong><span class="text-[11px] text-[var(--a-text-muted)]">${esc(o.seller_email)}</span></div></td>
+            <td><div class="text-xs"><strong class="block font-bold">${esc(o.buyer_name)}</strong><span class="text-[11px] text-[var(--a-text-muted)]">${esc(o.buyer_email || '')}</span></div></td>
+            <td><div class="text-xs"><strong class="block font-bold">${esc(o.seller_name)}</strong><span class="text-[11px] text-[var(--a-text-muted)]">${esc(o.seller_email || '')}</span></div></td>
             <td><strong class="text-xs font-black text-emerald-400">${esc(fmt(parseFloat(o.total_amount || 0)))}</strong></td>
             <td><span class="text-xs font-bold text-brand-400">${esc(fmt(parseFloat(o.platform_fee || o.total_amount * 0.05 || 0)))}</span></td>
-            <td><span class="badge ${isPaid ? 'badge-paid' : 'badge-pending'}">${esc(o.payment_status || 'unpaid')}</span></td>
+            <td>${paymentBadge}</td>
             <td><div class="text-xs"><span class="badge ${badgeClass}">${esc(orderStatus)}</span>
               ${o.tracking_number ? `<span class="block text-[10px] text-[var(--a-text-muted)] font-mono mt-0.5">${esc(o.courier || 'TRK')}: ${esc(o.tracking_number)}</span>` : ''}
             </div></td>
             <td class="text-right">
-              <a href="/invoice.html?order_id=${encodeURIComponent(o.order_id)}&role=admin" target="_blank" class="btn btn-ghost text-[11px] py-1 px-2.5" title="View Invoice">
-                <i class="fa-solid fa-file-invoice"></i>
-              </a>
+              <div class="flex items-center justify-end gap-1.5">
+                <a href="/admin/payments.html" class="btn btn-ghost text-[11px] py-1 px-2.5" title="Review Payments">
+                  <i class="fa-solid fa-receipt text-amber-400"></i>
+                </a>
+                <a href="/invoice.html?order_id=${encodeURIComponent(o.order_id)}&role=admin" target="_blank" class="btn btn-ghost text-[11px] py-1 px-2.5" title="View Invoice">
+                  <i class="fa-solid fa-file-invoice"></i>
+                </a>
+              </div>
             </td>
           </tr>`;
         }).join('');
