@@ -265,7 +265,10 @@
       tbody.innerHTML = '<tr><td colspan="9" class="text-center py-12 text-[var(--a-text-muted)]"><i class="fa-solid fa-spinner fa-spin text-xl mb-2"></i><br>Loading orders…</td></tr>';
 
       try {
-        const res = await ApiClient.get('/admin/orders', { search: search || undefined, payment_status: paymentStatus || undefined });
+        const queryParams = {};
+        if (search) queryParams.search = search;
+        if (paymentStatus && paymentStatus !== 'all') queryParams.payment_status = paymentStatus;
+        const res = await ApiClient.get('/admin/orders', queryParams);
         const orders = Array.isArray(res) ? res : (Array.isArray(res?.data) ? res.data : (res?.data?.items || []));
         document.getElementById('order-count').textContent = orders.length;
 

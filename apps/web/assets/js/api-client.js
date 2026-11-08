@@ -134,7 +134,15 @@ class ApiClient {
   }
 
   static get(endpoint, params = {}) {
-    const qs = Object.keys(params).length ? '?' + new URLSearchParams(params) : '';
+    const cleanParams = {};
+    if (params && typeof params === 'object') {
+      for (const [k, v] of Object.entries(params)) {
+        if (v !== undefined && v !== null && v !== '' && v !== 'undefined') {
+          cleanParams[k] = v;
+        }
+      }
+    }
+    const qs = Object.keys(cleanParams).length ? '?' + new URLSearchParams(cleanParams) : '';
     return this.request(`${endpoint}${qs}`, { method: 'GET' });
   }
   static post(endpoint, body = {}) { return this.request(endpoint, { method: 'POST', body }); }

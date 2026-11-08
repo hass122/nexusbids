@@ -455,15 +455,24 @@ router.get('/orders', async (req: Request, res: Response) => {
     const page = Math.max(1, parseInt(req.query.page as string || '1', 10));
     const limit = Math.min(100, parseInt(req.query.limit as string || '20', 10));
     const offset = (page - 1) * limit;
-    const search = req.query.search as string;
-    const paymentStatus = req.query.payment_status as string;
-    const orderStatus = req.query.order_status as string;
+    const search = (req.query.search as string || '').trim();
+    const paymentStatus = (req.query.payment_status as string || '').trim();
+    const orderStatus = (req.query.order_status as string || '').trim();
 
     let where = 'WHERE 1=1';
     const params: any[] = [];
-    if (search) { where += ' AND (o.order_number LIKE ? OR a.title LIKE ?)'; params.push(`%${search}%`, `%${search}%`); }
-    if (paymentStatus) { where += ' AND o.payment_status = ?'; params.push(paymentStatus); }
-    if (orderStatus) { where += ' AND o.order_status = ?'; params.push(orderStatus); }
+    if (search && search !== 'undefined' && search !== 'null') {
+      where += ' AND (o.order_number LIKE ? OR a.title LIKE ?)';
+      params.push(`%${search}%`, `%${search}%`);
+    }
+    if (paymentStatus && paymentStatus !== 'undefined' && paymentStatus !== 'null' && paymentStatus !== 'all') {
+      where += ' AND o.payment_status = ?';
+      params.push(paymentStatus);
+    }
+    if (orderStatus && orderStatus !== 'undefined' && orderStatus !== 'null' && orderStatus !== 'all') {
+      where += ' AND o.order_status = ?';
+      params.push(orderStatus);
+    }
 
     const [[{ total }]] = await Promise.all([query<any[]>(`SELECT COUNT(*) as total FROM orders o LEFT JOIN auctions a ON a.auction_id = o.auction_id ${where}`, params)]);
     const rows = await query<any[]>(
@@ -493,11 +502,20 @@ router.patch('/orders/:id/status', async (req: Request, res: Response) => {
     if (!existingOrders.length) { sendError(res, 'Order not found', 404); return; }
     if (order_status && order_status !== existingOrders[0].order_status) validateOrderTransition(existingOrders[0].order_status, order_status);
 
+    let adminReviewClause = '';
+    if (payment_status === 'paid') {
+      adminReviewClause = ", admin_review_status = 'approved', admin_reviewed_at = NOW()";
+    }
+
     await query(
       `UPDATE orders SET order_status = COALESCE(?, order_status), payment_status = COALESCE(?, payment_status),
-       shipping_status = COALESCE(?, shipping_status), updated_at = NOW() WHERE order_id = ?`,
+       shipping_status = COALESCE(?, shipping_status)${adminReviewClause}, updated_at = NOW() WHERE order_id = ?`,
       [order_status || null, payment_status || null, shipping_status || null, orderId]
     );
+
+    if (payment_status === 'paid') {
+      await query("UPDATE payments SET payment_status = 'paid', updated_at = NOW() WHERE order_id = ?", [orderId]).catch(() => {});
+    }
     await logAdminActivity(req, 'ORDER_STATUS_UPDATE', 'order', orderId, { order_status, payment_status, shipping_status, previous_status: existingOrders[0].order_status });
     sendSuccess(res, { order_id: orderId, updated: true });
   } catch (err: any) { sendError(res, err.message, 400); }
