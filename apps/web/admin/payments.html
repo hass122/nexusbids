@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
@@ -868,7 +868,7 @@
         tbody.innerHTML = renderSkeletons(5);
         try {
           var res = await ApiClient.get('/admin/payments');
-          var payments = (res && Array.isArray(res.data)) ? res.data : [];
+          var payments = Array.isArray(res) ? res : (Array.isArray(res?.data) ? res.data : (res?.data?.items || []));
           payments.sort((a, b) => (new Date(b.created_at).getTime() || 0) - (new Date(a.created_at).getTime() || 0));
           state.payments = payments;
           computeStats();

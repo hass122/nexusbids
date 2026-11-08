@@ -313,6 +313,11 @@
             </div></td>
             <td class="text-right">
               <div class="flex items-center justify-end gap-1.5">
+                ${!isPaid ? `
+                  <button onclick="approveOrderPayment(${o.order_id})" class="btn btn-ghost text-[11px] py-1 px-2.5 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10" title="Approve Payment">
+                    <i class="fa-solid fa-check"></i> Approve
+                  </button>
+                ` : ''}
                 <a href="/admin/payments.html" class="btn btn-ghost text-[11px] py-1 px-2.5" title="Review Payments">
                   <i class="fa-solid fa-receipt text-amber-400"></i>
                 </a>
@@ -325,6 +330,22 @@
         }).join('');
       } catch (err) {
         tbody.innerHTML = '<tr><td colspan="9" class="text-center py-12 text-rose-400">' + esc(err.message || 'Error loading orders.') + '</td></tr>';
+      }
+    }
+
+    async function approveOrderPayment(orderId) {
+      if (!confirm(`Are you sure you want to approve payment for Order #${orderId}?`)) return;
+      try {
+        await ApiClient.patch(`/admin/orders/${orderId}/status`, {
+          payment_status: 'paid',
+          order_status: 'processing'
+        });
+        if (window.UI && UI.showToast) UI.showToast(`Order #${orderId} payment approved!`, 'success');
+        else alert(`Order #${orderId} payment approved!`);
+        loadOrders();
+      } catch (e) {
+        if (window.UI && UI.showToast) UI.showToast(e.message || 'Failed to approve payment', 'error');
+        else alert(e.message || 'Failed to approve payment');
       }
     }
 

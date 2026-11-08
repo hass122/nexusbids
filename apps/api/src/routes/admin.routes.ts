@@ -509,31 +509,37 @@ router.get('/payments', async (req: Request, res: Response) => {
     const page = Math.max(1, parseInt(req.query.page as string || '1', 10));
     const limit = Math.min(100, parseInt(req.query.limit as string || '20', 10));
     const offset = (page - 1) * limit;
-    const [[{ total }]] = await Promise.all([query<any[]>('SELECT COUNT(*) as total FROM payments')]);
-
+    // Join payments and also include orders that have uploaded receipts but no standalone payments row
     const rows = await query<any[]>(
-      `SELECT p.payment_id, p.order_id, p.amount,
-              p.payment_method,
-              p.payment_status,
-              p.transaction_id,
-              p.created_at,
-              o.order_number,
-              u.full_name as user_name, u.email as user_email,
-              a.title as auction_title
-       FROM payments p
-       LEFT JOIN users u ON u.user_id = p.user_id
-       LEFT JOIN orders o ON o.order_id = p.order_id
+      `SELECT 
+          COALESCE(p.payment_id, o.order_id) as payment_id,
+          o.order_id,
+          COALESCE(p.amount, o.total_amount) as amount,
+          COALESCE(p.payment_method, o.payment_method, 'bank_transfer') as payment_method,
+          COALESCE(p.payment_status, o.payment_status, 'pending') as payment_status,
+          COALESCE(p.transaction_id, o.transaction_id, 'Pending verification') as transaction_id,
+          p.receipt_path,
+          COALESCE(p.created_at, o.created_at) as created_at,
+          o.order_number,
+          u.full_name as user_name,
+          u.email as user_email,
+          a.title as auction_title
+       FROM orders o
+       LEFT JOIN payments p ON p.order_id = o.order_id
+       LEFT JOIN users u ON u.user_id = o.buyer_id
        LEFT JOIN auctions a ON a.auction_id = o.auction_id
-       ORDER BY p.created_at DESC LIMIT ? OFFSET ?`,
+       ORDER BY o.created_at DESC LIMIT ? OFFSET ?`,
       [limit, offset]
     );
 
+    const [[{ total }]] = await Promise.all([query<any[]>('SELECT COUNT(*) as total FROM orders')]);
+
     const formatted = rows.map((r: any) => ({
       ...r,
-      buyer_name: r.user_name,
-      buyer_email: r.user_email
+      buyer_name: r.user_name || 'Buyer',
+      buyer_email: r.user_email || ''
     }));
-    sendPaginated(res, formatted, total, page, limit);
+    sendPaginated(res, formatted, total || rows.length, page, limit);
   } catch (err: any) { sendError(res, err.message, 500); }
 });
 
