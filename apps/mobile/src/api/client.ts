@@ -135,10 +135,10 @@ export const MobileApi = {
    * Mobile Google OAuth — send access_token obtained via expo-auth-session.
    * Backend verifies with Google and returns our own JWT pair.
    */
-  googleAuth: async (access_token: string) => {
+  googleAuth: async (token: string) => {
     const res = await apiRequest('/auth/google/mobile', {
       method: 'POST',
-      body: JSON.stringify({ access_token }),
+      body: JSON.stringify({ access_token: token, id_token: token, token }),
     });
     if (res.data?.accessToken) {
       await SecureTokenStorage.setAccessToken(res.data.accessToken);

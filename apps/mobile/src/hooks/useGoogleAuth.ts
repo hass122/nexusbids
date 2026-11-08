@@ -13,15 +13,19 @@ WebBrowser.maybeCompleteAuthSession();
  *   // call promptAsync() to open Google consent screen
  *   // watch `response` for auth result
  */
+const GOOGLE_CLIENT_ID =
+  process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID ||
+  '1047729043749-vb1i0ftrk9nhivt1lm9racpkij8q8u1p.apps.googleusercontent.com';
+
 export function useGoogleAuth() {
   const [request, response, promptAsync] = Google.useAuthRequest({
-    // Web client ID is used for Expo Go and all managed workflow builds.
-    // Add androidClientId / iosClientId for standalone native builds.
-    clientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
-    // Scopes: openid is required for id_token; profile + email for user info
+    clientId: GOOGLE_CLIENT_ID,
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || GOOGLE_CLIENT_ID,
+    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || GOOGLE_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || GOOGLE_CLIENT_ID,
     scopes: ['openid', 'profile', 'email'],
   });
 
-  return { request, response, promptAsync };
+  return { request, response, promptAsync, isReady: !!request };
 }
 

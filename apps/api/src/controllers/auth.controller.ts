@@ -419,15 +419,15 @@ export class AuthController {
    */
   static async googleMobileAuth(req: Request, res: Response): Promise<void> {
     try {
-      const { access_token } = req.body;
+      const token = req.body.access_token || req.body.id_token || req.body.token;
 
-      if (!access_token || typeof access_token !== 'string') {
-        sendError(res, 'Google access_token is required', 400);
+      if (!token || typeof token !== 'string') {
+        sendError(res, 'Google authentication token is required', 400);
         return;
       }
 
       // Verify the token and fetch user profile from Google
-      const profile = await OAuthService.getGoogleUserInfo(access_token);
+      const profile = await OAuthService.getGoogleUserInfo(token);
 
       if (!profile.email) {
         sendError(res, 'Google account email is unavailable or not verified', 403);

@@ -85,31 +85,75 @@ export class OAuthService {
   }
 
   /**
-   * Fetch user info from Google using access token
+   * Fetch user info from Google using access token or ID token (JWT)
    */
-  static async getGoogleUserInfo(accessToken: string): Promise<GoogleUserInfo> {
-    const userinfoUrl = 'https://www.googleapis.com/oauth2/v2/userinfo';
+  static async getGoogleUserInfo(token: string): Promise<GoogleUserInfo> {
+    const trimmed = (token || '').trim();
 
-    const res = await fetch(userinfoUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        Accept: 'application/json',
-      },
-    });
-
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      console.error('[Google OAuth] Userinfo error status:', res.status, errText);
-      throw new Error('Failed to retrieve user information from Google');
+    // 1. If it looks like a JWT id_token (contains dots)
+    const isJwt = trimmed.includes('.') && trimmed.split('.').length === 3;
+    if (isJwt) {
+      try {
+        const idTokenUrl = `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(trimmed)}`;
+        const res = await fetch(idTokenUrl);
+        if (res.ok) {
+          const data: any = await res.json();
+          if (data.sub && data.email) {
+            return {
+              id: data.sub,
+              email: data.email,
+              verified_email: data.email_verified === 'true' || data.email_verified === true,
+              name: data.name,
+              picture: data.picture,
+              given_name: data.given_name,
+              family_name: data.family_name,
+            };
+          }
+        }
+      } catch (e: any) {
+        console.warn('[Google OAuth] Tokeninfo ID token verify failed:', e.message);
+      }
     }
 
-    const profile = (await res.json()) as GoogleUserInfo;
+    // 2. Try Google userinfo endpoint (for access_token)
+    try {
+      const userinfoUrl = 'https://www.googleapis.com/oauth2/v2/userinfo';
+      const res = await fetch(userinfoUrl, {
+        headers: {
+          Authorization: `Bearer ${trimmed}`,
+          Accept: 'application/json',
+        },
+      });
 
-    if (!profile.id || !profile.email) {
-      throw new Error('Google profile incomplete: missing user ID or email');
+      if (res.ok) {
+        const profile = (await res.json()) as GoogleUserInfo;
+        if (profile.id && profile.email) {
+          return profile;
+        }
+      }
+    } catch (e: any) {
+      console.warn('[Google OAuth] Userinfo fetch failed:', e.message);
     }
 
-    return profile;
+    // 3. Fallback: try tokeninfo with access_token
+    try {
+      const tokenInfoUrl = `https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(trimmed)}`;
+      const tokenRes = await fetch(tokenInfoUrl);
+      if (tokenRes.ok) {
+        const data: any = await tokenRes.json();
+        if ((data.sub || data.user_id) && data.email) {
+          return {
+            id: data.sub || data.user_id,
+            email: data.email,
+            verified_email: data.verified_email === 'true' || data.verified_email === true,
+          };
+        }
+      }
+    } catch (e: any) {
+      console.warn('[Google OAuth] Tokeninfo access token fetch failed:', e.message);
+    }
+
+    throw new Error('Failed to retrieve user information from Google. Token may be invalid or expired.');
   }
 
   /**

@@ -53,11 +53,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   // Automatically handle the OAuth response when user returns from Google browser
   useEffect(() => {
     if (googleResponse?.type === 'success') {
-      const accessToken = googleResponse.authentication?.accessToken;
-      if (accessToken) {
+      const token =
+        googleResponse.authentication?.accessToken ||
+        googleResponse.authentication?.idToken ||
+        (googleResponse.params as any)?.access_token ||
+        (googleResponse.params as any)?.id_token ||
+        (googleResponse.params as any)?.code;
+
+      if (token) {
         setLoading(true);
         setErrorMessage('');
-        googleLogin(accessToken)
+        googleLogin(token)
           .then(() => {
             clearForm();
             onClose();
@@ -66,12 +72,28 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             setErrorMessage(err.message || 'Google sign-in failed. Please try again.');
           })
           .finally(() => setLoading(false));
+      } else {
+        setErrorMessage('Google authentication completed, but no token was returned.');
       }
     } else if (googleResponse?.type === 'error') {
-      setErrorMessage('Google sign-in was cancelled or failed.');
+      const desc = (googleResponse.params as any)?.error_description || googleResponse.error?.message;
+      setErrorMessage(desc || 'Google sign-in was cancelled or failed.');
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [googleResponse]);
+
+  const handleGooglePress = async () => {
+    setErrorMessage('');
+    try {
+      if (promptGoogleAsync) {
+        await promptGoogleAsync();
+      } else {
+        setErrorMessage('Google authentication is not ready yet. Please try again in a moment.');
+      }
+    } catch (e: any) {
+      setErrorMessage(e.message || 'Could not launch Google authentication.');
+    }
+  };
 
   const clearForm = () => {
     setErrorMessage('');
@@ -329,8 +351,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 {/* Google Sign-In Button */}
                 <TouchableOpacity
                   style={styles.googleBtn}
-                  onPress={() => promptGoogleAsync()}
-                  disabled={!googleRequest || loading}
+                  onPress={handleGooglePress}
+                  disabled={loading}
                   activeOpacity={0.8}
                 >
                   {loading ? (
@@ -468,8 +490,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 {/* Google Sign-Up Button */}
                 <TouchableOpacity
                   style={styles.googleBtn}
-                  onPress={() => promptGoogleAsync()}
-                  disabled={!googleRequest || loading}
+                  onPress={handleGooglePress}
+                  disabled={loading}
                   activeOpacity={0.8}
                 >
                   {loading ? (
