@@ -207,6 +207,7 @@ app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
 app.use('/api/v1/upload', uploadRoutes);
+app.use('/api/v1/uploads', uploadRoutes);
 
 // Static uploads serving (local fallback)
 app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));

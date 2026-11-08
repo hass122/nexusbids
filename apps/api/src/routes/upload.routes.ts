@@ -23,15 +23,22 @@ const upload = multer({
 });
 
 // ─── POST /api/v1/upload/image (Single image upload) ───────────
-router.post('/image', requireAuth, upload.single('image'), async (req, res) => {
+const singleUpload = upload.fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'receipt', maxCount: 1 },
+  { name: 'file', maxCount: 1 },
+]);
+
+const handleSingleImage = async (req: any, res: any) => {
   try {
-    if (!req.file) {
+    const file = req.files?.image?.[0] || req.files?.receipt?.[0] || req.files?.file?.[0] || req.file;
+    if (!file) {
       sendError(res, 'No image file provided.', 400);
       return;
     }
 
-    const folder = (req.body.folder as string) || 'nexusbids/auctions';
-    const result = await CloudinaryService.uploadBuffer(req.file.buffer, folder, 'img');
+    const folder = (req.body.folder as string) || (req.path.includes('receipt') ? 'nexusbids/receipts' : 'nexusbids/auctions');
+    const result = await CloudinaryService.uploadBuffer(file.buffer, folder, 'img');
 
     sendSuccess(res, {
       url: result.secure_url || result.url,
@@ -41,7 +48,10 @@ router.post('/image', requireAuth, upload.single('image'), async (req, res) => {
   } catch (err: any) {
     sendError(res, err.message || 'Image upload failed.', 500);
   }
-});
+};
+
+router.post('/image', requireAuth, singleUpload, handleSingleImage);
+router.post('/receipt', requireAuth, singleUpload, handleSingleImage);
 
 // ─── POST /api/v1/upload/multiple (Multi-image upload for auctions) ─
 router.post('/multiple', requireAuth, upload.array('images', 6), async (req, res) => {

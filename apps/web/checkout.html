@@ -965,6 +965,11 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
       } catch (err) {
+        if (err?.message && err.message.toLowerCase().includes('already under review')) {
+          UI.showToast('Your receipt has already been submitted and is currently under review.', 'info');
+          showVerifying();
+          return;
+        }
         UI.showToast(err?.message || 'Could not submit the receipt. Please try again.', 'error');
         btn.disabled = false;
         btn.innerHTML = originalHTML;
