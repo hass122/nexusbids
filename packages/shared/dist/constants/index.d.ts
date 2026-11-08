@@ -1,0 +1,22 @@
+export declare const PLATFORM_COMMISSION_PERCENT = 5;
+export declare const ESCROW_AUTO_RELEASE_DAYS = 7;
+export declare const ACCESS_TOKEN_EXPIRY = "15m";
+export declare const REFRESH_TOKEN_EXPIRY = "7d";
+export declare const DEFAULT_PAGE_LIMIT = 12;
+export declare const MAX_PAGE_LIMIT = 50;
+export declare const DEFAULT_BID_INCREMENT = 500;
+export declare const TIMEZONE = "Asia/Karachi";
+export declare const ERROR_CODES: {
+    readonly UNAUTHORIZED: "UNAUTHORIZED";
+    readonly FORBIDDEN: "FORBIDDEN";
+    readonly NOT_FOUND: "NOT_FOUND";
+    readonly BAD_REQUEST: "BAD_REQUEST";
+    readonly VALIDATION_ERROR: "VALIDATION_ERROR";
+    readonly CONFLICT: "CONFLICT";
+    readonly RATE_LIMITED: "RATE_LIMITED";
+    readonly KYC_REQUIRED: "KYC_REQUIRED";
+    readonly SELLER_KYC_REQUIRED: "SELLER_KYC_REQUIRED";
+    readonly AUCTION_ENDED: "AUCTION_ENDED";
+    readonly INVALID_BID: "INVALID_BID";
+    readonly INTERNAL_ERROR: "INTERNAL_ERROR";
+};
