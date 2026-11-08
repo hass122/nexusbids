@@ -278,7 +278,7 @@
           const isPaid = (o.payment_status || '').toLowerCase() === 'paid';
           const orderStatus = (o.order_status || 'pending').toLowerCase();
           const reviewStatus = (o.admin_review_status || '').toLowerCase();
-          const hasProof = !!o.buyer_proof_uploaded_at;
+          const hasProof = !!o.buyer_proof_uploaded_at || reviewStatus === 'pending' || reviewStatus === 'reviewing';
 
           // ✅ FIXED: correct badge classes per status
           let badgeClass = 'badge-pending';
