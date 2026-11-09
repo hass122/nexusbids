@@ -24,6 +24,7 @@ Thumbs.db
 
 .vercel
 .expo/
+*.keystore
 test-results/
 apps/api/src/scripts/
 apps/api/check-db.ts

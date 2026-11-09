@@ -9,13 +9,21 @@ const monorepoRoot = path.resolve(projectRoot, '../..');
 const config = getDefaultConfig(projectRoot);
 
 // 1. Watch all files within the monorepo so workspace packages (@nexusbids/shared) are watched
-config.watchFolders = [monorepoRoot];
+config.watchFolders = [
+  ...(config.watchFolders || []),
+  monorepoRoot,
+];
 
 // 2. Let Metro know where to resolve packages and in what order (mobile node_modules first, then root node_modules)
 config.resolver.nodeModulesPaths = [
   path.resolve(projectRoot, 'node_modules'),
   path.resolve(monorepoRoot, 'node_modules'),
 ];
+
+config.resolver.extraNodeModules = {
+  ...(config.resolver.extraNodeModules || {}),
+  '@nexusbids/shared': path.resolve(monorepoRoot, 'packages/shared'),
+};
 
 module.exports = config;
 
