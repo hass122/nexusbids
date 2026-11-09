@@ -402,24 +402,7 @@ export class AuthController {
       if (isMobile) {
         const separator = mobileRedirectUri.includes('?') ? '&' : '?';
         const targetUrl = `${mobileRedirectUri}${separator}accessToken=${encodeURIComponent(result.accessToken)}&refreshToken=${encodeURIComponent(result.refreshToken)}`;
-
-        const mobileHtml = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NexusBids Mobile Sign-in</title>
-</head>
-<body style="background:#0b1220;color:#fff;font-family:sans-serif;text-align:center;padding-top:20vh;">
-  <h3>Signing you into NexusBids app...</h3>
-  <p><a href="${targetUrl}" style="color:#6366f1;text-decoration:none;">Click here if you are not automatically redirected</a></p>
-  <script>
-    window.location.href = ${JSON.stringify(targetUrl)};
-  </script>
-</body>
-</html>`;
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        res.send(mobileHtml);
+        res.redirect(302, targetUrl);
         return;
       }
 

@@ -1,4 +1,5 @@
 import * as WebBrowser from 'expo-web-browser';
+import { makeRedirectUri } from 'expo-auth-session';
 import { useState, useEffect } from 'react';
 
 // Required: completes the OAuth session redirect in browser
@@ -19,7 +20,8 @@ export function useGoogleAuth() {
   const promptAsync = async () => {
     try {
       setLoading(true);
-      const returnUrl = 'nexusbids://oauth';
+      // Automatically generates exp://... in Expo Go and nexusbids://oauth in native APK builds
+      const returnUrl = makeRedirectUri({ scheme: 'nexusbids', path: 'oauth' });
       const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'https://nexusbids.vercel.app/api/v1';
       const authUrl = `${apiUrl}/auth/google?mobile=1&redirect_uri=${encodeURIComponent(returnUrl)}`;
 
@@ -39,6 +41,12 @@ export function useGoogleAuth() {
         const refreshToken = params.refreshToken || params.refresh_token;
 
         if (accessToken) {
+          if (refreshToken) {
+            try {
+              const { SecureTokenStorage } = await import('../security/secureStorage');
+              await SecureTokenStorage.setRefreshToken(refreshToken);
+            } catch {}
+          }
           const authObj = {
             type: 'success',
             authentication: { accessToken, refreshToken },
