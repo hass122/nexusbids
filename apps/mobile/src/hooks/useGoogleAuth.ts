@@ -1,6 +1,5 @@
-import * as Google from 'expo-auth-session/providers/google';
 import * as WebBrowser from 'expo-web-browser';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 // Required: completes the OAuth session redirect in browser
 WebBrowser.maybeCompleteAuthSession();
@@ -13,19 +12,57 @@ WebBrowser.maybeCompleteAuthSession();
  *   // call promptAsync() to open Google consent screen
  *   // watch `response` for auth result
  */
-const GOOGLE_CLIENT_ID =
-  process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID ||
-  '1047729043749-vb1i0ftrk9nhivt1lm9racpkij8q8u1p.apps.googleusercontent.com';
-
 export function useGoogleAuth() {
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: GOOGLE_CLIENT_ID,
-    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID || GOOGLE_CLIENT_ID,
-    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID || GOOGLE_CLIENT_ID,
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID || GOOGLE_CLIENT_ID,
-    scopes: ['openid', 'profile', 'email'],
-  });
+  const [loading, setLoading] = useState(false);
+  const [response, setResponse] = useState<any>(null);
 
-  return { request, response, promptAsync, isReady: !!request };
+  const promptAsync = async () => {
+    try {
+      setLoading(true);
+      const returnUrl = 'nexusbids://oauth';
+      const apiUrl = process.env.EXPO_PUBLIC_API_URL || 'https://nexusbids.vercel.app/api/v1';
+      const authUrl = `${apiUrl}/auth/google?mobile=1&redirect_uri=${encodeURIComponent(returnUrl)}`;
+
+      const result = await WebBrowser.openAuthSessionAsync(authUrl, returnUrl);
+
+      if (result.type === 'success' && result.url) {
+        const urlStr = result.url;
+        const queryIdx = urlStr.indexOf('?');
+        const queryStr = queryIdx !== -1 ? urlStr.substring(queryIdx + 1) : '';
+        const params: Record<string, string> = {};
+        for (const pair of queryStr.split('&')) {
+          const [k, v] = pair.split('=');
+          if (k) params[decodeURIComponent(k)] = decodeURIComponent(v || '');
+        }
+
+        const accessToken = params.accessToken || params.access_token;
+        const refreshToken = params.refreshToken || params.refresh_token;
+
+        if (accessToken) {
+          const authObj = {
+            type: 'success',
+            authentication: { accessToken, refreshToken },
+            params: { access_token: accessToken, refresh_token: refreshToken },
+          };
+          setResponse(authObj);
+          return authObj;
+        } else if (params.error) {
+          const errObj = { type: 'error', error: { message: params.error } };
+          setResponse(errObj);
+          return errObj;
+        }
+      }
+
+      setResponse({ type: result.type });
+      return result;
+    } catch (err: any) {
+      setResponse({ type: 'error', error: err });
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { request: true, response, promptAsync, isReady: true, loading };
 }
 

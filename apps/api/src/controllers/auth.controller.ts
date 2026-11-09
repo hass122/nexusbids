@@ -307,7 +307,16 @@ export class AuthController {
         return;
       }
 
-      const state = crypto.randomBytes(32).toString('hex');
+      const isMobile = req.query.mobile === '1' || Boolean(req.query.redirect_uri);
+      const mobileReturnUrl = (req.query.redirect_uri as string) || (isMobile ? 'nexusbids://oauth' : '');
+
+      const statePayload = {
+        nonce: crypto.randomBytes(16).toString('hex'),
+        mobile: isMobile,
+        redirect_uri: mobileReturnUrl,
+      };
+      const state = Buffer.from(JSON.stringify(statePayload)).toString('base64url');
+
       res.cookie('oauth_state', state, {
         httpOnly: true,
         secure: ENV.NODE_ENV === 'production',
@@ -327,8 +336,26 @@ export class AuthController {
   static async googleCallback(req: Request, res: Response): Promise<void> {
     const { code, state, error } = req.query;
 
+    let isMobile = false;
+    let mobileRedirectUri = 'nexusbids://oauth';
+
+    if (state && typeof state === 'string') {
+      try {
+        const decoded = JSON.parse(Buffer.from(state, 'base64url').toString('utf8'));
+        if (decoded.mobile) {
+          isMobile = true;
+          if (decoded.redirect_uri) mobileRedirectUri = decoded.redirect_uri;
+        }
+      } catch (e) {}
+    }
+
     if (error) {
       res.clearCookie('oauth_state');
+      if (isMobile) {
+        const separator = mobileRedirectUri.includes('?') ? '&' : '?';
+        res.redirect(`${mobileRedirectUri}${separator}error=${encodeURIComponent(String(error))}`);
+        return;
+      }
       if (error === 'access_denied') {
         res.redirect('/login.html?error=user_cancelled');
       } else {
@@ -340,12 +367,17 @@ export class AuthController {
     const savedState = req.cookies?.oauth_state;
     res.clearCookie('oauth_state');
 
-    if (!state || !savedState || state !== savedState) {
+    if (!isMobile && (!state || !savedState || state !== savedState)) {
       res.redirect('/login.html?error=invalid_state');
       return;
     }
 
     if (!code || typeof code !== 'string') {
+      if (isMobile) {
+        const separator = mobileRedirectUri.includes('?') ? '&' : '?';
+        res.redirect(`${mobileRedirectUri}${separator}error=invalid_code`);
+        return;
+      }
       res.redirect('/login.html?error=invalid_code');
       return;
     }
@@ -355,13 +387,43 @@ export class AuthController {
       const profile = await OAuthService.getGoogleUserInfo(tokenData.access_token);
 
       if (!profile.email) {
+        if (isMobile) {
+          const separator = mobileRedirectUri.includes('?') ? '&' : '?';
+          res.redirect(`${mobileRedirectUri}${separator}error=email_unavailable`);
+          return;
+        }
         res.redirect('/login.html?error=email_unavailable');
         return;
       }
 
       const result = await OAuthService.findOrCreateGoogleUser(profile);
 
-      // Set standard application authentication cookies
+      // If mobile client, deliver tokens directly via custom scheme redirect
+      if (isMobile) {
+        const separator = mobileRedirectUri.includes('?') ? '&' : '?';
+        const targetUrl = `${mobileRedirectUri}${separator}accessToken=${encodeURIComponent(result.accessToken)}&refreshToken=${encodeURIComponent(result.refreshToken)}`;
+
+        const mobileHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NexusBids Mobile Sign-in</title>
+</head>
+<body style="background:#0b1220;color:#fff;font-family:sans-serif;text-align:center;padding-top:20vh;">
+  <h3>Signing you into NexusBids app...</h3>
+  <p><a href="${targetUrl}" style="color:#6366f1;text-decoration:none;">Click here if you are not automatically redirected</a></p>
+  <script>
+    window.location.href = ${JSON.stringify(targetUrl)};
+  </script>
+</body>
+</html>`;
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.send(mobileHtml);
+        return;
+      }
+
+      // Set standard application authentication cookies for web
       setAuthCookies(res, result.accessToken, result.refreshToken);
 
       // Resolve destination dashboard according to user role
@@ -401,6 +463,11 @@ export class AuthController {
       res.send(html);
     } catch (err: any) {
       console.error('[Google OAuth Callback Error]', err.message);
+      if (isMobile) {
+        const separator = mobileRedirectUri.includes('?') ? '&' : '?';
+        res.redirect(`${mobileRedirectUri}${separator}error=${encodeURIComponent(err.message || 'oauth_error')}`);
+        return;
+      }
       if (err.message?.includes('disabled or blocked')) {
         res.redirect('/login.html?error=account_blocked');
       } else if (err.message?.includes('authorization code')) {

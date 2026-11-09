@@ -136,17 +136,24 @@ export const MobileApi = {
    * Backend verifies with Google and returns our own JWT pair.
    */
   googleAuth: async (token: string) => {
-    const res = await apiRequest('/auth/google/mobile', {
-      method: 'POST',
-      body: JSON.stringify({ access_token: token, id_token: token, token }),
-    });
-    if (res.data?.accessToken) {
-      await SecureTokenStorage.setAccessToken(res.data.accessToken);
+    await SecureTokenStorage.setAccessToken(token);
+    try {
+      const me = await apiRequest('/auth/me');
+      if (me.data) return me;
+    } catch {
+      // If not a direct NexusBids session token, exchange with backend as Google token
+      const res = await apiRequest('/auth/google/mobile', {
+        method: 'POST',
+        body: JSON.stringify({ access_token: token, id_token: token, token }),
+      });
+      if (res.data?.accessToken) {
+        await SecureTokenStorage.setAccessToken(res.data.accessToken);
+      }
+      if (res.data?.refreshToken) {
+        await SecureTokenStorage.setRefreshToken(res.data.refreshToken);
+      }
+      return res;
     }
-    if (res.data?.refreshToken) {
-      await SecureTokenStorage.setRefreshToken(res.data.refreshToken);
-    }
-    return res;
   },
 
   verifyEmail: (token: string) =>
