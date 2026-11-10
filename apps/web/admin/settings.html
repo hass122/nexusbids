@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
@@ -135,17 +135,12 @@
     }
 
     .settings-grid {
-      display: grid;
-      grid-template-columns: 200px 1fr;
-      gap: 32px;
-      align-items: start
-    }
-
-    @media (max-width:900px) {
-      .settings-grid {
-        grid-template-columns: 1fr;
-        gap: 20px
-      }
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
     }
 
     .section {
@@ -454,8 +449,7 @@
     </div>
 
     <div class="settings-grid">
-      <div>
-        <section class="section" id="sec-money">
+      <section class="section" id="sec-money">
           <div class="section-head">
             <div class="title"><i class="fa-solid fa-coins"></i><span>Monetization</span></div>
             <div class="note">Commission affects all seller payouts.</div>
@@ -531,7 +525,6 @@
             </div>
           </div>
         </section>
-      </div>
     </div>
   </main>
   <footer id="nb-footer"></footer>

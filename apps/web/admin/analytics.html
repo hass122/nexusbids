@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
@@ -377,19 +377,35 @@
 
     @media (max-width:720px) {
       .kpi-row {
-        grid-template-columns: 1fr
+        grid-template-columns: 1fr;
       }
 
       .hero-value {
-        font-size: 1.9rem
+        font-size: 1.8rem;
       }
 
       .hero {
-        padding: 18px
+        padding: 16px;
       }
 
       .block {
-        padding: 16px
+        padding: 14px;
+      }
+
+      .period-tabs {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .period-tab {
+        flex: 1;
+        text-align: center;
+        padding: 6px 4px;
+      }
+
+      .chart-wrap {
+        height: 220px !important;
       }
     }
   </style>
@@ -397,7 +413,7 @@
 
 <body class="min-h-screen flex flex-col font-sans">
   <header id="nb-header" style="min-height:64px;contain:layout"></header>
-  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
     <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
     <div class="page-head flex flex-col md:flex-row md:items-end md:justify-between gap-4">
       <div>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
@@ -487,11 +487,20 @@
     @media (max-width:640px) {
       .gw {
         grid-template-columns: 1fr auto;
-        gap: 12px
+        gap: 12px;
       }
 
       .gw .gw-rail {
-        display: none
+        display: none;
+      }
+
+      .page-head {
+        gap: 12px;
+      }
+
+      .page-head button {
+        width: 100%;
+        justify-content: center;
       }
     }
   </style>
@@ -499,7 +508,7 @@
 
 <body class="min-h-screen flex flex-col font-sans">
   <header id="nb-header" style="min-height:64px;contain:layout"></header>
-  <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+  <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
     <div id="admin-subnav" style="min-height:52px;contain:layout"></div>
 
     <div class="page-head flex flex-col md:flex-row md:items-end md:justify-between gap-4">
