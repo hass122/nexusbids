@@ -16,10 +16,15 @@
   <link rel="stylesheet" href="/assets/css/design-system.css">
   <script>tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','sans-serif']},colors:{brand:{400:'#818cf8',500:'#6366f1',600:'#4f46e5'}}}}};</script>
   <style>
+    html{scroll-behavior:smooth;scroll-padding-top:5rem}
     body{overflow-x:hidden}
     .legal-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1.25rem;padding:2rem;margin-bottom:2rem}
+    .legal-toc-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:1rem;padding:1rem}
+    html.dark .legal-card,
+    html.dark .legal-toc-card{background:#0e1422;border-color:#1c2740}
     .legal-toc-item{display:flex;align-items:center;gap:.625rem;padding:.5rem .75rem;border-radius:.5rem;color:var(--text-muted);font-size:.875rem;text-decoration:none;transition:all var(--transition)}
     .legal-toc-item:hover{background:var(--bg-card-hover);color:var(--brand-500);transform:translateX(4px)}
+    html.dark .legal-toc-item:hover{background:#172033;color:#818cf8}
     .feature-pill{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem .875rem;border-radius:999px;font-size:.75rem;font-weight:700;background:rgba(99,102,241,.1);color:var(--brand-500);border:1px solid rgba(99,102,241,.2)}
     html.dark .feature-pill{color:#a5b4fc}
     .badge-pakistan{display:inline-flex;align-items:center;gap:.375rem;padding:.25rem .625rem;border-radius:.375rem;background:rgba(16,185,129,.1);color:#10b981;border:1px solid rgba(16,185,129,.2);font-size:.75rem;font-weight:600}
@@ -51,9 +56,10 @@
   <main class="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
       
-      <!-- Sticky Sidebar Navigation -->
-        <div class="sticky top-24 space-y-4">
-          <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4">
+      <!-- Sticky Sidebar Navigation (Desktop only sticky, normal flow on mobile) -->
+      <aside class="lg:col-span-1">
+        <div class="static lg:sticky lg:top-24 space-y-4">
+          <div class="legal-toc-card">
             <h4 class="text-xs font-bold text-[var(--text-light)] uppercase tracking-wider mb-3 px-3">Table of Contents</h4>
             <nav class="space-y-1">
               <a href="#section-1" class="legal-toc-item"><i class="fa-solid fa-circle-info text-xs"></i> 1. Legal Framework</a>
@@ -69,7 +75,7 @@
             </nav>
           </div>
 
-          <div class="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-2xl p-4">
+          <div class="legal-toc-card">
             <h4 class="text-xs font-bold text-[var(--text-light)] uppercase tracking-wider mb-3 px-3">Related Documents</h4>
             <nav class="space-y-1">
               <a href="/terms.html" class="legal-toc-item"><i class="fa-solid fa-file-contract text-xs"></i> Terms &amp; Conditions</a>
