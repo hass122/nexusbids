@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 
 <head>
@@ -1393,7 +1393,35 @@
       'use strict';
 
       var MAX_FILE_SIZE = 5 * 1024 * 1024;
+      var activeUploads = 0;
       function $(id) { return document.getElementById(id); }
+
+      /* Canvas-based image compression — keeps payload small for upload */
+      function compressImage(file, maxDim, quality) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var img = new Image();
+            img.onload = function () {
+              var w = img.width, h = img.height;
+              if (w > maxDim || h > maxDim) {
+                if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+                else { w = Math.round(w * maxDim / h); h = maxDim; }
+              }
+              var canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              var ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              resolve(canvas.toDataURL('image/jpeg', quality || 0.7));
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+      }
 
       function showToast(msg, type) {
         try {
@@ -1540,10 +1568,10 @@
 
           if (!hiddenInput || !fileInput || !previewBox) return;
 
-          function applyFile(file) {
+          async function applyFile(file) {
             if (!file) return;
             if (!file.type.startsWith('image/')) {
-              showToast('Please pick an image file.', 'error');
+              showToast('Please pick an image file (PNG, JPG or WEBP).', 'error');
               return;
             }
             if (file.size > MAX_FILE_SIZE) {
@@ -1551,25 +1579,48 @@
               return;
             }
 
-            var reader = new FileReader();
-            reader.onload = function (ev) {
-              var dataUrl = ev.target.result;
-              previewImg.src = dataUrl;
-              hiddenInput.value = dataUrl;
-              if (fileNameEl) fileNameEl.textContent = file.name || 'image';
+            var badgeEl = card.querySelector('.upload-check-badge');
+            activeUploads++;
+
+            try {
+              if (fileNameEl) fileNameEl.textContent = 'Uploading...';
+              if (badgeEl) badgeEl.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Uploading...';
+              card.style.pointerEvents = 'none';
+
+              var compressed = await compressImage(file, 1280, 0.7);
+              previewImg.src = compressed;
               card.classList.add('filled');
-            };
-            reader.onerror = function () {
-              showToast('Could not read that image. Please try again.', 'error');
-            };
-            reader.readAsDataURL(file);
+
+              var res = await ApiClient.post('/upload/base64', {
+                image: compressed,
+                folder: 'nexusbids/kyc'
+              });
+
+              var docUrl = (res.data && res.data.url) ? res.data.url : (res.url || (res.data && res.data.secure_url) || res.secure_url);
+              if (!docUrl) throw new Error('Could not get upload URL');
+
+              hiddenInput.value = docUrl;
+              previewImg.src = docUrl;
+              if (fileNameEl) fileNameEl.textContent = file.name || 'image';
+              if (badgeEl) badgeEl.innerHTML = '<i class="fa-solid fa-check"></i> Added';
+              showToast('Document uploaded successfully!', 'success');
+            } catch (err) {
+              console.error('Upload failed:', err);
+              showToast(err && err.message ? err.message : 'Could not upload document. Please try again.', 'error');
+              clearFile();
+            } finally {
+              activeUploads = Math.max(0, activeUploads - 1);
+              card.style.pointerEvents = 'auto';
+            }
           }
 
           function clearFile() {
+            var badgeEl = card.querySelector('.upload-check-badge');
             fileInput.value = '';
             hiddenInput.value = '';
             previewImg.removeAttribute('src');
             if (fileNameEl) fileNameEl.textContent = '';
+            if (badgeEl) badgeEl.innerHTML = '<i class="fa-solid fa-check"></i> Added';
             card.classList.remove('filled');
           }
 
@@ -1638,6 +1689,11 @@
         e.preventDefault();
         var btn = $('btn-submit');
         var btnText = $('btn-submit-text');
+
+        if (activeUploads > 0) {
+          showToast('Please wait for documents to finish uploading.', 'info');
+          return;
+        }
 
         var missing = [];
         if (!$('full_name_on_cnic').value.trim()) missing.push('Full name');

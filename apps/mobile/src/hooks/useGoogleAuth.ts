@@ -41,12 +41,6 @@ export function useGoogleAuth() {
         const refreshToken = params.refreshToken || params.refresh_token;
 
         if (accessToken) {
-          if (refreshToken) {
-            try {
-              const { SecureTokenStorage } = await import('../security/secureStorage');
-              await SecureTokenStorage.setRefreshToken(refreshToken);
-            } catch {}
-          }
           const authObj = {
             type: 'success',
             authentication: { accessToken, refreshToken },
