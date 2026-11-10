@@ -27,15 +27,15 @@
     }
 
     html.dark {
-      --a-bg: #111110;
-      --a-surface: #191917;
-      --a-surface-2: #1f1f1d;
-      --a-surface-3: #262623;
-      --a-border: #2a2a27;
-      --a-border-strong: #3a3a35;
-      --a-text: #f2f2ef;
-      --a-text-muted: #b8b8b0;
-      --a-text-light: #8f8f88
+      --a-bg: #060911;
+      --a-surface: #0e1422;
+      --a-surface-2: #121a2b;
+      --a-surface-3: #172033;
+      --a-border: #1c2740;
+      --a-border-strong: #2a3854;
+      --a-text: #e9eef8;
+      --a-text-muted: #94a3b8;
+      --a-text-light: #64748b;
     }
 
     *,
@@ -217,18 +217,32 @@
       padding: 9px 12px;
       font-size: .82rem;
       font-family: inherit;
-      background: var(--a-surface-2);
-      border: 1px solid var(--a-border);
+      background: var(--a-surface-2) !important;
+      border: 1px solid var(--a-border) !important;
       border-radius: 9px;
-      color: var(--a-text);
+      color: var(--a-text) !important;
       outline: none;
-      line-height: 1.5
+      line-height: 1.5;
+      box-shadow: none !important;
     }
 
     .input:focus,
     .textarea:focus {
-      border-color: #6366f1;
-      background: var(--a-surface)
+      border-color: #6366f1 !important;
+      background: var(--a-surface) !important;
+    }
+
+    html.dark .input,
+    html.dark .textarea {
+      background: #121a2b !important;
+      border-color: #1c2740 !important;
+      color: #e9eef8 !important;
+    }
+
+    html.dark .input:focus,
+    html.dark .textarea:focus {
+      border-color: #6366f1 !important;
+      background: #0e1422 !important;
     }
 
     .input::placeholder,
