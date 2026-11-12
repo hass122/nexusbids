@@ -2,6 +2,7 @@ import { query, withTransaction } from '../config/db.js';
 import { Auction, AuctionStatus, DEFAULT_PAGE_LIMIT, MAX_PAGE_LIMIT } from '@nexusbids/shared';
 import { NotificationService } from './notification.service.js';
 import { RealtimeService } from './realtime.service.js';
+import { CronService } from './cron.service.js';
 
 export class AuctionService {
   // Query public auctions with search, category, status, and pagination
@@ -13,6 +14,9 @@ export class AuctionService {
     limit?: number;
     sort?: 'ending_soon' | 'newest' | 'price_low' | 'price_high' | 'most_bids';
   }) {
+    // Process any ended auctions in the background if due
+    CronService.checkAndProcessDueAuctions().catch(() => {});
+
     const page = Math.max(1, filters.page || 1);
     const limit = Math.min(MAX_PAGE_LIMIT, Math.max(1, filters.limit || DEFAULT_PAGE_LIMIT));
     const offset = (page - 1) * limit;
@@ -90,6 +94,8 @@ export class AuctionService {
 
   // Get single auction by ID with detailed info and bid history
   static async getAuctionById(auctionId: number, currentUserId?: number) {
+    CronService.checkAndProcessDueAuctions().catch(() => {});
+
     const auctions = await query<any[]>(
       `SELECT 
         a.*, 

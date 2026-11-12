@@ -1,5 +1,6 @@
 import { query, withTransaction } from '../config/db.js';
 import { DEFAULT_PAGE_LIMIT } from '@nexusbids/shared';
+import { CronService } from './cron.service.js';
 
 export class MarketplaceService {
   // ==========================================================
@@ -77,6 +78,9 @@ export class MarketplaceService {
   // Buyer Dashboard & Activities
   // ==========================================================
   static async getBuyerDashboard(userId: number) {
+    // Process any ended auctions so winners are officially announced by cron
+    await CronService.checkAndProcessDueAuctions().catch(() => {});
+
     const activeBids = await query<any[]>(
       `SELECT COUNT(DISTINCT b.auction_id) as count 
        FROM bids b 
@@ -85,24 +89,9 @@ export class MarketplaceService {
       [userId]
     );
 
-    // Count auctions where user is the confirmed winner (winners table)
-    // OR auctions that have ended and the user is the highest bidder
-    // (covers cases where the cron hasn't processed the winner yet).
     const wonAuctions = await query<any[]>(
-      `SELECT COUNT(*) as count FROM (
-         SELECT auction_id FROM winners WHERE user_id = ?
-         UNION
-         SELECT a.auction_id
-         FROM auctions a
-         INNER JOIN bids b ON b.auction_id = a.auction_id
-         WHERE a.auction_status IN ('ended', 'completed')
-           AND b.bidder_id = ?
-           AND b.bid_amount = (
-             SELECT MAX(b2.bid_amount) FROM bids b2 WHERE b2.auction_id = a.auction_id
-           )
-           AND a.auction_id NOT IN (SELECT w2.auction_id FROM winners w2)
-       ) AS combined_won`,
-      [userId, userId]
+      'SELECT COUNT(*) as count FROM winners WHERE user_id = ?',
+      [userId]
     );
 
     const watchlist = await query<any[]>(
@@ -141,6 +130,9 @@ export class MarketplaceService {
   }
 
   static async getWonAuctions(userId: number) {
+    // Process any ended auctions so winners and orders are populated
+    await CronService.checkAndProcessDueAuctions().catch(() => {});
+
     const rows = await query<any[]>(
       `SELECT 
         w.winner_id, w.winning_bid, w.status as winner_status, w.created_at as won_at,
@@ -150,29 +142,8 @@ export class MarketplaceService {
        INNER JOIN auctions a ON a.auction_id = w.auction_id
        LEFT JOIN orders o ON o.winner_id = w.winner_id
        WHERE w.user_id = ?
-
-       UNION ALL
-
-       /* Ended auctions where user is highest bidder but winner not yet processed */
-       SELECT 
-        NULL as winner_id,
-        b_top.bid_amount as winning_bid,
-        'pending' as winner_status,
-        a.end_time as won_at,
-        a.auction_id, a.title, a.image,
-        NULL as order_id, NULL as order_number,
-        NULL as order_status, NULL as payment_status, NULL as shipping_status
-       FROM auctions a
-       INNER JOIN bids b_top ON b_top.auction_id = a.auction_id
-       WHERE a.auction_status IN ('ended', 'completed')
-         AND b_top.bidder_id = ?
-         AND b_top.bid_amount = (
-           SELECT MAX(b2.bid_amount) FROM bids b2 WHERE b2.auction_id = a.auction_id
-         )
-         AND a.auction_id NOT IN (SELECT w2.auction_id FROM winners w2)
-
-       ORDER BY won_at DESC`,
-      [userId, userId]
+       ORDER BY w.created_at DESC`,
+      [userId]
     );
     return rows;
   }

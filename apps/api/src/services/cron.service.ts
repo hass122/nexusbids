@@ -5,6 +5,29 @@ import { NotificationService } from './notification.service.js';
 import { RealtimeService } from './realtime.service.js';
 
 export class CronService {
+  private static lastRun = 0;
+  private static isRunning = false;
+
+  /**
+   * Automatically processes ended auctions if at least 15 seconds have passed
+   * since the last execution. Safe, non-blocking, and idempotent.
+   */
+  static async checkAndProcessDueAuctions(): Promise<void> {
+    const now = Date.now();
+    if (now - this.lastRun < 15_000 || this.isRunning) {
+      return;
+    }
+    this.lastRun = now;
+    this.isRunning = true;
+    try {
+      await this.processEndedAuctions();
+    } catch (err: any) {
+      console.error('[CronService.checkAndProcessDueAuctions]', err?.message);
+    } finally {
+      this.isRunning = false;
+    }
+  }
+
   // Process all expired auctions, declare winners, create orders, and notify parties (Idempotent)
   static async processEndedAuctions(): Promise<{
     processed: number;

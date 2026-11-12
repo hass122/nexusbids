@@ -5,7 +5,17 @@ import { sendSuccess, sendError } from '../utils/response.js';
 
 export class CronController {
   // Verify cron secret token
-  private static isAuthorized(req: Request): boolean {
+  public static isAuthorized(req: Request): boolean {
+    // 1. Vercel Cron invocation (Vercel automatically sends this header on cron jobs)
+    if (req.headers['x-vercel-cron'] === '1' || req.headers['user-agent']?.includes('vercel-cron')) {
+      return true;
+    }
+
+    // 2. Authenticated Admin role
+    if ((req as any).user && (req as any).user.role === 'admin') {
+      return true;
+    }
+
     const secret = ENV.CRON.SECRET;
     // Fail-closed: refuse to authorize if the server secret is unset/empty
     if (!secret || typeof secret !== 'string' || secret.length < 8) {
@@ -20,7 +30,10 @@ export class CronController {
       req.headers['x-cron-token'] ||
       (typeof req.query?.secret === 'string' ? req.query.secret : undefined);
 
-    if (typeof authHeader === 'string' && authHeader === `Bearer ${secret}`) return true;
+    if (typeof authHeader === 'string') {
+      const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+      if (token === secret) return true;
+    }
     if (typeof cronKey === 'string' && cronKey === secret) return true;
     return false;
   }

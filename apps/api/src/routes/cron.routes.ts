@@ -6,25 +6,11 @@ import { sendError } from '../utils/response.js';
 
 const router = Router();
 
-function safeCompare(a: string, b: string): boolean {
-  const bufA = Buffer.from(a);
-  const bufB = Buffer.from(b);
-  if (bufA.length !== bufB.length) return false;
-  return crypto.timingSafeEqual(bufA, bufB);
-}
-
 function requireCronSecret(req: Request, res: Response, next: NextFunction): void {
-  const token =
-    req.headers['x-cron-secret'] ||
-    req.headers['x-cron-token'] ||
-    (req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.slice(7) : undefined) ||
-    (typeof req.query.secret === 'string' ? req.query.secret : undefined);
-
-  if (!token || !safeCompare(String(token), ENV.CRON.SECRET)) {
-    sendError(res, 'Unauthorized: Invalid or missing cron secret', 401);
-    return;
+  if (CronController.isAuthorized(req)) {
+    return next();
   }
-  next();
+  sendError(res, 'Unauthorized: Invalid or missing cron secret', 401);
 }
 
 router.post('/process-auctions', requireCronSecret, CronController.processAuctions);
