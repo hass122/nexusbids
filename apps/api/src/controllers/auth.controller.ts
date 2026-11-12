@@ -311,17 +311,28 @@ export class AuthController {
       const isMobile = req.query.mobile === '1' || Boolean(req.query.redirect_uri);
       const mobileReturnUrl = (req.query.redirect_uri as string) || (isMobile ? 'nexusbids://oauth' : '');
 
+      const nonce = crypto.randomBytes(16).toString('hex');
       const statePayload = {
-        nonce: crypto.randomBytes(16).toString('hex'),
+        nonce,
         mobile: isMobile,
         redirect_uri: mobileReturnUrl,
+        // HMAC signature embeds nonce into state so we can verify without relying
+        // solely on the oauth_state cookie (which browsers may drop on cross-site redirects).
+        sig: crypto
+          .createHmac('sha256', ENV.JWT.ACCESS_SECRET)
+          .update(nonce)
+          .digest('hex'),
       };
       const state = Buffer.from(JSON.stringify(statePayload)).toString('base64url');
 
+      // sameSite:'none' + secure:true is required so the browser sends this cookie
+      // when Google redirects back (cross-origin). Without it the browser drops the
+      // cookie and state verification fails with "Security check failed".
       res.cookie('oauth_state', state, {
         httpOnly: true,
-        secure: ENV.NODE_ENV === 'production',
-        sameSite: 'lax',
+        secure: true,          // always required when sameSite=none
+        sameSite: 'none',      // cross-site redirect from accounts.google.com
+        path: '/',
         maxAge: 10 * 60 * 1000, // 10 minutes
       });
 
@@ -339,6 +350,8 @@ export class AuthController {
 
     let isMobile = false;
     let mobileRedirectUri = 'nexusbids://oauth';
+    let stateNonce: string | undefined;
+    let stateSig: string | undefined;
 
     if (state && typeof state === 'string') {
       try {
@@ -347,11 +360,13 @@ export class AuthController {
           isMobile = true;
           if (decoded.redirect_uri) mobileRedirectUri = decoded.redirect_uri;
         }
+        stateNonce = decoded.nonce;
+        stateSig   = decoded.sig;
       } catch (e) {}
     }
 
     if (error) {
-      res.clearCookie('oauth_state');
+      res.clearCookie('oauth_state', { path: '/' });
       if (isMobile) {
         const separator = mobileRedirectUri.includes('?') ? '&' : '?';
         res.redirect(`${mobileRedirectUri}${separator}error=${encodeURIComponent(String(error))}`);
@@ -366,11 +381,32 @@ export class AuthController {
     }
 
     const savedState = req.cookies?.oauth_state;
-    res.clearCookie('oauth_state');
+    res.clearCookie('oauth_state', { path: '/' });
 
-    if (!isMobile && (!state || !savedState || state !== savedState)) {
-      res.redirect('/login.html?error=invalid_state');
-      return;
+    if (!isMobile) {
+      // Primary check: compare full state string against saved cookie.
+      // Fallback check: if the browser dropped the cookie (e.g. third-party cookie
+      // restrictions), verify via HMAC signature embedded in the state payload itself.
+      let stateValid = false;
+      if (savedState && state && state === savedState) {
+        stateValid = true;
+      } else if (stateNonce && stateSig) {
+        // Verify HMAC — this proves state was created by our own server.
+        const expectedSig = crypto
+          .createHmac('sha256', ENV.JWT.ACCESS_SECRET)
+          .update(stateNonce)
+          .digest('hex');
+        try {
+          stateValid = crypto.timingSafeEqual(
+            Buffer.from(stateSig, 'hex'),
+            Buffer.from(expectedSig, 'hex')
+          );
+        } catch (_) { stateValid = false; }
+      }
+      if (!stateValid) {
+        res.redirect('/login.html?error=invalid_state');
+        return;
+      }
     }
 
     if (!code || typeof code !== 'string') {

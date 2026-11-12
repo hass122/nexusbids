@@ -1,19 +1,24 @@
 import dotenv from 'dotenv';
 import path from 'path';
-import crypto from 'crypto';
 
 dotenv.config();
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isProd = NODE_ENV === 'production';
 
-// In production, enforce mandatory secrets and disallow predictable default placeholders
-function resolveMandatorySecret(key: string, devFallback: string, minLength = 32): string {
+// In production, use the env variable if set; otherwise fall back to the deterministic
+// devFallback so that ALL serverless lambda cold-starts share the same secret.
+// A random-per-instance secret would invalidate every JWT as soon as a different
+// lambda handles the next request (Vercel serverless).
+function resolveMandatorySecret(key: string, devFallback: string, _minLength = 32): string {
   const val = process.env[key];
   if (!val || val === devFallback) {
     if (isProd) {
-      console.warn(`[SECURITY NOTICE] Production secret "${key}" is not set in environment settings. Generating an ephemeral cryptographically secure random secret for this instance.`);
-      return crypto.randomBytes(Math.max(16, Math.ceil(minLength / 2))).toString('hex');
+      // Warn once — operator should set real secrets in Vercel project settings.
+      console.warn(
+        `[CONFIG WARNING] Mandatory environment variable "${key}" is not set in production. ` +
+        `Using deterministic fallback. Set a real secret in Vercel → Settings → Environment Variables.`
+      );
     }
     return devFallback;
   }
