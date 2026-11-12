@@ -24,6 +24,12 @@ export class AuctionService {
     if (filters.status) {
       conditions.push('a.auction_status = ?');
       params.push(filters.status);
+      // For active auctions, also enforce end_time > NOW() so that auctions
+      // whose end_time has passed but haven't been processed by the cron yet
+      // are not returned as "live" to buyers.
+      if (filters.status === 'active') {
+        conditions.push('a.end_time > NOW()');
+      }
     } else {
       conditions.push("a.auction_status = 'active' AND a.end_time > NOW()");
     }
