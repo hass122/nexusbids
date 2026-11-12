@@ -9,8 +9,10 @@ import {
   TextInput,
   ActivityIndicator,
   Alert,
+  Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { Colors } from '../../theme/colors';
 import { MobileApi } from '../../api/client';
 import { NotificationService } from '../../services/notificationService';
@@ -38,13 +40,41 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [paymentRail, setPaymentRail] = useState<PaymentRail>('jazzcash');
   const [intentData, setIntentData] = useState<any>(null);
   const [transactionId, setTransactionId] = useState('');
-  const [receiptUrl, setReceiptUrl] = useState('https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=600');
+  const [receiptUrl, setReceiptUrl] = useState('');
+  const [localReceiptUri, setLocalReceiptUri] = useState<string | null>(null);
 
   useEffect(() => {
     if (visible && orderId) {
       loadOrder();
     }
   }, [visible, orderId]);
+
+  const pickReceiptImage = async () => {
+    try {
+      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!perm.granted) {
+        Alert.alert('Permission Denied', 'Please allow gallery access to select payment screenshot.');
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 0.8,
+        base64: true,
+      });
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        const asset = result.assets[0];
+        setLocalReceiptUri(asset.uri);
+        if (asset.base64) {
+          setReceiptUrl(`data:image/jpeg;base64,${asset.base64}`);
+        } else {
+          setReceiptUrl(asset.uri);
+        }
+      }
+    } catch (err: any) {
+      Alert.alert('Error', err.message || 'Could not pick image');
+    }
+  };
 
   const loadOrder = async () => {
     setLoading(true);
@@ -79,9 +109,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       Alert.alert('Required', 'Please enter your mobile wallet or bank transaction ID (e.g. TID-982341).');
       return;
     }
+    if (!receiptUrl && !localReceiptUri) {
+      Alert.alert('Receipt Screenshot Required', 'Please attach a screenshot of your payment receipt before submitting.');
+      return;
+    }
     setSubmitting(true);
     try {
-      await MobileApi.confirmPaymentReceipt(orderId!, receiptUrl, transactionId.trim());
+      const finalReceipt = receiptUrl || localReceiptUri || 'data:image/jpeg;base64,mock';
+      await MobileApi.confirmPaymentReceipt(orderId!, finalReceipt, transactionId.trim());
       NotificationService.triggerPayment(
         orderId!,
         Number(order?.total_amount || order?.winning_bid || 0),
@@ -232,16 +267,47 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     onChangeText={setTransactionId}
                   />
 
-                  <View style={styles.receiptUploadedRow}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                      <Ionicons name="receipt-outline" size={15} color={Colors.primaryLight} />
-                      <Text style={styles.receiptUploadedLabel}>Digital Receipt Attached</Text>
+                  <Text style={[styles.label, { marginTop: 12 }]}>Payment Receipt Screenshot</Text>
+                  <TouchableOpacity
+                    style={[
+                      styles.receiptUploadedRow,
+                      { borderColor: localReceiptUri ? Colors.success : Colors.border, borderWidth: 1 }
+                    ]}
+                    onPress={pickReceiptImage}
+                    activeOpacity={0.8}
+                  >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
+                      <Ionicons
+                        name={localReceiptUri ? "image" : "cloud-upload-outline"}
+                        size={20}
+                        color={localReceiptUri ? Colors.success : Colors.primaryLight}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.receiptUploadedLabel}>
+                          {localReceiptUri ? "Screenshot Attached" : "Tap to Upload Screenshot"}
+                        </Text>
+                        <Text style={{ fontSize: 10, color: Colors.textMuted }}>
+                          {localReceiptUri ? "Tap to change image" : "JPG, PNG from gallery"}
+                        </Text>
+                      </View>
                     </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3 }}>
-                      <Ionicons name="checkmark-circle" size={13} color={Colors.success} />
-                      <Text style={styles.receiptUploadedStatus}>Ready</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                      <Ionicons
+                        name={localReceiptUri ? "checkmark-circle" : "add-circle-outline"}
+                        size={16}
+                        color={localReceiptUri ? Colors.success : Colors.primary}
+                      />
+                      <Text style={[styles.receiptUploadedStatus, { color: localReceiptUri ? Colors.success : Colors.primary }]}>
+                        {localReceiptUri ? "Selected" : "Browse"}
+                      </Text>
                     </View>
-                  </View>
+                  </TouchableOpacity>
+
+                  {localReceiptUri && (
+                    <View style={{ marginVertical: 8, borderRadius: 8, overflow: 'hidden', height: 100, backgroundColor: Colors.surface, borderWidth: 1, borderColor: Colors.border }}>
+                      <Image source={{ uri: localReceiptUri }} style={{ width: '100%', height: '100%', resizeMode: 'cover' }} />
+                    </View>
+                  )}
 
                   <TouchableOpacity
                     style={styles.submitBtn}
@@ -283,16 +349,21 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    backgroundColor: 'rgba(3, 8, 23, 0.82)',
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.background,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     height: '92%',
     borderTopWidth: 1,
     borderColor: Colors.border,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 10,
   },
   topBar: {
     flexDirection: 'row',
@@ -301,9 +372,12 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
+    backgroundColor: Colors.card,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
   title: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '800',
     color: Colors.text,
   },
@@ -313,15 +387,17 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   closeBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.surfaceLight,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   closeText: {
-    color: Colors.textDim,
+    color: Colors.text,
     fontSize: 15,
     fontWeight: '700',
   },
@@ -339,6 +415,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 16,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   cardHeader: {
     fontSize: 13,
@@ -362,18 +443,18 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.border,
+    backgroundColor: Colors.borderSubtle,
     marginVertical: 8,
   },
   totalLabel: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: '800',
     color: Colors.text,
   },
   totalVal: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '900',
-    color: Colors.success,
+    color: Colors.primary,
   },
   sectionTitle: {
     fontSize: 13,
@@ -394,10 +475,15 @@ const styles = StyleSheet.create({
     padding: 12,
     borderWidth: 1.5,
     borderColor: Colors.border,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 2,
+    elevation: 1,
   },
   railCardActive: {
     borderColor: Colors.primary,
-    backgroundColor: 'rgba(99, 102, 241, 0.12)',
+    backgroundColor: Colors.surface,
   },
   railIcon: {
     fontSize: 22,
@@ -420,6 +506,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 16,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   intentTitle: {
     fontSize: 13,
@@ -435,9 +526,14 @@ const styles = StyleSheet.create({
   },
   intentBtn: {
     backgroundColor: Colors.primary,
-    paddingVertical: 12,
-    borderRadius: 10,
+    paddingVertical: 14,
+    borderRadius: 12,
     alignItems: 'center',
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   intentBtnText: {
     fontSize: 13,
@@ -451,6 +547,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.primary,
     marginBottom: 16,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   receiptTitle: {
     fontSize: 13,
@@ -459,21 +560,23 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   instructionBanner: {
-    backgroundColor: 'rgba(99, 102, 241, 0.12)',
-    padding: 10,
-    borderRadius: 8,
+    backgroundColor: Colors.badgeBg,
+    padding: 12,
+    borderRadius: 10,
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   instructionText: {
     fontSize: 11,
-    color: Colors.primaryLight,
+    color: Colors.primary,
     lineHeight: 16,
     fontWeight: '600',
   },
   label: {
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: '800',
-    color: Colors.textMuted,
+    color: Colors.textDim,
     marginBottom: 6,
     textTransform: 'uppercase',
   },
@@ -504,10 +607,15 @@ const styles = StyleSheet.create({
     color: Colors.success,
   },
   submitBtn: {
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.primary,
     paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: 12,
     alignItems: 'center',
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   submitBtnText: {
     fontSize: 13,
@@ -517,11 +625,11 @@ const styles = StyleSheet.create({
   securitySeal: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(16, 185, 129, 0.08)',
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 14,
     borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.25)',
+    borderColor: Colors.border,
     marginBottom: 30,
   },
   sealIcon: {
@@ -531,11 +639,11 @@ const styles = StyleSheet.create({
   sealTitle: {
     fontSize: 12,
     fontWeight: '800',
-    color: Colors.success,
+    color: Colors.primary,
     marginBottom: 2,
   },
   sealDesc: {
-    fontSize: 10,
+    fontSize: 10.5,
     color: Colors.textMuted,
     lineHeight: 14,
   },

@@ -80,7 +80,7 @@ export const Header: React.FC<HeaderProps> = ({
           <Ionicons
             name={unreadCount > 0 ? 'notifications' : 'notifications-outline'}
             size={20}
-            color={unreadCount > 0 ? Colors.text : Colors.textMuted}
+            color={'#ffffff'}
           />
           {unreadCount > 0 && (
             <View style={styles.notifBadge}>
@@ -103,7 +103,7 @@ export const Header: React.FC<HeaderProps> = ({
               {user.full_name?.charAt(0).toUpperCase() || 'U'}
             </Text>
           ) : (
-            <Ionicons name="person-outline" size={16} color={Colors.textMuted} />
+            <Ionicons name="person-outline" size={16} color={Colors.primaryLight} />
           )}
         </TouchableOpacity>
       </View>
@@ -118,9 +118,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 10,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.header,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.borderSubtle,
+    borderBottomColor: Colors.border,
   },
   left: {
     flexDirection: 'row',
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 10,
-    backgroundColor: Colors.primaryDark,
+    backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: Colors.primary,
@@ -151,16 +151,16 @@ const styles = StyleSheet.create({
   brandTitle: {
     fontSize: 18,
     fontWeight: '900',
-    color: Colors.text,
+    color: '#ffffff',
     letterSpacing: -0.3,
     lineHeight: 20,
   },
   brandHighlight: {
-    color: Colors.primary,
+    color: Colors.primaryLight,
   },
   subtitle: {
     fontSize: 11,
-    color: Colors.textMuted,
+    color: 'rgba(255,255,255,0.75)',
     fontWeight: '600',
     marginTop: 1,
   },
@@ -174,13 +174,13 @@ const styles = StyleSheet.create({
     width: 5,
     height: 5,
     borderRadius: 2.5,
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.accent,
   },
   countryBadge: {
     fontSize: 9,
     fontWeight: '800',
     letterSpacing: 1.1,
-    color: Colors.textDim,
+    color: 'rgba(255,255,255,0.65)',
   },
   right: {
     flexDirection: 'row',
@@ -195,21 +195,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   roleSeller: {
-    backgroundColor: 'rgba(99, 102, 241, 0.16)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderWidth: 1,
-    borderColor: 'rgba(99, 102, 241, 0.35)',
+    borderColor: 'rgba(255, 255, 255, 0.30)',
   },
   roleBuyer: {
-    backgroundColor: 'rgba(16, 185, 129, 0.14)',
+    backgroundColor: 'rgba(61, 122, 74, 0.25)',
     borderWidth: 1,
-    borderColor: 'rgba(16, 185, 129, 0.35)',
+    borderColor: 'rgba(61, 122, 74, 0.45)',
   },
   roleText: {
     fontSize: 11,
     fontWeight: '700',
   },
   roleTextSeller: {
-    color: Colors.primaryLight,
+    color: Colors.surfaceLight,
   },
   roleTextBuyer: {
     color: Colors.success,
@@ -221,9 +221,9 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: 'rgba(255, 255, 255, 0.20)',
   },
   notifBadge: {
     position: 'absolute',
@@ -232,12 +232,12 @@ const styles = StyleSheet.create({
     minWidth: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: Colors.danger,
+    backgroundColor: Colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 3,
     borderWidth: 1.5,
-    borderColor: Colors.surface,
+    borderColor: Colors.primary,
   },
   notifBadgeText: {
     color: '#ffffff',
@@ -249,15 +249,15 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.surfaceLight,
+    backgroundColor: Colors.primaryLight,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
-    borderColor: Colors.border,
+    borderColor: 'rgba(255,255,255,0.30)',
   },
   avatarInitials: {
     fontSize: 14,
     fontWeight: '800',
-    color: Colors.text,
+    color: '#ffffff',
   },
 });

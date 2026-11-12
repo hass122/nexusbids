@@ -1108,4 +1108,38 @@ router.patch('/reviews/:id/moderate', async (req: Request, res: Response) => {
   } catch (err: any) { sendError(res, err.message, 400); }
 });
 
+// ─── CONTACT INQUIRIES MANAGEMENT ──────────────────────────
+router.get('/contact-inquiries', async (req: Request, res: Response) => {
+  try {
+    await query(`
+      CREATE TABLE IF NOT EXISTS contact_inquiries (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        phone VARCHAR(50) DEFAULT NULL,
+        subject VARCHAR(200) NOT NULL,
+        message TEXT NOT NULL,
+        status VARCHAR(20) DEFAULT 'new',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `).catch(() => {});
+
+    const rows = await query<any[]>('SELECT * FROM contact_inquiries ORDER BY created_at DESC LIMIT 100').catch(() => []);
+    sendSuccess(res, rows);
+  } catch (err: any) {
+    sendError(res, err.message, 500);
+  }
+});
+
+router.patch('/contact-inquiries/:id', async (req: Request, res: Response) => {
+  try {
+    const id = parseInt(req.params.id, 10);
+    const { status } = req.body;
+    await query('UPDATE contact_inquiries SET status = ? WHERE id = ?', [status || 'resolved', id]);
+    sendSuccess(res, { updated: true });
+  } catch (err: any) {
+    sendError(res, err.message, 400);
+  }
+});
+
 export default router;

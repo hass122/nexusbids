@@ -128,6 +128,9 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Apply API Rate Limiting to all /api/v1 routes
+app.use('/api/v1', apiRateLimiter);
+
 // ── Public platform stats (no auth) ──────────────────────────────────────────
 import { query as dbQuery } from './config/db.js';
 app.get('/api/v1/stats', async (req, res) => {
@@ -161,10 +164,10 @@ app.get('/api/v1/notifications/unread-count', _reqAuth, async (req: any, res) =>
   }
 });
 
-// ── Contact Form Submission (public) ───────────────────────────
+// ── Contact Form Submission (public, rate-limited) ─────────────
 app.post('/api/v1/contact', async (req, res) => {
   try {
-    const { name, email, subject, message } = req.body || {};
+    const { name, email, phone, subject, message } = req.body || {};
     if (!name || !email || !subject || !message) {
       sendError(res, 'All fields (name, email, subject, message) are required.', 400);
       return;
@@ -173,6 +176,39 @@ app.post('/api/v1/contact', async (req, res) => {
       sendError(res, 'Invalid email address.', 400);
       return;
     }
+
+    // Ensure contact_inquiries and admin_notifications tables exist
+    await dbQuery(`
+      CREATE TABLE IF NOT EXISTS contact_inquiries (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        email VARCHAR(100) NOT NULL,
+        phone VARCHAR(50) DEFAULT NULL,
+        subject VARCHAR(200) NOT NULL,
+        message TEXT NOT NULL,
+        status VARCHAR(20) DEFAULT 'new',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `).catch(() => {});
+
+    await dbQuery(`
+      CREATE TABLE IF NOT EXISTS admin_notifications (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        type VARCHAR(50) DEFAULT 'general',
+        title VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        link_url VARCHAR(255) DEFAULT '/admin/dashboard.html',
+        is_read TINYINT(1) DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `).catch(() => {});
+
+    // Save inquiry to database
+    await dbQuery(
+      `INSERT INTO contact_inquiries (name, email, phone, subject, message, status, created_at)
+       VALUES (?, ?, ?, ?, ?, 'new', NOW())`,
+      [String(name).slice(0, 100), String(email).slice(0, 100), phone ? String(phone).slice(0, 50) : null, String(subject).slice(0, 200), String(message).slice(0, 3000)]
+    ).catch(() => {});
 
     // Log to admin_notifications so admins see inquiries in dashboard
     await dbQuery(
@@ -184,14 +220,21 @@ app.post('/api/v1/contact', async (req, res) => {
       ]
     ).catch(() => { });
 
+    // Also push to admin user notifications
+    const admins = await dbQuery<any[]>("SELECT user_id FROM users WHERE role = 'admin'").catch(() => []);
+    for (const a of admins) {
+      await dbQuery(
+        `INSERT INTO notifications (user_id, type, title, message, link, created_at)
+         VALUES (?, 'contact_inquiry', ?, ?, '/admin/dashboard.html', NOW())`,
+        [a.user_id, `Inquiry: ${String(subject).slice(0, 80)}`, `From: ${name} (${email}): ${String(message).slice(0, 120)}`]
+      ).catch(() => {});
+    }
+
     sendSuccess(res, { received: true }, 'Your message has been received. Our support team will get back to you shortly.');
   } catch (err: any) {
     sendError(res, err.message || 'Failed to submit contact message', 500);
   }
 });
-
-// Apply API Rate Limiting to all /api/v1 routes
-app.use('/api/v1', apiRateLimiter);
 
 // Mount API v1 routes
 app.use('/api/v1/auth', authRoutes);
@@ -209,8 +252,17 @@ app.use('/api/v1/recommendations', recommendationRoutes);
 app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1/uploads', uploadRoutes);
 
-// Static uploads serving (local fallback)
-app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
+// Uploads serving: Public assets (auctions/avatars) are accessible; sensitive docs (KYC/receipts) require authentication
+const uploadsRoot = path.resolve(process.cwd(), 'uploads');
+app.use('/uploads', (req, res, next) => {
+  const isSensitive = req.path.includes('/kyc') || req.path.includes('/receipts') || req.path.includes('kyc_') || req.path.includes('receipt_');
+  if (isSensitive) {
+    return _reqAuth(req, res, () => {
+      express.static(uploadsRoot)(req, res, next);
+    });
+  }
+  return express.static(uploadsRoot)(req, res, next);
+});
 
 // Static Web Frontend Serving
 app.use(express.static(webPath));

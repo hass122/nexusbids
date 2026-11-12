@@ -11,9 +11,15 @@ function resolveMandatorySecret(key: string, devFallback: string, minLength = 32
   const val = process.env[key];
   if (!val) {
     if (isProd) {
-      console.warn(`[CONFIG WARNING] Environment variable "${key}" is missing in production. Using fallback secret.`);
+      throw new Error(`[FATAL SECURITY CONFIG ERROR] Mandatory environment variable "${key}" is not set in production. Set a unique, high-entropy secret (min ${minLength} chars) in your production environment settings.`);
     }
     return devFallback;
+  }
+  if (isProd && val.length < minLength) {
+    throw new Error(`[FATAL SECURITY CONFIG ERROR] Production secret "${key}" is too short (${val.length} chars). Minimum required length is ${minLength} characters.`);
+  }
+  if (isProd && val === devFallback) {
+    throw new Error(`[FATAL SECURITY CONFIG ERROR] Production secret "${key}" cannot use the default development fallback secret.`);
   }
   return val;
 }

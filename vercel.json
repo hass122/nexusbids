@@ -19,8 +19,12 @@
   ],
   "crons": [
     {
+      "path": "/api/v1/cron/process-auctions",
+      "schedule": "*/2 * * * *"
+    },
+    {
       "path": "/api/v1/cron/auto-release-escrow",
-      "schedule": "0 0 * * *"
+      "schedule": "0 */6 * * *"
     }
   ]
 }

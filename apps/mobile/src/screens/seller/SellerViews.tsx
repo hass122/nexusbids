@@ -1236,18 +1236,26 @@ export const SellerReviewsScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+  // ─── Layout ────────────────────────────────────────────────────
   container: {
     flex: 1,
     backgroundColor: Colors.background,
     padding: 16,
   },
+
+  // ─── Wallet / Balance Hero Card ────────────────────────────────
   walletCard: {
-    backgroundColor: 'linear-gradient(135deg, #1e1b4b, #0f172a)',
+    backgroundColor: '#0E1726',
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: 'rgba(99, 102, 241, 0.35)',
+    borderColor: 'rgba(81, 69, 229, 0.4)',
     padding: 20,
     marginBottom: 20,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 6,
   },
   walletHeaderRow: {
     flexDirection: 'row',
@@ -1258,8 +1266,8 @@ const styles = StyleSheet.create({
   walletTag: {
     fontSize: 10,
     fontWeight: '800',
-    color: Colors.gold,
-    letterSpacing: 0.5,
+    color: Colors.primaryLight,
+    letterSpacing: 0.8,
   },
   kycActiveBadge: {
     fontSize: 10,
@@ -1267,7 +1275,7 @@ const styles = StyleSheet.create({
     color: Colors.success,
   },
   kycWarnBadge: {
-    backgroundColor: 'rgba(245, 158, 11, 0.2)',
+    backgroundColor: Colors.warningLight,
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
@@ -1278,14 +1286,14 @@ const styles = StyleSheet.create({
     color: Colors.warning,
   },
   walletAmount: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '900',
-    color: Colors.text,
+    color: '#FFFFFF',
     marginBottom: 4,
   },
   walletSub: {
     fontSize: 11,
-    color: Colors.textMuted,
+    color: 'rgba(255,255,255,0.65)',
     marginBottom: 16,
   },
   walletRow: {
@@ -1294,31 +1302,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: Colors.border,
+    borderTopColor: 'rgba(255,255,255,0.15)',
   },
   miniBal: {
     flex: 1,
   },
   miniBalLbl: {
     fontSize: 10,
-    color: Colors.textDim,
+    color: 'rgba(255,255,255,0.6)',
   },
   miniBalVal: {
     fontSize: 14,
     fontWeight: '700',
-    color: Colors.warning,
+    color: Colors.primaryLight,
   },
   payoutBtn: {
     backgroundColor: Colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 10,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
   payoutBtnText: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  // ─── Stats Grid ────────────────────────────────────────────────
   statsGrid: {
     flexDirection: 'row',
     gap: 10,
@@ -1332,6 +1347,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     padding: 14,
     alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 2,
   },
   statIcon: {
     fontSize: 22,
@@ -1346,25 +1366,33 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: Colors.textMuted,
     marginTop: 2,
+    textAlign: 'center',
   },
+
+  // ─── Create Auction CTA ────────────────────────────────────────
   createBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(99, 102, 241, 0.12)',
-    borderWidth: 1,
+    backgroundColor: 'rgba(81, 69, 229, 0.12)',
+    borderWidth: 1.5,
     borderColor: Colors.primary,
     borderRadius: 14,
     padding: 16,
     marginBottom: 14,
   },
   createBtnIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.primaryDark,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
   createBtnIcon: {
     fontSize: 24,
@@ -1381,12 +1409,15 @@ const styles = StyleSheet.create({
   createBtnSub: {
     fontSize: 11,
     color: Colors.textMuted,
+    marginTop: 1,
   },
   createBtnArrow: {
     fontSize: 18,
     color: Colors.primaryLight,
     fontWeight: '800',
   },
+
+  // ─── Analytics Shortcut ────────────────────────────────────────
   analyticsShortcut: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1396,12 +1427,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 24,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 2,
   },
   analyticsIconCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(99, 102, 241, 0.12)',
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.badgeBg,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -1424,6 +1460,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.textDim,
   },
+
+  // ─── Section Header / Screen Title ────────────────────────────
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1437,24 +1475,31 @@ const styles = StyleSheet.create({
   },
   addMiniBtn: {
     backgroundColor: Colors.primary,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
     borderRadius: 8,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2,
   },
   addMiniText: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  // ─── Filter Bar (Listings) ─────────────────────────────────────
   filterBar: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: 14,
   },
   filterChip: {
-    backgroundColor: Colors.card,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    backgroundColor: Colors.surface,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: Colors.border,
@@ -1469,8 +1514,10 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
   },
   filterChipTextActive: {
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  // ─── Listing / Order Cards ─────────────────────────────────────
   listingCard: {
     backgroundColor: Colors.card,
     borderRadius: 14,
@@ -1478,6 +1525,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     padding: 14,
     marginBottom: 10,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 2,
   },
   listingHeader: {
     flexDirection: 'row',
@@ -1492,25 +1544,29 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 10,
   },
+
+  // ─── Status Tags ───────────────────────────────────────────────
   statusTag: {
     fontSize: 10,
     fontWeight: '800',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 5,
+    overflow: 'hidden',
   },
   statusActive: {
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    backgroundColor: Colors.successLight,
     color: Colors.success,
   },
   statusEnded: {
-    backgroundColor: 'rgba(148, 163, 184, 0.15)',
-    color: Colors.textMuted,
+    backgroundColor: 'rgba(112, 122, 144, 0.15)',
+    color: Colors.textDim,
   },
   statusPending: {
-    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+    backgroundColor: Colors.warningLight,
     color: Colors.warning,
   },
+
   listingPrice: {
     fontSize: 13,
     color: Colors.primaryLight,
@@ -1529,38 +1585,49 @@ const styles = StyleSheet.create({
   },
   editListingBtn: {
     backgroundColor: Colors.surfaceLight,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 7,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   editListingText: {
     fontSize: 11,
     fontWeight: '700',
-    color: Colors.text,
+    color: Colors.primaryLight,
   },
+
+  // ─── Ship Button ───────────────────────────────────────────────
   shipBtn: {
     backgroundColor: Colors.primary,
-    paddingVertical: 10,
-    borderRadius: 8,
+    paddingVertical: 11,
+    borderRadius: 9,
     alignItems: 'center',
     marginTop: 10,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   shipBtnText: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  // ─── Modal Overlay & Sheet ─────────────────────────────────────
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    backgroundColor: 'rgba(3, 8, 23, 0.82)',
     justifyContent: 'flex-end',
   },
   modalSheet: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.background,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '92%',
-    padding: 16,
+    padding: 18,
     borderTopWidth: 1,
     borderColor: Colors.border,
   },
@@ -1568,7 +1635,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 14,
+    marginBottom: 16,
   },
   modalTitle: {
     fontSize: 17,
@@ -1581,12 +1648,14 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   closeBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.surfaceLight,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   closeText: {
     color: Colors.textMuted,
@@ -1596,26 +1665,28 @@ const styles = StyleSheet.create({
   modalBody: {
     marginBottom: 20,
   },
+
+  // ─── Form Labels & Inputs ──────────────────────────────────────
   label: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: Colors.textMuted,
+    fontSize: 13,
+    fontWeight: '600',
+    color: Colors.text,
     marginBottom: 6,
-    textTransform: 'uppercase',
   },
   input: {
-    backgroundColor: Colors.card,
+    backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: Colors.border,
     borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
     fontSize: 14,
     color: Colors.text,
     marginBottom: 12,
+    minHeight: 48,
   },
   textArea: {
-    height: 70,
+    minHeight: 80,
     textAlignVertical: 'top',
   },
   row: {
@@ -1625,23 +1696,25 @@ const styles = StyleSheet.create({
   col: {
     flex: 1,
   },
+
+  // ─── Category Chips ────────────────────────────────────────────
   catChipsRow: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 12,
+    marginBottom: 14,
   },
   catChip: {
     flex: 1,
-    backgroundColor: Colors.card,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: Colors.surface,
+    paddingVertical: 9,
+    borderRadius: 9,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.border,
   },
   catChipActive: {
     borderColor: Colors.primary,
-    backgroundColor: 'rgba(99, 102, 241, 0.15)',
+    backgroundColor: Colors.primary,
   },
   catChipText: {
     fontSize: 11,
@@ -1649,25 +1722,27 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   catChipTextActive: {
-    color: Colors.primaryLight,
+    color: '#FFFFFF',
   },
+
+  // ─── Courier Chips (ShippingModal) ─────────────────────────────
   courierRow: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 12,
+    marginBottom: 14,
   },
   courierChip: {
     flex: 1,
-    backgroundColor: Colors.card,
-    paddingVertical: 10,
-    borderRadius: 8,
+    backgroundColor: Colors.surface,
+    paddingVertical: 11,
+    borderRadius: 9,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.border,
   },
   courierChipActive: {
     borderColor: Colors.primary,
-    backgroundColor: 'rgba(99, 102, 241, 0.15)',
+    backgroundColor: 'rgba(81, 69, 229, 0.15)',
   },
   courierText: {
     fontSize: 12,
@@ -1677,34 +1752,46 @@ const styles = StyleSheet.create({
   courierTextActive: {
     color: Colors.primaryLight,
   },
+
+  // ─── Publish / Submit Buttons ──────────────────────────────────
   publishBtn: {
     backgroundColor: Colors.primary,
-    paddingVertical: 14,
-    borderRadius: 12,
+    height: 52,
+    borderRadius: 13,
     alignItems: 'center',
-    marginTop: 8,
+    justifyContent: 'center',
+    marginTop: 10,
     marginBottom: 16,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4,
   },
   publishBtnText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
   },
+
+  // ─── Analytics Timeframe Chips ─────────────────────────────────
   timeframeRow: {
     flexDirection: 'row',
     gap: 8,
     marginBottom: 14,
   },
   timeChip: {
-    backgroundColor: Colors.card,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    backgroundColor: Colors.surface,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: Colors.border,
   },
   timeChipActive: {
     backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   timeChipText: {
     fontSize: 11,
@@ -1712,8 +1799,10 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
   },
   timeChipTextActive: {
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  // ─── Analytics Metric Cards ────────────────────────────────────
   metricsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -1724,21 +1813,31 @@ const styles = StyleSheet.create({
     width: '48%',
     backgroundColor: Colors.card,
     borderRadius: 12,
-    padding: 14,
+    padding: 16,
     borderWidth: 1,
     borderColor: Colors.border,
+    borderTopWidth: 3,
+    borderTopColor: Colors.primary,
     alignItems: 'center',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 2,
   },
   metricNum: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: '900',
     color: Colors.text,
   },
   metricLbl: {
     fontSize: 10,
     color: Colors.textMuted,
-    marginTop: 2,
+    marginTop: 3,
+    textAlign: 'center',
   },
+
+  // ─── Analytics Finance Card ────────────────────────────────────
   analyticsFinanceCard: {
     backgroundColor: Colors.card,
     borderRadius: 14,
@@ -1746,6 +1845,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 20,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 2,
   },
   financeTitle: {
     fontSize: 13,
@@ -1756,9 +1860,9 @@ const styles = StyleSheet.create({
   financeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 6,
+    paddingVertical: 7,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(51, 65, 85, 0.3)',
+    borderBottomColor: Colors.borderSubtle,
   },
   financeLabel: {
     fontSize: 11,
@@ -1769,6 +1873,8 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: Colors.text,
   },
+
+  // ─── Payouts Form Card ─────────────────────────────────────────
   formCard: {
     backgroundColor: Colors.card,
     borderRadius: 16,
@@ -1776,48 +1882,64 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     padding: 16,
     marginBottom: 20,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 2,
   },
   formTitle: {
     fontSize: 14,
     fontWeight: '800',
     color: Colors.text,
-    marginBottom: 12,
+    marginBottom: 14,
   },
+
+  // ─── Payout Rail Selector ──────────────────────────────────────
   railRow: {
     flexDirection: 'row',
     gap: 8,
-    marginBottom: 12,
+    marginBottom: 14,
   },
   railBtn: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 9,
     backgroundColor: Colors.surface,
-    borderRadius: 8,
+    borderRadius: 9,
     borderWidth: 1,
     borderColor: Colors.border,
     alignItems: 'center',
   },
   railBtnActive: {
     borderColor: Colors.primary,
-    backgroundColor: 'rgba(99, 102, 241, 0.15)',
+    backgroundColor: 'rgba(81, 69, 229, 0.15)',
   },
   railBtnText: {
     fontSize: 11,
     fontWeight: '700',
     color: Colors.text,
   },
+
+  // ─── Submit / Withdraw Button ──────────────────────────────────
   submitBtn: {
-    backgroundColor: Colors.success,
-    paddingVertical: 12,
-    borderRadius: 10,
+    backgroundColor: Colors.primary,
+    paddingVertical: 13,
+    borderRadius: 11,
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 6,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 3,
   },
   submitBtnText: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  // ─── Payout History Ledger ─────────────────────────────────────
   sectionHeading: {
     fontSize: 14,
     fontWeight: '800',
@@ -1829,8 +1951,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: Colors.card,
-    padding: 12,
-    borderRadius: 10,
+    padding: 13,
+    borderRadius: 11,
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 8,
@@ -1843,28 +1965,36 @@ const styles = StyleSheet.create({
   payoutMethod: {
     fontSize: 10,
     color: Colors.textDim,
+    marginTop: 1,
   },
   payoutAmt: {
     fontSize: 13,
     fontWeight: '800',
     color: Colors.success,
   },
+
+  // ─── Reviews: Rating Hero ──────────────────────────────────────
   ratingHero: {
     backgroundColor: Colors.card,
     borderRadius: 16,
-    padding: 20,
+    padding: 22,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 16,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 2,
   },
   ratingScore: {
-    fontSize: 36,
+    fontSize: 40,
     fontWeight: '900',
     color: Colors.text,
   },
   ratingStars: {
-    fontSize: 20,
+    fontSize: 22,
     color: Colors.gold,
     marginVertical: 4,
   },
@@ -1872,13 +2002,20 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: Colors.textMuted,
   },
+
+  // ─── Review Cards ──────────────────────────────────────────────
   reviewCard: {
     backgroundColor: Colors.card,
-    borderRadius: 12,
+    borderRadius: 13,
     padding: 14,
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 10,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 1,
   },
   reviewHeader: {
     flexDirection: 'row',
@@ -1893,7 +2030,7 @@ const styles = StyleSheet.create({
   },
   reviewRating: {
     color: Colors.gold,
-    fontSize: 14,
+    fontSize: 15,
   },
   reviewLot: {
     fontSize: 10,
@@ -1903,10 +2040,12 @@ const styles = StyleSheet.create({
   reviewComment: {
     fontSize: 12,
     color: Colors.textMuted,
-    lineHeight: 16,
+    lineHeight: 17,
   },
+
+  // ─── Seller Reply Box ──────────────────────────────────────────
   sellerReplyBox: {
-    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+    backgroundColor: 'rgba(81, 69, 229, 0.12)',
     borderRadius: 8,
     padding: 10,
     marginTop: 8,
@@ -1937,13 +2076,18 @@ const styles = StyleSheet.create({
   },
   replySubmitBtn: {
     backgroundColor: Colors.primary,
-    paddingVertical: 8,
-    borderRadius: 6,
+    paddingVertical: 9,
+    borderRadius: 7,
     alignItems: 'center',
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 2,
   },
   replySubmitText: {
     fontSize: 11,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
 });

@@ -55,7 +55,7 @@ export const PushNotificationBanner: React.FC<Props> = ({ onPressNotification })
           borderColor: Colors.danger,
           icon: 'trending-down',
           iconColor: Colors.danger,
-          bgColor: 'rgba(239, 68, 68, 0.12)',
+          bgColor: Colors.dangerLight,
         };
       case 'winning':
       case 'auction_won':
@@ -63,28 +63,28 @@ export const PushNotificationBanner: React.FC<Props> = ({ onPressNotification })
           borderColor: Colors.success,
           icon: 'trophy',
           iconColor: Colors.success,
-          bgColor: 'rgba(16, 185, 129, 0.12)',
+          bgColor: Colors.successLight,
         };
       case 'payment':
         return {
           borderColor: Colors.gold,
           icon: 'shield-checkmark',
           iconColor: Colors.gold,
-          bgColor: 'rgba(251, 191, 36, 0.12)',
+          bgColor: 'rgba(184, 144, 42, 0.12)',
         };
       case 'shipping':
         return {
           borderColor: Colors.info,
           icon: 'cube',
           iconColor: Colors.info,
-          bgColor: 'rgba(56, 189, 248, 0.12)',
+          bgColor: 'rgba(91, 122, 155, 0.12)',
         };
       default:
         return {
           borderColor: Colors.primary,
           icon: 'notifications',
-          iconColor: Colors.primaryLight,
-          bgColor: 'rgba(99, 102, 241, 0.12)',
+          iconColor: Colors.primary,
+          bgColor: Colors.badgeBg,
         };
     }
   };

@@ -97,12 +97,12 @@ export const HomeScreen: React.FC<{
         {(categories.length > 0
           ? categories
           : [
-              { category_id: 1, name: 'Watches' },
-              { category_id: 2, name: 'Electronics' },
-              { category_id: 3, name: 'Vehicles' },
-              { category_id: 4, name: 'Collectibles' },
-              { category_id: 5, name: 'Art & Antiques' },
-            ]
+            { category_id: 1, name: 'Watches' },
+            { category_id: 2, name: 'Electronics' },
+            { category_id: 3, name: 'Vehicles' },
+            { category_id: 4, name: 'Collectibles' },
+            { category_id: 5, name: 'Art & Antiques' },
+          ]
         ).map((c: any) => (
           <TouchableOpacity
             key={c.category_id || c.name}
@@ -131,8 +131,10 @@ export const HomeScreen: React.FC<{
       ) : trending.length === 0 ? (
         <EmptyState
           iconName="cube-outline"
-          title="No active auctions"
-          subtitle="Check back soon for upcoming live auction lots."
+          title="No live auctions right now"
+          subtitle="No live auctions right now. Check back soon."
+          buttonText="Browse Categories"
+          onButtonPress={() => onExploreMore()}
         />
       ) : (
         trending.map((item) => (
@@ -345,7 +347,7 @@ export const WatchlistScreen: React.FC<{
     try {
       await MobileApi.removeFromWatchlist(auctionId);
       setWatchlist((prev) => prev.filter((a) => a.auction_id !== auctionId));
-    } catch {}
+    } catch { }
   };
 
   if (!user) {
@@ -368,9 +370,9 @@ export const WatchlistScreen: React.FC<{
       ) : watchlist.length === 0 ? (
         <EmptyState
           iconName="heart-outline"
-          title="Your Watchlist is Empty"
-          subtitle="Tap the heart icon on any auction lot to track real-time bids."
-          buttonText="Explore Live Lots"
+          title="Your watchlist is empty"
+          subtitle="Your watchlist is empty. Save items you want to follow."
+          buttonText="Browse Auctions"
           onButtonPress={onExploreMore}
         />
       ) : (
@@ -426,7 +428,8 @@ export const WatchlistScreen: React.FC<{
 export const BidsScreen: React.FC<{
   onSelectAuction: (id: number) => void;
   onCheckout: (orderId: number) => void;
-}> = ({ onSelectAuction, onCheckout }) => {
+  onExploreMore?: () => void;
+}> = ({ onSelectAuction, onCheckout, onExploreMore }) => {
   const { user } = useAuth();
   const [tab, setTab] = useState<'bids' | 'won'>('bids');
   const [bids, setBids] = useState<any[]>([]);
@@ -494,7 +497,9 @@ export const BidsScreen: React.FC<{
           <EmptyState
             iconName="hammer-outline"
             title="No Active Bids"
-            subtitle="You have not placed bids on any ongoing auctions."
+            subtitle="You haven't placed any active bids yet."
+            buttonText={onExploreMore ? "Explore Auctions" : undefined}
+            onButtonPress={onExploreMore}
           />
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
@@ -713,8 +718,8 @@ export const OrdersScreen: React.FC<{
                   {o.shipping_status === 'shipped' || o.shipping_status === 'in_transit'
                     ? `In Transit via ${o.courier || 'TCS'} (${o.tracking_number || 'N/A'})`
                     : o.shipping_status === 'delivered'
-                    ? 'Delivered'
-                    : 'Awaiting Merchant Packing'}
+                      ? 'Delivered'
+                      : 'Awaiting Merchant Packing'}
                 </Text>
               </View>
               <View style={styles.viewOrderPrompt}>
@@ -872,55 +877,75 @@ export const ProfileScreen: React.FC<{
 };
 
 const styles = StyleSheet.create({
+  // ─── Shared ────────────────────────────────────────────────────
   container: {
     flex: 1,
     backgroundColor: Colors.background,
     padding: 16,
   },
+
+  // ─── HomeScreen ────────────────────────────────────────────────
   heroBanner: {
-    backgroundColor: 'linear-gradient(135deg, #1e1b4b, #0f172a)',
+    backgroundColor: '#0E1726',
     borderWidth: 1,
-    borderColor: 'rgba(99, 102, 241, 0.35)',
+    borderColor: 'rgba(81, 69, 229, 0.4)',
     borderRadius: 18,
-    padding: 18,
+    padding: 20,
     marginBottom: 20,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 14,
+    elevation: 4,
   },
   heroBadge: {
-    backgroundColor: 'rgba(251, 191, 36, 0.15)',
+    backgroundColor: 'rgba(121, 82, 245, 0.15)',
     alignSelf: 'flex-start',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
     borderRadius: 6,
-    marginBottom: 8,
+    marginBottom: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(121, 82, 245, 0.3)',
   },
   heroBadgeText: {
     fontSize: 9,
     fontWeight: '900',
-    color: Colors.gold,
+    color: Colors.primaryLight,
+    letterSpacing: 0.5,
   },
   heroTitle: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: '900',
     color: Colors.text,
-    lineHeight: 24,
+    lineHeight: 26,
     marginBottom: 6,
   },
   heroSubtitle: {
     fontSize: 11,
     color: Colors.textMuted,
-    marginBottom: 14,
+    marginBottom: 16,
+    lineHeight: 16,
   },
   heroBtn: {
     backgroundColor: Colors.primary,
     alignSelf: 'flex-start',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 10,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 3,
   },
   heroBtnText: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#ffffff',
+    color: Colors.textWhite,
+    letterSpacing: 0.3,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -929,8 +954,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionTitle: {
-    fontSize: 15,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: '700',
     color: Colors.text,
   },
   sectionLink: {
@@ -942,14 +967,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   catBubble: {
-    backgroundColor: Colors.card,
+    backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: Colors.border,
-    borderRadius: 12,
+    borderRadius: 14,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
     marginRight: 10,
     alignItems: 'center',
+    minWidth: 72,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
   catIcon: {
     fontSize: 18,
@@ -963,9 +994,9 @@ const styles = StyleSheet.create({
   aiCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+    backgroundColor: 'rgba(81, 69, 229, 0.10)',
     borderWidth: 1,
-    borderColor: 'rgba(99, 102, 241, 0.25)',
+    borderColor: 'rgba(81, 69, 229, 0.3)',
     borderRadius: 14,
     padding: 14,
     marginTop: 10,
@@ -992,16 +1023,23 @@ const styles = StyleSheet.create({
     color: Colors.primaryLight,
     fontWeight: '800',
   },
+
+  // ─── AuctionsScreen ───────────────────────────────────────────
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.card,
+    backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: Colors.border,
     borderRadius: 12,
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 11,
     marginBottom: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 1,
   },
   searchIcon: {
     fontSize: 14,
@@ -1016,12 +1054,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
     marginBottom: 14,
+    flexWrap: 'wrap',
   },
   sortChip: {
-    backgroundColor: Colors.card,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 8,
+    backgroundColor: Colors.surface,
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: Colors.border,
   },
@@ -1035,18 +1074,25 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
   },
   sortChipTextActive: {
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  // ─── WatchlistScreen ──────────────────────────────────────────
   watchCard: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: Colors.card,
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 10,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 2,
   },
   watchInfo: {
     flex: 1,
@@ -1074,10 +1120,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   removeWatchBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: Colors.surfaceLight,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.dangerLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -1086,21 +1132,30 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
   },
+
+  // ─── BidsScreen ───────────────────────────────────────────────
   tabToggle: {
     flexDirection: 'row',
-    backgroundColor: Colors.card,
+    backgroundColor: Colors.surface,
     borderRadius: 12,
     padding: 4,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   toggleBtn: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 9,
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 9,
   },
   toggleActive: {
     backgroundColor: Colors.primary,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.35,
+    shadowRadius: 4,
+    elevation: 2,
   },
   toggleText: {
     fontSize: 12,
@@ -1108,7 +1163,7 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
   },
   toggleTextActive: {
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
   listItem: {
     flexDirection: 'row',
@@ -1116,10 +1171,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: Colors.card,
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 10,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 2,
   },
   listDetails: {
     flex: 1,
@@ -1133,19 +1193,21 @@ const styles = StyleSheet.create({
   },
   listPrice: {
     fontSize: 12,
-    color: Colors.primaryLight,
+    color: Colors.text,
     fontWeight: '600',
   },
   leadBadge: {
-    fontSize: 10,
-    fontWeight: '800',
-    marginTop: 4,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+    marginTop: 5,
+    alignSelf: 'flex-start',
   },
   leadWinning: {
-    color: Colors.success,
+    backgroundColor: Colors.successLight,
   },
   leadOutbid: {
-    color: Colors.danger,
+    backgroundColor: Colors.dangerLight,
   },
   wonPrice: {
     fontSize: 12,
@@ -1153,40 +1215,56 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   actionBtn: {
-    backgroundColor: Colors.surfaceLight,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: 'transparent',
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.primary,
   },
   actionBtnText: {
-    fontSize: 11,
+    fontSize: 12,
     color: Colors.text,
     fontWeight: '700',
   },
   checkoutBtn: {
-    backgroundColor: Colors.success,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 8,
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 16,
+    height: 48,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   checkoutBtnText: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
+
+  // ─── OrdersScreen ─────────────────────────────────────────────
   screenHeader: {
-    fontSize: 16,
-    fontWeight: '800',
+    fontSize: 18,
+    fontWeight: '700',
     color: Colors.text,
     marginBottom: 14,
   },
   orderCard: {
     backgroundColor: Colors.card,
-    padding: 14,
-    borderRadius: 14,
+    padding: 16,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 2,
   },
   orderHeader: {
     flexDirection: 'row',
@@ -1198,20 +1276,22 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '800',
     color: Colors.primaryLight,
+    letterSpacing: 0.5,
   },
   statusBadge: {
     fontSize: 10,
     fontWeight: '800',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    overflow: 'hidden',
   },
   statusPaid: {
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
+    backgroundColor: Colors.successLight,
     color: Colors.success,
   },
   statusPending: {
-    backgroundColor: 'rgba(245, 158, 11, 0.15)',
+    backgroundColor: Colors.warningLight,
     color: Colors.warning,
   },
   orderTitle: {
@@ -1227,12 +1307,12 @@ const styles = StyleSheet.create({
   },
   courierInfo: {
     fontSize: 11,
-    color: Colors.info,
+    color: Colors.primaryLight,
     marginBottom: 8,
   },
   viewOrderPrompt: {
     borderTopWidth: 1,
-    borderTopColor: Colors.border,
+    borderTopColor: Colors.borderSubtle,
     paddingTop: 8,
   },
   viewOrderText: {
@@ -1240,57 +1320,64 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: Colors.primaryLight,
   },
+
+  // ─── ProfileScreen ────────────────────────────────────────────
   profileCard: {
     alignItems: 'center',
-    backgroundColor: Colors.card,
-    borderRadius: 16,
-    padding: 20,
+    backgroundColor: '#0E1726',
+    borderRadius: 20,
+    padding: 24,
     borderWidth: 1,
-    borderColor: Colors.border,
+    borderColor: 'rgba(81, 69, 229, 0.3)',
     marginBottom: 16,
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 4,
   },
   avatarLarge: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 10,
+    marginBottom: 12,
+    borderWidth: 3,
+    borderColor: Colors.primaryLight,
   },
   avatarLargeText: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '900',
-    color: '#ffffff',
+    color: '#FFFFFF',
   },
   userName: {
-    fontSize: 17,
+    fontSize: 18,
     fontWeight: '800',
-    color: Colors.text,
+    color: '#FFFFFF',
   },
   userEmail: {
     fontSize: 12,
     color: Colors.textMuted,
     marginTop: 2,
-    marginBottom: 10,
+    marginBottom: 12,
   },
   badgeRow: {
     flexDirection: 'row',
   },
   kycStatusBadge: {
-    fontSize: 11,
-    fontWeight: '800',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   kycApproved: {
-    backgroundColor: 'rgba(16, 185, 129, 0.15)',
-    color: Colors.success,
+    backgroundColor: Colors.successLight,
   },
   kycPending: {
-    backgroundColor: 'rgba(245, 158, 11, 0.15)',
-    color: Colors.warning,
+    backgroundColor: Colors.warningLight,
   },
   menuCard: {
     backgroundColor: Colors.card,
@@ -1298,19 +1385,25 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 24,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 2,
+    overflow: 'hidden',
   },
   menuRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 14,
+    padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
+    borderBottomColor: Colors.borderSubtle,
   },
   menuIconWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(99, 102, 241, 0.12)',
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: Colors.badgeBg,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,

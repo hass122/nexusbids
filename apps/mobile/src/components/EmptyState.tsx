@@ -37,7 +37,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
-        <Ionicons name={resolvedIcon} size={30} color={Colors.primaryLight} />
+        <Ionicons name={resolvedIcon} size={30} color={Colors.primary} />
       </View>
       <Text style={styles.title}>{title}</Text>
       {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
@@ -62,9 +62,9 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: 'rgba(99, 102, 241, 0.12)',
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: 'rgba(99, 102, 241, 0.25)',
+    borderColor: Colors.border,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -88,19 +88,20 @@ const styles = StyleSheet.create({
   btn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.primaryDark,
-    paddingHorizontal: 18,
-    paddingVertical: 10,
+    justifyContent: 'center',
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 20,
+    height: 48,
     borderRadius: 12,
-    shadowColor: Colors.primary,
+    shadowColor: Colors.primaryDark,
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.25,
     shadowRadius: 6,
     elevation: 3,
   },
   btnText: {
-    fontSize: 13,
-    fontWeight: '800',
+    fontSize: 14,
+    fontWeight: '700',
     color: '#ffffff',
   },
 });

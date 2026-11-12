@@ -65,13 +65,24 @@ export class AuthService {
 
     await query('UPDATE users SET failed_attempts = 0, locked_until = NULL WHERE user_id = ?', [user.user_id]);
 
-    const tokens = await this.generateTokens({ userId: user.user_id, email: user.email, role: user.role as UserRole, fullName: user.full_name, kycStatus: user.kyc_status as KYCStatus, sellerKycStatus: user.seller_kyc_status as SellerKYCStatus });
+    if (user.twofa_enabled) {
+      const preAuthToken = jwt.sign(
+        { userId: user.user_id, email: user.email, type: 'pre_auth' },
+        ENV.JWT.ACCESS_SECRET,
+        { expiresIn: '5m' }
+      );
+      return {
+        requires2FA: true,
+        userId: user.user_id,
+        email: user.email,
+        preAuthToken,
+        message: 'Two-factor authentication required. Please enter the 6-digit code from your Authenticator app.',
+      };
+    }
 
+    const tokens = await this.generateTokens({ userId: user.user_id, email: user.email, role: user.role as UserRole, fullName: user.full_name, kycStatus: user.kyc_status as KYCStatus, sellerKycStatus: user.seller_kyc_status as SellerKYCStatus });
     const userDto: User = { user_id: user.user_id, full_name: user.full_name, email: user.email, phone: user.phone, bio: user.bio, role: user.role, profile_image: user.profile_image || 'default.png', status: user.status, email_verified: Boolean(user.email_verified), kyc_status: user.kyc_status, seller_kyc_status: user.seller_kyc_status, created_at: user.created_at };
 
-    if (user.twofa_enabled) {
-      return { requires2FA: true, userId: user.user_id, email: user.email, message: 'Two-factor authentication required. Please enter the 6-digit code from your Authenticator app.' };
-    }
     return { user: userDto, ...tokens };
   }
 
@@ -148,17 +159,39 @@ export class AuthService {
     return { message: 'Password reset successfully.' };
   }
 
-  static async verify2FaOtp(userId: number, code: string, purpose = '2fa_login') {
+  static async verify2FaOtp(userId: number, code: string, preAuthToken?: string) {
     if (!code || code.length !== 6) throw new Error('Verification code must be 6 digits.');
 
     const users = await query<any[]>('SELECT * FROM users WHERE user_id = ? LIMIT 1', [userId]);
     if (users.length === 0 || users[0].status !== 'active') throw new Error('User not found or inactive.');
     const user = users[0];
 
+    if (user.locked_until && new Date(user.locked_until).getTime() > Date.now()) {
+      throw new Error('Account temporarily locked due to failed attempts. Please try again later.');
+    }
+
+    if (preAuthToken) {
+      try {
+        const decoded: any = jwt.verify(preAuthToken, ENV.JWT.ACCESS_SECRET);
+        if (decoded.type !== 'pre_auth' || decoded.userId !== userId) {
+          throw new Error('Invalid pre-auth session.');
+        }
+      } catch {
+        throw new Error('Pre-authentication session expired or invalid. Please log in again.');
+      }
+    }
+
     if (!user.twofa_secret) throw new Error('2FA is not set up properly.');
 
     const verified = speakeasy.totp.verify({ secret: user.twofa_secret, encoding: 'base32', token: code, window: 1 });
-    if (!verified) throw new Error('Invalid Authenticator code.');
+    if (!verified) {
+      const attempts = (user.failed_attempts || 0) + 1;
+      let lockedUntil: Date | null = attempts >= 5 ? new Date(Date.now() + 15 * 60 * 1000) : null;
+      await query('UPDATE users SET failed_attempts = ?, locked_until = ? WHERE user_id = ?', [attempts, lockedUntil, user.user_id]);
+      throw new Error(attempts >= 5 ? 'Account locked for 15 minutes due to multiple failed 2FA attempts.' : 'Invalid Authenticator code.');
+    }
+
+    await query('UPDATE users SET failed_attempts = 0, locked_until = NULL WHERE user_id = ?', [user.user_id]);
 
     const tokens = await this.generateTokens({ userId: user.user_id, email: user.email, role: user.role as UserRole, fullName: user.full_name, kycStatus: user.kyc_status as KYCStatus, sellerKycStatus: user.seller_kyc_status as SellerKYCStatus });
     const userDto: User = { user_id: user.user_id, full_name: user.full_name, email: user.email, phone: user.phone, bio: user.bio, role: user.role, profile_image: user.profile_image || 'default.png', status: user.status, email_verified: Boolean(user.email_verified), kyc_status: user.kyc_status, seller_kyc_status: user.seller_kyc_status, created_at: user.created_at };

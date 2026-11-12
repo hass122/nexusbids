@@ -533,7 +533,7 @@ router.post('/sandbox/simulate-webhook', requireAuth, async (req, res) => {
 // POST /api/v1/payments/order/:orderId/confirm-delivery
 // Delegates to the canonical MarketplaceController to keep delivery_status /
 // order_status / escrow state consistent with /shipping and /orders endpoints.
-router.post('/order/:orderId/confirm-delivery', requireAuth, (req, res) => {
+router.post(['/order/:orderId/confirm-delivery', '/orders/:orderId/confirm-delivery', '/order/:id/confirm-delivery'], requireAuth, (req, res) => {
   return MarketplaceController.confirmReceipt(req, res);
 });
 

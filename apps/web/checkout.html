@@ -306,7 +306,9 @@
     let receiptFile = null;
     let receiptDataUrl = null;
 
-    const orderId = new URLSearchParams(location.search).get('order_id');
+    const urlParams = new URLSearchParams(location.search);
+    let orderId = urlParams.get('order_id') || urlParams.get('order') || urlParams.get('id');
+    const auctionId = urlParams.get('auction') || urlParams.get('auction_id');
 
     // ─────────────────────────────────────────────────────────────
     // Helper
@@ -322,6 +324,20 @@
     // ★★★ BOOT — bulletproof: fetch from list FIRST, then detail
     // ─────────────────────────────────────────────────────────────
     async function loadOrder() {
+      // If orderId not given directly, check if auctionId was passed from won-auctions
+      if (!orderId && auctionId) {
+        try {
+          const listRes = await ApiClient.get('/orders/buyer');
+          const list = (listRes && listRes.data) || [];
+          const matched = list.find(o => String(o.auction_id) === String(auctionId));
+          if (matched) {
+            orderId = String(matched.order_id);
+          }
+        } catch (e) {
+          console.warn('[Checkout] Auction to order lookup failed:', e);
+        }
+      }
+
       if (!orderId) {
         location.replace('/buyer/orders.html');
         return;

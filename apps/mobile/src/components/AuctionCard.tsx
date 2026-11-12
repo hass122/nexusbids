@@ -95,7 +95,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           <Ionicons
             name={auction.is_watched ? 'heart' : 'heart-outline'}
             size={18}
-            color={auction.is_watched ? Colors.danger : '#ffffff'}
+            color={auction.is_watched ? Colors.accent : '#ffffff'}
           />
         </TouchableOpacity>
 
@@ -113,7 +113,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           <Ionicons
             name={isEnded ? 'checkmark-circle-outline' : 'time-outline'}
             size={12}
-            color={isEnded ? Colors.textDim : isEndingSoon ? '#ffffff' : Colors.primaryLight}
+            color={isEnded ? Colors.textDim : isEndingSoon ? '#ffffff' : Colors.primary}
             style={{ marginRight: 4 }}
           />
           <Text
@@ -158,15 +158,15 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.card,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: Colors.borderSubtle,
+    borderColor: Colors.border,
     marginBottom: 16,
     overflow: 'hidden',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
+    shadowOpacity: 0.35,
     shadowRadius: 8,
     elevation: 3,
   },
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     height: 185,
     width: '100%',
     position: 'relative',
-    backgroundColor: Colors.surfaceLight,
+    backgroundColor: Colors.surface,
   },
   image: {
     width: '100%',
@@ -185,12 +185,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 12,
     left: 12,
-    backgroundColor: 'rgba(3, 7, 18, 0.75)',
+    backgroundColor: 'rgba(3, 8, 23, 0.85)',
     paddingHorizontal: 9,
     paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(81, 69, 229, 0.35)',
   },
   categoryText: {
     fontSize: 10,
@@ -205,11 +205,11 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: 'rgba(3, 7, 18, 0.75)',
+    backgroundColor: 'rgba(3, 8, 23, 0.75)',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   timerBadge: {
     position: 'absolute',
@@ -223,21 +223,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   timerActive: {
-    backgroundColor: 'rgba(3, 7, 18, 0.82)',
-    borderColor: 'rgba(99, 102, 241, 0.35)',
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primaryDark,
   },
   timerBadgeUrgent: {
     backgroundColor: Colors.danger,
     borderColor: Colors.danger,
   },
   timerEnded: {
-    backgroundColor: 'rgba(3, 7, 18, 0.82)',
-    borderColor: Colors.borderSubtle,
+    backgroundColor: Colors.surface,
+    borderColor: Colors.border,
   },
   timerText: {
     fontSize: 11,
     fontWeight: '800',
-    color: Colors.text,
+    color: '#ffffff',
     letterSpacing: 0.3,
   },
   timerTextUrgent: {
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.05)',
+    borderTopColor: Colors.borderSubtle,
   },
   priceCol: {
     flex: 1,
@@ -294,13 +294,13 @@ const styles = StyleSheet.create({
   bidBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.primaryDark,
+    backgroundColor: Colors.primary,
     paddingHorizontal: 16,
     paddingVertical: 9,
     borderRadius: 10,
-    shadowColor: Colors.primary,
+    shadowColor: Colors.primaryDark,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 3,
   },

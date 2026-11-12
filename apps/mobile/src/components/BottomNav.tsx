@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../theme/colors';
 import { useAuth } from '../context/AuthContext';
@@ -22,7 +22,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
 }) => {
   const { activeRole } = useAuth();
 
-  // Seller Navigation
+  // Seller Navigation (Studio, My Lots, Create, Fulfill, Payouts)
   if (activeRole === 'seller') {
     const tabs: {
       key: SellerTab;
@@ -39,57 +39,67 @@ export const BottomNav: React.FC<BottomNavProps> = ({
     ];
 
     return (
-      <View style={styles.container}>
-        {tabs.map((t) => {
-          const isActive = sellerTab === t.key;
+      <View style={styles.floatingWrapper}>
+        <View style={styles.container}>
+          {tabs.map((t) => {
+            const isActive = sellerTab === t.key;
 
-          if (t.isFab) {
+            if (t.isFab) {
+              return (
+                <TouchableOpacity
+                  key={t.key}
+                  style={styles.fabContainer}
+                  onPress={() => onSelectSellerTab(t.key)}
+                  activeOpacity={0.85}
+                  accessibilityRole="button"
+                  accessibilityLabel="Create Auction"
+                >
+                  <View style={styles.fabButton}>
+                    <Ionicons name="add" size={24} color="#ffffff" />
+                  </View>
+                  <Text style={styles.fabLabel}>Create</Text>
+                </TouchableOpacity>
+              );
+            }
+
             return (
               <TouchableOpacity
                 key={t.key}
-                style={styles.fabContainer}
+                style={[styles.tab, isActive && styles.activeTab]}
                 onPress={() => onSelectSellerTab(t.key)}
-                activeOpacity={0.85}
+                activeOpacity={0.7}
+                accessibilityRole="tab"
+                accessibilityState={{ selected: isActive }}
+                accessibilityLabel={t.label}
               >
-                <View style={styles.fabButton}>
-                  <Ionicons name="add" size={24} color="#ffffff" />
-                </View>
-                <Text style={styles.fabLabel}>Create</Text>
+                <Ionicons
+                  name={isActive ? t.activeIcon : t.inactiveIcon}
+                  size={20}
+                  color={isActive ? Colors.primaryLight : Colors.textMuted}
+                />
+                <Text
+                  style={[styles.tabLabel, isActive && styles.activeLabel]}
+                  numberOfLines={1}
+                >
+                  {t.label}
+                </Text>
               </TouchableOpacity>
             );
-          }
-
-          return (
-            <TouchableOpacity
-              key={t.key}
-              style={[styles.tab, isActive && styles.activeTab]}
-              onPress={() => onSelectSellerTab(t.key)}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isActive ? t.activeIcon : t.inactiveIcon}
-                size={21}
-                color={isActive ? Colors.primaryLight : Colors.textDim}
-              />
-              <Text style={[styles.tabLabel, isActive && styles.activeLabel]}>
-                {t.label}
-              </Text>
-              {isActive && <View style={styles.activeIndicator} />}
-            </TouchableOpacity>
-          );
-        })}
+          })}
+        </View>
       </View>
     );
   }
 
-  // Buyer Navigation
+  // Buyer Navigation: 6 items strictly preserved in order:
+  // 1. Home, 2. Explore, 3. Saved, 4. Bids, 5. Orders, 6. Profile
   const buyerTabs: {
     key: BuyerTab;
     label: string;
     activeIcon: keyof typeof Ionicons.glyphMap;
     inactiveIcon: keyof typeof Ionicons.glyphMap;
   }[] = [
-    { key: 'home', label: 'Home', activeIcon: 'flash', inactiveIcon: 'flash-outline' },
+    { key: 'home', label: 'Home', activeIcon: 'home', inactiveIcon: 'home-outline' },
     { key: 'auctions', label: 'Explore', activeIcon: 'hammer', inactiveIcon: 'hammer-outline' },
     { key: 'watchlist', label: 'Saved', activeIcon: 'heart', inactiveIcon: 'heart-outline' },
     { key: 'bids', label: 'Bids', activeIcon: 'trophy', inactiveIcon: 'trophy-outline' },
@@ -98,100 +108,111 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   ];
 
   return (
-    <View style={styles.container}>
-      {buyerTabs.map((t) => {
-        const isActive = buyerTab === t.key;
-        return (
-          <TouchableOpacity
-            key={t.key}
-            style={[styles.tab, isActive && styles.activeTab]}
-            onPress={() => onSelectBuyerTab(t.key)}
-            activeOpacity={0.7}
-          >
-            <Ionicons
-              name={isActive ? t.activeIcon : t.inactiveIcon}
-              size={20}
-              color={isActive ? Colors.primaryLight : Colors.textDim}
-            />
-            <Text style={[styles.tabLabel, isActive && styles.activeLabel]}>
-              {t.label}
-            </Text>
-            {isActive && <View style={styles.activeIndicator} />}
-          </TouchableOpacity>
-        );
-      })}
+    <View style={styles.floatingWrapper}>
+      <View style={styles.container}>
+        {buyerTabs.map((t) => {
+          const isActive = buyerTab === t.key;
+          return (
+            <TouchableOpacity
+              key={t.key}
+              style={[styles.tab, isActive && styles.activeTab]}
+              onPress={() => onSelectBuyerTab(t.key)}
+              activeOpacity={0.7}
+              accessibilityRole="tab"
+              accessibilityState={{ selected: isActive }}
+              accessibilityLabel={t.label}
+            >
+              <Ionicons
+                name={isActive ? t.activeIcon : t.inactiveIcon}
+                size={20}
+                color={isActive ? Colors.primaryLight : Colors.textMuted}
+              />
+              <Text
+                style={[styles.tabLabel, isActive && styles.activeLabel]}
+                numberOfLines={1}
+              >
+                {t.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  floatingWrapper: {
+    backgroundColor: 'transparent',
+    paddingHorizontal: 12,
+    paddingTop: 4,
+    paddingBottom: Platform.OS === 'ios' ? 6 : 10,
+  },
   container: {
     flexDirection: 'row',
-    backgroundColor: Colors.surface,
-    borderTopWidth: 1,
-    borderTopColor: Colors.borderSubtle,
-    paddingTop: 8,
-    paddingBottom: 22,
-    justifyContent: 'space-around',
+    backgroundColor: '#0B1120', // Deep navy surface
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: Colors.border, // #1E293B subtle border
+    paddingVertical: 5,
+    paddingHorizontal: 4,
+    justifyContent: 'space-between',
     alignItems: 'center',
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.25,
-    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 10,
     elevation: 8,
   },
   tab: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    minWidth: 48,
+    paddingVertical: 5,
+    paddingHorizontal: 2,
+    borderRadius: 14,
+    marginHorizontal: 1,
+    minHeight: 46,
   },
   activeTab: {
-    transform: [{ scale: 1.02 }],
+    backgroundColor: 'rgba(81, 69, 229, 0.18)', // Subtle rounded active purple background
   },
   tabLabel: {
     fontSize: 10,
     fontWeight: '600',
-    color: Colors.textDim,
-    marginTop: 3,
+    color: Colors.textMuted, // Muted grey-blue #A7B0C3
+    marginTop: 2.5,
     letterSpacing: -0.2,
   },
   activeLabel: {
-    color: Colors.primaryLight,
-    fontWeight: '800',
-  },
-  activeIndicator: {
-    width: 14,
-    height: 2.5,
-    borderRadius: 1.5,
-    backgroundColor: Colors.primary,
-    marginTop: 3,
+    color: Colors.primaryLight, // Purple/violet #7952F5
+    fontWeight: '700',
   },
   fabContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    top: -8,
+    top: -6,
   },
   fabButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: Colors.primaryDark,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.45,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   fabLabel: {
     fontSize: 10,
-    fontWeight: '800',
-    color: Colors.primaryLight,
-    marginTop: 3,
+    fontWeight: '700',
+    color: Colors.primary,
+    marginTop: 2,
   },
 });

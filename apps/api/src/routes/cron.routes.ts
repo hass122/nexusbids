@@ -1,9 +1,17 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 import { CronController } from '../controllers/cron.controller.js';
 import { ENV } from '../config/env.js';
 import { sendError } from '../utils/response.js';
 
 const router = Router();
+
+function safeCompare(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 function requireCronSecret(req: Request, res: Response, next: NextFunction): void {
   const token =
@@ -12,7 +20,7 @@ function requireCronSecret(req: Request, res: Response, next: NextFunction): voi
     (req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.slice(7) : undefined) ||
     (typeof req.query.secret === 'string' ? req.query.secret : undefined);
 
-  if (!token || token !== ENV.CRON.SECRET) {
+  if (!token || !safeCompare(String(token), ENV.CRON.SECRET)) {
     sendError(res, 'Unauthorized: Invalid or missing cron secret', 401);
     return;
   }

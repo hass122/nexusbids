@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { requireAuth } from '../middleware/auth.js';
 import { sendSuccess, sendError } from '../utils/response.js';
 import { query, withTransaction } from '../config/db.js';
-import { encryptCnic, maskCnic } from '../utils/crypto.js';
+import { encryptCnic, decryptCnic, maskCnic } from '../utils/crypto.js';
 import crypto from 'crypto';
 
 const router = Router();
@@ -97,11 +97,14 @@ router.post('/buyer', requireAuth, async (req, res) => {
     await withTransaction(async (conn) => {
       // H-8: Check for duplicate CNIC already linked to another user
       const [dupRows] = await conn.execute<any[]>(
-        'SELECT user_id FROM kyc_verifications WHERE cnic_number_encrypted = ? AND user_id != ? LIMIT 1',
-        [cnicEncrypted, userId]
+        'SELECT user_id, cnic_number_encrypted FROM kyc_verifications WHERE (cnic_number_masked = ? OR cnic_number_encrypted = ?) AND user_id != ?',
+        [cnicMasked, cnicEncrypted, userId]
       );
-      if (dupRows.length > 0) {
-        throw new Error('This CNIC number is already registered with another account.');
+      for (const row of dupRows) {
+        const decrypted = decryptCnic(row.cnic_number_encrypted);
+        if (decrypted && decrypted.replace(/\D/g, '') === cnic_number.replace(/\D/g, '')) {
+          throw new Error('This CNIC number is already registered with another account.');
+        }
       }
 
       // Insert KYC record
@@ -208,11 +211,14 @@ router.post('/seller', requireAuth, async (req, res) => {
     await withTransaction(async (conn) => {
       // H-8: Check for duplicate CNIC already linked to another user
       const [dupRows] = await conn.execute<any[]>(
-        'SELECT user_id FROM kyc_verifications WHERE cnic_number_encrypted = ? AND user_id != ? LIMIT 1',
-        [cnicEncrypted, userId]
+        'SELECT user_id, cnic_number_encrypted FROM kyc_verifications WHERE (cnic_number_masked = ? OR cnic_number_encrypted = ?) AND user_id != ?',
+        [cnicMasked, cnicEncrypted, userId]
       );
-      if (dupRows.length > 0) {
-        throw new Error('This CNIC number is already registered with another account.');
+      for (const row of dupRows) {
+        const decrypted = decryptCnic(row.cnic_number_encrypted);
+        if (decrypted && decrypted.replace(/\D/g, '') === cnic_number.replace(/\D/g, '')) {
+          throw new Error('This CNIC number is already registered with another account.');
+        }
       }
 
       await conn.execute(

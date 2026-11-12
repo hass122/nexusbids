@@ -114,7 +114,7 @@ function MainNavigator() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={Colors.background} />
+      <StatusBar barStyle="light-content" backgroundColor={Colors.header} />
 
       {/* Push Notification Toast Banner */}
       <PushNotificationBanner onPressNotification={handleNotificationPress} />
@@ -165,6 +165,7 @@ function MainNavigator() {
               <BidsScreen
                 onSelectAuction={(id) => setSelectedAuctionId(id)}
                 onCheckout={(orderId) => setSelectedCheckoutOrderId(orderId)}
+                onExploreMore={() => setBuyerTab('auctions')}
               />
             )}
             {buyerTab === 'orders' && (
@@ -247,6 +248,10 @@ function MainNavigator() {
         visible={selectedOrderDetailId !== null}
         orderId={selectedOrderDetailId}
         onClose={() => setSelectedOrderDetailId(null)}
+        onOpenCheckout={(orderId) => {
+          setSelectedOrderDetailId(null);
+          setSelectedCheckoutOrderId(orderId);
+        }}
         onOpenReview={(sellerId, orderId) => {
           setSelectedOrderDetailId(null);
           setReviewTarget({ sellerId, orderId });

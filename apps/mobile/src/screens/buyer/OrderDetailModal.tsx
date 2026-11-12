@@ -22,6 +22,7 @@ interface OrderDetailModalProps {
   onClose: () => void;
   onRefreshOrders?: () => void;
   onOpenReview?: (sellerId: number, orderId: number) => void;
+  onOpenCheckout?: (orderId: number) => void;
 }
 
 export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
@@ -30,6 +31,7 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
   onClose,
   onRefreshOrders,
   onOpenReview,
+  onOpenCheckout,
 }) => {
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(false);
@@ -222,6 +224,22 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
                   </View>
                 </View>
 
+                {/* Unpaid Order - Complete Escrow Payment Action */}
+                {(order?.payment_status === 'unpaid' || (order?.payment_status === 'pending' && !order?.buyer_proof_uploaded_at)) && onOpenCheckout ? (
+                  <TouchableOpacity
+                    style={[styles.confirmDeliveryBtn, { backgroundColor: Colors.success, marginBottom: 12 }]}
+                    onPress={() => {
+                      onClose();
+                      onOpenCheckout(orderId!);
+                    }}
+                  >
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+                      <Ionicons name="card-outline" size={16} color="#ffffff" />
+                      <Text style={styles.confirmDeliveryBtnText}>Pay Now / Escrow Checkout</Text>
+                    </View>
+                  </TouchableOpacity>
+                ) : null}
+
                 {/* Delivery Confirmation Action */}
                 {order?.shipping_status === 'shipped' || step === 4 ? (
                   <TouchableOpacity
@@ -335,16 +353,21 @@ export const OrderDetailModal: React.FC<OrderDetailModalProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.85)',
+    backgroundColor: 'rgba(3, 8, 23, 0.82)',
     justifyContent: 'flex-end',
   },
   sheet: {
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.background,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     height: '92%',
     borderTopWidth: 1,
     borderColor: Colors.border,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 10,
+    elevation: 10,
   },
   topBar: {
     flexDirection: 'row',
@@ -353,11 +376,14 @@ const styles = StyleSheet.create({
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: Colors.border,
+    backgroundColor: Colors.card,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
   orderTag: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '800',
-    color: Colors.primaryLight,
+    color: Colors.primary,
   },
   orderDate: {
     fontSize: 11,
@@ -365,15 +391,17 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   closeBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: Colors.surfaceLight,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   closeText: {
-    color: Colors.textDim,
+    color: Colors.text,
     fontSize: 15,
     fontWeight: '700',
   },
@@ -391,6 +419,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 16,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   itemTitle: {
     fontSize: 16,
@@ -401,7 +434,7 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 18,
     fontWeight: '900',
-    color: Colors.success,
+    color: Colors.primary,
   },
   timelineCard: {
     backgroundColor: Colors.card,
@@ -410,6 +443,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.border,
     marginBottom: 16,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   timelineTitle: {
     fontSize: 13,
@@ -426,10 +464,12 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: Colors.surfaceLight,
+    backgroundColor: Colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   stepDotNum: {
     fontSize: 12,
@@ -437,7 +477,8 @@ const styles = StyleSheet.create({
     color: Colors.textDim,
   },
   stepDotActive: {
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   stepInfo: {
     flex: 1,
@@ -456,11 +497,16 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   confirmDeliveryBtn: {
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.primary,
     paddingVertical: 14,
     borderRadius: 12,
     alignItems: 'center',
     marginBottom: 12,
+    shadowColor: Colors.primaryDark,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   confirmDeliveryBtnText: {
     fontSize: 13,
@@ -468,9 +514,9 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   reviewBtn: {
-    backgroundColor: 'rgba(251, 191, 36, 0.15)',
+    backgroundColor: Colors.warningLight,
     borderWidth: 1,
-    borderColor: Colors.gold,
+    borderColor: Colors.warning,
     paddingVertical: 12,
     borderRadius: 12,
     alignItems: 'center',
@@ -479,7 +525,7 @@ const styles = StyleSheet.create({
   reviewBtnText: {
     fontSize: 13,
     fontWeight: '800',
-    color: Colors.gold,
+    color: Colors.warning,
   },
   actionsRow: {
     flexDirection: 'row',
@@ -488,7 +534,9 @@ const styles = StyleSheet.create({
   },
   actionBtn: {
     flex: 1,
-    backgroundColor: Colors.surfaceLight,
+    backgroundColor: Colors.card,
+    borderWidth: 1,
+    borderColor: Colors.border,
     paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
@@ -499,7 +547,8 @@ const styles = StyleSheet.create({
     color: Colors.text,
   },
   disputeBtn: {
-    backgroundColor: 'rgba(239, 68, 68, 0.15)',
+    backgroundColor: Colors.dangerLight,
+    borderColor: Colors.danger,
   },
   disputeBox: {
     backgroundColor: Colors.card,
@@ -508,6 +557,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.danger,
     marginBottom: 30,
+    shadowColor: Colors.text,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   disputeTitle: {
     fontSize: 14,
@@ -524,7 +578,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 10,
     fontWeight: '800',
-    color: Colors.textMuted,
+    color: Colors.textDim,
     marginBottom: 4,
     textTransform: 'uppercase',
   },
@@ -545,9 +599,14 @@ const styles = StyleSheet.create({
   },
   submitDisputeBtn: {
     backgroundColor: Colors.danger,
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderRadius: 10,
     alignItems: 'center',
+    shadowColor: Colors.danger,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
   },
   submitDisputeBtnText: {
     fontSize: 13,

@@ -21,20 +21,20 @@ export const OfflineBanner: React.FC<Props> = ({ isOffline }) => {
 
 const styles = StyleSheet.create({
   banner: {
-    backgroundColor: '#7f1d1d',
+    backgroundColor: Colors.danger,
     paddingVertical: 7,
     paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(254, 202, 202, 0.2)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
   },
   icon: {
     marginRight: 8,
   },
   text: {
-    color: '#fecaca',
+    color: '#ffffff',
     fontSize: 11,
     fontWeight: '700',
     letterSpacing: -0.1,

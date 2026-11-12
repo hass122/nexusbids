@@ -17,6 +17,7 @@ uploads/
 scratch/
 temp/
 *.log
+*.zip
 
 # OS files
 .DS_Store

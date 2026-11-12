@@ -36,8 +36,8 @@ class MemoryRateLimiter {
   public middleware() {
     return (req: Request, res: Response, next: NextFunction): void => {
       const now = Date.now();
-      // Derive client identifier: X-Forwarded-For or remote IP or user ID if authenticated
-      const ip = (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
+      // Derive client identifier: prefer validated req.ip from trusted proxy configuration
+      const ip = req.ip || (req.headers['x-forwarded-for'] as string)?.split(',')[0]?.trim() || req.socket.remoteAddress || 'unknown';
       const key = `${ip}:${req.user?.userId || 'anon'}`;
 
       let record = this.store.get(key);

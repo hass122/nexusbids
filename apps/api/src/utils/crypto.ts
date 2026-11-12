@@ -6,11 +6,13 @@ function getKey(): Buffer {
   return hash;
 }
 
-export function encryptCnic(plaintext: string): string {
+export function encryptCnic(plaintext: string, deterministic = false): string {
   if (!plaintext) return '';
   const key = getKey();
-  // Use a deterministic IV derived from the key to allow duplicate CNIC detection
-  const iv = crypto.createHash('sha256').update(ENV.KYC.ENCRYPTION_KEY + '_iv_salt').digest().subarray(0, 16);
+  // Randomized 16-byte IV for semantic security against frequency analysis; deterministic option for legacy matching
+  const iv = deterministic
+    ? crypto.createHash('sha256').update(ENV.KYC.ENCRYPTION_KEY + '_iv_salt').digest().subarray(0, 16)
+    : crypto.randomBytes(16);
   const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
   const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()]);
   return Buffer.concat([iv, encrypted]).toString('base64');

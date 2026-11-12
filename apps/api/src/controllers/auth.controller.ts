@@ -110,14 +110,15 @@ export class AuthController {
   // Verify 2FA OTP Code
   static async verify2Fa(req: Request, res: Response): Promise<void> {
     try {
-      const { user_id, userId, code } = req.body;
+      const { user_id, userId, code, preAuthToken, pre_auth_token } = req.body;
       const targetUserId = Number(user_id || userId);
       if (!targetUserId || !code) {
         sendError(res, 'User ID and 6-digit verification code are required', 400);
         return;
       }
 
-      const result: any = await AuthService.verify2FaOtp(targetUserId, String(code).trim());
+      const token = preAuthToken || pre_auth_token || (req.headers['x-pre-auth-token'] as string | undefined);
+      const result: any = await AuthService.verify2FaOtp(targetUserId, String(code).trim(), typeof token === 'string' ? token : undefined);
       setAuthCookies(res, result.accessToken, result.refreshToken);
       sendSuccess(res, result, 'Two-factor authentication verified successfully');
     } catch (err: any) {

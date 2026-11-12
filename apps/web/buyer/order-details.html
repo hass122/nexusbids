@@ -583,9 +583,9 @@
           ${o.payment_transaction_id ? `<div><div class="label">Txn ID</div><div class="val">${esc(o.payment_transaction_id)}</div></div>` : ''}
           ${o.payment_uploaded_at ? `<div><div class="label">Paid At</div><div class="val">${esc(fmtDate(o.payment_uploaded_at))}</div></div>` : ''}
         </div>
-               ${needsPay ? `<a href="/checkout.html?order=${encodeURIComponent(o.order_id)}" class="btn btn-primary" style="font-size:.8rem"><i class="fa-solid fa-credit-card"></i> Complete Payment</a>` : ''}
-        ${needsReupload ? `<a href="/checkout.html?order=${encodeURIComponent(o.order_id)}" class="btn btn-primary" style="font-size:.8rem"><i class="fa-solid fa-cloud-arrow-up"></i> Re-upload Proof</a>` : ''}
-        ${ps === 'paid' ? `<a href="/invoice.html?order=${encodeURIComponent(o.order_id)}" class="btn btn-ghost" style="font-size:.8rem"><i class="fa-solid fa-file-invoice"></i> View Invoice</a>` : ''}
+        ${needsPay ? `<a href="/checkout.html?order_id=${encodeURIComponent(o.order_id)}" class="btn btn-primary" style="font-size:.8rem"><i class="fa-solid fa-credit-card"></i> Complete Payment</a>` : ''}
+        ${needsReupload ? `<a href="/checkout.html?order_id=${encodeURIComponent(o.order_id)}" class="btn btn-primary" style="font-size:.8rem"><i class="fa-solid fa-cloud-arrow-up"></i> Re-upload Proof</a>` : ''}
+        ${ps === 'paid' ? `<a href="/invoice.html?order_id=${encodeURIComponent(o.order_id)}" class="btn btn-ghost" style="font-size:.8rem"><i class="fa-solid fa-file-invoice"></i> View Invoice</a>` : ''}
       `;
       }
 

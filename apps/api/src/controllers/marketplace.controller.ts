@@ -122,7 +122,8 @@ export class MarketplaceController {
 
   static async getOrderById(req: Request, res: Response): Promise<void> {
     try {
-      const orderId = parseInt(req.params.id, 10);
+      const rawId = req.params.id || req.params.orderId;
+      const orderId = parseInt(rawId as string, 10);
       const userId = req.user!.userId;
       const role = req.user!.role;
       const result = await MarketplaceService.getOrderById(orderId, userId, role);
@@ -134,7 +135,12 @@ export class MarketplaceController {
 
   static async confirmReceipt(req: Request, res: Response): Promise<void> {
     try {
-      const orderId = parseInt(req.params.id, 10);
+      const rawId = req.params.id || req.params.orderId || req.body?.order_id;
+      const orderId = parseInt(rawId as string, 10);
+      if (isNaN(orderId)) {
+        sendError(res, 'Invalid order ID provided', 400);
+        return;
+      }
       const buyerId = req.user!.userId;
       const result = await MarketplaceService.confirmReceipt(orderId, buyerId);
       sendSuccess(res, result, result.message);

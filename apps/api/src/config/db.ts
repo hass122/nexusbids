@@ -27,8 +27,8 @@ export function getDbPool(): mysql.Pool {
       // SSL for cloud databases (PlanetScale, Aiven, Railway)
       ...(useSSL && {
         ssl: {
-          // Allow self-signed certs in production cloud providers
-          rejectUnauthorized: false,
+          // Allow strict CA verification when DB_SSL_STRICT=true
+          rejectUnauthorized: process.env.DB_SSL_STRICT === 'true',
         },
       }),
     });
