@@ -244,7 +244,14 @@ router.patch('/auctions/:id/moderate', async (req: Request, res: Response) => {
     if (action === 'reject' && !rejection_reason) { sendError(res, 'Rejection reason is required', 400); return; }
 
     const newStatus = action === 'approve' ? 'active' : action === 'reject' ? 'rejected' : 'suspended';
-    await query('UPDATE auctions SET auction_status = ?, rejection_reason = ? WHERE auction_id = ?', [newStatus, rejection_reason || null, auctionId]);
+    await query(
+      `UPDATE auctions SET 
+        auction_status = ?, 
+        start_time = CASE WHEN ? = 'active' AND start_time > NOW() THEN NOW() ELSE start_time END,
+        rejection_reason = ? 
+       WHERE auction_id = ?`,
+      [newStatus, newStatus, rejection_reason || null, auctionId]
+    );
     await logAdminActivity(req, `AUCTION_${action.toUpperCase()}`, 'auction', auctionId, { action, rejection_reason });
     sendSuccess(res, { auction_id: auctionId, status: newStatus, moderated: true });
   } catch (err: any) { sendError(res, err.message, 400); }
@@ -265,7 +272,14 @@ router.patch('/auctions/:id/status', async (req: Request, res: Response) => {
     if (action === 'reject' && !rejection_reason) { sendError(res, 'Rejection reason is required', 400); return; }
 
     const newStatus = action === 'approve' ? 'active' : action === 'reject' ? 'rejected' : 'suspended';
-    await query('UPDATE auctions SET auction_status = ?, rejection_reason = ? WHERE auction_id = ?', [newStatus, rejection_reason || null, auctionId]);
+    await query(
+      `UPDATE auctions SET 
+        auction_status = ?, 
+        start_time = CASE WHEN ? = 'active' AND start_time > NOW() THEN NOW() ELSE start_time END,
+        rejection_reason = ? 
+       WHERE auction_id = ?`,
+      [newStatus, newStatus, rejection_reason || null, auctionId]
+    );
     await logAdminActivity(req, `AUCTION_${action.toUpperCase()}`, 'auction', auctionId, { action, rejection_reason });
     sendSuccess(res, { auction_id: auctionId, status: newStatus, moderated: true });
   } catch (err: any) { sendError(res, err.message, 400); }

@@ -72,8 +72,11 @@ export class BiddingService {
       const startTime = new Date(auction.start_time).getTime();
       let endTime = new Date(auction.end_time).getTime();
 
+      // If auction is active, it is live and eligible for bidding.
+      // If start_time was recorded in the future (e.g. timezone offset or approved early),
+      // sync start_time to now so active auctions are never blocked.
       if (startTime > now) {
-        throw new Error('This auction has not started yet.');
+        await conn.execute('UPDATE auctions SET start_time = NOW() WHERE auction_id = ?', [auctionId]);
       }
 
       if (endTime <= now) {
