@@ -280,7 +280,7 @@ export class AuctionService {
       image = additionalImages[0];
     }
     if (image) {
-      if (image.includes('<script') || image.includes('javascript:') || image.length > 5000000) {
+      if (image.includes('<script') || image.includes('javascript:') || image.length > 10000000) {
         throw new Error('Invalid image payload.');
       }
     }
@@ -388,7 +388,7 @@ export class AuctionService {
     }
     if (data.image !== undefined) {
       const img = data.image ? String(data.image).trim() : null;
-      if (img && (img.includes('<script') || img.includes('javascript:') || img.length > 5000000)) {
+      if (img && (img.includes('<script') || img.includes('javascript:') || img.length > 10000000)) {
         throw new Error('Invalid image payload.');
       }
       updates.push('image = ?');

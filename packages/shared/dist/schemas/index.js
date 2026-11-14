@@ -41,12 +41,16 @@ exports.createAuctionSchema = zod_1.z.object({
     category_id: zod_1.z.number().int().positive('Category is required'),
     description: zod_1.z.string().min(10, 'Description must be at least 10 characters').max(2000),
     starting_price: zod_1.z.number().positive('Starting price must be greater than 0'),
+    reserve_price: zod_1.z.number().positive().optional().nullable(),
+    buy_now_price: zod_1.z.number().positive().optional().nullable(),
     bid_increment: zod_1.z.number().positive('Bid increment must be greater than 0').default(500),
     start_time: zod_1.z.string().datetime({ offset: true }).or(zod_1.z.string().regex(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2})?$/)),
     end_time: zod_1.z.string().datetime({ offset: true }).or(zod_1.z.string().regex(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2})?$/)),
     action: zod_1.z.enum(['submit', 'draft']).default('submit'),
-});
-exports.updateAuctionSchema = exports.createAuctionSchema.partial();
+    image: zod_1.z.string().optional().nullable(),
+    images: zod_1.z.array(zod_1.z.string()).optional().nullable(),
+}).passthrough();
+exports.updateAuctionSchema = exports.createAuctionSchema.partial().passthrough();
 // ============================================================
 // Payment & Order Schemas
 // ============================================================

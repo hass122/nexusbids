@@ -48,13 +48,17 @@ export const createAuctionSchema = z.object({
   category_id: z.number().int().positive('Category is required'),
   description: z.string().min(10, 'Description must be at least 10 characters').max(2000),
   starting_price: z.number().positive('Starting price must be greater than 0'),
+  reserve_price: z.number().positive().optional().nullable(),
+  buy_now_price: z.number().positive().optional().nullable(),
   bid_increment: z.number().positive('Bid increment must be greater than 0').default(500),
   start_time: z.string().datetime({ offset: true }).or(z.string().regex(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2})?$/)),
   end_time: z.string().datetime({ offset: true }).or(z.string().regex(/^\d{4}-\d{2}-\d{2}[ T]\d{2}:\d{2}(:\d{2})?$/)),
   action: z.enum(['submit', 'draft']).default('submit'),
-});
+  image: z.string().optional().nullable(),
+  images: z.array(z.string()).optional().nullable(),
+}).passthrough();
 
-export const updateAuctionSchema = createAuctionSchema.partial();
+export const updateAuctionSchema = createAuctionSchema.partial().passthrough();
 
 // ============================================================
 // Payment & Order Schemas
