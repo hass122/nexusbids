@@ -28,7 +28,7 @@
       var isSeller = role === 'seller' || role === 'admin';
       if (!token || !isSeller) {
         var redirect = encodeURIComponent(location.pathname + location.search);
-        window.location.replace('/auth/login.html?redirect=' + redirect);
+        window.location.replace('/login.html?redirect=' + redirect);
       }
       return;
     }
@@ -60,7 +60,7 @@
 
     if (!token || !isSeller) {
       var redirectUrl = encodeURIComponent(location.pathname + location.search);
-      window.location.replace('/auth/login.html?redirect=' + redirectUrl);
+      window.location.replace('/login.html?redirect=' + redirectUrl);
     }
   }
 

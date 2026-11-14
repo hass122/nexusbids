@@ -436,7 +436,6 @@
     .role-option input {
       position: absolute;
       opacity: 0;
-      pointer-events: none;
     }
 
     .role-option input:checked~.role-label {
@@ -949,14 +948,14 @@
         <div>
           <label class="auth-label">I want to join as</label>
           <div class="role-group" role="radiogroup" aria-label="Account type">
-            <label class="role-option is-active" data-role="user">
-              <input type="radio" name="role" value="user" checked>
+            <label class="role-option is-active" data-role="user" for="role-user">
+              <input type="radio" id="role-user" name="role" value="user" checked>
               <i class="fa-solid fa-bag-shopping" aria-hidden="true"></i>
               <span class="role-label">Buyer</span>
               <i class="fa-solid fa-check role-check" aria-hidden="true"></i>
             </label>
-            <label class="role-option" data-role="seller">
-              <input type="radio" name="role" value="seller">
+            <label class="role-option" data-role="seller" for="role-seller">
+              <input type="radio" id="role-seller" name="role" value="seller">
               <i class="fa-solid fa-store" aria-hidden="true"></i>
               <span class="role-label">Seller</span>
               <i class="fa-solid fa-check role-check" aria-hidden="true"></i>
@@ -1438,13 +1437,27 @@
        * ============================================================ */
       function bindRole() {
         const options = document.querySelectorAll('.role-option');
+
+        function setRole(roleVal) {
+          options.forEach(o => {
+            const r = o.querySelector('input[type="radio"]');
+            const match = (r && r.value === roleVal);
+            if (r) r.checked = match;
+            o.classList.toggle('is-active', match);
+          });
+        }
+
         options.forEach(opt => {
           const input = opt.querySelector('input[type="radio"]');
-          input.addEventListener('change', () => {
-            options.forEach(o => o.classList.toggle('is-active', o.querySelector('input').checked));
+          opt.addEventListener('click', (e) => {
+            const val = opt.getAttribute('data-role') || (input ? input.value : 'user');
+            setRole(val);
           });
-          // Click anywhere in label works via native label→input for=""
-          // Since we're using label wrapping input, click bubbles to label already
+          if (input) {
+            input.addEventListener('change', () => {
+              if (input.checked) setRole(input.value);
+            });
+          }
         });
       }
 
@@ -1536,8 +1549,14 @@
           return;
         }
 
+        const checkedRoleEl = document.querySelector('input[name="role"]:checked');
+        const activeRoleEl = document.querySelector('.role-option.is-active');
+        const resolvedRole = (checkedRoleEl && checkedRoleEl.value) ||
+                             (activeRoleEl && activeRoleEl.getAttribute('data-role')) ||
+                             'user';
+
         const payload = {
-          role: document.querySelector('input[name="role"]:checked').value,
+          role: resolvedRole,
           full_name: fullNameEl.value.trim(),
           username: usernameEl.value.trim().toLowerCase(),
           email: emailEl.value.trim().toLowerCase(),

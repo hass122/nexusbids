@@ -795,6 +795,11 @@
           if (!token) throw new Error('Login response did not include a token.');
           ApiClient.setAccessToken(token);
 
+          /* ── Store user info for role guards ── */
+          if (data && data.user) {
+            try { localStorage.setItem('nexusbids_user', JSON.stringify(data.user)); } catch (e) {}
+          }
+
           /* ── Step 1: try to extract role from login response ── */
           let role = extractRole(data);
 
@@ -803,6 +808,9 @@
             try {
               const me = await ApiClient.get('/auth/me');
               const meUser = (me && me.data) ? me.data : null;
+              if (meUser) {
+                try { localStorage.setItem('nexusbids_user', JSON.stringify(meUser)); } catch (e) {}
+              }
               role = extractRole(meUser);
             } catch (meErr) {
               console.warn('[auth] /auth/me fallback failed:', meErr);
