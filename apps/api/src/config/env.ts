@@ -51,6 +51,26 @@ const cronSecret = resolveMandatorySecret(
 const rawCors = process.env.CORS_ORIGIN || 'http://localhost:5000,http://127.0.0.1:5000,http://localhost:3000,http://127.0.0.1:3000';
 const corsOrigins = rawCors.split(',').map((o) => o.trim()).filter(Boolean);
 
+const isPlaceholderSecret = (val?: string) => {
+  if (!val) return true;
+  const lower = val.toLowerCase().trim();
+  return (
+    lower.includes('your_') ||
+    lower.includes('placeholder') ||
+    lower.startsWith('your_cloudinary') ||
+    lower.startsWith('your_cloud_name')
+  );
+};
+
+const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME || '';
+const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY || '';
+const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET || '';
+
+const isCloudinaryConfigured =
+  !isPlaceholderSecret(cloudinaryCloudName) &&
+  !isPlaceholderSecret(cloudinaryApiKey) &&
+  !isPlaceholderSecret(cloudinaryApiSecret);
+
 export const ENV = {
   PORT: parseInt(process.env.PORT || '5000', 10),
   NODE_ENV,
@@ -103,10 +123,10 @@ export const ENV = {
     ENABLED: !!(process.env.PUSHER_APP_ID && process.env.PUSHER_KEY && process.env.PUSHER_SECRET),
   },
   CLOUDINARY: {
-    CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME || '',
-    API_KEY: process.env.CLOUDINARY_API_KEY || '',
-    API_SECRET: process.env.CLOUDINARY_API_SECRET || '',
-    ENABLED: !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET),
+    CLOUD_NAME: isCloudinaryConfigured ? cloudinaryCloudName : '',
+    API_KEY: isCloudinaryConfigured ? cloudinaryApiKey : '',
+    API_SECRET: isCloudinaryConfigured ? cloudinaryApiSecret : '',
+    ENABLED: isCloudinaryConfigured,
   },
   EMAIL: {
     FROM: process.env.EMAIL_FROM || 'NexusBids <noreply@nexusbids.pk>',

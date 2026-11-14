@@ -42,35 +42,54 @@ export class CloudinaryService {
     ensureCloudinaryConfigured();
 
     if (ENV.CLOUDINARY.ENABLED) {
-      return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            folder,
-            resource_type: 'image',
-            transformation: [{ quality: 'auto:good' }, { fetch_format: 'auto' }],
-          },
-          (error, result) => {
-            if (error || !result) {
-              return reject(new Error(error?.message || 'Cloudinary upload failed'));
+      try {
+        const cloudResult = await new Promise<UploadResult>((resolve, reject) => {
+          const uploadStream = cloudinary.uploader.upload_stream(
+            {
+              folder,
+              resource_type: 'image',
+              transformation: [{ quality: 'auto:good' }, { fetch_format: 'auto' }],
+            },
+            (error, result) => {
+              if (error || !result) {
+                return reject(new Error(error?.message || 'Cloudinary upload failed'));
+              }
+              resolve({
+                url: result.url,
+                secure_url: result.secure_url,
+                public_id: result.public_id,
+                format: result.format,
+                width: result.width,
+                height: result.height,
+                bytes: result.bytes,
+              });
             }
-            resolve({
-              url: result.url,
-              secure_url: result.secure_url,
-              public_id: result.public_id,
-              format: result.format,
-              width: result.width,
-              height: result.height,
-              bytes: result.bytes,
-            });
-          }
-        );
-        uploadStream.end(buffer);
-      });
+          );
+          uploadStream.end(buffer);
+        });
+        return cloudResult;
+      } catch (cloudErr: any) {
+        console.warn('[CloudinaryService] Upload to Cloudinary failed, using fallback:', cloudErr?.message);
+      }
     }
 
-    // ─── Local Fallback when Cloudinary is not configured in .env ───
-    // Sanitize folder ONCE and use the SAME value for both disk path and URL
+    // ─── Fallback when Cloudinary is not configured or failed ───
     const safeFolder = folder.replace(/[^a-zA-Z0-9_\-\/]/g, '').replace(/\/+/g, '/').replace(/^\/|\/$/g, '');
+    const isServerless = process.env.VERCEL === '1';
+
+    if (isServerless) {
+      // In serverless environment, disk is read-only and ephemeral. Return a robust data URI.
+      const mimeType = buffer[0] === 0x89 ? 'image/png' : buffer[0] === 0x47 ? 'image/gif' : 'image/jpeg';
+      const dataUri = `data:${mimeType};base64,${buffer.toString('base64')}`;
+      const uniqueId = `${filenamePrefix}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      return {
+        url: dataUri,
+        secure_url: dataUri,
+        public_id: `inline_${uniqueId}`,
+        bytes: buffer.length,
+      };
+    }
+
     const uploadsDir = path.resolve(process.cwd(), 'uploads', safeFolder);
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });
