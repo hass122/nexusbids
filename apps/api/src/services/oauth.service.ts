@@ -160,7 +160,7 @@ export class OAuthService {
    * Find existing user by google_id or verified email, or create new normal user.
    * Preserves existing roles and data. Default role for new users is strictly 'user'.
    */
-  static async findOrCreateGoogleUser(profile: GoogleUserInfo): Promise<{
+  static async findOrCreateGoogleUser(profile: GoogleUserInfo, requestedRole: UserRole = 'user'): Promise<{
     user: User;
     accessToken: string;
     refreshToken: string;
@@ -169,6 +169,7 @@ export class OAuthService {
     const email = profile.email.toLowerCase().trim();
     const fullName = (profile.name || 'Google User').trim().slice(0, 100);
     const picture = profile.picture || null;
+    const targetRole: UserRole = requestedRole === 'seller' ? 'seller' : 'user';
 
     // 1. Check if user with this google_id already exists
     let existing = await query<any[]>(
@@ -180,6 +181,11 @@ export class OAuthService {
 
     if (existing.length > 0) {
       user = existing[0];
+      // If user joined as seller, upgrade existing 'user' account to 'seller'
+      if (user.role === 'user' && targetRole === 'seller') {
+        await query("UPDATE users SET role = 'seller' WHERE user_id = ?", [user.user_id]);
+        user.role = 'seller';
+      }
     } else {
       // 2. Check if user with this verified email already exists
       existing = await query<any[]>(
@@ -189,31 +195,34 @@ export class OAuthService {
 
       if (existing.length > 0) {
         user = existing[0];
+        // If user joined as seller, upgrade existing 'user' account to 'seller'
+        const newRole: UserRole = (user.role === 'user' && targetRole === 'seller') ? 'seller' : user.role;
         // Link Google ID to existing account and ensure email_verified is true
         // Preserve existing user role, permissions, status, and account data
         await query(
           `UPDATE users SET 
             google_id = ?,
+            role = ?,
             email_verified = 1,
             auth_provider = IF(auth_provider IS NULL OR auth_provider = 'local', 'google', auth_provider),
             profile_image = IF(profile_image IS NULL OR profile_image = '' OR profile_image = 'default.png', ?, profile_image),
             avatar = IF(avatar IS NULL OR avatar = '', ?, avatar)
            WHERE user_id = ?`,
-          [googleId, picture, picture, user.user_id]
+          [googleId, newRole, picture, picture, user.user_id]
         );
         user.google_id = googleId;
+        user.role = newRole;
         user.email_verified = 1;
         if ((!user.profile_image || user.profile_image === 'default.png') && picture) {
           user.profile_image = picture;
         }
       } else {
-        // 3. User does not exist — Create normal user
-        // Default role is strictly 'user' (buyer). Never assign privileged or admin roles.
+        // 3. User does not exist — Create user with targetRole ('seller' or 'user')
         const insertResult = await query<any>(
           `INSERT INTO users 
             (full_name, email, google_id, auth_provider, role, status, email_verified, kyc_status, seller_kyc_status, profile_image, avatar, created_at)
-           VALUES (?, ?, ?, 'google', 'user', 'active', 1, 'unverified', 'unverified', ?, ?, NOW())`,
-          [fullName, email, googleId, picture, picture]
+           VALUES (?, ?, ?, 'google', ?, 'active', 1, 'unverified', 'unverified', ?, ?, NOW())`,
+          [fullName, email, googleId, targetRole, picture, picture]
         );
 
         const freshUsers = await query<any[]>(

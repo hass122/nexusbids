@@ -4,6 +4,7 @@ import { AuthService } from '../services/auth.service.js';
 import { OAuthService } from '../services/oauth.service.js';
 import { sendSuccess, sendError } from '../utils/response.js';
 import { ENV } from '../config/env.js';
+import { UserRole } from '@nexusbids/shared';
 
 
 function setAuthCookies(res: Response, accessToken?: string, refreshToken?: string) {
@@ -310,12 +311,14 @@ export class AuthController {
 
       const isMobile = req.query.mobile === '1' || Boolean(req.query.redirect_uri);
       const mobileReturnUrl = (req.query.redirect_uri as string) || (isMobile ? 'nexusbids://oauth' : '');
+      const role = (req.query.role === 'seller' ? 'seller' : 'user') as UserRole;
 
       const nonce = crypto.randomBytes(16).toString('hex');
       const statePayload = {
         nonce,
         mobile: isMobile,
         redirect_uri: mobileReturnUrl,
+        role,
         // HMAC signature embeds nonce into state so we can verify without relying
         // solely on the oauth_state cookie (which browsers may drop on cross-site redirects).
         sig: crypto
@@ -352,6 +355,7 @@ export class AuthController {
     let mobileRedirectUri = 'nexusbids://oauth';
     let stateNonce: string | undefined;
     let stateSig: string | undefined;
+    let requestedRole: UserRole = 'user';
 
     if (state && typeof state === 'string') {
       try {
@@ -359,6 +363,9 @@ export class AuthController {
         if (decoded.mobile) {
           isMobile = true;
           if (decoded.redirect_uri) mobileRedirectUri = decoded.redirect_uri;
+        }
+        if (decoded.role === 'seller') {
+          requestedRole = 'seller';
         }
         stateNonce = decoded.nonce;
         stateSig   = decoded.sig;
@@ -433,7 +440,7 @@ export class AuthController {
         return;
       }
 
-      const result = await OAuthService.findOrCreateGoogleUser(profile);
+      const result = await OAuthService.findOrCreateGoogleUser(profile, requestedRole);
 
       // If mobile client, deliver tokens directly via custom scheme redirect
       if (isMobile) {
@@ -449,7 +456,9 @@ export class AuthController {
       // Resolve destination dashboard according to user role
       let dashboardPath = '/buyer/dashboard.html';
       if (result.user.role === 'admin') dashboardPath = '/admin/dashboard.html';
-      else if (result.user.role === 'seller') dashboardPath = '/seller/dashboard.html';
+      else if (result.user.role === 'seller') {
+        dashboardPath = result.user.seller_kyc_status === 'approved' ? '/seller/dashboard.html' : '/seller/kyc.html';
+      }
 
       // Safely deliver token to localStorage without exposing in URL query/hash
       const html = `<!DOCTYPE html>
@@ -472,7 +481,9 @@ export class AuthController {
   </div>
   <script>
     try {
+      localStorage.setItem('nexusbids_token', ${JSON.stringify(result.accessToken)});
       localStorage.setItem('nexusbids_access_token', ${JSON.stringify(result.accessToken)});
+      localStorage.setItem('nexusbids_user', ${JSON.stringify(JSON.stringify(result.user))});
     } catch (e) {}
     window.location.replace(${JSON.stringify(dashboardPath)});
   </script>
@@ -521,8 +532,9 @@ export class AuthController {
         return;
       }
 
-      // Find existing user or create a new one with role 'user'
-      const result = await OAuthService.findOrCreateGoogleUser(profile);
+      // Find existing user or create a new one with requested role
+      const requestedRole = (req.body.role === 'seller' ? 'seller' : 'user') as UserRole;
+      const result = await OAuthService.findOrCreateGoogleUser(profile, requestedRole);
 
       // Return tokens in JSON — mobile app will store in SecureStore
       sendSuccess(res, {

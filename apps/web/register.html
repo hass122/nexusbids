@@ -1437,6 +1437,13 @@
        * ============================================================ */
       function bindRole() {
         const options = document.querySelectorAll('.role-option');
+        const googleBtn = document.getElementById('btn-google-register');
+
+        function updateGoogleHref(roleVal) {
+          if (googleBtn) {
+            googleBtn.href = '/api/v1/auth/google?role=' + encodeURIComponent(roleVal || 'user');
+          }
+        }
 
         function setRole(roleVal) {
           options.forEach(o => {
@@ -1445,6 +1452,7 @@
             if (r) r.checked = match;
             o.classList.toggle('is-active', match);
           });
+          updateGoogleHref(roleVal);
         }
 
         options.forEach(opt => {
@@ -1459,6 +1467,17 @@
             });
           }
         });
+
+        if (googleBtn) {
+          googleBtn.addEventListener('click', () => {
+            const checkedRoleEl = document.querySelector('input[name="role"]:checked');
+            const activeRoleEl = document.querySelector('.role-option.is-active');
+            const currentRole = (checkedRoleEl && checkedRoleEl.value) ||
+                                (activeRoleEl && activeRoleEl.getAttribute('data-role')) ||
+                                'user';
+            googleBtn.href = '/api/v1/auth/google?role=' + encodeURIComponent(currentRole);
+          });
+        }
       }
 
       /* ============================================================
@@ -1475,6 +1494,8 @@
             document.querySelectorAll('.role-option').forEach(o => {
               o.classList.toggle('is-active', o.querySelector('input').checked);
             });
+            const googleBtn = document.getElementById('btn-google-register');
+            if (googleBtn) googleBtn.href = '/api/v1/auth/google?role=seller';
           }
         }
 

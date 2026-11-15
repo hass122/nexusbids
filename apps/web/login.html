@@ -863,6 +863,16 @@
       emailInput.addEventListener('input', clearError);
       pwdInput.addEventListener('input', clearError);
 
+      /* Forward role to Google login button if present in URL */
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlRole = urlParams.get('role');
+        if (urlRole === 'seller') {
+          const googleLoginBtn = document.getElementById('btn-google-login');
+          if (googleLoginBtn) googleLoginBtn.href = '/api/v1/auth/google?role=seller';
+        }
+      } catch (_) {}
+
     })();
   </script>
 
