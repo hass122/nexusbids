@@ -22,6 +22,7 @@ import shippingRoutes from './routes/shipping.routes.js';
 import realtimeRoutes from './routes/realtime.routes.js';
 import recommendationRoutes from './routes/recommendation.routes.js';
 import uploadRoutes from './routes/upload.routes.js';
+import lastChanceRoutes from './routes/last-chance.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -249,6 +250,7 @@ app.use('/api/v1/kyc', kycRoutes);
 app.use('/api/v1/payments', paymentRoutes);
 app.use('/api/v1/admin', adminRoutes);
 app.use('/api/v1/recommendations', recommendationRoutes);
+app.use('/api/v1/last-chance', lastChanceRoutes);
 app.use('/api/v1/upload', uploadRoutes);
 app.use('/api/v1/uploads', uploadRoutes);
 

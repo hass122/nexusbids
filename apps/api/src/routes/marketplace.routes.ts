@@ -61,6 +61,21 @@ router.get('/sellers/:id/reputation', async (req: Request, res: Response) => {
   }
 });
 
+// Bharosa Trust Score — Composite platform trust score (Public route)
+router.get(['/marketplace/users/:userId/bharosa', '/users/:userId/bharosa'], async (req: Request, res: Response) => {
+  try {
+    const userId = parseInt(req.params.userId, 10);
+    if (isNaN(userId)) {
+      sendError(res, 'Invalid user ID', 400);
+      return;
+    }
+    const result = await ReputationService.getBharosaTrustScore(userId);
+    sendSuccess(res, result);
+  } catch (err: any) {
+    sendError(res, err.message, 404);
+  }
+});
+
 // Notifications
 router.get('/notifications', requireAuth, MarketplaceController.getNotifications);
 router.patch('/notifications/read-all', requireAuth, MarketplaceController.markAllNotificationsRead);
@@ -140,20 +155,12 @@ router.get('/seller/bid-activity', requireAuth, async (req: Request, res: Respon
 router.get('/seller/payouts', requireAuth, async (req: any, res: any) => {
   const { query: dbq } = await import('../config/db.js');
   const { sendSuccess, sendError } = await import('../utils/response.js');
+  const { MarketplaceService } = await import('../services/marketplace.service.js');
   try {
     const sellerId = req.user.userId;
 
-    let wallet = await dbq<any[]>('SELECT * FROM seller_wallet WHERE seller_id = ? LIMIT 1', [sellerId]);
-    if (!wallet.length) {
-      // Auto-initialize seller wallet if not yet created
-      await dbq(
-        `INSERT INTO seller_wallet (seller_id, available_balance, pending_balance, total_earned, total_withdrawn, total_commission_paid, created_at, updated_at)
-         VALUES (?, 0.00, 0.00, 0.00, 0.00, 0.00, NOW(), NOW())
-         ON DUPLICATE KEY UPDATE updated_at = NOW()`,
-        [sellerId]
-      ).catch(() => { });
-      wallet = await dbq<any[]>('SELECT * FROM seller_wallet WHERE seller_id = ? LIMIT 1', [sellerId]);
-    }
+    // Authoritatively sync seller wallet with orders & payouts
+    const wallet = await MarketplaceService.syncSellerWallet(sellerId);
 
     const payouts = await dbq<any[]>(
       `SELECT payout_id, amount, fee, net_amount, status, method, reference, requested_at, processed_at
@@ -161,12 +168,11 @@ router.get('/seller/payouts', requireAuth, async (req: any, res: any) => {
       [sellerId]
     ).catch(() => []);
 
-    const w = wallet[0] || {};
     sendSuccess(res, {
-      available_balance: parseFloat(w.available_balance || 0),
-      pending_balance: parseFloat(w.pending_balance || 0),
-      total_earned: parseFloat(w.total_earned || 0),
-      total_withdrawn: parseFloat(w.total_withdrawn || 0),
+      available_balance: wallet.available_balance,
+      pending_balance: wallet.pending_balance,
+      total_earned: wallet.total_earned,
+      total_withdrawn: wallet.total_withdrawn,
       payouts,
     });
   } catch (err: any) {
@@ -177,6 +183,7 @@ router.get('/seller/payouts', requireAuth, async (req: any, res: any) => {
 router.post('/seller/payout-request', requireAuth, requireSellerKyc, async (req: any, res: any) => {
   const { query: dbq, withTransaction } = await import('../config/db.js');
   const { sendSuccess, sendError } = await import('../utils/response.js');
+  const { MarketplaceService } = await import('../services/marketplace.service.js');
   try {
     const sellerId = req.user.userId;
     const { amount, method, account_title, account_number, notes } = req.body || {};
@@ -191,6 +198,9 @@ router.post('/seller/payout-request', requireAuth, requireSellerKyc, async (req:
       return;
     }
 
+    // Ensure wallet is freshly reconciled before checking balance
+    await MarketplaceService.syncSellerWallet(sellerId);
+
     const ref = `PO-${sellerId}-${Date.now().toString().slice(-6)}`;
     let payoutId = 0;
 
@@ -203,7 +213,7 @@ router.post('/seller/payout-request', requireAuth, requireSellerKyc, async (req:
       const available = parseFloat(walletRows[0]?.available_balance || 0);
 
       if (available < reqAmount) {
-        throw new Error(`Insufficient available balance. You have PKR ${available.toLocaleString()} available.`);
+        throw new Error(`Insufficient available balance. You have PKR ${available.toLocaleString('en-PK', { minimumFractionDigits: 2 })} available.`);
       }
 
       // 2. Prevent duplicate pending requests
@@ -237,7 +247,7 @@ router.post('/seller/payout-request', requireAuth, requireSellerKyc, async (req:
           sellerId,
           payoutId,
           reqAmount,
-          available - reqAmount,
+          Math.max(0, available - reqAmount),
           ref,
           `Payout requested via ${method}: ${account_title} (${account_number})`,
         ]

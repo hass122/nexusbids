@@ -92,6 +92,29 @@
     </div>
 
     <div id="won-grid" class="won-grid"></div>
+
+    <!-- Last Chance Rescue: Private Offers Section -->
+    <div id="private-offers-section" class="mt-12 pt-8 border-t border-[var(--w-border)]">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-500">Last Chance Rescue</span>
+          </div>
+          <h2 class="text-xl font-black text-[var(--w-text)] mt-1">My Private Offers</h2>
+          <p class="text-xs text-[var(--w-text-muted)] mt-0.5">Direct offers sent on lost auctions within the 2-hour rescue window.</p>
+        </div>
+        <button id="refresh-offers-btn" class="btn btn-ghost" type="button">
+          <i class="fa-solid fa-rotate-right" id="refresh-offers-icon"></i>
+          <span class="hidden sm:inline">Refresh Offers</span>
+        </button>
+      </div>
+
+      <div id="private-offers-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div class="skeleton" style="height:120px;border-radius:16px"></div>
+        <div class="skeleton" style="height:120px;border-radius:16px"></div>
+      </div>
+    </div>
   </main>
   <footer id="nb-footer"></footer>
   <script src="/assets/js/api-client.js"></script>
@@ -193,15 +216,79 @@
       }
     }
 
+    async function loadPrivateOffers(){
+      const container = document.getElementById('private-offers-list');
+      if(!container) return;
+      try {
+        const res = await ApiClient.get('/last-chance/buyer/offers');
+        const offers = Array.isArray(res?.data) ? res.data : [];
+        if(!offers.length){
+          container.innerHTML = `
+            <div class="p-6 rounded-2xl bg-[var(--w-surface)] border border-[var(--w-border)] text-center md:col-span-2 lg:col-span-3">
+              <i class="fa-solid fa-hand-holding-dollar text-2xl text-[var(--w-text-light)] mb-2"></i>
+              <p class="text-xs font-bold text-[var(--w-text)]">No private offers placed yet</p>
+              <p class="text-[11px] text-[var(--w-text-muted)] mt-1">When an auction ends and you didn't win, you can send a Last Chance offer to the seller within 2 hours.</p>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = offers.map(o => {
+          const statusColors = {
+            pending: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
+            accepted: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30',
+            declined: 'bg-rose-500/15 text-rose-500 border-rose-500/30',
+            expired: 'bg-slate-500/15 text-slate-400 border-slate-500/30'
+          };
+          const badgeClass = statusColors[o.status] || statusColors.pending;
+          return `
+            <div class="p-4 rounded-2xl bg-[var(--w-surface)] border border-[var(--w-border)] flex flex-col justify-between gap-3 shadow-sm hover:shadow-md transition">
+              <div>
+                <div class="flex items-center justify-between gap-2 mb-2">
+                  <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${badgeClass}">
+                    ${esc(o.status)}
+                  </span>
+                  <span class="text-[10px] text-[var(--w-text-light)]">${esc(fmtDate(o.created_at))}</span>
+                </div>
+                <a href="/auction-details.html?id=${encodeURIComponent(o.auction_id)}" class="text-xs font-bold text-[var(--w-text)] hover:text-indigo-500 line-clamp-1">
+                  ${esc(o.auction_title || 'Auction #' + o.auction_id)}
+                </a>
+                <div class="mt-2 text-sm font-black text-indigo-500">
+                  Offered: ${esc(fmt(o.offer_amount))}
+                </div>
+                ${o.message ? `<p class="mt-1 text-[11px] text-[var(--w-text-muted)] italic line-clamp-2">"${esc(o.message)}"</p>` : ''}
+              </div>
+              <div class="pt-2 border-t border-[var(--w-border)] flex items-center justify-between text-[11px]">
+                <span class="text-[var(--w-text-light)]">Seller: ${esc(o.seller_name || 'Verified Seller')}</span>
+                <a href="/auction-details.html?id=${encodeURIComponent(o.auction_id)}" class="text-indigo-500 hover:underline font-bold">
+                  View Lot &rarr;
+                </a>
+              </div>
+            </div>`;
+        }).join('');
+      } catch (e) {
+        container.innerHTML = `
+          <div class="p-4 rounded-2xl bg-[var(--w-surface)] border border-[var(--w-border)] text-xs text-[var(--w-text-muted)] md:col-span-2">
+            Failed to load private offers.
+          </div>`;
+      }
+    }
+
     document.addEventListener('DOMContentLoaded',()=>{
       if(!ApiClient.getAccessToken()){window.location.href='/login.html?redirect=/buyer/won-auctions.html';return;}
       document.getElementById('refresh-btn')?.addEventListener('click',async()=>{
         const btn=document.getElementById('refresh-btn');
         const icon=document.getElementById('refresh-icon');
         btn.disabled=true; icon?.classList.add('spin');
-        try{await load();}finally{btn.disabled=false;icon?.classList.remove('spin');}
+        try{await Promise.all([load(), loadPrivateOffers()]);}finally{btn.disabled=false;icon?.classList.remove('spin');}
+      });
+      document.getElementById('refresh-offers-btn')?.addEventListener('click',async()=>{
+        const btn=document.getElementById('refresh-offers-btn');
+        const icon=document.getElementById('refresh-offers-icon');
+        if(btn) btn.disabled=true; icon?.classList.add('spin');
+        try{await loadPrivateOffers();}finally{if(btn) btn.disabled=false;icon?.classList.remove('spin');}
       });
       load();
+      loadPrivateOffers();
     });
   })();
   </script>

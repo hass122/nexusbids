@@ -163,12 +163,103 @@ export class AuctionService {
       galleryImages.push(auction.image);
     }
 
+    const moodMeter = await AuctionService.getMoodMeter(auction);
+
     return {
       ...auction,
       images: galleryImages,
       bids,
       is_watched: isWatched,
       my_auto_bid: myAutoBid,
+      mood_meter: moodMeter,
+    };
+  }
+
+  // Helper to compute Auction Mood Meter
+  static async getMoodMeter(auctionOrId: any) {
+    let auction = auctionOrId;
+    if (typeof auctionOrId === 'number' || typeof auctionOrId === 'string') {
+      const rows = await query<any[]>(
+        `SELECT a.auction_id, a.watch_count, a.view_count, a.end_time,
+          (SELECT COUNT(*) FROM bids b WHERE b.auction_id = a.auction_id) as bid_count
+         FROM auctions a WHERE a.auction_id = ? LIMIT 1`,
+        [auctionOrId]
+      );
+      if (!rows.length) {
+        throw new Error('Auction not found');
+      }
+      auction = rows[0];
+    }
+
+    const auctionId = auction?.auction_id;
+    const bidCount = Number(auction?.bid_count || 0);
+    const watchCount = Number(auction?.watch_count || 0);
+    const viewCount = Number(auction?.view_count || 0);
+
+    // bid_velocity: bids in last 1 hour
+    let bidsLastHour = 0;
+    if (auctionId) {
+      const velocityRows = await query<any[]>(
+        `SELECT COUNT(*) as bids_last_hour FROM bids WHERE auction_id = ? AND bid_time > DATE_SUB(NOW(), INTERVAL 1 HOUR)`,
+        [auctionId]
+      ).catch(() => []);
+      bidsLastHour = Number(velocityRows[0]?.bids_last_hour || 0);
+    }
+
+    // time_remaining_seconds: (end_time - NOW()) in seconds
+    const endTimeMs = auction?.end_time ? new Date(auction.end_time).getTime() : 0;
+    const nowMs = Date.now();
+    const timeRemainingSeconds = endTimeMs > 0 ? Math.floor((endTimeMs - nowMs) / 1000) : 0;
+
+    // base from bid_count: min(bid_count * 3, 40)
+    const baseBidScore = Math.min(bidCount * 3, 40);
+
+    // watch ratio: min(watch_count / max(view_count,1) * 30, 30)
+    const watchRatioScore = Math.min((watchCount / Math.max(viewCount, 1)) * 30, 30);
+
+    // time urgency: if < 3600s remaining → +20, if < 7200s → +10, else +0
+    let timeUrgencyScore = 0;
+    if (timeRemainingSeconds > 0 && timeRemainingSeconds < 3600) {
+      timeUrgencyScore = 20;
+    } else if (timeRemainingSeconds > 0 && timeRemainingSeconds < 7200) {
+      timeUrgencyScore = 10;
+    }
+
+    // bid_velocity bonus: min(bids_last_hour * 5, 10)
+    const velocityScore = Math.min(bidsLastHour * 5, 10);
+
+    // mood_score = 0 to 100
+    const rawScore = baseBidScore + watchRatioScore + timeUrgencyScore + velocityScore;
+    const score = Math.min(100, Math.max(0, Math.round(rawScore)));
+
+    // mood_label:
+    // score >= 75 → { label: "🔥 On Fire", color: "red", description: "Bidding war going on!" }
+    // score >= 50 → { label: "⚡ Heating Up", color: "orange", description: "Interest is growing fast" }
+    // score >= 25 → { label: "👀 Warming Up", color: "yellow", description: "Getting some attention" }
+    // else        → { label: "😴 Quiet", color: "blue", description: "Still waiting for action" }
+    let moodMeta = {
+      label: '😴 Quiet',
+      color: 'blue',
+      description: 'Still waiting for action',
+    };
+
+    if (score >= 75) {
+      moodMeta = { label: '🔥 On Fire', color: 'red', description: 'Bidding war going on!' };
+    } else if (score >= 50) {
+      moodMeta = { label: '⚡ Heating Up', color: 'orange', description: 'Interest is growing fast' };
+    } else if (score >= 25) {
+      moodMeta = { label: '👀 Warming Up', color: 'yellow', description: 'Getting some attention' };
+    }
+
+    return {
+      score,
+      label: moodMeta.label,
+      color: moodMeta.color,
+      description: moodMeta.description,
+      bid_count: bidCount,
+      bids_last_hour: bidsLastHour,
+      watch_count: watchCount,
+      view_count: viewCount,
     };
   }
 
@@ -709,3 +800,6 @@ export class AuctionService {
     await query('UPDATE auctions SET view_count = view_count + 1 WHERE auction_id = ?', [auctionId]);
   }
 }
+
+export const getMoodMeter = AuctionService.getMoodMeter;
+

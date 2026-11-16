@@ -42,6 +42,7 @@ export async function withTransaction<T>(
 ): Promise<T> {
   const db = getDbPool();
   const connection = await db.getConnection();
+  await connection.query("SET time_zone = '+05:00';").catch(() => {});
   await connection.beginTransaction();
 
   try {
@@ -56,9 +57,15 @@ export async function withTransaction<T>(
   }
 }
 
-// Simple query helper
+// Simple query helper ensuring Asia/Karachi (+05:00) session timezone for accurate NOW() checks
 export async function query<T = any>(sql: string, params: any[] = []): Promise<T> {
   const db = getDbPool();
-  const [rows] = await db.execute(sql, params);
-  return rows as T;
+  const conn = await db.getConnection();
+  try {
+    await conn.query("SET time_zone = '+05:00';").catch(() => {});
+    const [rows] = await conn.execute(sql, params);
+    return rows as T;
+  } finally {
+    conn.release();
+  }
 }

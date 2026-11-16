@@ -598,6 +598,7 @@
 
           render();
           startTicker();
+          loadSellerBharosa(state.data.seller_id);
 
           ApiClient.post(`/auctions/${state.auctionId}/view`).catch(() => { });
 
@@ -610,6 +611,30 @@
         } catch (err) {
           console.error('[auction] load failed:', err);
           renderError(err && err.message ? err.message : 'Could not load this auction.');
+        }
+      }
+
+      async function loadSellerBharosa(sellerId) {
+        if (!sellerId) return;
+        try {
+          const res = await ApiClient.get(`/marketplace/users/${sellerId}/bharosa`);
+          const d = res?.data;
+          if (!d) return;
+          const badgeEl = document.getElementById('seller-bharosa-badge');
+          if (!badgeEl) return;
+          badgeEl.textContent = `${d.badge_emoji || '💎'} ${d.badge_label || d.level || 'Bharosa'}`;
+          badgeEl.classList.remove('hidden');
+          if (d.level_color === 'purple') {
+            badgeEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-500/15 text-purple-400 border border-purple-500/25 shrink-0';
+          } else if (d.level_color === 'yellow') {
+            badgeEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/15 text-amber-400 border border-amber-500/25 shrink-0';
+          } else if (d.level_color === 'blue') {
+            badgeEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/15 text-blue-400 border border-blue-500/25 shrink-0';
+          } else if (d.level_color === 'orange') {
+            badgeEl.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-orange-500/15 text-orange-400 border border-orange-500/25 shrink-0';
+          }
+        } catch (e) {
+          // Non-blocking
         }
       }
 
@@ -768,6 +793,7 @@
                     <div class="min-w-0">
                       <div class="flex items-center gap-2 flex-wrap">
                         <p class="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 truncate transition-colors">${sellerName}</p>
+                        <span id="seller-bharosa-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/15 text-indigo-400 border border-indigo-500/25 shrink-0 hidden"></span>
                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 shrink-0"><i class="fa-solid fa-circle-check text-[9px]"></i> CNIC verified</span>
                       </div>
                       <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5 flex-wrap">
@@ -985,6 +1011,96 @@
 
         const bnBtn = document.getElementById('btn-buy-now');
         if (bnBtn) bnBtn.addEventListener('click', buyNow);
+
+        const rescueBtn = document.getElementById('btn-open-rescue-modal');
+        if (rescueBtn) rescueBtn.addEventListener('click', openRescueModal);
+      }
+
+      function openRescueModal() {
+        if (!requireAuth()) return;
+        const modalId = 'last-chance-modal';
+        let modal = document.getElementById(modalId);
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = modalId;
+          modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in';
+          modal.innerHTML = `
+            <div class="relative w-full max-w-md rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 shadow-2xl">
+              <div class="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-xl bg-amber-500/15 flex items-center justify-center text-amber-500">
+                    <i class="fa-solid fa-hand-holding-dollar text-base"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-bold text-slate-900 dark:text-slate-100">Last Chance Rescue</h3>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">Send a direct private offer to the seller</p>
+                  </div>
+                </div>
+                <button type="button" id="btn-close-rescue" class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 flex items-center justify-center">
+                  <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+              </div>
+              <form id="rescue-form" class="mt-4 space-y-4">
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Your Offer Amount (PKR)</label>
+                  <div class="relative">
+                    <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">PKR</span>
+                    <input type="text" id="rescue-amount" class="nb-input nb-money-input w-full pl-12 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-bold" placeholder="e.g. 25,000" inputmode="numeric" required />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Message to Seller (Optional)</label>
+                  <textarea id="rescue-message" rows="3" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 text-xs focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Explain your offer or availability..."></textarea>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-700 dark:text-amber-300">
+                  <i class="fa-solid fa-clock mr-1"></i> Offer expires in 2 hours. Seller can accept or decline.
+                </div>
+                <div class="flex gap-2 pt-2">
+                  <button type="button" id="btn-cancel-rescue" class="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">Cancel</button>
+                  <button type="submit" id="btn-submit-rescue" class="flex-1 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md transition-all">Submit Offer</button>
+                </div>
+              </form>
+            </div>
+          `;
+          document.body.appendChild(modal);
+
+          const closeBtn = document.getElementById('btn-close-rescue');
+          const cancelBtn = document.getElementById('btn-cancel-rescue');
+          const hideModal = () => { modal.classList.add('hidden'); };
+          closeBtn?.addEventListener('click', hideModal);
+          cancelBtn?.addEventListener('click', hideModal);
+
+          const amtInput = document.getElementById('rescue-amount');
+          if (amtInput) amtInput.addEventListener('input', () => formatNumberInput(amtInput));
+
+          const form = document.getElementById('rescue-form');
+          form?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const rawAmt = parseFormattedNumber(amtInput.value);
+            if (!rawAmt || rawAmt <= 0) {
+              toast('Please enter a valid offer amount.', 'error');
+              return;
+            }
+            const msgInput = document.getElementById('rescue-message');
+            const submitBtn = document.getElementById('btn-submit-rescue');
+            if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting...'; }
+
+            try {
+              const res = await ApiClient.post(`/last-chance/${state.auctionId}/offer`, {
+                offer_amount: rawAmt,
+                message: msgInput ? msgInput.value.trim() : ''
+              });
+              toast((res && res.message) || 'Last Chance offer sent to seller!', 'success');
+              hideModal();
+              setTimeout(() => { loadAuction(); }, 1000);
+            } catch (err) {
+              toast((err && err.message) || 'Failed to submit offer.', 'error');
+            } finally {
+              if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit Offer'; }
+            }
+          });
+        }
+        modal.classList.remove('hidden');
       }
 
       function scrollToBidBox() {

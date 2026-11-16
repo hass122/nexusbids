@@ -145,8 +145,14 @@ export class MarketplaceService {
   }
 
   static async getWonAuctions(userId: number) {
-    // Process any ended auctions so winners and orders are populated
-    await CronService.checkAndProcessDueAuctions().catch(() => {});
+    // FIXED: Directly process ended auctions synchronously (not debounced)
+    // On Vercel serverless, static variables reset per request so debounce is useless.
+    // We MUST await this BEFORE running the query so winners table is populated.
+    try {
+      await CronService.processEndedAuctions();
+    } catch (err: any) {
+      console.error('[getWonAuctions] processEndedAuctions error:', err?.message);
+    }
 
     const rows = await query<any[]>(
       `SELECT 
@@ -160,7 +166,8 @@ export class MarketplaceService {
 
        UNION ALL
 
-       /* Ended auctions where user is highest bidder but winner not yet processed */
+       /* FIXED: Catch auctions still 'active' in DB but end_time passed (not yet processed)
+          AND also catch 'sold'/'ended'/'completed' not yet in winners table */
        SELECT 
         NULL as winner_id,
         b_top.bid_amount as winning_bid,
@@ -171,7 +178,10 @@ export class MarketplaceService {
         NULL as order_status, NULL as payment_status, NULL as shipping_status
        FROM auctions a
        INNER JOIN bids b_top ON b_top.auction_id = a.auction_id
-       WHERE a.auction_status IN ('ended', 'completed')
+       WHERE (
+         (a.auction_status = 'active' AND a.end_time <= NOW())
+         OR a.auction_status IN ('sold', 'ended', 'completed')
+       )
          AND b_top.bidder_id = ?
          AND b_top.bid_amount = (
            SELECT MAX(b2.bid_amount) FROM bids b2 WHERE b2.auction_id = a.auction_id
@@ -187,6 +197,68 @@ export class MarketplaceService {
   // ==========================================================
   // Seller Dashboard & Activities
   // ==========================================================
+  static async syncSellerWallet(sellerId: number) {
+    // 1. Total released from paid & completed/released orders
+    const releasedRes = await query<any[]>(
+      `SELECT COALESCE(SUM(seller_amount), 0) as total
+       FROM orders
+       WHERE seller_id = ?
+         AND payment_status = 'paid'
+         AND (order_status = 'completed' OR escrow_released_at IS NOT NULL)`,
+      [sellerId]
+    );
+    const releasedEarnings = parseFloat(releasedRes[0]?.total || 0);
+
+    // 2. Pending escrow from paid & unreleased orders
+    const pendingRes = await query<any[]>(
+      `SELECT COALESCE(SUM(seller_amount), 0) as total
+       FROM orders
+       WHERE seller_id = ?
+         AND payment_status = 'paid'
+         AND order_status != 'completed'
+         AND escrow_released_at IS NULL
+         AND order_status != 'cancelled'`,
+      [sellerId]
+    );
+    const pendingEscrow = parseFloat(pendingRes[0]?.total || 0);
+
+    // 3. Payout deductions
+    const payoutRes = await query<any[]>(
+      `SELECT 
+        COALESCE(SUM(CASE WHEN status IN ('pending', 'processing', 'completed') THEN amount ELSE 0 END), 0) as committed,
+        COALESCE(SUM(CASE WHEN status = 'completed' THEN amount ELSE 0 END), 0) as completed
+       FROM payouts
+       WHERE seller_id = ?`,
+      [sellerId]
+    );
+    const committedPayouts = parseFloat(payoutRes[0]?.committed || 0);
+    const completedPayouts = parseFloat(payoutRes[0]?.completed || 0);
+
+    const availableBalance = Math.max(0, Math.round((releasedEarnings - committedPayouts) * 100) / 100);
+    const totalEarned = Math.round((releasedEarnings + pendingEscrow) * 100) / 100;
+
+    // 4. Upsert seller_wallet
+    await query(
+      `INSERT INTO seller_wallet 
+        (seller_id, available_balance, pending_balance, total_earned, total_withdrawn, total_commission_paid, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, 0.00, NOW(), NOW())
+       ON DUPLICATE KEY UPDATE 
+        available_balance = VALUES(available_balance),
+        pending_balance = VALUES(pending_balance),
+        total_earned = VALUES(total_earned),
+        total_withdrawn = VALUES(total_withdrawn),
+        updated_at = NOW()`,
+      [sellerId, availableBalance, pendingEscrow, totalEarned, completedPayouts]
+    );
+
+    return {
+      available_balance: availableBalance,
+      pending_balance: pendingEscrow,
+      total_earned: totalEarned,
+      total_withdrawn: completedPayouts,
+    };
+  }
+
   static async getSellerDashboard(sellerId: number) {
     const activeAuctions = await query<any[]>(
       "SELECT COUNT(*) as count FROM auctions WHERE seller_id = ? AND auction_status = 'active'",
@@ -203,19 +275,17 @@ export class MarketplaceService {
       [sellerId]
     );
 
-    const earnings = await query<any[]>(
-      `SELECT 
-        COALESCE(SUM(seller_amount), 0) as total_revenue,
-        (SELECT COALESCE(SUM(amount), 0) FROM escrow_holds WHERE seller_id = ? AND status = 'held') as escrow_held
-       FROM orders WHERE seller_id = ? AND payment_status = 'paid'`,
-      [sellerId, sellerId]
-    );
+    const wallet = await this.syncSellerWallet(sellerId);
 
     return {
       active_auctions_count: activeAuctions[0]?.count || 0,
       pending_shipments_count: pendingShipments[0]?.count || 0,
-      total_sales: parseFloat(earnings[0]?.total_revenue || 0),
-      escrow_held: parseFloat(earnings[0]?.escrow_held || 0),
+      total_sales: wallet.total_earned,
+      total_earned: wallet.total_earned,
+      available_balance: wallet.available_balance,
+      pending_balance: wallet.pending_balance,
+      escrow_held: wallet.pending_balance,
+      total_withdrawn: wallet.total_withdrawn,
     };
   }
 
@@ -322,8 +392,15 @@ export class MarketplaceService {
         [orderId]
       );
 
-      // Credit seller_wallet
+      // Credit seller_wallet (ensure row exists first)
       const sellerAmount = parseFloat(order.seller_amount || order.total_amount);
+      await conn.execute(
+        `INSERT INTO seller_wallet 
+          (seller_id, available_balance, pending_balance, total_earned, total_withdrawn, total_commission_paid, created_at, updated_at)
+         VALUES (?, 0.00, 0.00, 0.00, 0.00, 0.00, NOW(), NOW())
+         ON DUPLICATE KEY UPDATE updated_at = NOW()`,
+        [order.seller_id]
+      );
       await conn.execute(
         `UPDATE seller_wallet SET 
           pending_balance = GREATEST(0, pending_balance - ?),

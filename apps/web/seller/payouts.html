@@ -498,8 +498,14 @@
       }
 
       var API = window.ApiClient || {
-        get: function (u) { return fetch('/api' + u, { credentials: 'include' }).then(function (r) { return r.json(); }); },
-        post: function (u, d) { return fetch('/api' + u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }).then(function (r) { return r.json(); }); }
+        get: function (u) {
+          var t = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+          return fetch('/api/v1' + u, { headers: { 'Authorization': t ? 'Bearer ' + t : '' }, credentials: 'include' }).then(function (r) { return r.json(); });
+        },
+        post: function (u, d) {
+          var t = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
+          return fetch('/api/v1' + u, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': t ? 'Bearer ' + t : '' }, credentials: 'include', body: JSON.stringify(d) }).then(function (r) { return r.json(); });
+        }
       };
       var fmtPKR = function (v) { return 'PKR ' + Number(v || 0).toLocaleString('en-PK', { minimumFractionDigits: 2 }); };
       var fmtDate = function (ts) { return ts ? new Date(ts).toLocaleDateString('en-PK', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'; };

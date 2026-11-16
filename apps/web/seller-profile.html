@@ -218,6 +218,87 @@
         </div>
       </div>
 
+      <!-- Bharosa Trust Score Widget -->
+      <div id="bharosa-widget" class="card relative overflow-hidden bg-gradient-to-r from-slate-900/90 via-indigo-950/30 to-slate-900/90 border border-indigo-500/30 p-6 sm:p-7 shadow-md">
+        <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div class="flex items-center gap-5">
+            <div class="relative flex items-center justify-center shrink-0">
+              <div class="w-20 h-20 rounded-2xl bg-indigo-500/10 border-2 border-indigo-500/30 flex flex-col items-center justify-center shadow-inner">
+                <span class="text-3xl font-black text-indigo-400" id="bharosa-score-num">--</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">/ 100</span>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center gap-2.5 flex-wrap mb-1">
+                <h3 class="text-lg font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                  <span>Bharosa Trust Score</span>
+                  <span id="bharosa-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                    <span id="bharosa-emoji">🌱</span>
+                    <span id="bharosa-level">Loading...</span>
+                  </span>
+                </h3>
+              </div>
+              <p class="text-xs text-slate-500 dark:text-slate-400 max-w-xl">
+                Composite platform integrity score measuring verification, payment reliability, bidding fidelity, longevity, and peer community standing.
+              </p>
+            </div>
+          </div>
+
+          <!-- Component Progress Bars -->
+          <div class="w-full lg:w-96 space-y-2.5 bg-slate-100/60 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-200 dark:border-slate-800/80">
+            <div>
+              <div class="flex justify-between text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                <span>KYC Verification</span>
+                <span id="bharosa-kyc-val">0 / 25</span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                <div id="bharosa-bar-kyc" class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                <span>Payment Reliability</span>
+                <span id="bharosa-payment-val">0 / 25</span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                <div id="bharosa-bar-payment" class="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                <span>Bid Integrity</span>
+                <span id="bharosa-bid-val">0 / 20</span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                <div id="bharosa-bar-bid" class="bg-blue-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                <span>Activity History</span>
+                <span id="bharosa-activity-val">0 / 15</span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                <div id="bharosa-bar-activity" class="bg-amber-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                <span>Community Standing</span>
+                <span id="bharosa-community-val">0 / 15</span>
+              </div>
+              <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5 overflow-hidden">
+                <div id="bharosa-bar-community" class="bg-purple-500 h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Main Layout: Breakdown + Reviews List -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <!-- Left: Rating Breakdown Card -->
@@ -422,6 +503,71 @@
         `).join('');
       }
 
+      async function loadBharosaScore(userId) {
+        try {
+          const res = await ApiClient.get(`/marketplace/users/${userId}/bharosa`);
+          const d = res?.data;
+          if (!d) return;
+
+          const numEl = document.getElementById('bharosa-score-num');
+          if (numEl) numEl.textContent = Math.round(d.score);
+
+          const emojiEl = document.getElementById('bharosa-emoji');
+          if (emojiEl) emojiEl.textContent = d.badge_emoji || '🌱';
+
+          const levelEl = document.getElementById('bharosa-level');
+          if (levelEl) levelEl.textContent = d.badge_label || d.level;
+
+          const badgeEl = document.getElementById('bharosa-badge');
+          if (badgeEl) {
+            if (d.level_color === 'purple') {
+              badgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/20 text-purple-300 border border-purple-500/30';
+            } else if (d.level_color === 'yellow') {
+              badgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+            } else if (d.level_color === 'blue') {
+              badgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30';
+            } else if (d.level_color === 'orange') {
+              badgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30';
+            } else {
+              badgeEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-slate-500/20 text-slate-300 border border-slate-500/30';
+            }
+          }
+
+          const comp = d.components || {};
+          const kyc = comp.kyc || 0;
+          const kycVal = document.getElementById('bharosa-kyc-val');
+          if (kycVal) kycVal.textContent = `${kyc} / 25`;
+          const kycBar = document.getElementById('bharosa-bar-kyc');
+          if (kycBar) kycBar.style.width = `${Math.min(100, Math.round((kyc / 25) * 100))}%`;
+
+          const payment = comp.payment_reliability || 0;
+          const payVal = document.getElementById('bharosa-payment-val');
+          if (payVal) payVal.textContent = `${payment} / 25`;
+          const payBar = document.getElementById('bharosa-bar-payment');
+          if (payBar) payBar.style.width = `${Math.min(100, Math.round((payment / 25) * 100))}%`;
+
+          const bid = comp.bid_integrity || 0;
+          const bidVal = document.getElementById('bharosa-bid-val');
+          if (bidVal) bidVal.textContent = `${bid} / 20`;
+          const bidBar = document.getElementById('bharosa-bar-bid');
+          if (bidBar) bidBar.style.width = `${Math.min(100, Math.round((bid / 20) * 100))}%`;
+
+          const act = comp.activity_history || 0;
+          const actVal = document.getElementById('bharosa-activity-val');
+          if (actVal) actVal.textContent = `${act} / 15`;
+          const actBar = document.getElementById('bharosa-bar-activity');
+          if (actBar) actBar.style.width = `${Math.min(100, Math.round((act / 15) * 100))}%`;
+
+          const comm = comp.community_standing || 0;
+          const commVal = document.getElementById('bharosa-community-val');
+          if (commVal) commVal.textContent = `${comm} / 15`;
+          const commBar = document.getElementById('bharosa-bar-community');
+          if (commBar) commBar.style.width = `${Math.min(100, Math.round((comm / 15) * 100))}%`;
+        } catch (err) {
+          console.warn('[bharosa] Failed to load Bharosa score:', err);
+        }
+      }
+
       async function loadSellerProfile() {
         const params = new URLSearchParams(window.location.search);
         state.sellerId = params.get('id');
@@ -463,6 +609,7 @@
 
           renderBreakdown();
           renderReviews();
+          loadBharosaScore(state.sellerId);
 
           document.getElementById('page-loading').classList.add('hidden');
           document.getElementById('profile-content').classList.remove('hidden');

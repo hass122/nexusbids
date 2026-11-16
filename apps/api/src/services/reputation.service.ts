@@ -187,4 +187,112 @@ export class ReputationService {
 
     return { success: true, message: 'Review reported for administrative moderation.' };
   }
+
+  /**
+   * Bharosa Trust Score — Composite platform trust score for any user
+   * Components (total 100 points):
+   *   - KYC Status:          0-25 pts (approved=25, pending=10, none=0)
+   *   - Payment Reliability: 0-25 pts (paid orders / total won auctions)
+   *   - Bid Integrity:       0-20 pts (1 - cancelled_bids/total_bids) * 20
+   *   - Activity History:    0-15 pts (account age: 1pt/month, max 15)
+   *   - Community Standing:  0-15 pts (reviews received avg rating * 3, max 15)
+   */
+  static async getBharosaTrustScore(userId: number): Promise<{
+    user_id: number;
+    score: number;
+    level: string;
+    level_color: string;
+    components: {
+      kyc: number;
+      payment_reliability: number;
+      bid_integrity: number;
+      activity_history: number;
+      community_standing: number;
+    };
+    badge_label: string;
+    badge_emoji: string;
+  }> {
+    // Fetch all needed data in parallel
+    const [userRows, orderRows, bidRows, cancelledBidRows, reviewRows] = await Promise.all([
+      query<any[]>(
+        'SELECT user_id, kyc_status, seller_kyc_status, created_at FROM users WHERE user_id = ? AND status = ? LIMIT 1',
+        [userId, 'active']
+      ),
+      query<any[]>(
+        "SELECT COUNT(*) as won, SUM(CASE WHEN payment_status = 'paid' THEN 1 ELSE 0 END) as paid FROM orders WHERE buyer_id = ?",
+        [userId]
+      ),
+      query<any[]>('SELECT COUNT(*) as total FROM bids WHERE user_id = ?', [userId]).catch(() =>
+        query<any[]>('SELECT COUNT(*) as total FROM bids WHERE bidder_id = ?', [userId]).catch(() => [{ total: 0 }])
+      ),
+      query<any[]>('SELECT COUNT(*) as cancelled FROM bids WHERE user_id = ? AND is_cancelled = 1', [userId]).catch(() =>
+        query<any[]>('SELECT COUNT(*) as cancelled FROM bids WHERE bidder_id = ? AND is_cancelled = 1', [userId]).catch(() => [{ cancelled: 0 }])
+      ),
+      query<any[]>(
+        "SELECT COALESCE(AVG(rating), 0) as avg_rating, COUNT(*) as count FROM reviews WHERE seller_id = ? AND (is_reported = 0 OR is_reported IS NULL)",
+        [userId]
+      ),
+    ]);
+
+    if (!userRows.length) throw new Error('User not found.');
+    const user = userRows[0];
+
+    // 1. KYC score (25 pts)
+    const kycStatus = user.kyc_status || user.seller_kyc_status || 'none';
+    const kycScore = kycStatus === 'approved' ? 25 : kycStatus === 'pending' ? 10 : 0;
+
+    // 2. Payment reliability (25 pts)
+    const wonAuctions = parseInt(orderRows[0]?.won || '0', 10);
+    const paidOrders = parseInt(orderRows[0]?.paid || '0', 10);
+    const paymentReliability = wonAuctions > 0 ? Math.round((paidOrders / wonAuctions) * 25) : 15; // default 15 for new users
+
+    // 3. Bid integrity (20 pts)
+    const totalBids = parseInt(bidRows[0]?.total || '0', 10);
+    const cancelledBids = parseInt(cancelledBidRows[0]?.cancelled || '0', 10);
+    const bidIntegrity = totalBids > 0
+      ? Math.round((1 - cancelledBids / totalBids) * 20)
+      : 15; // default 15 for new users
+
+    // 4. Activity history (15 pts — 1pt per month, max 15)
+    const memberSince = new Date(user.created_at);
+    const monthsActive = Math.floor((Date.now() - memberSince.getTime()) / (1000 * 60 * 60 * 24 * 30));
+    const activityScore = Math.min(monthsActive, 15);
+
+    // 5. Community standing (15 pts)
+    const avgRating = parseFloat(reviewRows[0]?.avg_rating || '0');
+    const communityScore = Math.min(Math.round(avgRating * 3), 15);
+
+    const totalScore = Math.min(100, kycScore + paymentReliability + bidIntegrity + activityScore + communityScore);
+
+    // Level classification
+    let level = 'Naya', levelColor = 'gray', badgeLabel = 'Naya Saathi', badgeEmoji = '🌱';
+    if (totalScore >= 85) { level = 'Platinum'; levelColor = 'purple'; badgeLabel = 'Platinum Bharosa'; badgeEmoji = '💎'; }
+    else if (totalScore >= 70) { level = 'Gold'; levelColor = 'yellow'; badgeLabel = 'Sona Bharosa'; badgeEmoji = '🏆'; }
+    else if (totalScore >= 55) { level = 'Silver'; levelColor = 'blue'; badgeLabel = 'Chandi Bharosa'; badgeEmoji = '⭐'; }
+    else if (totalScore >= 35) { level = 'Bronze'; levelColor = 'orange'; badgeLabel = 'Kaam Chalne Wala'; badgeEmoji = '👍'; }
+
+    // Cache in bharosa_scores table (upsert)
+    await query(
+      `INSERT INTO bharosa_scores (user_id, score, components, computed_at)
+       VALUES (?, ?, ?, NOW())
+       ON DUPLICATE KEY UPDATE score = VALUES(score), components = VALUES(components), computed_at = NOW()`,
+      [userId, totalScore, JSON.stringify({ kyc: kycScore, payment_reliability: paymentReliability, bid_integrity: bidIntegrity, activity_history: activityScore, community_standing: communityScore })]
+    ).catch(() => {});
+
+    return {
+      user_id: userId,
+      score: totalScore,
+      level,
+      level_color: levelColor,
+      components: {
+        kyc: kycScore,
+        payment_reliability: paymentReliability,
+        bid_integrity: bidIntegrity,
+        activity_history: activityScore,
+        community_standing: communityScore,
+      },
+      badge_label: badgeLabel,
+      badge_emoji: badgeEmoji,
+    };
+  }
 }

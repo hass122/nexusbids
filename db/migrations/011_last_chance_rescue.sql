@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS `private_offers` (
+  `offer_id` INT AUTO_INCREMENT PRIMARY KEY,
+  `auction_id` INT NOT NULL,
+  `buyer_id` INT NOT NULL,
+  `seller_id` INT NOT NULL,
+  `offer_amount` DECIMAL(15,2) NOT NULL,
+  `message` TEXT NULL,
+  `status` ENUM('pending','accepted','declined','expired') NOT NULL DEFAULT 'pending',
+  `expires_at` DATETIME NOT NULL,
+  `responded_at` DATETIME NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_auction_id` (`auction_id`),
+  INDEX `idx_buyer_id` (`buyer_id`),
+  INDEX `idx_seller_id` (`seller_id`),
+  INDEX `idx_status_expires` (`status`, `expires_at`),
+  FOREIGN KEY (`auction_id`) REFERENCES `auctions`(`auction_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`buyer_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE,
+  FOREIGN KEY (`seller_id`) REFERENCES `users`(`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

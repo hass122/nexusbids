@@ -799,10 +799,10 @@
       function esc(str) { return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
 
       function classifyTransaction(t) {
-        var type = (t.type || '').toLowerCase();
+        var type = (t.entry_type || t.type || '').toLowerCase();
         var desc = (t.description || '').toLowerCase();
-        if (type === 'credit' || type === 'deposit' || type === 'earning' || type === 'escrow_release' || type === 'sale') return 'credit';
-        if (type === 'debit' || type === 'withdrawal' || type === 'payout' || type === 'fee' || type === 'commission') return 'debit';
+        if (type === 'credit' || type === 'release' || type === 'deposit' || type === 'earning' || type === 'escrow_release' || type === 'sale') return 'credit';
+        if (type === 'debit' || type === 'withdrawal' || type === 'payout' || type === 'fee' || type === 'commission' || type === 'hold') return 'debit';
         if (desc.indexOf('payout') !== -1 || desc.indexOf('withdraw') !== -1 || desc.indexOf('fee') !== -1 || desc.indexOf('commission') !== -1 || desc.indexOf('charge') !== -1) return 'debit';
         if (desc.indexOf('sale') !== -1 || desc.indexOf('earning') !== -1 || desc.indexOf('released') !== -1 || desc.indexOf('credit') !== -1 || desc.indexOf('escrow') !== -1) return 'credit';
         return 'credit';
@@ -864,12 +864,9 @@
         try {
           var statsRes = await ApiClient.get('/seller/dashboard');
           var s = (statsRes && statsRes.data) || {};
-          // ✅ FIX: prefer explicit available_balance from backend; fallback to total_sales
-          var available = (s.available_balance != null)
-            ? Number(s.available_balance)
-            : Number(s.total_sales || 0);
-          var escrow = Number(s.escrow_held || 0);
-          var lifetime = available + escrow;
+          var available = Number(s.available_balance != null ? s.available_balance : (s.total_sales || 0));
+          var escrow = Number(s.escrow_held != null ? s.escrow_held : (s.pending_balance || 0));
+          var lifetime = Number(s.total_sales != null ? s.total_sales : (s.total_earned || (available + escrow)));
           var availEl = $('stat-available');
           var pendEl = $('stat-pending');
           var totEl = $('stat-total');
@@ -882,8 +879,9 @@
             if (available <= 0) payoutBtn.innerHTML = '<i class="fa-solid fa-circle-info"></i> No Funds Available';
             else payoutBtn.innerHTML = '<i class="fa-solid fa-building-columns"></i> Request Bank Transfer';
           }
-          var walletRes = await ApiClient.get('/payments/wallet');
-          var txns = (walletRes && walletRes.data && walletRes.data.recent_transactions) || [];
+          var txnsRes = await ApiClient.get('/seller/transactions');
+          var txns = (txnsRes && (txnsRes.data || txnsRes)) || [];
+          if (!Array.isArray(txns)) txns = [];
           if (countEl) countEl.textContent = txns.length + (txns.length === 1 ? ' entry' : ' entries');
           if (txns.length === 0) { renderEmpty(); return; }
           container.innerHTML = txns.map(renderLedgerRow).join('');
