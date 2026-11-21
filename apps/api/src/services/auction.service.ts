@@ -4,6 +4,30 @@ import { NotificationService } from './notification.service.js';
 import { RealtimeService } from './realtime.service.js';
 import { CronService } from './cron.service.js';
 
+/**
+ * Safely parse auction datetime input in Pakistan Standard Time (PKT, UTC+5).
+ * If the input already has a timezone indicator (Z or +HH:MM / -HH:MM),
+ * it is parsed preserving that offset.
+ * If the input is a naive datetime string (e.g. from HTML <input type="datetime-local"> like "2026-11-21T15:00"),
+ * it is explicitly bound to Asia/Karachi (+05:00) so UTC servers (such as Vercel)
+ * do not misinterpret local Pakistan seller time as UTC and add 5 extra hours.
+ */
+export function parseAuctionDateTime(input: string | Date | undefined | null): Date {
+  if (!input) return new Date(NaN);
+  if (input instanceof Date) return input;
+  let s = String(input).trim();
+  if (!s) return new Date(NaN);
+
+  if (!/([zZ]|[+-]\d{2}(:?\d{2})?)$/.test(s)) {
+    s = s.replace(' ', 'T');
+    if (s.length === 16) {
+      s += ':00';
+    }
+    s += '+05:00';
+  }
+  return new Date(s);
+}
+
 export class AuctionService {
   // Query public auctions with search, category, status, and pagination
   static async getAuctions(filters: {
@@ -343,9 +367,11 @@ export class AuctionService {
       }
     }
 
-    // 5. Validate dates
-    const startTime = new Date(data.start_time).getTime();
-    const endTime = new Date(data.end_time).getTime();
+    // 5. Validate dates in PKT (+05:00)
+    const startDate = parseAuctionDateTime(data.start_time);
+    const endDate = parseAuctionDateTime(data.end_time);
+    const startTime = startDate.getTime();
+    const endTime = endDate.getTime();
     if (isNaN(startTime) || isNaN(endTime)) {
       throw new Error('Invalid start or end time format.');
     }
@@ -393,8 +419,8 @@ export class AuctionService {
         reservePrice,
         buyNowPrice,
         bidIncrement,
-        new Date(startTime),
-        new Date(endTime),
+        startDate,
+        endDate,
         status,
         image,
       ]
@@ -531,13 +557,40 @@ export class AuctionService {
         updates.push('bid_increment = ?');
         params.push(bi);
       }
+
+      let parsedStart: Date | undefined;
+      let parsedEnd: Date | undefined;
+
       if (data.start_time !== undefined) {
-        updates.push('start_time = ?');
-        params.push(new Date(data.start_time));
+        parsedStart = parseAuctionDateTime(data.start_time);
+        if (isNaN(parsedStart.getTime())) throw new Error('Invalid start time format.');
       }
       if (data.end_time !== undefined) {
-        updates.push('end_time = ?');
-        params.push(new Date(data.end_time));
+        parsedEnd = parseAuctionDateTime(data.end_time);
+        if (isNaN(parsedEnd.getTime())) throw new Error('Invalid end time format.');
+      }
+
+      if (parsedStart || parsedEnd) {
+        const effectiveStart = parsedStart ? parsedStart.getTime() : parseAuctionDateTime(auction.start_time).getTime();
+        const effectiveEnd = parsedEnd ? parsedEnd.getTime() : parseAuctionDateTime(auction.end_time).getTime();
+        if (effectiveEnd <= effectiveStart) {
+          throw new Error('End time must be after start time.');
+        }
+        const durMin = (effectiveEnd - effectiveStart) / (1000 * 60);
+        if (durMin < 15) {
+          throw new Error('Auction duration must be at least 15 minutes.');
+        }
+        if (durMin / (60 * 24) > 30) {
+          throw new Error('Auction duration cannot exceed 30 days.');
+        }
+        if (parsedStart) {
+          updates.push('start_time = ?');
+          params.push(parsedStart);
+        }
+        if (parsedEnd) {
+          updates.push('end_time = ?');
+          params.push(parsedEnd);
+        }
       }
     }
 
@@ -721,11 +774,11 @@ export class AuctionService {
           : parseFloat(original.bid_increment || 500);
 
       const now = new Date();
-      const startTime = data?.start_time ? new Date(data.start_time) : now;
+      const startTime = data?.start_time ? parseAuctionDateTime(data.start_time) : now;
       let endTime = data?.end_time
-        ? new Date(data.end_time)
+        ? parseAuctionDateTime(data.end_time)
         : new Date(startTime.getTime() + 7 * 24 * 60 * 60 * 1000);
-      if (endTime.getTime() <= startTime.getTime()) {
+      if (endTime.getTime() <= startTime.getTime() || (endTime.getTime() - startTime.getTime()) < 15 * 60 * 1000) {
         endTime = new Date(startTime.getTime() + 7 * 24 * 60 * 60 * 1000);
       }
 

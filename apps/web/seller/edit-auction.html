@@ -671,6 +671,29 @@
 
       async function handleAuctionUpdate(e) {
         e.preventDefault();
+
+        var startVal = $('start_time').value;
+        var endVal = $('end_time').value;
+        if (startVal && endVal) {
+          var sTime = new Date(startVal).getTime();
+          var eTime = new Date(endVal).getTime();
+          if (isNaN(sTime) || isNaN(eTime)) {
+            UI.showToast('Please enter valid start and end dates.', 'error');
+            return;
+          }
+          if (eTime <= sTime) {
+            UI.showToast('End Date & Time must be after Start Date & Time.', 'error');
+            $('end_time').focus();
+            return;
+          }
+          var durMins = (eTime - sTime) / (1000 * 60);
+          if (durMins < 15) {
+            UI.showToast('Minimum auction duration must be at least 15 minutes.', 'error');
+            $('end_time').focus();
+            return;
+          }
+        }
+
         var btn = $('btn-save');
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving Updates…';
