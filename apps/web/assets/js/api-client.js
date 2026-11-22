@@ -94,7 +94,8 @@ class ApiClient {
         } else { throw fetchErr; }
       }
 
-      if (res.status === 401 && !opts._retry && !endpoint.includes('/auth/')) {
+      const isPublicAuth = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/forgot-password', '/auth/reset-password', '/auth/verify-email'].some(ep => endpoint.includes(ep));
+      if (res.status === 401 && !opts._retry && !isPublicAuth) {
         opts._retry = true;
         const refreshed = await this._refresh();
         if (refreshed) return this.request(endpoint, opts);

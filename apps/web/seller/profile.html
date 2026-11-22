@@ -622,7 +622,12 @@
         });
         let data;
         try { data = await res.json(); } catch { data = {}; }
-        if (!res.ok) throw new Error(data.error || data.message || 'HTTP ' + res.status);
+        if (!res.ok) {
+          if (res.status === 401) {
+            throw new Error('Session expired. Please log in again.');
+          }
+          throw new Error(data.error || data.message || 'HTTP ' + res.status);
+        }
         return data;
       }
 
@@ -806,7 +811,14 @@
             img.style.display = 'block';
           }
           updatePreview();
-        } catch { /* silent */ }
+        } catch (err) {
+          if (err?.message?.includes('401') || err?.message?.toLowerCase().includes('session')) {
+            showToast('Session expired. Please log in again.', 'error');
+            setTimeout(() => {
+              window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+            }, 1200);
+          }
+        }
       }
 
       document.getElementById('profile-form').addEventListener('submit', async (e) => {
@@ -816,10 +828,10 @@
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
         try {
           const payload = {
-            store_name: document.getElementById('store-name').value,
-            store_tagline: document.getElementById('store-tagline').value,
-            store_bio: document.getElementById('store-bio').value,
-            store_city: document.getElementById('store-city').value,
+            store_name: document.getElementById('store-name').value.trim(),
+            store_tagline: document.getElementById('store-tagline').value.trim(),
+            store_bio: document.getElementById('store-bio').value.trim(),
+            store_city: document.getElementById('store-city').value.trim(),
             return_policy: document.getElementById('store-returns').value,
           };
           if (currentLogo) payload.store_logo = currentLogo;
@@ -834,9 +846,17 @@
             }
             updatePreview();
           } else {
-            showToast(r.message || 'Failed to save profile.', 'error');
+            showToast(r.message || r.error || 'Failed to save profile.', 'error');
           }
-        } catch { showToast('Network error.', 'error'); }
+        } catch (err) {
+          const msg = err?.message || 'Network error.';
+          showToast(msg, 'error');
+          if (msg.toLowerCase().includes('session') || msg.toLowerCase().includes('log in') || msg.includes('401')) {
+            setTimeout(() => {
+              window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+            }, 1200);
+          }
+        }
         finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Store Profile'; }
       });
 
@@ -846,11 +866,11 @@
         btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
         try {
           const r = await API.patch('/auth/profile', {
-            business_phone: document.getElementById('c-phone').value,
-            whatsapp: document.getElementById('c-whatsapp').value,
-            website: document.getElementById('c-website').value,
-            facebook: document.getElementById('c-facebook').value,
-            instagram: document.getElementById('c-instagram').value,
+            business_phone: document.getElementById('c-phone').value.trim(),
+            whatsapp: document.getElementById('c-whatsapp').value.trim(),
+            website: document.getElementById('c-website').value.trim(),
+            facebook: document.getElementById('c-facebook').value.trim(),
+            instagram: document.getElementById('c-instagram').value.trim(),
           });
           if (r.success || r.data) {
             showToast('Contact info saved!', 'success');
@@ -859,8 +879,16 @@
               localStorage.setItem('nexusbids_user', JSON.stringify(updatedUser));
             }
           }
-          else { showToast(r.message || 'Failed to save.', 'error'); }
-        } catch { showToast('Network error.', 'error'); }
+          else { showToast(r.message || r.error || 'Failed to save.', 'error'); }
+        } catch (err) {
+          const msg = err?.message || 'Network error.';
+          showToast(msg, 'error');
+          if (msg.toLowerCase().includes('session') || msg.toLowerCase().includes('log in') || msg.includes('401')) {
+            setTimeout(() => {
+              window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+            }, 1200);
+          }
+        }
         finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Contact Info'; }
       });
 
@@ -870,9 +898,9 @@
         btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
         try {
           const r = await API.patch('/auth/profile', {
-            full_name: document.getElementById('p-fullname').value,
-            username: document.getElementById('p-username').value,
-            phone: document.getElementById('p-phone').value,
+            full_name: document.getElementById('p-fullname').value.trim(),
+            username: document.getElementById('p-username').value.trim(),
+            phone: document.getElementById('p-phone').value.trim(),
             date_of_birth: document.getElementById('p-dob').value,
           });
           if (r.success || r.data) {
@@ -882,8 +910,16 @@
               localStorage.setItem('nexusbids_user', JSON.stringify(updatedUser));
             }
           }
-          else { showToast(r.message || 'Failed to save.', 'error'); }
-        } catch { showToast('Network error.', 'error'); }
+          else { showToast(r.message || r.error || 'Failed to save.', 'error'); }
+        } catch (err) {
+          const msg = err?.message || 'Network error.';
+          showToast(msg, 'error');
+          if (msg.toLowerCase().includes('session') || msg.toLowerCase().includes('log in') || msg.includes('401')) {
+            setTimeout(() => {
+              window.location.href = '/login.html?redirect=' + encodeURIComponent(window.location.pathname);
+            }, 1200);
+          }
+        }
         finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Personal Info'; }
       });
 
