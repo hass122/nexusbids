@@ -230,7 +230,10 @@ export class AuthController {
     try {
       const { query: dbQuery } = await import('../config/db.js');
       const users = await dbQuery(
-        `SELECT user_id, full_name, email, phone, city, role, status,
+        `SELECT user_id, full_name, username, email, phone, city, address, postal_code, bio,
+                store_name, store_tagline, store_bio, store_logo, store_banner, return_policy,
+                business_phone, whatsapp, website, facebook, instagram, date_of_birth,
+                role, wallet_balance, profile_image, avatar, status,
                 kyc_status, seller_kyc_status, email_verified, twofa_enabled, created_at
          FROM users WHERE user_id = ? LIMIT 1`,
         [(req.user as any).userId]
@@ -244,6 +247,8 @@ export class AuthController {
         ...u,
         is_2fa_enabled: Boolean(u.twofa_enabled),
         is_email_verified: Boolean(u.email_verified),
+        twofa_enabled: Boolean(u.twofa_enabled),
+        email_verified: Boolean(u.email_verified),
       });
     } catch (err: any) {
       // DB fail — DO NOT return raw req.user (incomplete data). Fail loud instead.
@@ -259,8 +264,7 @@ export class AuthController {
         sendError(res, 'Authentication required', 401);
         return;
       }
-      const { full_name, phone, city } = req.body;
-      const result = await AuthService.updateProfile(req.user.userId, { full_name, phone, city });
+      const result = await AuthService.updateProfile(req.user.userId, req.body);
       sendSuccess(res, result, 'Profile updated successfully');
     } catch (err: any) {
       sendError(res, err.message, 400);

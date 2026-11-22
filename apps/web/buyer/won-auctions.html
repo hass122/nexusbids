@@ -221,7 +221,7 @@
       if(!container) return;
       try {
         const res = await ApiClient.get('/last-chance/buyer/offers');
-        const offers = Array.isArray(res?.data) ? res.data : [];
+        const offers = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
         if(!offers.length){
           container.innerHTML = `
             <div class="p-6 rounded-2xl bg-[var(--w-surface)] border border-[var(--w-border)] text-center md:col-span-2 lg:col-span-3">
@@ -266,12 +266,17 @@
             </div>`;
         }).join('');
       } catch (e) {
+        console.warn('[loadPrivateOffers] error:', e);
         container.innerHTML = `
-          <div class="p-4 rounded-2xl bg-[var(--w-surface)] border border-[var(--w-border)] text-xs text-[var(--w-text-muted)] md:col-span-2">
-            Failed to load private offers.
+          <div class="p-4 rounded-2xl bg-[var(--w-surface)] border border-[var(--w-border)] text-xs text-[var(--w-text-muted)] md:col-span-2 flex items-center justify-between gap-3">
+            <span>Failed to load private offers.</span>
+            <button onclick="window.loadPrivateOffers()" class="btn btn-ghost" style="padding:4px 10px;font-size:11px"><i class="fa-solid fa-rotate-right"></i> Retry</button>
           </div>`;
       }
     }
+
+    window.load = load;
+    window.loadPrivateOffers = loadPrivateOffers;
 
     document.addEventListener('DOMContentLoaded',()=>{
       if(!ApiClient.getAccessToken()){window.location.href='/login.html?redirect=/buyer/won-auctions.html';return;}

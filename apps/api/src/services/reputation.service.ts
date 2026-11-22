@@ -11,6 +11,12 @@ export interface RatingBreakdown {
 export interface SellerReputationData {
   seller_id: number;
   seller_name: string;
+  store_name?: string | null;
+  store_tagline?: string | null;
+  store_logo?: string | null;
+  store_banner?: string | null;
+  return_policy?: string | null;
+  city?: string | null;
   member_since: string;
   is_verified_seller: boolean;
   kyc_status: string;
@@ -60,7 +66,7 @@ export class ReputationService {
   static async getSellerReputation(sellerId: number): Promise<SellerReputationData> {
     // 1. Fetch public seller metadata (Strictly exclude CNIC numbers, hashed passwords, or private docs)
     const sellers = await query<any[]>(
-      `SELECT user_id, full_name, bio, profile_image, role, seller_kyc_status, created_at
+      `SELECT user_id, full_name, username, bio, store_name, store_tagline, store_bio, store_logo, store_banner, return_policy, city, profile_image, role, seller_kyc_status, created_at
        FROM users 
        WHERE user_id = ? AND status = 'active' LIMIT 1`,
       [sellerId]
@@ -143,12 +149,18 @@ export class ReputationService {
 
     return {
       seller_id: seller.user_id,
-      seller_name: seller.full_name,
+      seller_name: seller.store_name || seller.full_name,
+      store_name: seller.store_name || seller.full_name,
+      store_tagline: seller.store_tagline || null,
+      store_logo: seller.store_logo || null,
+      store_banner: seller.store_banner || null,
+      return_policy: seller.return_policy || 'no_returns',
+      city: seller.city || null,
       member_since: seller.created_at ? new Date(seller.created_at).toISOString().split('T')[0] : '2026-01-01',
       is_verified_seller: seller.seller_kyc_status === 'approved',
       kyc_status: seller.seller_kyc_status || 'unverified',
-      bio: seller.bio || null,
-      profile_image: seller.profile_image || null,
+      bio: seller.store_bio || seller.bio || null,
+      profile_image: seller.store_logo || seller.profile_image || null,
       metrics: {
         average_rating: avgRating,
         total_reviews: totalReviews,

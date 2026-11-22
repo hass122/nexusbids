@@ -16,6 +16,36 @@ export interface PrivateOffer {
 }
 
 export class LastChanceService {
+  private static tableEnsured = false;
+
+  static async ensureTable() {
+    if (this.tableEnsured) return;
+    try {
+      await query(`
+        CREATE TABLE IF NOT EXISTS \`private_offers\` (
+          \`offer_id\` INT AUTO_INCREMENT PRIMARY KEY,
+          \`auction_id\` INT NOT NULL,
+          \`buyer_id\` INT NOT NULL,
+          \`seller_id\` INT NOT NULL,
+          \`offer_amount\` DECIMAL(15,2) NOT NULL,
+          \`message\` TEXT NULL,
+          \`status\` ENUM('pending','accepted','declined','expired') NOT NULL DEFAULT 'pending',
+          \`expires_at\` DATETIME NOT NULL,
+          \`responded_at\` DATETIME NULL,
+          \`created_at\` DATETIME DEFAULT CURRENT_TIMESTAMP,
+          \`updated_at\` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          INDEX \`idx_po_auction_id\` (\`auction_id\`),
+          INDEX \`idx_po_buyer_id\` (\`buyer_id\`),
+          INDEX \`idx_po_seller_id\` (\`seller_id\`),
+          INDEX \`idx_po_status_expires\` (\`status\`, \`expires_at\`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+      `);
+      this.tableEnsured = true;
+    } catch (e: any) {
+      console.warn('[LastChanceService] ensureTable warning:', e?.message);
+    }
+  }
+
   /**
    * Helper: Mask user name for anonymity (e.g. "A***d")
    */
@@ -38,6 +68,8 @@ export class LastChanceService {
     if (!offerAmount || isNaN(offerAmount) || offerAmount <= 0) {
       throw new Error('Offer amount must be a positive number.');
     }
+
+    await this.ensureTable().catch(() => {});
 
     // 1. Fetch auction details
     const auctionRows = await query<any[]>(
@@ -213,52 +245,78 @@ export class LastChanceService {
    * List all offers sent by a specific buyer
    */
   static async getBuyerOffers(buyerId: number) {
+    if (!buyerId) return [];
+    await this.ensureTable().catch(() => {});
     await this.expireOldOffers().catch(() => {});
 
-    const rows = await query<any[]>(
-      `SELECT po.*, a.title as auction_title, a.current_bid, a.image as auction_image,
-              u.full_name as seller_name
-       FROM private_offers po
-       JOIN auctions a ON a.auction_id = po.auction_id
-       LEFT JOIN users u ON u.user_id = po.seller_id
-       WHERE po.buyer_id = ?
-       ORDER BY po.created_at DESC`,
-      [buyerId]
-    );
+    try {
+      const rows = await query<any[]>(
+        `SELECT po.*, a.title as auction_title, a.current_bid, a.image as auction_image,
+                u.full_name as seller_name
+         FROM private_offers po
+         LEFT JOIN auctions a ON a.auction_id = po.auction_id
+         LEFT JOIN users u ON u.user_id = po.seller_id
+         WHERE po.buyer_id = ?
+         ORDER BY po.created_at DESC`,
+        [buyerId]
+      );
 
-    return rows;
+      return rows;
+    } catch (err: any) {
+      if (err?.code === 'ER_NO_SUCH_TABLE' || err?.message?.includes("doesn't exist")) {
+        await this.ensureTable().catch(() => {});
+        return [];
+      }
+      console.error('[LastChanceService.getBuyerOffers] error:', err?.message);
+      return [];
+    }
   }
 
   /**
    * List all pending offers received by a seller with buyer info (masked name)
    */
   static async getSellerOffers(sellerId: number) {
+    if (!sellerId) return [];
+    await this.ensureTable().catch(() => {});
     await this.expireOldOffers().catch(() => {});
 
-    const rows = await query<any[]>(
-      `SELECT po.*, a.title as auction_title, a.image as auction_image, a.current_bid,
-              u.full_name as buyer_full_name
-       FROM private_offers po
-       JOIN auctions a ON a.auction_id = po.auction_id
-       JOIN users u ON u.user_id = po.buyer_id
-       WHERE po.seller_id = ? AND po.status = 'pending' AND po.expires_at > NOW()
-       ORDER BY po.created_at DESC`,
-      [sellerId]
-    );
+    try {
+      const rows = await query<any[]>(
+        `SELECT po.*, a.title as auction_title, a.image as auction_image, a.current_bid,
+                u.full_name as buyer_full_name
+         FROM private_offers po
+         LEFT JOIN auctions a ON a.auction_id = po.auction_id
+         LEFT JOIN users u ON u.user_id = po.buyer_id
+         WHERE po.seller_id = ? AND po.status = 'pending' AND po.expires_at > NOW()
+         ORDER BY po.created_at DESC`,
+        [sellerId]
+      );
 
-    return rows.map((r) => ({
-      ...r,
-      buyer_name: this.maskName(r.buyer_full_name),
-      buyer_full_name: undefined, // mask name for privacy
-    }));
+      return rows.map((r) => ({
+        ...r,
+        buyer_name: this.maskName(r.buyer_full_name),
+        buyer_full_name: undefined, // mask name for privacy
+      }));
+    } catch (err: any) {
+      if (err?.code === 'ER_NO_SUCH_TABLE' || err?.message?.includes("doesn't exist")) {
+        await this.ensureTable().catch(() => {});
+        return [];
+      }
+      console.error('[LastChanceService.getSellerOffers] error:', err?.message);
+      return [];
+    }
   }
 
   /**
    * Expire offers that exceeded expires_at
    */
   static async expireOldOffers() {
-    await query(
-      `UPDATE private_offers SET status = 'expired' WHERE status = 'pending' AND expires_at < NOW()`
-    );
+    try {
+      await query(
+        `UPDATE private_offers SET status = 'expired' WHERE status = 'pending' AND expires_at < NOW()`
+      );
+    } catch {
+      // Table may not exist yet or no rows to update
+    }
   }
 }

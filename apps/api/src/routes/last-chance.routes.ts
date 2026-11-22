@@ -46,6 +46,9 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const buyerId = (req as any).user?.user_id || (req as any).user?.userId;
+      if (!buyerId) {
+        return sendSuccess(res, [], 'No offers found.');
+      }
       const offers = await LastChanceService.getBuyerOffers(buyerId);
       sendSuccess(res, offers, 'Buyer private offers retrieved successfully.');
     } catch (err: any) {

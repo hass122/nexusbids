@@ -3,8 +3,15 @@
  * FIXED: refresh-fail redirect to /login.html (was /auth/login.html)
  */
 const API_BASE = (() => {
-  if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
-    return 'http://localhost:5000/api/v1';
+  if (typeof window !== 'undefined') {
+    if (window.location.protocol === 'file:') {
+      return 'http://localhost:5000/api/v1';
+    }
+    const host = window.location.hostname;
+    const port = window.location.port;
+    if ((host === 'localhost' || host === '127.0.0.1') && port && port !== '5000') {
+      return 'http://localhost:5000/api/v1';
+    }
   }
   return '/api/v1';
 })();

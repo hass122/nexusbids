@@ -221,12 +221,41 @@
   };
 
   /* ============================================================
+     ✅ DYNAMIC "VIEW STORE" LINK REWRITING
+     Points all "View Store" nav links to /seller-profile.html?id=<seller_id>
+     ============================================================ */
+  function updateViewStoreLinks() {
+    try {
+      var userRaw = localStorage.getItem('nexusbids_user') || sessionStorage.getItem('nexusbids_user') || '{}';
+      var user = {};
+      try { user = JSON.parse(userRaw) || {}; } catch(e) {}
+      var sellerId = user.user_id || user.userId || user.id;
+      if (!sellerId) return;
+
+      var storeUrl = '/seller-profile.html?id=' + encodeURIComponent(sellerId);
+      var links = document.querySelectorAll('a');
+      for (var i = 0; i < links.length; i++) {
+        var a = links[i];
+        var text = (a.textContent || '').trim().toLowerCase();
+        if (text.indexOf('view store') !== -1) {
+          a.href = storeUrl;
+          a.setAttribute('target', '_blank');
+        }
+      }
+    } catch(err) { /* silent */ }
+  }
+
+  /* ============================================================
      ✅ BOOT
      ============================================================ */
   function boot() {
     enforceSellerAuth();
     renderSellerNav('seller-subnav');
     installBuyerProfileFix();
+    updateViewStoreLinks();
+    setTimeout(updateViewStoreLinks, 150);
+    setTimeout(updateViewStoreLinks, 600);
+    setTimeout(updateViewStoreLinks, 1500);
   }
 
   if (document.readyState === 'loading') {

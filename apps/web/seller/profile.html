@@ -388,7 +388,7 @@
         <span class="text-xs px-2.5 py-1 rounded-full font-bold"
           style="background:rgba(99,102,241,.15);color:#818cf8;">Seller Studio</span>
       </div>
-      <a href="/index.html" class="text-sm font-semibold" style="color:var(--pr-text-muted);"><i
+      <a id="view-store-link" href="/seller-profile.html" class="text-sm font-semibold" style="color:var(--pr-text-muted);"><i
           class="fa-solid fa-store mr-1"></i>View Store</a>
     </div>
   </nav>
@@ -635,6 +635,13 @@
         });
       }
 
+      const sellerId = user.user_id || user.userId || user.id;
+      const viewStoreLink = document.getElementById('view-store-link');
+      if (viewStoreLink && sellerId) {
+        viewStoreLink.href = '/seller-profile.html?id=' + sellerId;
+        viewStoreLink.setAttribute('target', '_blank');
+      }
+
       // Tabs
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -662,6 +669,7 @@
           const img = document.getElementById('logo-preview');
           img.src = logoUrl;
           img.style.display = 'block';
+          updatePreview();
           showToast('Logo uploaded successfully!', 'success');
         } catch {
           showToast('Could not upload image.', 'error');
@@ -684,25 +692,10 @@
           const img = document.getElementById('banner-preview');
           img.src = bannerUrl;
           img.style.display = 'block';
+          updatePreview();
           showToast('Banner uploaded successfully!', 'success');
         } catch {
           showToast('Could not upload image.', 'error');
-        }
-      });
-
-      document.getElementById('banner-input').addEventListener('change', async (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        if (!file.type.startsWith('image/')) { showToast('Please select an image file.', 'error'); return; }
-        if (file.size > 4 * 1024 * 1024) { showToast('Banner must be under 4MB.', 'error'); return; }
-        try {
-          const dataUrl = await compressImage(file, 1200, 0.78);
-          currentBanner = dataUrl;
-          const img = document.getElementById('banner-preview');
-          img.src = dataUrl;
-          img.style.display = 'block';
-        } catch {
-          showToast('Could not process image.', 'error');
         }
       });
 
@@ -737,18 +730,32 @@
         try {
           const r = await API.get('/auth/me');
           const d = r.data || r.user || r;
+          if (d.user_id && viewStoreLink) {
+            viewStoreLink.href = '/seller-profile.html?id=' + d.user_id;
+          }
           if (d.full_name) document.getElementById('p-fullname').value = d.full_name;
           if (d.username) document.getElementById('p-username').value = d.username;
           if (d.email) document.getElementById('p-email').value = d.email;
           if (d.phone) document.getElementById('p-phone').value = d.phone;
-          if (d.date_of_birth) document.getElementById('p-dob').value = d.date_of_birth;
+          if (d.date_of_birth) {
+            const dob = String(d.date_of_birth).split('T')[0];
+            document.getElementById('p-dob').value = dob;
+          }
           if (d.store_name) document.getElementById('store-name').value = d.store_name;
           if (d.store_tagline) document.getElementById('store-tagline').value = d.store_tagline;
           if (d.store_bio || d.bio) document.getElementById('store-bio').value = d.store_bio || d.bio;
           document.getElementById('bio-chars').textContent = (d.store_bio || d.bio || '').length;
           if (d.city || d.store_city) document.getElementById('store-city').value = d.city || d.store_city;
+          if (d.return_policy) document.getElementById('store-returns').value = d.return_policy;
 
-          // ✅ NEW: restore saved logo and banner
+          // Contact
+          if (d.business_phone) document.getElementById('c-phone').value = d.business_phone;
+          if (d.whatsapp) document.getElementById('c-whatsapp').value = d.whatsapp;
+          if (d.website) document.getElementById('c-website').value = d.website;
+          if (d.facebook) document.getElementById('c-facebook').value = d.facebook;
+          if (d.instagram) document.getElementById('c-instagram').value = d.instagram;
+
+          // Restore saved logo and banner
           if (d.store_logo) {
             currentLogo = d.store_logo;
             const img = document.getElementById('logo-preview');
@@ -761,6 +768,7 @@
             img.src = d.store_banner;
             img.style.display = 'block';
           }
+          updatePreview();
         } catch { /* silent */ }
       }
 
@@ -770,7 +778,6 @@
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Saving…';
         try {
-          // ✅ FIXED: include store_logo and store_banner in payload
           const payload = {
             store_name: document.getElementById('store-name').value,
             store_tagline: document.getElementById('store-tagline').value,
@@ -784,6 +791,11 @@
           const r = await API.patch('/auth/profile', payload);
           if (r.success || r.data) {
             showToast('Store profile saved successfully!', 'success');
+            if (r.data) {
+              const updatedUser = { ...user, ...r.data };
+              localStorage.setItem('nexusbids_user', JSON.stringify(updatedUser));
+            }
+            updatePreview();
           } else {
             showToast(r.message || 'Failed to save profile.', 'error');
           }
@@ -803,7 +815,13 @@
             facebook: document.getElementById('c-facebook').value,
             instagram: document.getElementById('c-instagram').value,
           });
-          if (r.success || r.data) { showToast('Contact info saved!', 'success'); }
+          if (r.success || r.data) {
+            showToast('Contact info saved!', 'success');
+            if (r.data) {
+              const updatedUser = { ...user, ...r.data };
+              localStorage.setItem('nexusbids_user', JSON.stringify(updatedUser));
+            }
+          }
           else { showToast(r.message || 'Failed to save.', 'error'); }
         } catch { showToast('Network error.', 'error'); }
         finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Contact Info'; }
@@ -820,7 +838,13 @@
             phone: document.getElementById('p-phone').value,
             date_of_birth: document.getElementById('p-dob').value,
           });
-          if (r.success || r.data) { showToast('Personal info saved!', 'success'); }
+          if (r.success || r.data) {
+            showToast('Personal info saved!', 'success');
+            if (r.data) {
+              const updatedUser = { ...user, ...r.data };
+              localStorage.setItem('nexusbids_user', JSON.stringify(updatedUser));
+            }
+          }
           else { showToast(r.message || 'Failed to save.', 'error'); }
         } catch { showToast('Network error.', 'error'); }
         finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Save Personal Info'; }

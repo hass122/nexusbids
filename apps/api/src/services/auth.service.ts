@@ -251,13 +251,112 @@ export class AuthService {
     const updates: string[] = [];
     const params: any[] = [];
 
-    if (data.full_name !== undefined && data.full_name.trim() !== '') { updates.push('full_name = ?'); params.push(data.full_name.trim()); }
-    if (data.phone !== undefined) { updates.push('phone = ?'); params.push(data.phone.trim() || null); }
-    if (data.city !== undefined) { updates.push('city = ?'); params.push(data.city.trim() || null); }
+    // Personal info
+    if (data.full_name !== undefined && String(data.full_name).trim() !== '') {
+      updates.push('full_name = ?');
+      params.push(String(data.full_name).trim());
+    }
+    if (data.username !== undefined) {
+      updates.push('username = ?');
+      params.push(String(data.username).trim() || null);
+    }
+    if (data.phone !== undefined) {
+      updates.push('phone = ?');
+      params.push(String(data.phone).trim() || null);
+    }
+    if (data.city !== undefined || data.store_city !== undefined) {
+      const cityVal = data.store_city !== undefined ? data.store_city : data.city;
+      updates.push('city = ?');
+      params.push(String(cityVal || '').trim() || null);
+    }
+    if (data.address !== undefined) {
+      updates.push('address = ?');
+      params.push(String(data.address).trim() || null);
+    }
+    if (data.postal_code !== undefined) {
+      updates.push('postal_code = ?');
+      params.push(String(data.postal_code).trim() || null);
+    }
+    if (data.date_of_birth !== undefined) {
+      updates.push('date_of_birth = ?');
+      params.push(data.date_of_birth || null);
+    }
 
-    if (updates.length > 0) { params.push(userId); await query(`UPDATE users SET ${updates.join(', ')} WHERE user_id = ?`, params); }
+    // Bio / Store Bio
+    if (data.bio !== undefined) {
+      updates.push('bio = ?');
+      params.push(String(data.bio).trim() || null);
+    }
+    if (data.store_bio !== undefined) {
+      updates.push('store_bio = ?');
+      params.push(String(data.store_bio).trim() || null);
+      if (data.bio === undefined) {
+        updates.push('bio = ?');
+        params.push(String(data.store_bio).trim() || null);
+      }
+    }
 
-    const updated = await query<any[]>(`SELECT user_id, full_name, email, phone, city, role, status, kyc_status, seller_kyc_status, email_verified, twofa_enabled, created_at FROM users WHERE user_id = ? LIMIT 1`, [userId]);
+    // Store identity
+    if (data.store_name !== undefined) {
+      const sName = String(data.store_name).trim() || null;
+      updates.push('store_name = ?');
+      params.push(sName);
+      updates.push('business_name = ?');
+      params.push(sName);
+    }
+    if (data.store_tagline !== undefined) {
+      updates.push('store_tagline = ?');
+      params.push(String(data.store_tagline).trim() || null);
+    }
+    if (data.store_logo !== undefined) {
+      updates.push('store_logo = ?');
+      params.push(String(data.store_logo).trim() || null);
+    }
+    if (data.store_banner !== undefined) {
+      updates.push('store_banner = ?');
+      params.push(String(data.store_banner).trim() || null);
+    }
+    if (data.return_policy !== undefined) {
+      updates.push('return_policy = ?');
+      params.push(String(data.return_policy).trim() || 'no_returns');
+    }
+
+    // Contact details
+    if (data.business_phone !== undefined) {
+      updates.push('business_phone = ?');
+      params.push(String(data.business_phone).trim() || null);
+    }
+    if (data.whatsapp !== undefined) {
+      updates.push('whatsapp = ?');
+      params.push(String(data.whatsapp).trim() || null);
+    }
+    if (data.website !== undefined) {
+      updates.push('website = ?');
+      params.push(String(data.website).trim() || null);
+    }
+    if (data.facebook !== undefined) {
+      updates.push('facebook = ?');
+      params.push(String(data.facebook).trim() || null);
+    }
+    if (data.instagram !== undefined) {
+      updates.push('instagram = ?');
+      params.push(String(data.instagram).trim() || null);
+    }
+
+    if (updates.length > 0) {
+      params.push(userId);
+      await query(`UPDATE users SET ${updates.join(', ')} WHERE user_id = ?`, params);
+    }
+
+    const updated = await query<any[]>(
+      `SELECT user_id, full_name, username, email, phone, city, address, postal_code, bio,
+              store_name, store_tagline, store_bio, store_logo, store_banner, return_policy,
+              business_phone, whatsapp, website, facebook, instagram, date_of_birth,
+              role, wallet_balance, profile_image, avatar, status,
+              kyc_status, seller_kyc_status, email_verified, twofa_enabled, created_at
+       FROM users WHERE user_id = ? LIMIT 1`,
+      [userId]
+    );
     const u = updated[0];
     return { ...u, is_2fa_enabled: Boolean(u.twofa_enabled), is_email_verified: Boolean(u.email_verified) };
   }
