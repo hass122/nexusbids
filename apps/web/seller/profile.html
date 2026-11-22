@@ -301,6 +301,11 @@
       color: #fff;
     }
 
+    .toast-info {
+      background: rgba(99, 102, 241, .92);
+      color: #fff;
+    }
+
     .tab-btn {
       padding: 8px 18px;
       border-radius: 10px;
@@ -585,16 +590,46 @@
     (function () {
       'use strict';
 
-      const token = localStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_token');
-      const user = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
+      const token = localStorage.getItem('nexusbids_token') || localStorage.getItem('nexusbids_access_token') || sessionStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_access_token') || '';
+      const user = (() => { try { return JSON.parse(localStorage.getItem('nexusbids_user') || sessionStorage.getItem('nexusbids_user') || '{}'); } catch { return {}; } })();
       if (!token || !['seller', 'admin'].includes(user.role)) {
-        window.location.replace('/auth/login.html?redirect=' + encodeURIComponent('/seller/profile.html'));
+        window.location.replace('/login.html?redirect=' + encodeURIComponent('/seller/profile.html'));
         return;
       }
 
+      /* ─── Robust API helper ───────────────────────────────────────────────
+         Always prefer window.ApiClient (loaded via api-client.js).
+         Fallback is only used if the script somehow failed to load; it uses
+         the CORRECT /api/v1 base and injects the Bearer token so requests
+         don't silently fail with 401 / 404.
+      ──────────────────────────────────────────────────────────────────── */
+      function _apiHeaders() {
+        const t = localStorage.getItem('nexusbids_token') || localStorage.getItem('nexusbids_access_token') || sessionStorage.getItem('nexusbids_token') || sessionStorage.getItem('nexusbids_access_token') || '';
+        return {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...(t ? { 'Authorization': 'Bearer ' + t } : {}),
+        };
+      }
+
+      async function _apiFetch(method, path, body) {
+        const base = '/api/v1';
+        const res = await fetch(base + path, {
+          method,
+          credentials: 'include',
+          headers: _apiHeaders(),
+          ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+        });
+        let data;
+        try { data = await res.json(); } catch { data = {}; }
+        if (!res.ok) throw new Error(data.error || data.message || 'HTTP ' + res.status);
+        return data;
+      }
+
       const API = window.ApiClient || {
-        get: (u) => fetch('/api' + u, { credentials: 'include' }).then(r => r.json()),
-        patch: (u, d) => fetch('/api' + u, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, credentials: 'include', body: JSON.stringify(d) }).then(r => r.json())
+        get:   (u)    => _apiFetch('GET',   u, undefined),
+        post:  (u, d) => _apiFetch('POST',  u, d),
+        patch: (u, d) => _apiFetch('PATCH', u, d),
       };
 
       // ✅ NEW: current logo/banner as base64 (source of truth for save)
@@ -604,7 +639,9 @@
       function showToast(msg, type = 'success') {
         const t = document.createElement('div');
         t.className = `toast toast-${type}`;
-        t.innerHTML = `<i class="fa-solid fa-${type === 'success' ? 'check-circle' : 'triangle-exclamation'}"></i>${msg}`;
+        const iconMap = { success: 'check-circle', error: 'triangle-exclamation', info: 'circle-info' };
+        const icon = iconMap[type] || 'circle-info';
+        t.innerHTML = `<i class="fa-solid fa-${icon}"></i>${msg}`;
         document.body.appendChild(t);
         setTimeout(() => t.remove(), 4500);
       }
