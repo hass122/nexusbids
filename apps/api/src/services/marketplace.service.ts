@@ -320,11 +320,21 @@ export class MarketplaceService {
     const rows = await query<any[]>(
       `SELECT 
         o.*,
+        COALESCE(o.buyer_proof_uploaded_at, p.created_at) as buyer_proof_uploaded_at,
+        p.receipt_path,
+        p.transaction_id as payment_transaction_id,
         a.title as auction_title, a.image as auction_image,
         u.full_name as counterparty_name
        FROM orders o
        INNER JOIN auctions a ON a.auction_id = o.auction_id
        INNER JOIN users u ON u.user_id = ${role === 'buyer' ? 'o.seller_id' : 'o.buyer_id'}
+       LEFT JOIN (
+         SELECT p1.order_id, p1.receipt_path, p1.transaction_id, p1.created_at
+         FROM payments p1
+         INNER JOIN (
+           SELECT MAX(payment_id) as max_id FROM payments GROUP BY order_id
+         ) p2 ON p1.payment_id = p2.max_id
+       ) p ON p.order_id = o.order_id
        WHERE ${column} = ?
        ORDER BY o.created_at DESC`,
       [userId]
@@ -336,6 +346,9 @@ export class MarketplaceService {
     const rows = await query<any[]>(
       `SELECT 
         o.*,
+        COALESCE(o.buyer_proof_uploaded_at, p.created_at) as buyer_proof_uploaded_at,
+        p.receipt_path,
+        p.transaction_id as payment_transaction_id,
         a.title as auction_title, a.image as auction_image,
         b.full_name as buyer_name, b.email as buyer_email, b.phone as buyer_phone,
         s.full_name as seller_name, s.email as seller_email, s.phone as seller_phone
@@ -343,6 +356,13 @@ export class MarketplaceService {
        INNER JOIN auctions a ON a.auction_id = o.auction_id
        INNER JOIN users b ON b.user_id = o.buyer_id
        INNER JOIN users s ON s.user_id = o.seller_id
+       LEFT JOIN (
+         SELECT p1.order_id, p1.receipt_path, p1.transaction_id, p1.created_at
+         FROM payments p1
+         INNER JOIN (
+           SELECT MAX(payment_id) as max_id FROM payments GROUP BY order_id
+         ) p2 ON p1.payment_id = p2.max_id
+       ) p ON p.order_id = o.order_id
        WHERE o.order_id = ?
        LIMIT 1`,
       [orderId]

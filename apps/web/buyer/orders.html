@@ -1332,7 +1332,7 @@
         var s = String(o.order_status || '').toLowerCase();
         var p = String(o.payment_status || '').toLowerCase();
         var admin = String(o.admin_review_status || '').toLowerCase();
-        var proofUploaded = !!(o.buyer_proof_uploaded_at);
+        var proofUploaded = !!(o.buyer_proof_uploaded_at || o.receipt_path);
 
         var isCompleted = ['delivered', 'completed'].indexOf(s) !== -1;
         var isShipped = ['shipped', 'in_transit'].indexOf(s) !== -1;

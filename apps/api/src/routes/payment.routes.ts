@@ -172,39 +172,36 @@ router.post('/order/:orderId/confirm-receipt', requireAuth, async (req, res) => 
       return;
     }
 
-    // Allow unpaid/pending orders where buyer hasn't already submitted
+    // Allow unpaid/pending orders where buyer hasn't already submitted active review proof
     // (or their previous submission was rejected)
     const orders = await query<any[]>(
-      `SELECT order_id, payment_status, admin_review_status
+      `SELECT order_id, payment_status, admin_review_status, buyer_proof_uploaded_at
        FROM orders
        WHERE order_id = ? AND buyer_id = ?
-         AND payment_status IN ('unpaid','pending')
-         AND (admin_review_status IS NULL OR admin_review_status = 'rejected')
        LIMIT 1`,
       [orderId, userId]
     );
 
     if (orders.length === 0) {
-      // Distinguish real reason for better UX
-      const existing = await query<any[]>(
-        "SELECT payment_status, admin_review_status FROM orders WHERE order_id = ? AND buyer_id = ? LIMIT 1",
-        [orderId, userId]
-      );
+      sendError(res, 'Order not found', 404);
+      return;
+    }
 
-      if (existing.length === 0) {
-        sendError(res, 'Order not found', 404);
-      } else if (existing[0].payment_status === 'paid') {
-        sendError(res, 'Payment already confirmed for this order', 400);
-      } else if (
-        existing[0].admin_review_status === 'reviewing' ||
-        existing[0].admin_review_status === 'pending'
-      ) {
-        sendError(res, 'Your receipt is already under review. Please wait.', 400);
-      } else if (existing[0].admin_review_status === 'approved') {
-        sendError(res, 'Payment already approved', 400);
-      } else {
-        sendError(res, `Cannot upload receipt. Current status: ${existing[0].payment_status}`, 400);
-      }
+    const order = orders[0];
+
+    if (order.payment_status === 'paid' || order.admin_review_status === 'approved') {
+      sendError(res, 'Payment already confirmed for this order', 400);
+      return;
+    }
+
+    if (order.payment_status === 'cancelled' || order.payment_status === 'canceled') {
+      sendError(res, 'Cannot upload receipt for a cancelled order', 400);
+      return;
+    }
+
+    // Only block duplicate upload if buyer has ALREADY uploaded proof AND it is actively under review
+    if (order.buyer_proof_uploaded_at && (order.admin_review_status === 'reviewing' || order.admin_review_status === 'pending')) {
+      sendError(res, 'Your receipt is already under review. Please wait.', 400);
       return;
     }
 

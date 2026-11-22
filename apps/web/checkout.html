@@ -374,7 +374,7 @@
       const status = String(orderData.order_status || '').toLowerCase();
       const payment = String(orderData.payment_status || '').toLowerCase();
       const adminReview = String(orderData.admin_review_status || '').toLowerCase();
-      const proofUploaded = !!(orderData.buyer_proof_uploaded_at);
+      const proofUploaded = !!(orderData.buyer_proof_uploaded_at || orderData.receipt_path);
 
       const alreadyPaid =
         payment === 'paid' ||
